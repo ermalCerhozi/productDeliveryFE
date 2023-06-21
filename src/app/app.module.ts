@@ -8,7 +8,14 @@ import { HomePageComponent } from 'src/app/components/home-page/home-page.compon
 import { LoginComponent } from 'src/app/components/AUTH/login/login.component'
 import { SignInComponent } from 'src/app/components/AUTH/sign-in/sign-in.component'
 import { AppRoutingModule } from 'src/app/app-routing.module'
-import { ProductsListComponent } from 'src/app/components/products-list/products-list.component'
+import { HttpClientModule } from '@angular/common/http'
+import { ProductsComponent } from 'src/app/components/products/products.component'
+import { OrdersComponent } from 'src/app/components/orders/orders.component';
+import { CreateOrderComponent } from './components/create-order/create-order.component';
+import { ManageOrdersComponent } from './components/manage-orders/manage-orders.component';
+import { ManageProductsComponent } from './components/manage-products/manage-products.component';
+import { ManageUsersComponent } from './components/manage-users/manage-users.component';
+import { NotFoundComponent } from './components/not-found/not-found.component'
 
 @NgModule({
     declarations: [
@@ -16,9 +23,21 @@ import { ProductsListComponent } from 'src/app/components/products-list/products
         HomePageComponent,
         LoginComponent,
         SignInComponent,
-        ProductsListComponent,
+        ProductsComponent,
+        OrdersComponent,
+        CreateOrderComponent,
+        ManageOrdersComponent,
+        ManageProductsComponent,
+        ManageUsersComponent,
+        NotFoundComponent,
     ],
-    imports: [BrowserModule, BrowserAnimationsModule, MaterialModule, AppRoutingModule],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        AppRoutingModule,
+        HttpClientModule,
+    ],
     providers: [],
     bootstrap: [AppComponent],
 })
