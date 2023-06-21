@@ -1,0 +1,123 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "projects/**/*",
+    "src/app/graphql/graphql.ts", // generated file
+    "src/stories/**/*"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "prettier",
+    "jest"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:jest/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "semi": false,
+        "singleQuote": true,
+        "tabWidth": 4,
+        "trailingComma": "es5",
+        "printWidth": 100
+      }
+    ],
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "jest/expect-expect": [
+      "warn",
+      {
+        "assertFunctionNames": [
+          "expect",
+          "*.expect"
+        ]
+      }
+    ],
+    "jest/prefer-lowercase-title": [
+      "error",
+      {
+        "ignore": [
+          "describe"
+        ]
+      }
+    ],
+    "object-shorthand": [
+      "error",
+      "always"
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "./*",
+                  "../*"
+                ],
+                "message": "Cannot import relative paths."
+              }
+            ]
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": [
+              "app",
+              "gt"
+            ],
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": [
+              "app",
+              "gt"
+            ],
+            "style": "kebab-case"
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {}
+    }
+  ]
+}
