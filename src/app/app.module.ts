@@ -10,12 +10,12 @@ import { SignInComponent } from 'src/app/components/AUTH/sign-in/sign-in.compone
 import { AppRoutingModule } from 'src/app/app-routing.module'
 import { HttpClientModule } from '@angular/common/http'
 import { ProductsComponent } from 'src/app/components/products/products.component'
-import { OrdersComponent } from 'src/app/components/orders/orders.component';
-import { CreateOrderComponent } from './components/create-order/create-order.component';
-import { ManageOrdersComponent } from './components/manage-orders/manage-orders.component';
-import { ManageProductsComponent } from './components/manage-products/manage-products.component';
-import { ManageUsersComponent } from './components/manage-users/manage-users.component';
-import { NotFoundComponent } from './components/not-found/not-found.component'
+import { OrdersComponent } from 'src/app/components/orders/orders.component'
+import { CreateOrderComponent } from 'src/app/components/create-order/create-order.component'
+import { ManageOrdersComponent } from 'src/app/components/manage-orders/manage-orders.component'
+import { ManageProductsComponent } from 'src/app/components/manage-products/manage-products.component'
+import { ManageUsersComponent } from 'src/app/components/manage-users/manage-users.component'
+import { NotFoundComponent } from 'src/app/components/not-found/not-found.component'
 
 @NgModule({
     declarations: [
