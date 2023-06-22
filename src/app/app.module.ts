@@ -17,7 +17,7 @@ import { ManageProductsComponent } from 'src/app/components/manage-products/mana
 import { ManageUsersComponent } from 'src/app/components/manage-users/manage-users.component'
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
-import { CreateProductDialogComponent } from 'src/app/modals/create-product-dialog/create-product-dialog.component'
+import { CreateUpdateProductDialogComponent } from 'src/app/modals/create-product-dialog/create-update-product-dialog.component'
 import { ReactiveFormsModule } from '@angular/forms'
 
 @NgModule({
@@ -34,7 +34,7 @@ import { ReactiveFormsModule } from '@angular/forms'
         ManageUsersComponent,
         NotFoundComponent,
         ConfirmationDialogComponent,
-        CreateProductDialogComponent,
+        CreateUpdateProductDialogComponent,
     ],
     imports: [
         BrowserModule,

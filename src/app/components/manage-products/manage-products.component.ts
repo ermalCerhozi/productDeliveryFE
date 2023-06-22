@@ -4,9 +4,9 @@ import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
 import { Product } from 'src/app/models/product'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
-import { CreateProductDialogComponent } from 'src/app/modals/create-product-dialog/create-product-dialog.component'
+import { CreateUpdateProductDialogComponent } from 'src/app/modals/create-product-dialog/create-update-product-dialog.component'
+import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
-import { Observable, of, switchMap } from 'rxjs'
 /**
  * @title Data table with sorting, pagination, and filtering.
  */
@@ -16,7 +16,7 @@ import { Observable, of, switchMap } from 'rxjs'
     styleUrls: ['./manage-products.component.css'],
 })
 export class ManageProductsComponent implements AfterViewInit, OnInit {
-    displayedColumns: string[] = ['id', 'product_name', 'price']
+    displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
     dataSource: MatTableDataSource<Product> = new MatTableDataSource<Product>([])
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
@@ -43,40 +43,60 @@ export class ManageProductsComponent implements AfterViewInit, OnInit {
         })
     }
 
-    openDialog(): Observable<unknown> {
-        const dialogRef = this.dialog.open(CreateProductDialogComponent, {
+    openCreateUpdateProductDialog(action: string, product?: Product): void {
+        const dialogRef = this.dialog.open(CreateUpdateProductDialogComponent, {
             width: '80%',
             height: '80%',
+            data: { action, product },
         })
 
-        return dialogRef.afterClosed().pipe(
-            switchMap((result) => {
+        dialogRef.afterClosed().subscribe({
+            next: (result: Product) => {
                 if (result) {
-                    return this.bakeryManagementApiService.createProduct(result)
+                    if (action === 'create') {
+                        this.bakeryManagementApiService.createProduct(result).subscribe({
+                            next: () => {
+                                this.getProducts()
+                            },
+                            error: (error) => {
+                                console.log('Error: ', error)
+                            },
+                        })
+                    } else if (action === 'update') {
+                        this.bakeryManagementApiService.updateProduct(product!, result).subscribe({
+                            next: () => {
+                                this.getProducts()
+                            },
+                            error: (error) => {
+                                console.log('Error: ', error)
+                            },
+                        })
+                    }
                 }
-                return of(false)
-            })
-        )
-    }
-
-    createProduct(product: Product) {
-        this.bakeryManagementApiService.createProduct(product).subscribe((res) => {
-            console.log(res)
-            this.getProducts()
+            },
         })
     }
 
-    editProduct(product: Product) {
-        this.bakeryManagementApiService.updateProduct(product).subscribe((res) => {
-            console.log(res)
-            this.getProducts()
+    openDeleteProductDialog(product: Product): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '80%',
+            height: '25%',
+            data: product,
         })
-    }
 
-    deleteProduct(id: number) {
-        this.bakeryManagementApiService.deleteProduct(id).subscribe((res) => {
-            console.log(res)
-            this.getProducts()
+        dialogRef.afterClosed().subscribe({
+            next: (result: Product) => {
+                if (result) {
+                    this.bakeryManagementApiService.deleteProduct(product.id).subscribe({
+                        next: () => {
+                            this.getProducts()
+                        },
+                        error: (error) => {
+                            console.log('Error: ', error)
+                        },
+                    })
+                }
+            },
         })
     }
 

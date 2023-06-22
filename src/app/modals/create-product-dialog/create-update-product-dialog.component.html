@@ -38,6 +38,23 @@
 
     <div mat-dialog-actions align="end">
         <button mat-button mat-dialog-close>Cancel</button>
-        <button mat-button type="submit" [disabled]="productForm.invalid">Create</button>
+        <button
+            mat-button
+            type="submit"
+            [disabled]="productForm.invalid || !formHasChanged()"
+            autofocus
+            *ngIf="data.action === 'create'"
+        >
+            Create
+        </button>
+        <button
+            mat-button
+            type="submit"
+            [disabled]="productForm.invalid || !formHasChanged()"
+            autofocus
+            *ngIf="data.action === 'update'"
+        >
+            Update
+        </button>
     </div>
 </form>

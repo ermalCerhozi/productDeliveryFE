@@ -32,11 +32,11 @@ export class BakeryManagementApiService {
         return this.http.post<Product>(`${this.apiUrl}products`, product)
     }
 
-    updateProduct(product: Product): Observable<Product> {
-        return this.http.put<Product>(`${this.apiUrl}products/${product.id}`, product)
+    updateProduct(product: Product, result: Partial<Product>): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}products/${product.id}`, result)
     }
 
     deleteProduct(id: number): Observable<Product> {
-        return this.http.delete<Product>(`${this.apiUrl}products/${id}`)
+        return this.http.delete<any>(`${this.apiUrl}products/${id}`)
     }
 }

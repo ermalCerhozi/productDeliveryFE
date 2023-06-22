@@ -1,12 +1,17 @@
-<mat-form-field>
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Masive >" #input />
-    <button mat-icon-button matSuffix color="primary" (click)="openDialog()">
-        <mat-icon>add</mat-icon>
-    </button>
-</mat-form-field>
+<div style="width: 95%; margin: auto">
+    <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Masive >" #input />
+        <button
+            mat-icon-button
+            matSuffix
+            color="primary"
+            (click)="openCreateUpdateProductDialog('create')"
+        >
+            <mat-icon>add</mat-icon>
+        </button>
+    </mat-form-field>
 
-<div class="mat-elevation-z8">
     <table mat-table [dataSource]="dataSource" matSort>
         <!-- ID Column -->
         <ng-container matColumnDef="id">
@@ -16,7 +21,7 @@
 
         <!-- Product_name Column -->
         <ng-container matColumnDef="product_name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Product_name</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Product</th>
             <td mat-cell *matCellDef="let row">{{ row.product_name }}</td>
         </ng-container>
 
@@ -30,10 +35,14 @@
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Actions</th>
             <td mat-cell *matCellDef="let row">
-                <button mat-icon-button color="primary" (click)="editProduct(row)">
+                <button
+                    mat-icon-button
+                    color="primary"
+                    (click)="openCreateUpdateProductDialog('update', row)"
+                >
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" (click)="deleteProduct(row)">
+                <button mat-icon-button color="warn" (click)="openDeleteProductDialog(row)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </td>
