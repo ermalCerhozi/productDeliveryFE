@@ -1,0 +1,43 @@
+<h1 mat-dialog-title>Create Product</h1>
+
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+        <mat-label>Product Name</mat-label>
+        <input matInput formControlName="product_name" required />
+        <mat-error
+            *ngIf="
+                productForm.get('product_name')?.invalid && productForm.get('product_name')?.touched
+            "
+        >
+            Product Name is required
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Price</mat-label>
+        <input matInput type="number" min="0" formControlName="price" required />
+        <mat-error *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+            Price is required
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Image URL</mat-label>
+        <input matInput formControlName="image" />
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Ingredients</mat-label>
+        <textarea matInput formControlName="ingredients"></textarea>
+    </mat-form-field>
+
+    <div mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-button type="submit" [disabled]="productForm.invalid">Create</button>
+    </div>
+</form>

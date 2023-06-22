@@ -16,6 +16,9 @@ import { ManageOrdersComponent } from 'src/app/components/manage-orders/manage-o
 import { ManageProductsComponent } from 'src/app/components/manage-products/manage-products.component'
 import { ManageUsersComponent } from 'src/app/components/manage-users/manage-users.component'
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component'
+import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
+import { CreateProductDialogComponent } from 'src/app/modals/create-product-dialog/create-product-dialog.component'
+import { ReactiveFormsModule } from '@angular/forms'
 
 @NgModule({
     declarations: [
@@ -30,6 +33,8 @@ import { NotFoundComponent } from 'src/app/components/not-found/not-found.compon
         ManageProductsComponent,
         ManageUsersComponent,
         NotFoundComponent,
+        ConfirmationDialogComponent,
+        CreateProductDialogComponent,
     ],
     imports: [
         BrowserModule,
@@ -37,6 +42,7 @@ import { NotFoundComponent } from 'src/app/components/not-found/not-found.compon
         MaterialModule,
         AppRoutingModule,
         HttpClientModule,
+        ReactiveFormsModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

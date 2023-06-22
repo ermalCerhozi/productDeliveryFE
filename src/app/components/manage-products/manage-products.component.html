@@ -1,6 +1,9 @@
 <mat-form-field>
     <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Mia" #input />
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Masive >" #input />
+    <button mat-icon-button matSuffix color="primary" (click)="openDialog()">
+        <mat-icon>add</mat-icon>
+    </button>
 </mat-form-field>
 
 <div class="mat-elevation-z8">
@@ -11,22 +14,29 @@
             <td mat-cell *matCellDef="let row">{{ row.id }}</td>
         </ng-container>
 
-        <!-- Progress Column -->
-        <ng-container matColumnDef="progress">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Progress</th>
-            <td mat-cell *matCellDef="let row">{{ row.progress }}%</td>
+        <!-- Product_name Column -->
+        <ng-container matColumnDef="product_name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Product_name</th>
+            <td mat-cell *matCellDef="let row">{{ row.product_name }}</td>
         </ng-container>
 
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-            <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+            <td mat-cell *matCellDef="let row">{{ row.price | number : '1.0-0' }} LEK</td>
         </ng-container>
 
-        <!-- Fruit Column -->
-        <ng-container matColumnDef="fruit">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Fruit</th>
-            <td mat-cell *matCellDef="let row">{{ row.fruit }}</td>
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let row">
+                <button mat-icon-button color="primary" (click)="editProduct(row)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteProduct(row)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -39,7 +49,8 @@
     </table>
 
     <mat-paginator
-        [pageSizeOptions]="[5, 10, 25, 100]"
-        aria-label="Select page of users"
+        showFirstLastButtons
+        [pageSizeOptions]="[10, 15, 20]"
+        aria-label="Select page of products"
     ></mat-paginator>
 </div>

@@ -1,6 +1,8 @@
-//TODO: Change price to number, add description, add image and ingredients
 export interface Product {
     id: number
     product_name: string
-    price: string
+    price: number
+    description: string
+    image: string
+    ingredients: string
 }
