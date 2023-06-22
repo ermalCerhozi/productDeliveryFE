@@ -1,0 +1,156 @@
+<h1 mat-dialog-title>
+    <ng-container [ngSwitch]="data.type">
+        <ng-container *ngSwitchCase="'product'">Create / Update Product</ng-container>
+        <ng-container *ngSwitchCase="'user'">Create / Update User</ng-container>
+        <ng-container *ngSwitchCase="'order'">Create / Update Order</ng-container>
+    </ng-container>
+</h1>
+
+<form [formGroup]="dataForm" (ngSubmit)="onSubmit()">
+    <ng-container [ngSwitch]="data.type">
+        <ng-container *ngSwitchCase="'product'">
+            <!-- Product Form Fields -->
+            <mat-form-field>
+                <mat-label>Product Name</mat-label>
+                <input matInput formControlName="product_name" required />
+                <mat-error
+                    *ngIf="
+                        dataForm.get('product_name')?.invalid &&
+                        dataForm.get('product_name')?.touched
+                    "
+                >
+                    Product Name is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Price</mat-label>
+                <input matInput type="number" min="0" formControlName="price" required />
+                <mat-error *ngIf="dataForm.get('price')?.invalid && dataForm.get('price')?.touched">
+                    Price is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Image URL</mat-label>
+                <input matInput formControlName="image" />
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Description</mat-label>
+                <textarea matInput formControlName="description"></textarea>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Ingredients</mat-label>
+                <textarea matInput formControlName="ingredients"></textarea>
+            </mat-form-field>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'user'">
+            <!-- User Form Fields -->
+            <mat-form-field>
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="first_name" required />
+                <mat-error
+                    *ngIf="
+                        dataForm.get('first_name')?.invalid && dataForm.get('first_name')?.touched
+                    "
+                >
+                    First Name is required
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Last Name</mat-label>
+                <input matInput type="text" formControlName="last_name" required />
+                <mat-error
+                    *ngIf="dataForm.get('last_name')?.invalid && dataForm.get('last_name')?.touched"
+                >
+                    Last Name Email is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Nickname</mat-label>
+                <input matInput type="text" formControlName="nickname" required />
+                <mat-error
+                    *ngIf="dataForm.get('nickname')?.invalid && dataForm.get('nickname')?.touched"
+                >
+                    Nickname is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Phone Number</mat-label>
+                <input matInput type="tel" formControlName="phone_number" required />
+                <mat-error
+                    *ngIf="
+                        dataForm.get('phone_number')?.invalid &&
+                        dataForm.get('phone_number')?.touched
+                    "
+                >
+                    <ng-container *ngIf="dataForm.get('phone_number')?.errors?.['required']">
+                        Phone Number is required
+                    </ng-container>
+                    <ng-container *ngIf="dataForm.get('phone_number')?.errors?.['minlength']">
+                        Phone Number must be at least 10 digits long
+                    </ng-container>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Role</mat-label>
+                <mat-select formControlName="role" required>
+                    <mat-option value="client">Client</mat-option>
+                    <mat-option value="manager">Manager</mat-option>
+                    <mat-option value="owner">Owner</mat-option>
+                    <mat-option value="seller">Seller</mat-option>
+                </mat-select>
+                <mat-error *ngIf="dataForm.get('role')?.invalid && dataForm.get('role')?.touched">
+                    Role is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput type="text" formControlName="password" required />
+                <mat-error
+                    *ngIf="dataForm.get('password')?.invalid && dataForm.get('password')?.touched"
+                >
+                    Password is required
+                </mat-error>
+            </mat-form-field>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'order'">
+            <!-- Order Form Fields -->
+            <mat-form-field>
+                <mat-label>Order Number</mat-label>
+                <input matInput formControlName="order_number" required />
+            </mat-form-field>
+            <!-- ... rest of order form fields ... -->
+        </ng-container>
+    </ng-container>
+
+    <div mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button
+            mat-button
+            type="submit"
+            [disabled]="dataForm.invalid || !formHasChanged()"
+            autofocus
+            *ngIf="data.action === 'create'"
+        >
+            Create
+        </button>
+        <button
+            mat-button
+            type="submit"
+            [disabled]="dataForm.invalid || !formHasChanged()"
+            autofocus
+            *ngIf="data.action === 'update'"
+        >
+            Update
+        </button>
+    </div>
+</form>

@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, ViewChild } from '@angular/core'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
 import { Product } from 'src/app/models/product'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
-import { CreateUpdateProductDialogComponent } from 'src/app/modals/create-product-dialog/create-update-product-dialog.component'
+import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
 /**
@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog'
     templateUrl: './manage-products.component.html',
     styleUrls: ['./manage-products.component.css'],
 })
-export class ManageProductsComponent implements AfterViewInit, OnInit {
+export class ManageProductsComponent implements OnInit {
     displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
     dataSource: MatTableDataSource<Product> = new MatTableDataSource<Product>([])
 
@@ -31,23 +31,20 @@ export class ManageProductsComponent implements AfterViewInit, OnInit {
         this.getProducts()
     }
 
-    ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator
-        this.dataSource.sort = this.sort
-    }
-
     getProducts() {
         this.bakeryManagementApiService.getProducts().subscribe((res) => {
             const products: Product[] = res
             this.dataSource = new MatTableDataSource(products)
+            this.dataSource.paginator = this.paginator
+            this.dataSource.sort = this.sort
         })
     }
 
-    openCreateUpdateProductDialog(action: string, product?: Product): void {
-        const dialogRef = this.dialog.open(CreateUpdateProductDialogComponent, {
+    createUpdateProduct(action: string, product?: Product): void {
+        const dialogRef = this.dialog.open(CreateUpdateDialogComponent, {
             width: '80%',
             height: '80%',
-            data: { action, product },
+            data: { action, type: 'product', product },
         })
 
         dialogRef.afterClosed().subscribe({
@@ -77,7 +74,7 @@ export class ManageProductsComponent implements AfterViewInit, OnInit {
         })
     }
 
-    openDeleteProductDialog(product: Product): void {
+    deleteProduct(product: Product): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '80%',
             height: '25%',

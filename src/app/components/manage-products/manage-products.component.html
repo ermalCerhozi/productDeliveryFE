@@ -2,12 +2,7 @@
     <mat-form-field>
         <mat-label>Filter</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Masive >" #input />
-        <button
-            mat-icon-button
-            matSuffix
-            color="primary"
-            (click)="openCreateUpdateProductDialog('create')"
-        >
+        <button mat-icon-button matSuffix color="primary" (click)="createUpdateProduct('create')">
             <mat-icon>add</mat-icon>
         </button>
     </mat-form-field>
@@ -38,11 +33,11 @@
                 <button
                     mat-icon-button
                     color="primary"
-                    (click)="openCreateUpdateProductDialog('update', row)"
+                    (click)="createUpdateProduct('update', row)"
                 >
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" (click)="openDeleteProductDialog(row)">
+                <button mat-icon-button color="warn" (click)="deleteProduct(row)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </td>

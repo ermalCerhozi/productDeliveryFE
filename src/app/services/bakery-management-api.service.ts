@@ -20,6 +20,18 @@ export class BakeryManagementApiService {
         return this.http.get<User>(`${this.apiUrl}users/${id}`)
     }
 
+    createUser(user: User): Observable<User> {
+        return this.http.post<User>(`${this.apiUrl}users`, user)
+    }
+
+    updateUser(user: User, result: Partial<User>): Observable<any> {
+        return this.http.put<any>(`${this.apiUrl}users/${user.id}`, result)
+    }
+
+    deleteUser(id: number): Observable<User> {
+        return this.http.delete<any>(`${this.apiUrl}users/${id}`)
+    }
+
     getProducts(): Observable<Product[]> {
         return this.http.get<Product[]>(`${this.apiUrl}products`)
     }
