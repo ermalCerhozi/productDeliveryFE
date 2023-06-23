@@ -11,10 +11,6 @@
   background: white;
 }
 
-.example-sidenav {
-  width: 250px; /* set this to any width you want */
-}
-
 mat-sidenav-container, mat-sidenav-content, mat-sidenav {
   height: 100%;
 }

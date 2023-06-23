@@ -8,6 +8,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
     styleUrls: ['./create-update-dialog.component.css'],
 })
 export class CreateUpdateDialogComponent implements OnInit {
+    roles = [
+        { value: 'client', viewValue: 'Client' },
+        { value: 'manager', viewValue: 'Manager' },
+        { value: 'owner', viewValue: 'Owner' },
+        { value: 'seller', viewValue: 'Seller' },
+    ]
+
     dataForm: FormGroup = new FormGroup({})
 
     constructor(
@@ -42,7 +49,7 @@ export class CreateUpdateDialogComponent implements OnInit {
                     formData.phone_number,
                     [Validators.required, Validators.minLength(10)],
                 ],
-                role: [formData.role, Validators.required],
+                role: ['', Validators.required],
                 password: [formData.password, Validators.required],
             })
         } else if (this.data.type === 'product') {
