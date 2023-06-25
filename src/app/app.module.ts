@@ -19,6 +19,7 @@ import { NotFoundComponent } from 'src/app/components/not-found/not-found.compon
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { ReactiveFormsModule } from '@angular/forms'
+import { LayoutComponent } from 'src/app/components/layout/layout.component'
 
 @NgModule({
     declarations: [
@@ -35,6 +36,7 @@ import { ReactiveFormsModule } from '@angular/forms'
         NotFoundComponent,
         ConfirmationDialogComponent,
         CreateUpdateDialogComponent,
+        LayoutComponent,
     ],
     imports: [
         BrowserModule,
