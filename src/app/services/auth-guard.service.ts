@@ -11,7 +11,7 @@ export class AuthGuard {
     constructor(private authService: AuthService, private router: Router) {}
 
     canActivate(): Observable<boolean | UrlTree> {
-        return this.authService.getUser().pipe(
+        return this.authService.getLoggedInUser().pipe(
             map((user) => {
                 console.log('user', user)
                 if (user) {

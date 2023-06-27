@@ -19,8 +19,8 @@ export class LoginComponent implements OnInit {
 
     ngOnInit(): void {
         this.loginForm = this.formBuilder.group({
-            phoneNumber: ['', Validators.required],
-            password: ['', Validators.required],
+            phoneNumber: ['', [Validators.required, Validators.pattern('^\\d{10}$')]],
+            password: ['', [Validators.required, Validators.minLength(5)]],
         })
     }
 
@@ -36,7 +36,6 @@ export class LoginComponent implements OnInit {
             )
             .subscribe({
                 next: () => {
-                    console.log('Login successful')
                     this.router.navigate(['/home'])
                 },
                 error: () => {

@@ -12,12 +12,19 @@
                         <mat-error *ngIf="loginForm.get('phoneNumber')?.hasError('required')">
                             Phone number is required
                         </mat-error>
+                        <mat-error *ngIf="loginForm.get('phoneNumber')?.hasError('pattern')">
+                            Phone number must be exactly 10 digits
+                        </mat-error>
                     </mat-form-field>
+
                     <mat-form-field appearance="fill">
                         <mat-label>Password</mat-label>
                         <input matInput type="password" formControlName="password" required />
                         <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
                             Password is required
+                        </mat-error>
+                        <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+                            Password must be at least 5 characters
                         </mat-error>
                     </mat-form-field>
                 </div>

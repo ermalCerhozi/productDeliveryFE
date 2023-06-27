@@ -9,7 +9,7 @@ import { ManageProductsComponent } from 'src/app/components/manage-products/mana
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component'
 import { LoginComponent } from 'src/app/components/AUTH/login/login.component'
 import { LayoutComponent } from 'src/app/components/layout/layout.component'
-// import { AuthGuard } from 'src/app/services/auth-guard.service'
+import { AuthGuard } from 'src/app/services/auth-guard.service'
 
 const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -20,7 +20,7 @@ const routes: Routes = [
             {
                 path: 'home',
                 component: HomePageComponent,
-                // canActivate: [() => inject(AuthGuard).canActivate()],
+                canActivate: [() => inject(AuthGuard).canActivate()],
             },
             { path: 'orders', component: OrdersComponent },
             { path: 'products-list', component: ProductsComponent },
