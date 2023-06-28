@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
-import { User } from 'src/app/models/user'
-import { LogIn } from 'src/app/models/logIn'
+import { UserEntity, LoginModel } from 'src/core/models/user.model'
 
 @Injectable({
     providedIn: 'root',
@@ -12,16 +11,16 @@ export class AuthService {
 
     constructor(private http: HttpClient) {}
 
-    login(phone_number: string, password: string): Observable<LogIn> {
+    login(loginForm: LoginModel): Observable<UserEntity> {
         return this.http.post<any>(
             `${this.baseUrl}/login`,
-            { phone_number, password },
+            { phone_number: loginForm.phoneNumber, password: loginForm.password },
             { withCredentials: true }
         )
     }
 
-    getLoggedInUser(): Observable<User> {
-        return this.http.get<User>(`${this.baseUrl}/loggedInUser`, { withCredentials: true })
+    getLoggedInUser(): Observable<UserEntity> {
+        return this.http.get<UserEntity>(`${this.baseUrl}/loggedInUser`, { withCredentials: true })
     }
 
     logout(): Observable<any> {

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
-import { AuthService } from 'src/app/services/auth.service'
+import { phoneNumberRegex } from 'src/core/common/constants'
+import { AuthService } from 'src/services/auth.service'
 
 @Component({
     selector: 'app-login',
@@ -9,7 +10,8 @@ import { AuthService } from 'src/app/services/auth.service'
     styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-    loginForm!: FormGroup
+    loginForm: FormGroup = new FormGroup({})
+    hide = true
 
     constructor(
         private formBuilder: FormBuilder,
@@ -18,29 +20,27 @@ export class LoginComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.initializeForm()
+    }
+
+    initializeForm() {
+        //TODO: Why use FormBuilder insted of Using FormGroup and FormControl
         this.loginForm = this.formBuilder.group({
-            phoneNumber: ['', [Validators.required, Validators.pattern('^\\d{10}$')]],
-            password: ['', [Validators.required, Validators.minLength(5)]],
+            phoneNumber: ['', [Validators.required, Validators.pattern(phoneNumberRegex)]],
+            password: ['', [Validators.required]],
+            // password: ['', [Validators.required, Validators.pattern(passwordRegex)]],
         })
     }
 
     onSubmit(): void {
-        if (this.loginForm.invalid) {
-            return
-        }
-
-        this.authService
-            .login(
-                this.loginForm.controls['phoneNumber'].value,
-                this.loginForm.controls['password'].value
-            )
-            .subscribe({
-                next: () => {
-                    this.router.navigate(['/home'])
-                },
-                error: () => {
-                    console.log(Error)
-                },
-            })
+        this.authService.login(this.loginForm.value).subscribe({
+            next: (res) => {
+                this.router.navigate([''])
+                localStorage.setItem('user', JSON.stringify(res)) //TODO: Not sure about this
+            },
+            error: () => {
+                console.log(Error)
+            },
+        })
     }
 }

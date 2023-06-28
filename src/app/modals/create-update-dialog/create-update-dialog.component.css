@@ -2,11 +2,6 @@ mat-form-field {
     display: block;
 }
 
-mat-form-field {
-    display: block;
-    margin-bottom: 15px;
-}
-
 form{
     width: 90%;
     margin: auto;

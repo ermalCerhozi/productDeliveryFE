@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
-import { Product } from 'src/app/models/product'
-import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
+import { ProductEntity } from 'src/core/models/product.model'
+import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 
 @Component({
     selector: 'app-products',
@@ -8,7 +8,7 @@ import { BakeryManagementApiService } from 'src/app/services/bakery-management-a
     styleUrls: ['./products.component.css'],
 })
 export class ProductsComponent implements OnInit {
-    products: Product[] | undefined
+    products: ProductEntity[] | undefined
     constructor(private bakeryManagementApiService: BakeryManagementApiService) {}
 
     ngOnInit() {

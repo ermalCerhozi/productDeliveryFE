@@ -5,8 +5,8 @@ import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
-import { User } from 'src/app/models/user'
-import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
+import { UserEntity } from 'src/core/models/user.model'
+import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 
 @Component({
     selector: 'app-manage-users',
@@ -15,7 +15,7 @@ import { BakeryManagementApiService } from 'src/app/services/bakery-management-a
 })
 export class ManageUsersComponent implements OnInit {
     displayedColumns: string[] = ['id', 'first_name', 'phone_number', 'actions']
-    dataSource: MatTableDataSource<User> = new MatTableDataSource<User>([])
+    dataSource: MatTableDataSource<UserEntity> = new MatTableDataSource<UserEntity>([])
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild(MatSort) sort!: MatSort
@@ -31,14 +31,14 @@ export class ManageUsersComponent implements OnInit {
 
     getUsers() {
         this.bakeryManagementApiService.getUsers().subscribe((res) => {
-            const users: User[] = res
+            const users: UserEntity[] = res
             this.dataSource = new MatTableDataSource(users)
             this.dataSource.paginator = this.paginator
             this.dataSource.sort = this.sort
         })
     }
 
-    createUpdateUser(action: string, user?: User): void {
+    createUpdateUser(action: string, user?: UserEntity): void {
         const dialogRef = this.dialog.open(CreateUpdateDialogComponent, {
             width: '80%',
             height: '80%',
@@ -46,7 +46,7 @@ export class ManageUsersComponent implements OnInit {
         })
 
         dialogRef.afterClosed().subscribe({
-            next: (result: User) => {
+            next: (result: UserEntity) => {
                 if (result) {
                     if (action === 'create') {
                         this.bakeryManagementApiService.createUser(result).subscribe({
@@ -72,7 +72,7 @@ export class ManageUsersComponent implements OnInit {
         })
     }
 
-    deleteUser(user: User): void {
+    deleteUser(user: UserEntity): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '80%',
             height: '25%',
@@ -80,7 +80,7 @@ export class ManageUsersComponent implements OnInit {
         })
 
         dialogRef.afterClosed().subscribe({
-            next: (result: User) => {
+            next: (result: UserEntity) => {
                 if (result) {
                     this.bakeryManagementApiService.deleteUser(user.id!).subscribe({
                         next: () => {

@@ -1,8 +1,14 @@
 <h1 mat-dialog-title>
     <ng-container [ngSwitch]="data.type">
-        <ng-container *ngSwitchCase="'product'">Create / Update Product</ng-container>
-        <ng-container *ngSwitchCase="'user'">Create / Update User</ng-container>
-        <ng-container *ngSwitchCase="'order'">Create / Update Order</ng-container>
+        <ng-container *ngSwitchCase="'product'"
+            >{{ data.action === 'create' ? 'Create' : 'Update' }} Product</ng-container
+        >
+        <ng-container *ngSwitchCase="'user'"
+            >{{ data.action === 'create' ? 'Create' : 'Update' }} User</ng-container
+        >
+        <ng-container *ngSwitchCase="'order'"
+            >{{ data.action === 'create' ? 'Create' : 'Update' }} Order</ng-container
+        >
     </ng-container>
 </h1>
 
@@ -180,7 +186,7 @@
             type="submit"
             [disabled]="dataForm.invalid || !formHasChanged()"
             autofocus
-            *ngIf="data.action === 'update'"
+            *ngIf="data.action !== 'create'"
         >
             Update
         </button>

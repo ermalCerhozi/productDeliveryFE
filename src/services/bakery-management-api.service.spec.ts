@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing'
 
-import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
+import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 
 describe('MakeryManagementApiService', () => {
     let service: BakeryManagementApiService

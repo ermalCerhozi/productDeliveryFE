@@ -5,8 +5,8 @@ import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
-import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
-import { Order } from 'src/app/models/order'
+import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
+import { OrderEntity } from 'src/core/models/order.model'
 
 @Component({
     selector: 'app-manage-orders',
@@ -23,7 +23,7 @@ export class ManageOrdersComponent implements OnInit {
         'order_date',
         'actions',
     ]
-    dataSource: MatTableDataSource<Order> = new MatTableDataSource<Order>([])
+    dataSource: MatTableDataSource<OrderEntity> = new MatTableDataSource<OrderEntity>([])
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild(MatSort) sort!: MatSort
@@ -39,7 +39,7 @@ export class ManageOrdersComponent implements OnInit {
 
     getOrders() {
         this.bakeryManagementApiService.getOrders().subscribe((res) => {
-            const orders: Order[] = res
+            const orders: OrderEntity[] = res
             this.dataSource = new MatTableDataSource(orders)
             this.dataSource.paginator = this.paginator
             this.dataSource.sort = this.sort
@@ -47,7 +47,7 @@ export class ManageOrdersComponent implements OnInit {
         })
     }
 
-    createUpdateOrder(action: string, order?: Order): void {
+    createUpdateOrder(action: string, order?: OrderEntity): void {
         const dialogRef = this.dialog.open(CreateUpdateDialogComponent, {
             width: '80%',
             height: '80%',
@@ -55,7 +55,7 @@ export class ManageOrdersComponent implements OnInit {
         })
 
         dialogRef.afterClosed().subscribe({
-            next: (result: Order) => {
+            next: (result: OrderEntity) => {
                 if (result) {
                     if (action === 'create') {
                         this.bakeryManagementApiService.createOrder(result).subscribe({
@@ -81,7 +81,7 @@ export class ManageOrdersComponent implements OnInit {
         })
     }
 
-    deleteOrder(order: Order): void {
+    deleteOrder(order: OrderEntity): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '80%',
             height: '25%',
@@ -89,7 +89,7 @@ export class ManageOrdersComponent implements OnInit {
         })
 
         dialogRef.afterClosed().subscribe({
-            next: (result: Order) => {
+            next: (result: OrderEntity) => {
                 if (result) {
                     this.bakeryManagementApiService.deleteOrder(order.id).subscribe({
                         next: () => {

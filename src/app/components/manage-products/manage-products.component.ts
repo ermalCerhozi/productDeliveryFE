@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
-import { Product } from 'src/app/models/product'
-import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
+import { ProductEntity } from 'src/core/models/product.model'
+import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
@@ -17,7 +17,7 @@ import { MatDialog } from '@angular/material/dialog'
 })
 export class ManageProductsComponent implements OnInit {
     displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
-    dataSource: MatTableDataSource<Product> = new MatTableDataSource<Product>([])
+    dataSource: MatTableDataSource<ProductEntity> = new MatTableDataSource<ProductEntity>([])
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild(MatSort) sort!: MatSort
@@ -33,14 +33,14 @@ export class ManageProductsComponent implements OnInit {
 
     getProducts() {
         this.bakeryManagementApiService.getProducts().subscribe((res) => {
-            const products: Product[] = res
+            const products: ProductEntity[] = res
             this.dataSource = new MatTableDataSource(products)
             this.dataSource.paginator = this.paginator
             this.dataSource.sort = this.sort
         })
     }
 
-    createUpdateProduct(action: string, product?: Product): void {
+    createUpdateProduct(action: string, product?: ProductEntity): void {
         const dialogRef = this.dialog.open(CreateUpdateDialogComponent, {
             width: '80%',
             height: '80%',
@@ -48,7 +48,7 @@ export class ManageProductsComponent implements OnInit {
         })
 
         dialogRef.afterClosed().subscribe({
-            next: (result: Product) => {
+            next: (result: ProductEntity) => {
                 if (result) {
                     if (action === 'create') {
                         this.bakeryManagementApiService.createProduct(result).subscribe({
@@ -74,7 +74,7 @@ export class ManageProductsComponent implements OnInit {
         })
     }
 
-    deleteProduct(product: Product): void {
+    deleteProduct(product: ProductEntity): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '80%',
             height: '25%',
@@ -82,7 +82,7 @@ export class ManageProductsComponent implements OnInit {
         })
 
         dialogRef.afterClosed().subscribe({
-            next: (result: Product) => {
+            next: (result: ProductEntity) => {
                 if (result) {
                     this.bakeryManagementApiService.deleteProduct(product.id).subscribe({
                         next: () => {
