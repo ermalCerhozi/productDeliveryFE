@@ -19,7 +19,8 @@ import { NotFoundComponent } from 'src/app/components/not-found/not-found.compon
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { ReactiveFormsModule } from '@angular/forms'
-import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component'
+import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component';
+import { FilterDialogComponent } from './modals/filter-dialog/filter-dialog.component'
 
 @NgModule({
     declarations: [
@@ -37,6 +38,7 @@ import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.compon
         ConfirmationDialogComponent,
         CreateUpdateDialogComponent,
         LayoutComponent,
+        FilterDialogComponent,
     ],
     imports: [
         BrowserModule,

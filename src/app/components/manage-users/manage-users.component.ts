@@ -7,6 +7,7 @@ import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { UserEntity } from 'src/core/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
+import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 
 @Component({
     selector: 'app-manage-users',
@@ -14,7 +15,7 @@ import { BakeryManagementApiService } from 'src/services/bakery-management-api.s
     styleUrls: ['./manage-users.component.css'],
 })
 export class ManageUsersComponent implements OnInit {
-    displayedColumns: string[] = ['id', 'first_name', 'phone_number', 'actions']
+    displayedColumns: string[] = ['id', 'first_name', 'role', 'phone_number', 'actions']
     dataSource: MatTableDataSource<UserEntity> = new MatTableDataSource<UserEntity>([])
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
@@ -36,6 +37,11 @@ export class ManageUsersComponent implements OnInit {
             this.dataSource.paginator = this.paginator
             this.dataSource.sort = this.sort
         })
+    }
+
+    openFilterUsersDialog(): void {
+        const dialogRef = this.dialog.open(FilterDialogComponent)
+        dialogRef.afterClosed().subscribe()
     }
 
     createUpdateUser(action: string, user?: UserEntity): void {
@@ -95,7 +101,7 @@ export class ManageUsersComponent implements OnInit {
         })
     }
 
-    applyFilter(event: Event) {
+    applySearch(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value
         this.dataSource.filter = filterValue.trim().toLowerCase()
 

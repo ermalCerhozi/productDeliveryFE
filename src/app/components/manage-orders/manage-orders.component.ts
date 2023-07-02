@@ -7,6 +7,8 @@ import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { OrderEntity } from 'src/core/models/order.model'
+import { BreakpointObserver } from '@angular/cdk/layout'
+import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 
 @Component({
     selector: 'app-manage-orders',
@@ -14,27 +16,38 @@ import { OrderEntity } from 'src/core/models/order.model'
     styleUrls: ['./manage-orders.component.css'],
 })
 export class ManageOrdersComponent implements OnInit {
-    displayedColumns: string[] = [
-        'id',
-        'seller',
-        'client',
-        'product',
-        'quantity',
-        'order_date',
-        'actions',
-    ]
+    displayedColumns: string[] = ['id', 'seller', 'client', 'product', 'order_date', 'actions']
     dataSource: MatTableDataSource<OrderEntity> = new MatTableDataSource<OrderEntity>([])
+
+    isLargeScreen: boolean | undefined
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild(MatSort) sort!: MatSort
 
     constructor(
         private bakeryManagementApiService: BakeryManagementApiService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private breakpointObserver: BreakpointObserver
     ) {}
 
     ngOnInit() {
         this.getOrders()
+        this.breakpointObserver.observe(['(max-width: 414px)']).subscribe((result) => {
+            if (result.matches) {
+                this.isLargeScreen = false
+                this.displayedColumns = ['seller', 'client', 'product', 'order_date', 'actions']
+            } else {
+                this.isLargeScreen = true
+                this.displayedColumns = [
+                    'id',
+                    'seller',
+                    'client',
+                    'product',
+                    'order_date',
+                    'actions',
+                ]
+            }
+        })
     }
 
     getOrders() {
@@ -43,14 +56,20 @@ export class ManageOrdersComponent implements OnInit {
             this.dataSource = new MatTableDataSource(orders)
             this.dataSource.paginator = this.paginator
             this.dataSource.sort = this.sort
-            console.log('=======', orders)
         })
+    }
+
+    openFilterOrdersDialog(): void {
+        const dialogRef = this.dialog.open(FilterDialogComponent)
+        dialogRef.afterClosed().subscribe()
     }
 
     createUpdateOrder(action: string, order?: OrderEntity): void {
         const dialogRef = this.dialog.open(CreateUpdateDialogComponent, {
-            width: '80%',
-            height: '80%',
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            height: '100%',
+            width: '100%',
             data: { action, type: 'order', order },
         })
 
@@ -104,7 +123,7 @@ export class ManageOrdersComponent implements OnInit {
         })
     }
 
-    applyFilter(event: Event) {
+    applySearch(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value
         this.dataSource.filter = filterValue.trim().toLowerCase()
 

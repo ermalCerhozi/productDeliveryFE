@@ -17,21 +17,19 @@
             <button (click)="drawer.toggle()" mat-icon-button>
                 <mat-icon>menu</mat-icon>
             </button>
-            <!-- <span>Bakery Management App</span> -->
+            <span>Bakery Management App</span>
             <span class="example-spacer"></span>
             <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
                 <button mat-menu-item (click)="logOut()">
-                    <mat-icon>logout</mat-icon>
-                    <!-- Choose an icon appropriate for logout -->
+                    <mat-icon color="warn">logout</mat-icon>
                     <span>Log out</span>
                 </button>
             </mat-menu>
         </mat-toolbar>
 
-        <!-- Add router-outlet or other content here -->
         <router-outlet></router-outlet>
     </mat-sidenav-content>
 </mat-sidenav-container>

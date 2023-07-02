@@ -1,5 +1,15 @@
-.mat-mdc-form-field {
-  font-size: 14px;
-  width: 100%;
+.controls-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
-  
+
+.mat-mdc-form-field {
+  margin: 15px 0 0 10px;
+  flex-grow: 1;
+}
+
+.filter-button{
+  margin: 0 10px 0 10px;
+}

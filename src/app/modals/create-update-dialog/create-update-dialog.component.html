@@ -12,10 +12,14 @@
     </ng-container>
 </h1>
 
-<form [formGroup]="dataForm" (ngSubmit)="onSubmit()">
+<form
+    [formGroup]="dataForm"
+    (ngSubmit)="onSubmit()"
+    style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100%"
+>
     <ng-container [ngSwitch]="data.type">
+        <!-- Product Form Fields -->
         <ng-container *ngSwitchCase="'product'">
-            <!-- Product Form Fields -->
             <mat-form-field>
                 <mat-label>Product Name</mat-label>
                 <input matInput formControlName="product_name" required />
@@ -53,8 +57,8 @@
             </mat-form-field>
         </ng-container>
 
+        <!-- User Form Fields -->
         <ng-container *ngSwitchCase="'user'">
-            <!-- User Form Fields -->
             <mat-form-field>
                 <mat-label>First Name</mat-label>
                 <input matInput formControlName="first_name" required />
@@ -128,45 +132,59 @@
             </mat-form-field>
         </ng-container>
 
+        <!-- Order Form Fields -->
         <ng-container *ngSwitchCase="'order'">
-            <!-- Order Form Fields -->
-            <mat-form-field>
-                <mat-label>Client</mat-label>
-                <mat-select formControlName="role" required>
-                    <mat-option value="client">Client</mat-option>
-                    <mat-option value="manager">Manager</mat-option>
-                    <mat-option value="owner">Owner</mat-option>
-                    <mat-option value="seller">Seller</mat-option>
-                </mat-select>
-                <mat-error
-                    *ngIf="dataForm.get('client_id')?.invalid && dataForm.get('client_id')?.touched"
-                >
-                    Client is required
-                </mat-error>
-            </mat-form-field>
+            <div>
+                <mat-form-field>
+                    <mat-label>Client</mat-label>
+                    <mat-select formControlName="client" required>
+                        <mat-option *ngFor="let client of clients" [value]="client.id">{{
+                            client.first_name + ' ' + client.last_name
+                        }}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="dataForm.get('client')?.invalid && dataForm.get('client')?.touched"
+                    >
+                        Client is required
+                    </mat-error>
+                </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Product Name</mat-label>
-                <input matInput type="text" formControlName="product_name" required />
-                <mat-error
-                    *ngIf="
-                        dataForm.get('product_name')?.invalid &&
-                        dataForm.get('product_name')?.touched
-                    "
+                <div
+                    formArrayName="order_items"
+                    *ngFor="let item of orderItemsFormArray.controls; let i = index"
                 >
-                    Product Name is required
-                </mat-error>
-            </mat-form-field>
+                    <div [formGroupName]="i" style="display: flex; align-items: center">
+                        <mat-form-field style="flex: 2; margin-right: 5px">
+                            <mat-label>Product</mat-label>
+                            <mat-select formControlName="product" required>
+                                <mat-option *ngFor="let product of products" [value]="product.id">{{
+                                    product.product_name
+                                }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Quantity</mat-label>
-                <input matInput type="number" formControlName="quantity" required />
-                <mat-error
-                    *ngIf="dataForm.get('quantity')?.invalid && dataForm.get('quantity')?.touched"
-                >
-                    Quantity is required
-                </mat-error>
-            </mat-form-field>
+                        <mat-form-field style="flex: 1; margin-right: 5px">
+                            <mat-label>Quantity</mat-label>
+                            <input
+                                matInput
+                                formControlName="quantity"
+                                type="number"
+                                min="1"
+                                required
+                            />
+                        </mat-form-field>
+
+                        <button mat-mini-fab color="warn" (click)="removeOrderItem(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: center">
+                    <button mat-fab color="primary" (click)="addOrderItem()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+            </div>
         </ng-container>
     </ng-container>
 
