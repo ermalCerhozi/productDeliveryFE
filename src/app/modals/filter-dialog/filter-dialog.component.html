@@ -6,7 +6,7 @@
             <mat-label>Client</mat-label>
             <mat-select formControlName="client">
                 <mat-option *ngFor="let client of clients" [value]="client">{{
-                    client
+                    client.first_name + ' ' + client.last_name
                 }}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -14,8 +14,8 @@
         <mat-form-field>
             <mat-label>Seller</mat-label>
             <mat-select formControlName="seller">
-                <mat-option *ngFor="let seller of sellers" [value]="seller">{{
-                    seller
+                <mat-option *ngFor="let user of users" [value]="user">{{
+                    user.first_name + ' ' + user.last_name
                 }}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -46,6 +46,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-button (click)="dialogRef.close()">Cancel</button>
-    <button mat-button (click)="applyFilter()">Apply</button>
+    <button mat-stroked-button color="warn" (click)="dialogRef.close()">Cancel</button>
+    <button mat-stroked-button color="primary" (click)="applyFilter()">Apply</button>
 </mat-dialog-actions>

@@ -86,9 +86,9 @@ export class CreateUpdateDialogComponent implements OnInit {
                 ingredients: [formData.ingredients],
             })
         } else if (this.data.type === 'order') {
-            this.bakeryManagementService.getAllClients().subscribe({
+            this.bakeryManagementService.getAllUsers().subscribe({
                 next: (res) => {
-                    this.clients = res
+                    this.clients = res.filter((user) => user.role === 'Client')
                 },
                 error: (err) => {
                     console.log('There was an error getting clients:', err)

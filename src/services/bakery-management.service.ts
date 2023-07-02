@@ -14,7 +14,7 @@ export class BakeryManagementService {
         return this.bakeryManagementApiService.getProducts()
     }
 
-    getAllClients(): Observable<UserEntity[]> {
+    getAllUsers(): Observable<UserEntity[]> {
         return this.bakeryManagementApiService.getUsers()
     }
 }

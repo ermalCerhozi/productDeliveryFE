@@ -16,16 +16,10 @@
     </button>
 </div>
 
-<table mat-table [dataSource]="dataSource" matSort>
-    <!-- ID Column -->
-    <ng-container matColumnDef="id" *ngIf="isLargeScreen">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-        <td mat-cell *matCellDef="let row">{{ row.id }}</td>
-    </ng-container>
-
+<table mat-table [dataSource]="dataSource">
     <!-- Seller Column -->
     <ng-container matColumnDef="seller">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Seller</th>
+        <th mat-header-cell *matHeaderCellDef>Seller</th>
         <td mat-cell *matCellDef="let row">
             {{ row.seller.first_name }} {{ row.seller.last_name }}
         </td>
@@ -33,7 +27,7 @@
 
     <!-- Client Column -->
     <ng-container matColumnDef="client">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Client</th>
+        <th mat-header-cell *matHeaderCellDef>Client</th>
         <td mat-cell *matCellDef="let row">
             {{ row.client.first_name }} {{ row.client.last_name }}
         </td>
@@ -41,7 +35,7 @@
 
     <!-- Order detail and Quantity Column -->
     <ng-container matColumnDef="product">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Product & Quantity</th>
+        <th mat-header-cell *matHeaderCellDef>Product & Quantity</th>
         <td mat-cell *matCellDef="let row">
             <div *ngFor="let item of row.order_items" class="flex-container">
                 <div class="quantity">({{ item.quantity }})</div>
@@ -52,7 +46,7 @@
 
     <!-- Order Date Column -->
     <ng-container matColumnDef="order_date">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Date</th>
+        <th mat-header-cell *matHeaderCellDef>Order Date</th>
         <td mat-cell *matCellDef="let row">{{ row.order_date }}</td>
     </ng-container>
 

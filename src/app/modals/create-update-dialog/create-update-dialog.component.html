@@ -1,197 +1,230 @@
-<h1 mat-dialog-title>
-    <ng-container [ngSwitch]="data.type">
-        <ng-container *ngSwitchCase="'product'"
-            >{{ data.action === 'create' ? 'Create' : 'Update' }} Product</ng-container
-        >
-        <ng-container *ngSwitchCase="'user'"
-            >{{ data.action === 'create' ? 'Create' : 'Update' }} User</ng-container
-        >
-        <ng-container *ngSwitchCase="'order'"
-            >{{ data.action === 'create' ? 'Create' : 'Update' }} Order</ng-container
-        >
-    </ng-container>
-</h1>
-
-<form
-    [formGroup]="dataForm"
-    (ngSubmit)="onSubmit()"
-    style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100%"
->
-    <ng-container [ngSwitch]="data.type">
-        <!-- Product Form Fields -->
-        <ng-container *ngSwitchCase="'product'">
-            <mat-form-field>
-                <mat-label>Product Name</mat-label>
-                <input matInput formControlName="product_name" required />
-                <mat-error
-                    *ngIf="
-                        dataForm.get('product_name')?.invalid &&
-                        dataForm.get('product_name')?.touched
-                    "
-                >
-                    Product Name is required
-                </mat-error>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Price</mat-label>
-                <input matInput type="number" min="0" formControlName="price" required />
-                <mat-error *ngIf="dataForm.get('price')?.invalid && dataForm.get('price')?.touched">
-                    Price is required
-                </mat-error>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Image URL</mat-label>
-                <input matInput formControlName="image" />
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Description</mat-label>
-                <textarea matInput formControlName="description"></textarea>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Ingredients</mat-label>
-                <textarea matInput formControlName="ingredients"></textarea>
-            </mat-form-field>
+<div class="dialog-container">
+    <h1 mat-dialog-title>
+        <ng-container [ngSwitch]="data.type">
+            <ng-container *ngSwitchCase="'product'"
+                >{{ data.action === 'create' ? 'Create' : 'Update' }} Product</ng-container
+            >
+            <ng-container *ngSwitchCase="'user'"
+                >{{ data.action === 'create' ? 'Create' : 'Update' }} User</ng-container
+            >
+            <ng-container *ngSwitchCase="'order'"
+                >{{ data.action === 'create' ? 'Create' : 'Update' }} Order</ng-container
+            >
         </ng-container>
+    </h1>
 
-        <!-- User Form Fields -->
-        <ng-container *ngSwitchCase="'user'">
-            <mat-form-field>
-                <mat-label>First Name</mat-label>
-                <input matInput formControlName="first_name" required />
-                <mat-error
-                    *ngIf="
-                        dataForm.get('first_name')?.invalid && dataForm.get('first_name')?.touched
-                    "
-                >
-                    First Name is required
-                </mat-error>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Last Name</mat-label>
-                <input matInput type="text" formControlName="last_name" required />
-                <mat-error
-                    *ngIf="dataForm.get('last_name')?.invalid && dataForm.get('last_name')?.touched"
-                >
-                    Last Name Email is required
-                </mat-error>
-            </mat-form-field>
+    <div class="dialog-content">
+        <form
+            [formGroup]="dataForm"
+            (ngSubmit)="onSubmit()"
+            style="
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 100%;
+            "
+        >
+            <ng-container [ngSwitch]="data.type">
+                <!-- Product Form Fields -->
+                <ng-container *ngSwitchCase="'product'">
+                    <mat-form-field>
+                        <mat-label>Product Name</mat-label>
+                        <input matInput formControlName="product_name" required />
+                        <mat-error
+                            *ngIf="
+                                dataForm.get('product_name')?.invalid &&
+                                dataForm.get('product_name')?.touched
+                            "
+                        >
+                            Product Name is required
+                        </mat-error>
+                    </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Nickname</mat-label>
-                <input matInput type="text" formControlName="nickname" required />
-                <mat-error
-                    *ngIf="dataForm.get('nickname')?.invalid && dataForm.get('nickname')?.touched"
-                >
-                    Nickname is required
-                </mat-error>
-            </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Price</mat-label>
+                        <input matInput type="number" min="0" formControlName="price" required />
+                        <mat-error
+                            *ngIf="dataForm.get('price')?.invalid && dataForm.get('price')?.touched"
+                        >
+                            Price is required
+                        </mat-error>
+                    </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Phone Number</mat-label>
-                <input matInput type="tel" formControlName="phone_number" required />
-                <mat-error
-                    *ngIf="
-                        dataForm.get('phone_number')?.invalid &&
-                        dataForm.get('phone_number')?.touched
-                    "
-                >
-                    <ng-container *ngIf="dataForm.get('phone_number')?.errors?.['required']">
-                        Phone Number is required
-                    </ng-container>
-                    <ng-container *ngIf="dataForm.get('phone_number')?.errors?.['minlength']">
-                        Phone Number must be at least 10 digits long
-                    </ng-container>
-                </mat-error>
-            </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Image URL</mat-label>
+                        <input matInput formControlName="image" />
+                    </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Role</mat-label>
-                <mat-select formControlName="role" required>
-                    <mat-option value="client">Client</mat-option>
-                    <mat-option value="manager">Manager</mat-option>
-                    <mat-option value="owner">Owner</mat-option>
-                    <mat-option value="seller">Seller</mat-option>
-                </mat-select>
-                <mat-error *ngIf="dataForm.get('role')?.invalid && dataForm.get('role')?.touched">
-                    Role is required
-                </mat-error>
-            </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Description</mat-label>
+                        <textarea matInput formControlName="description"></textarea>
+                    </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Password</mat-label>
-                <input matInput type="text" formControlName="password" required />
-                <mat-error
-                    *ngIf="dataForm.get('password')?.invalid && dataForm.get('password')?.touched"
-                >
-                    Password is required
-                </mat-error>
-            </mat-form-field>
-        </ng-container>
+                    <mat-form-field>
+                        <mat-label>Ingredients</mat-label>
+                        <textarea matInput formControlName="ingredients"></textarea>
+                    </mat-form-field>
+                </ng-container>
 
-        <!-- Order Form Fields -->
-        <ng-container *ngSwitchCase="'order'">
-            <div>
-                <mat-form-field>
-                    <mat-label>Client</mat-label>
-                    <mat-select formControlName="client" required>
-                        <mat-option *ngFor="let client of clients" [value]="client.id">{{
-                            client.first_name + ' ' + client.last_name
-                        }}</mat-option>
-                    </mat-select>
-                    <mat-error
-                        *ngIf="dataForm.get('client')?.invalid && dataForm.get('client')?.touched"
-                    >
-                        Client is required
-                    </mat-error>
-                </mat-form-field>
+                <!-- User Form Fields -->
+                <ng-container *ngSwitchCase="'user'">
+                    <mat-form-field>
+                        <mat-label>First Name</mat-label>
+                        <input matInput formControlName="first_name" required />
+                        <mat-error
+                            *ngIf="
+                                dataForm.get('first_name')?.invalid &&
+                                dataForm.get('first_name')?.touched
+                            "
+                        >
+                            First Name is required
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Last Name</mat-label>
+                        <input matInput type="text" formControlName="last_name" required />
+                        <mat-error
+                            *ngIf="
+                                dataForm.get('last_name')?.invalid &&
+                                dataForm.get('last_name')?.touched
+                            "
+                        >
+                            Last Name Email is required
+                        </mat-error>
+                    </mat-form-field>
 
-                <div
-                    formArrayName="order_items"
-                    *ngFor="let item of orderItemsFormArray.controls; let i = index"
-                >
-                    <div [formGroupName]="i" style="display: flex; align-items: center">
-                        <mat-form-field style="flex: 2; margin-right: 5px">
-                            <mat-label>Product</mat-label>
-                            <mat-select formControlName="product" required>
-                                <mat-option *ngFor="let product of products" [value]="product.id">{{
-                                    product.product_name
+                    <mat-form-field>
+                        <mat-label>Nickname</mat-label>
+                        <input matInput type="text" formControlName="nickname" required />
+                        <mat-error
+                            *ngIf="
+                                dataForm.get('nickname')?.invalid &&
+                                dataForm.get('nickname')?.touched
+                            "
+                        >
+                            Nickname is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Phone Number</mat-label>
+                        <input matInput type="tel" formControlName="phone_number" required />
+                        <mat-error
+                            *ngIf="
+                                dataForm.get('phone_number')?.invalid &&
+                                dataForm.get('phone_number')?.touched
+                            "
+                        >
+                            <ng-container
+                                *ngIf="dataForm.get('phone_number')?.errors?.['required']"
+                            >
+                                Phone Number is required
+                            </ng-container>
+                            <ng-container
+                                *ngIf="dataForm.get('phone_number')?.errors?.['minlength']"
+                            >
+                                Phone Number must be at least 10 digits long
+                            </ng-container>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Role</mat-label>
+                        <mat-select formControlName="role" required>
+                            <mat-option value="client">Client</mat-option>
+                            <mat-option value="manager">Manager</mat-option>
+                            <mat-option value="owner">Owner</mat-option>
+                            <mat-option value="seller">Seller</mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="dataForm.get('role')?.invalid && dataForm.get('role')?.touched"
+                        >
+                            Role is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Password</mat-label>
+                        <input matInput type="text" formControlName="password" required />
+                        <mat-error
+                            *ngIf="
+                                dataForm.get('password')?.invalid &&
+                                dataForm.get('password')?.touched
+                            "
+                        >
+                            Password is required
+                        </mat-error>
+                    </mat-form-field>
+                </ng-container>
+
+                <!-- Order Form Fields -->
+                <ng-container *ngSwitchCase="'order'">
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Client</mat-label>
+                            <mat-select formControlName="client" required>
+                                <mat-option *ngFor="let client of clients" [value]="client.id">{{
+                                    client.first_name + ' ' + client.last_name
                                 }}</mat-option>
                             </mat-select>
+                            <mat-error
+                                *ngIf="
+                                    dataForm.get('client')?.invalid &&
+                                    dataForm.get('client')?.touched
+                                "
+                            >
+                                Client is required
+                            </mat-error>
                         </mat-form-field>
 
-                        <mat-form-field style="flex: 1; margin-right: 5px">
-                            <mat-label>Quantity</mat-label>
-                            <input
-                                matInput
-                                formControlName="quantity"
-                                type="number"
-                                min="1"
-                                required
-                            />
-                        </mat-form-field>
+                        <div
+                            formArrayName="order_items"
+                            *ngFor="let item of orderItemsFormArray.controls; let i = index"
+                        >
+                            <div [formGroupName]="i" style="display: flex; align-items: center">
+                                <mat-form-field style="flex: 2; margin-right: 5px">
+                                    <mat-label>Product</mat-label>
+                                    <mat-select formControlName="product" required>
+                                        <mat-option
+                                            *ngFor="let product of products"
+                                            [value]="product.id"
+                                            >{{ product.product_name }}</mat-option
+                                        >
+                                    </mat-select>
+                                </mat-form-field>
 
-                        <button mat-mini-fab color="warn" (click)="removeOrderItem(i)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
+                                <mat-form-field style="flex: 1; margin-right: 5px">
+                                    <mat-label>Quantity</mat-label>
+                                    <input
+                                        matInput
+                                        formControlName="quantity"
+                                        type="number"
+                                        min="1"
+                                        required
+                                    />
+                                </mat-form-field>
+
+                                <button mat-mini-fab color="warn" (click)="removeOrderItem(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center">
+                            <button mat-fab color="primary" (click)="addOrderItem()">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div style="display: flex; justify-content: center">
-                    <button mat-fab color="primary" (click)="addOrderItem()">
-                        <mat-icon>add</mat-icon>
-                    </button>
-                </div>
-            </div>
-        </ng-container>
-    </ng-container>
+                </ng-container>
+            </ng-container>
+        </form>
+    </div>
 
-    <div mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close>Cancel</button>
+    <div mat-dialog-actions class="dialog-actions" align="end">
+        <button mat-stroked-button color="warn" mat-dialog-close>Cancel</button>
         <button
-            mat-button
+            mat-stroked-button
+            color="primary"
             type="submit"
             [disabled]="dataForm.invalid || !formHasChanged()"
             autofocus
@@ -200,7 +233,8 @@
             Create
         </button>
         <button
-            mat-button
+            mat-stroked-button
+            color="primary"
             type="submit"
             [disabled]="dataForm.invalid || !formHasChanged()"
             autofocus
@@ -209,4 +243,4 @@
             Update
         </button>
     </div>
-</form>
+</div>

@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { MatPaginator } from '@angular/material/paginator'
-import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
 import { ProductEntity } from 'src/core/models/product.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
@@ -8,7 +7,7 @@ import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
 /**
- * @title Data table with sorting, pagination, and filtering.
+ * @title Data table with pagination, and filtering.
  */
 @Component({
     selector: 'app-manage-products',
@@ -20,7 +19,6 @@ export class ManageProductsComponent implements OnInit {
     dataSource: MatTableDataSource<ProductEntity> = new MatTableDataSource<ProductEntity>([])
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
-    @ViewChild(MatSort) sort!: MatSort
 
     constructor(
         private bakeryManagementApiService: BakeryManagementApiService,
@@ -29,6 +27,7 @@ export class ManageProductsComponent implements OnInit {
 
     ngOnInit() {
         this.getProducts()
+        console.log('dataSource', this.dataSource)
     }
 
     getProducts() {
@@ -36,7 +35,6 @@ export class ManageProductsComponent implements OnInit {
             const products: ProductEntity[] = res
             this.dataSource = new MatTableDataSource(products)
             this.dataSource.paginator = this.paginator
-            this.dataSource.sort = this.sort
         })
     }
 
@@ -97,6 +95,7 @@ export class ManageProductsComponent implements OnInit {
         })
     }
 
+    //TODO: this will filter all the fields of the product entity including description and ingredients which may not be desirable.
     applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value
         this.dataSource.filter = filterValue.trim().toLowerCase()

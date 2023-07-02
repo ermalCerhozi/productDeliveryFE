@@ -2,7 +2,23 @@ mat-form-field {
     display: block;
 }
 
+.dialog-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.dialog-content {
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
 form{
     width: 90%;
     margin: auto;
+}
+
+.dialog-actions {
+    flex-shrink: 0;
 }

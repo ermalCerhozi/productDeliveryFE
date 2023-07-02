@@ -1,14 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator } from '@angular/material/paginator'
-import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { UserEntity } from 'src/core/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
-
+/**
+ * @title Data table with pagination, and filtering.
+ */
 @Component({
     selector: 'app-manage-users',
     templateUrl: './manage-users.component.html',
@@ -19,7 +20,6 @@ export class ManageUsersComponent implements OnInit {
     dataSource: MatTableDataSource<UserEntity> = new MatTableDataSource<UserEntity>([])
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
-    @ViewChild(MatSort) sort!: MatSort
 
     constructor(
         private bakeryManagementApiService: BakeryManagementApiService,
@@ -35,7 +35,6 @@ export class ManageUsersComponent implements OnInit {
             const users: UserEntity[] = res
             this.dataSource = new MatTableDataSource(users)
             this.dataSource.paginator = this.paginator
-            this.dataSource.sort = this.sort
         })
     }
 

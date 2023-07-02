@@ -1,53 +1,35 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator } from '@angular/material/paginator'
-import { MatSort } from '@angular/material/sort'
 import { MatTableDataSource } from '@angular/material/table'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { OrderEntity } from 'src/core/models/order.model'
-import { BreakpointObserver } from '@angular/cdk/layout'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
-
+/**
+ * @title Data table with pagination, and filtering.
+ */
 @Component({
     selector: 'app-manage-orders',
     templateUrl: './manage-orders.component.html',
     styleUrls: ['./manage-orders.component.css'],
 })
 export class ManageOrdersComponent implements OnInit {
-    displayedColumns: string[] = ['id', 'seller', 'client', 'product', 'order_date', 'actions']
+    displayedColumns: string[] = ['seller', 'client', 'product', 'order_date', 'actions']
     dataSource: MatTableDataSource<OrderEntity> = new MatTableDataSource<OrderEntity>([])
 
     isLargeScreen: boolean | undefined
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
-    @ViewChild(MatSort) sort!: MatSort
 
     constructor(
         private bakeryManagementApiService: BakeryManagementApiService,
-        public dialog: MatDialog,
-        private breakpointObserver: BreakpointObserver
+        public dialog: MatDialog
     ) {}
 
     ngOnInit() {
         this.getOrders()
-        this.breakpointObserver.observe(['(max-width: 414px)']).subscribe((result) => {
-            if (result.matches) {
-                this.isLargeScreen = false
-                this.displayedColumns = ['seller', 'client', 'product', 'order_date', 'actions']
-            } else {
-                this.isLargeScreen = true
-                this.displayedColumns = [
-                    'id',
-                    'seller',
-                    'client',
-                    'product',
-                    'order_date',
-                    'actions',
-                ]
-            }
-        })
     }
 
     getOrders() {
@@ -55,13 +37,20 @@ export class ManageOrdersComponent implements OnInit {
             const orders: OrderEntity[] = res
             this.dataSource = new MatTableDataSource(orders)
             this.dataSource.paginator = this.paginator
-            this.dataSource.sort = this.sort
         })
     }
 
     openFilterOrdersDialog(): void {
         const dialogRef = this.dialog.open(FilterDialogComponent)
-        dialogRef.afterClosed().subscribe()
+        dialogRef.afterClosed().subscribe({
+            next: () => {
+                this.updateOrderList()
+            },
+        })
+    }
+
+    updateOrderList() {
+        console.log('updateOrderList')
     }
 
     createUpdateOrder(action: string, order?: OrderEntity): void {
@@ -124,11 +113,38 @@ export class ManageOrdersComponent implements OnInit {
     }
 
     applySearch(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value
-        this.dataSource.filter = filterValue.trim().toLowerCase()
+        const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase()
+
+        this.dataSource.filterPredicate = (data: OrderEntity, filter: string) => {
+            const accumulator = (currentTerm: string, key: string) => {
+                return this.nestedFilterCheck(currentTerm, data, key)
+            }
+            const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase()
+            return dataStr.indexOf(filter) != -1
+        }
+
+        this.dataSource.filter = filterValue
 
         if (this.dataSource.paginator) {
             this.dataSource.paginator.firstPage()
         }
+    }
+
+    /**
+     * Checks if the object property value is a nested object with more properties.
+     * If it is, it will call itself recursively until it finds a primitive value,
+     * which will then be combined into the accumulator that will be returned.
+     */
+    nestedFilterCheck(search: string, data: any, key: string) {
+        if (typeof data[key] === 'object') {
+            for (const k in data[key]) {
+                if (data[key][k] !== null) {
+                    search = this.nestedFilterCheck(search, data[key], k)
+                }
+            }
+        } else {
+            search += ` ${data[key]}`
+        }
+        return search
     }
 }
