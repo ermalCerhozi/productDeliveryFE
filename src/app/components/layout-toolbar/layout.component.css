@@ -11,6 +11,10 @@
   background: white;
 }
 
+.example-sidenav{
+  width: 250px;
+}
+
 mat-sidenav-container, mat-sidenav-content, mat-sidenav {
   height: 100%;
 }

@@ -14,8 +14,8 @@
         <mat-form-field>
             <mat-label>Seller</mat-label>
             <mat-select formControlName="seller">
-                <mat-option *ngFor="let user of users" [value]="user">{{
-                    user.first_name + ' ' + user.last_name
+                <mat-option *ngFor="let seller of sellers" [value]="seller">{{
+                    seller.first_name + ' ' + seller.last_name
                 }}</mat-option>
             </mat-select>
         </mat-form-field>

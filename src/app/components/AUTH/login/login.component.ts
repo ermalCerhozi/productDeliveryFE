@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
         this.authService.login(this.loginForm.value).subscribe({
             next: (res) => {
                 this.router.navigate([''])
-                localStorage.setItem('user', JSON.stringify(res)) //TODO: Not sure about this
+                localStorage.setItem('currentUser', JSON.stringify(res)) //TODO: Not sure about this
             },
             error: () => {
                 console.log(Error)

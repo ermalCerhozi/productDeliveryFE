@@ -15,7 +15,7 @@
 
     <div class="dialog-content">
         <form
-            [formGroup]="dataForm"
+            [formGroup]="form"
             (ngSubmit)="onSubmit()"
             style="
                 display: flex;
@@ -32,8 +32,8 @@
                         <input matInput formControlName="product_name" required />
                         <mat-error
                             *ngIf="
-                                dataForm.get('product_name')?.invalid &&
-                                dataForm.get('product_name')?.touched
+                                form.get('product_name')?.invalid &&
+                                form.get('product_name')?.touched
                             "
                         >
                             Product Name is required
@@ -43,9 +43,7 @@
                     <mat-form-field>
                         <mat-label>Price</mat-label>
                         <input matInput type="number" min="0" formControlName="price" required />
-                        <mat-error
-                            *ngIf="dataForm.get('price')?.invalid && dataForm.get('price')?.touched"
-                        >
+                        <mat-error *ngIf="form.get('price')?.invalid && form.get('price')?.touched">
                             Price is required
                         </mat-error>
                     </mat-form-field>
@@ -73,8 +71,7 @@
                         <input matInput formControlName="first_name" required />
                         <mat-error
                             *ngIf="
-                                dataForm.get('first_name')?.invalid &&
-                                dataForm.get('first_name')?.touched
+                                form.get('first_name')?.invalid && form.get('first_name')?.touched
                             "
                         >
                             First Name is required
@@ -84,10 +81,7 @@
                         <mat-label>Last Name</mat-label>
                         <input matInput type="text" formControlName="last_name" required />
                         <mat-error
-                            *ngIf="
-                                dataForm.get('last_name')?.invalid &&
-                                dataForm.get('last_name')?.touched
-                            "
+                            *ngIf="form.get('last_name')?.invalid && form.get('last_name')?.touched"
                         >
                             Last Name Email is required
                         </mat-error>
@@ -97,10 +91,7 @@
                         <mat-label>Nickname</mat-label>
                         <input matInput type="text" formControlName="nickname" required />
                         <mat-error
-                            *ngIf="
-                                dataForm.get('nickname')?.invalid &&
-                                dataForm.get('nickname')?.touched
-                            "
+                            *ngIf="form.get('nickname')?.invalid && form.get('nickname')?.touched"
                         >
                             Nickname is required
                         </mat-error>
@@ -111,18 +102,14 @@
                         <input matInput type="tel" formControlName="phone_number" required />
                         <mat-error
                             *ngIf="
-                                dataForm.get('phone_number')?.invalid &&
-                                dataForm.get('phone_number')?.touched
+                                form.get('phone_number')?.invalid &&
+                                form.get('phone_number')?.touched
                             "
                         >
-                            <ng-container
-                                *ngIf="dataForm.get('phone_number')?.errors?.['required']"
-                            >
+                            <ng-container *ngIf="form.get('phone_number')?.errors?.['required']">
                                 Phone Number is required
                             </ng-container>
-                            <ng-container
-                                *ngIf="dataForm.get('phone_number')?.errors?.['minlength']"
-                            >
+                            <ng-container *ngIf="form.get('phone_number')?.errors?.['minlength']">
                                 Phone Number must be at least 10 digits long
                             </ng-container>
                         </mat-error>
@@ -136,9 +123,7 @@
                             <mat-option value="owner">Owner</mat-option>
                             <mat-option value="seller">Seller</mat-option>
                         </mat-select>
-                        <mat-error
-                            *ngIf="dataForm.get('role')?.invalid && dataForm.get('role')?.touched"
-                        >
+                        <mat-error *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
                             Role is required
                         </mat-error>
                     </mat-form-field>
@@ -147,10 +132,7 @@
                         <mat-label>Password</mat-label>
                         <input matInput type="text" formControlName="password" required />
                         <mat-error
-                            *ngIf="
-                                dataForm.get('password')?.invalid &&
-                                dataForm.get('password')?.touched
-                            "
+                            *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
                         >
                             Password is required
                         </mat-error>
@@ -168,10 +150,7 @@
                                 }}</mat-option>
                             </mat-select>
                             <mat-error
-                                *ngIf="
-                                    dataForm.get('client')?.invalid &&
-                                    dataForm.get('client')?.touched
-                                "
+                                *ngIf="form.get('client')?.invalid && form.get('client')?.touched"
                             >
                                 Client is required
                             </mat-error>
@@ -210,7 +189,7 @@
                             </div>
                         </div>
                         <div style="display: flex; justify-content: center">
-                            <button mat-fab color="primary" (click)="addOrderItem()">
+                            <button mat-fab color="primary" type="button" (click)="addOrderItem()">
                                 <mat-icon>add</mat-icon>
                             </button>
                         </div>
@@ -226,9 +205,9 @@
             mat-stroked-button
             color="primary"
             type="submit"
-            [disabled]="dataForm.invalid || !formHasChanged()"
             autofocus
             *ngIf="data.action === 'create'"
+            (click)="onSubmit()"
         >
             Create
         </button>
@@ -236,9 +215,10 @@
             mat-stroked-button
             color="primary"
             type="submit"
-            [disabled]="dataForm.invalid || !formHasChanged()"
+            [disabled]="form.invalid || !formHasChanged()"
             autofocus
             *ngIf="data.action !== 'create'"
+            (click)="onSubmit()"
         >
             Update
         </button>

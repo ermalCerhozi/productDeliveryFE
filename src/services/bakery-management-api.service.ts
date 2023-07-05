@@ -75,4 +75,9 @@ export class BakeryManagementApiService {
     getOrder(id: number): Observable<any> {
         return this.http.get<any>(`${this.apiUrl}orders/${id}`)
     }
+
+    //CRUD for order items
+    deleteOrderItem(id: number): Observable<any> {
+        return this.http.delete<any>(`${this.apiUrl}order_items/${id}`)
+    }
 }

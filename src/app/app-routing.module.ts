@@ -35,7 +35,7 @@ const routes: Routes = [
                 path: 'products-list',
                 component: ProductsComponent,
                 canActivate: [PermissionsGuard],
-                data: { expectedRole: 'Admin' },
+                data: { expectedRoles: ['Admin', 'Manager', 'Seller', 'Client'] },
             },
             {
                 path: 'manageOrders',

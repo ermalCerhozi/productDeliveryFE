@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { OrderItemEntity } from 'src/core/models/order.model'
 import { ProductEntity } from 'src/core/models/product.model'
@@ -13,8 +12,9 @@ import { BakeryManagementService } from 'src/services/bakery-management.service'
     styleUrls: ['./create-update-dialog.component.css'],
 })
 export class CreateUpdateDialogComponent implements OnInit {
-    dataForm: FormGroup = new FormGroup({})
+    form: FormGroup = new FormGroup({})
 
+    seller: UserEntity = JSON.parse(localStorage.getItem('currentUser') || '')
     products: ProductEntity[] = []
     clients: UserEntity[] = []
     orderItemsFormArray: any | undefined
@@ -23,7 +23,6 @@ export class CreateUpdateDialogComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<CreateUpdateDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
-        private bakeryManagementApiService: BakeryManagementApiService,
         public bakeryManagementService: BakeryManagementService,
         private fb: FormBuilder
     ) {}
@@ -32,7 +31,7 @@ export class CreateUpdateDialogComponent implements OnInit {
 
     ngOnInit(): void {
         this.initializeForm()
-        this.initialFormValues = this.dataForm.value
+        this.initialFormValues = this.form.value
     }
 
     initializeForm(): void {
@@ -54,7 +53,7 @@ export class CreateUpdateDialogComponent implements OnInit {
                           password: '',
                       }
 
-            this.dataForm = this.fb.group({
+            this.form = this.fb.group({
                 first_name: [formData.first_name, Validators.required],
                 last_name: [formData.last_name, Validators.required],
                 nickname: [formData.nickname, Validators.required],
@@ -78,7 +77,7 @@ export class CreateUpdateDialogComponent implements OnInit {
                           ingredients: '',
                       }
 
-            this.dataForm = this.fb.group({
+            this.form = this.fb.group({
                 product_name: [formData.product_name, Validators.required],
                 price: [formData.price, Validators.required],
                 description: [formData.description],
@@ -115,38 +114,43 @@ export class CreateUpdateDialogComponent implements OnInit {
                           })),
                       }
                     : {
-                          order_date: '',
                           client: '',
-                          seller: '',
+                          seller: this.seller.id,
                           order_items: [],
                       }
 
-            this.dataForm = this.fb.group({
-                order_date: [formData.order_date, Validators.required],
+            this.form = this.fb.group({
                 client: [formData.client, Validators.required],
                 seller: [formData.seller, Validators.required],
                 order_items: this.fb.array([]),
             })
-            console.log(JSON.stringify(formData, null, 4))
 
-            this.orderItemsFormArray = this.dataForm.get('order_items') as FormArray
+            this.orderItemsFormArray = this.form.get('order_items') as FormArray
             formData.order_items.forEach((orderItem: OrderItemEntity) => {
-                this.orderItemsFormArray.push(
-                    this.fb.group({
-                        id: [orderItem.id],
-                        quantity: [orderItem.quantity, Validators.required],
-                        product: [orderItem.product, Validators.required],
-                    })
-                )
+                if (orderItem.id === undefined) {
+                    this.orderItemsFormArray.push(
+                        this.fb.group({
+                            quantity: [orderItem.quantity, Validators.required],
+                            product: [orderItem.product, Validators.required],
+                        })
+                    )
+                } else {
+                    this.orderItemsFormArray.push(
+                        this.fb.group({
+                            id: [orderItem.id],
+                            quantity: [orderItem.quantity, Validators.required],
+                            product: [orderItem.product, Validators.required],
+                        })
+                    )
+                }
             })
         }
     }
 
     addOrderItem(): void {
-        const orderItemsFormArray = this.dataForm.get('order_items') as FormArray
+        const orderItemsFormArray = this.form.get('order_items') as FormArray
         orderItemsFormArray.push(
             this.fb.group({
-                id: [''],
                 quantity: ['', Validators.required],
                 product: ['', Validators.required],
             })
@@ -154,17 +158,31 @@ export class CreateUpdateDialogComponent implements OnInit {
     }
 
     removeOrderItem(index: number): void {
-        const orderItemsFormArray = this.dataForm.get('order_items') as FormArray
-        orderItemsFormArray.removeAt(index)
+        const orderItemsFormArray = this.form.get('order_items') as FormArray
+        const orderItemId = orderItemsFormArray.at(index).value.id
+
+        if (orderItemId) {
+            this.bakeryManagementService.deleteOrderItem(orderItemId).subscribe({
+                next: () => {
+                    orderItemsFormArray.removeAt(index)
+                },
+                error: (error: any) => {
+                    console.log('There was an error deleting the order item:', error)
+                },
+            })
+        } else {
+            orderItemsFormArray.removeAt(index)
+        }
     }
 
     formHasChanged(): boolean {
-        return JSON.stringify(this.initialFormValues) !== JSON.stringify(this.dataForm.value)
+        return JSON.stringify(this.initialFormValues) !== JSON.stringify(this.form.value)
     }
 
     onSubmit(): void {
-        if (this.dataForm.valid) {
-            this.dialogRef.close(this.dataForm.value)
-        }
+        // if (this.dataForm.valid) {
+        this.dialogRef.close(this.form.value)
+        console.log('onSubmit', JSON.stringify(this.form.value, null, 4))
+        // }
     }
 }

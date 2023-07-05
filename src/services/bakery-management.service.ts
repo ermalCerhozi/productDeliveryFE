@@ -17,4 +17,8 @@ export class BakeryManagementService {
     getAllUsers(): Observable<UserEntity[]> {
         return this.bakeryManagementApiService.getUsers()
     }
+
+    deleteOrderItem(id: number): Observable<any> {
+        return this.bakeryManagementApiService.deleteOrderItem(id)
+    }
 }

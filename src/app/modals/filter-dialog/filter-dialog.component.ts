@@ -13,11 +13,11 @@ import { BakeryManagementService } from 'src/services/bakery-management.service'
 export class FilterDialogComponent implements OnInit {
     products: ProductEntity[] = []
     clients: UserEntity[] = []
-    users: UserEntity[] = []
+    sellers: UserEntity[] = []
 
     filterForm = new FormGroup({
         client: new FormControl(''),
-        users: new FormControl(''),
+        seller: new FormControl(''),
         startDate: new FormControl(''),
         endDate: new FormControl(''),
     })
@@ -32,7 +32,7 @@ export class FilterDialogComponent implements OnInit {
         this.bakeryManagementService.getAllUsers().subscribe({
             next: (res) => {
                 this.clients = res.filter((user) => user.role === 'Client')
-                this.users = res
+                this.sellers = res.filter((user) => user.role === 'Seller')
             },
             error: (err) => {
                 console.log('There was an error getting clients:', err)
