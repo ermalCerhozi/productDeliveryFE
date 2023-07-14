@@ -8,6 +8,8 @@ export interface LoginModel {
 
 export interface UserEntity {
     id: number
+    created_at: string
+    updated_at: string
     first_name: string
     last_name: string
     nickname: string

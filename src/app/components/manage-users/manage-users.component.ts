@@ -7,6 +7,7 @@ import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog
 import { UserEntity } from 'src/core/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
+import { BakeryManagementService } from 'src/services/bakery-management.service'
 /**
  * @title Data table with pagination, and filtering.
  */
@@ -22,6 +23,7 @@ export class ManageUsersComponent implements OnInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator
 
     constructor(
+        private bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
         public dialog: MatDialog
     ) {}
@@ -40,7 +42,16 @@ export class ManageUsersComponent implements OnInit {
 
     openFilterUsersDialog(): void {
         const dialogRef = this.dialog.open(FilterDialogComponent)
-        dialogRef.afterClosed().subscribe()
+        dialogRef.afterClosed().subscribe({
+            next: (result) => {
+                if (result) {
+                    this.bakeryManagementService.getFilteredResults(result)
+                }
+            },
+            error: (error) => {
+                console.log('Error: ', error)
+            },
+        })
     }
 
     createUpdateUser(action: string, user?: UserEntity): void {

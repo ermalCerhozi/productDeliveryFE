@@ -9,7 +9,8 @@ export interface OrderItemEntity {
 
 export interface OrderEntity {
     id: number
-    order_date: string
+    created_at: string
+    updated_at: string
     client: UserEntity
     seller: UserEntity
     order_items: OrderItemEntity[]

@@ -16,6 +16,7 @@ export class CreateUpdateDialogComponent implements OnInit {
 
     seller: UserEntity = JSON.parse(localStorage.getItem('currentUser') || '')
     products: ProductEntity[] = []
+    usedProducts: number[] = []
     clients: UserEntity[] = []
     orderItemsFormArray: any | undefined
     roles = ['manager', 'seller', 'client']
@@ -101,23 +102,28 @@ export class CreateUpdateDialogComponent implements OnInit {
                     console.log('There was an error getting products:', error)
                 },
             })
-            formData =
-                this.data.action === 'update' && this.data.order
-                    ? {
-                          order_date: this.data.order.order_date,
-                          client: this.data.order.client.id,
-                          seller: this.data.order.seller.id,
-                          order_items: this.data.order.order_items.map((item: any) => ({
-                              id: item.id,
-                              quantity: item.quantity,
-                              product: item.product.id,
-                          })),
-                      }
-                    : {
-                          client: '',
-                          seller: this.seller.id,
-                          order_items: [],
-                      }
+
+            let formData
+
+            if (this.data.action === 'update' && this.data.order) {
+                this.usedProducts = this.data.order.order_items.map((item: any) => item.product.id)
+                formData = {
+                    client: this.data.order.client.id,
+                    seller: this.data.order.seller.id,
+                    order_items: this.data.order.order_items.map((item: any) => ({
+                        id: item.id,
+                        quantity: item.quantity,
+                        product: item.product.id,
+                    })),
+                }
+            } else {
+                this.usedProducts = [] // Ensure that usedProducts is empty if not in update mode
+                formData = {
+                    client: '',
+                    seller: this.seller.id,
+                    order_items: [],
+                }
+            }
 
             this.form = this.fb.group({
                 client: [formData.client, Validators.required],
@@ -155,15 +161,24 @@ export class CreateUpdateDialogComponent implements OnInit {
                 product: ['', Validators.required],
             })
         )
+        // Subscribe to product field changes
+        orderItemsFormArray.controls[orderItemsFormArray.length - 1]
+            .get('product')!
+            .valueChanges.subscribe((productId) => {
+                if (!this.usedProducts.includes(productId)) {
+                    this.usedProducts.push(productId)
+                }
+            })
     }
 
     removeOrderItem(index: number): void {
         const orderItemsFormArray = this.form.get('order_items') as FormArray
         const orderItemId = orderItemsFormArray.at(index).value.id
-
         if (orderItemId) {
             this.bakeryManagementService.deleteOrderItem(orderItemId).subscribe({
                 next: () => {
+                    const removedProductId = orderItemsFormArray.at(index).value.product
+                    this.usedProducts = this.usedProducts.filter((id) => id !== removedProductId)
                     orderItemsFormArray.removeAt(index)
                 },
                 error: (error: any) => {
@@ -171,8 +186,14 @@ export class CreateUpdateDialogComponent implements OnInit {
                 },
             })
         } else {
+            const removedProductId = orderItemsFormArray.at(index).value.product
+            this.usedProducts = this.usedProducts.filter((id) => id !== removedProductId)
             orderItemsFormArray.removeAt(index)
         }
+    }
+
+    getUnusedProducts() {
+        return this.products.filter((product) => !this.usedProducts.includes(product.id))
     }
 
     formHasChanged(): boolean {
@@ -180,9 +201,9 @@ export class CreateUpdateDialogComponent implements OnInit {
     }
 
     onSubmit(): void {
-        // if (this.dataForm.valid) {
-        this.dialogRef.close(this.form.value)
-        console.log('onSubmit', JSON.stringify(this.form.value, null, 4))
-        // }
+        if (this.form.valid) {
+            this.dialogRef.close(this.form.value)
+            console.log('onSubmit', JSON.stringify(this.form.value, null, 4))
+        }
     }
 }

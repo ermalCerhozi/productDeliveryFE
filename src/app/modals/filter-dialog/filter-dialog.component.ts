@@ -49,8 +49,23 @@ export class FilterDialogComponent implements OnInit {
     }
 
     applyFilter() {
-        // Apply your filtering logic here
-        this.dialogRef.close(this.filterForm.value)
+        const filterValues = {
+            client: this.filterForm.value.client ? this.filterForm.value.client : undefined,
+            seller: this.filterForm.value.seller ? this.filterForm.value.seller : undefined,
+            startDate: this.filterForm.value.startDate
+                ? this.adjustDateForTimezone(new Date(this.filterForm.value.startDate))
+                : undefined,
+            endDate: this.filterForm.value.endDate
+                ? this.adjustDateForTimezone(new Date(this.filterForm.value.endDate))
+                : undefined,
+        }
+
+        this.dialogRef.close(filterValues)
+    }
+
+    adjustDateForTimezone(date: Date): string {
+        // Add 24 hours to the date and return as an ISO string
+        return new Date(date.getTime() + 24 * 60 * 60 * 1000).toISOString()
     }
 
     dateFilter = (d: Date | null): boolean => {

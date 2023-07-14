@@ -14,10 +14,20 @@
     margin: 0 10px 0 10px;
 }
 
-.flex-container {
+.product-column {
     display: flex;
+    flex-grow: 1;
 }
 
-.product {
-    margin-left: 10px;
+.product-row {
+    display: flex;
+    flex-grow: 1;
+}
+
+table th, table td {
+    text-align: left;
+}
+
+.table {
+    width: 100%;
 }

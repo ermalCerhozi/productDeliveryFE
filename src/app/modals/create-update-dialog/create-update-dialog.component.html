@@ -164,11 +164,14 @@
                                 <mat-form-field style="flex: 2; margin-right: 5px">
                                     <mat-label>Product</mat-label>
                                     <mat-select formControlName="product" required>
-                                        <mat-option
-                                            *ngFor="let product of products"
-                                            [value]="product.id"
-                                            >{{ product.product_name }}</mat-option
-                                        >
+                                        <ng-container *ngFor="let product of products">
+                                            <mat-option
+                                                [disabled]="usedProducts.includes(product.id)"
+                                                [value]="product.id"
+                                            >
+                                                {{ product.product_name }}
+                                            </mat-option>
+                                        </ng-container>
                                     </mat-select>
                                 </mat-form-field>
 
@@ -205,6 +208,7 @@
             mat-stroked-button
             color="primary"
             type="submit"
+            [disabled]="form.invalid || !formHasChanged()"
             autofocus
             *ngIf="data.action === 'create'"
             (click)="onSubmit()"

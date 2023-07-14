@@ -4,6 +4,7 @@ import { Observable } from 'rxjs'
 import { ProductEntity } from 'src/core/models/product.model'
 import { UserEntity } from 'src/core/models/user.model'
 import { environment } from 'src/environments/environment'
+import { OrderEntity } from 'src/core/models/order.model'
 
 @Injectable({
     providedIn: 'root',
@@ -77,7 +78,11 @@ export class BakeryManagementApiService {
     }
 
     //CRUD for order items
+    getFilteredOrders(params: any) {
+        return this.http.get<OrderEntity[]>(`${this.apiUrl}orders/filter`, { params })
+    }
+
     deleteOrderItem(id: number): Observable<any> {
-        return this.http.delete<any>(`${this.apiUrl}order_items/${id}`)
+        return this.http.delete<any>(`${this.apiUrl}order-items/${id}`)
     }
 }
