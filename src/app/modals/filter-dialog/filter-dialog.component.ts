@@ -32,10 +32,13 @@ export class FilterDialogComponent implements OnInit {
         this.bakeryManagementService.getAllUsers().subscribe({
             next: (res) => {
                 this.clients = res.filter((user) => user.role === 'Client')
-                this.sellers = res.filter((user) => user.role === 'Seller')
+                this.sellers = res.filter(
+                    (user) =>
+                        user.role === 'Seller' || user.role === 'Admin' || user.role === 'Manager'
+                )
             },
             error: (err) => {
-                console.log('There was an error getting clients:', err)
+                console.log('There was an error getting users:', err)
             },
         })
         this.bakeryManagementService.getAllProducts().subscribe({

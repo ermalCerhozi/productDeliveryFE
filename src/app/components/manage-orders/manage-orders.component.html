@@ -1,11 +1,7 @@
 <div class="controls-container">
-    <mat-form-field>
-        <mat-icon style="color: 'gray'" matPrefix>search</mat-icon>
-        <input matInput (keyup)="applySearch($event)" placeholder="Search Order" #input />
-        <button mat-icon-button matSuffix color="primary" (click)="createUpdateOrder('create')">
-            <mat-icon>add</mat-icon>
-        </button>
-    </mat-form-field>
+    <button mat-icon-button matSuffix color="primary" (click)="createUpdateOrder('create')">
+        <mat-icon>add</mat-icon>
+    </button>
     <button
         class="filter-button"
         mat-raised-button
@@ -13,6 +9,18 @@
         (click)="openFilterOrdersDialog()"
     >
         Filter
+    </button>
+    <button class="filter-button" mat-stroked-button color="primary" (click)="clearFilters()">
+        Clear Filters
+    </button>
+    <button
+        class="filter-button"
+        mat-raised-button
+        [disabled]="this.isAllUnselected()"
+        color="primary"
+        (click)="downloadSelectedOrders()"
+    >
+        Download
     </button>
 </div>
 
@@ -22,7 +30,7 @@
             <th>
                 <mat-checkbox
                     color="primary"
-                    (change)="$event ? masterToggle() : null"
+                    (change)="$event ? toggleAll() : null"
                     [checked]="selection.hasValue() && isAllSelected()"
                     [indeterminate]="selection.hasValue() && !isAllSelected()"
                 ></mat-checkbox>

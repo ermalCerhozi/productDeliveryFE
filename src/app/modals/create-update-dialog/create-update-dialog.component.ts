@@ -161,16 +161,30 @@ export class CreateUpdateDialogComponent implements OnInit {
                 product: ['', Validators.required],
             })
         )
+
         // Subscribe to product field changes
+        let previousProductId: any // Keep track of the previous product ID
+
         orderItemsFormArray.controls[orderItemsFormArray.length - 1]
             .get('product')!
             .valueChanges.subscribe((productId) => {
-                if (!this.usedProducts.includes(productId)) {
-                    this.usedProducts.push(productId)
-                }
+                this.handleProductChange(productId, previousProductId)
+                // Then update previousProductId with the new value
+                previousProductId = productId
             })
     }
 
+    handleProductChange(newProductId: any, oldProductId?: any): void {
+        // If a previous product was selected, remove it from the usedProducts array
+        if (oldProductId) {
+            this.usedProducts = this.usedProducts.filter((id) => id !== oldProductId)
+        }
+
+        // Add the new product to the usedProducts array if it's not already included
+        if (!this.usedProducts.includes(newProductId)) {
+            this.usedProducts.push(newProductId)
+        }
+    }
     removeOrderItem(index: number): void {
         const orderItemsFormArray = this.form.get('order_items') as FormArray
         const orderItemId = orderItemsFormArray.at(index).value.id

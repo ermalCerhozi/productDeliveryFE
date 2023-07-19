@@ -41,7 +41,11 @@ export class ManageOrdersComponent implements OnInit {
         return numSelected === numRows
     }
 
-    masterToggle() {
+    isAllUnselected() {
+        return this.selection.selected.length === 0
+    }
+
+    toggleAll() {
         this.isAllSelected()
             ? this.selection.clear()
             : this.bakeryManagementService.ordersList.forEach((row) => this.selection.select(row))
@@ -61,8 +65,12 @@ export class ManageOrdersComponent implements OnInit {
         })
     }
 
-    updateOrderList() {
-        console.log('updateOrderList')
+    clearFilters() {
+        this.getOrders()
+    }
+
+    downloadSelectedOrders() {
+        this.bakeryManagementService.downloadSelected(this.selection)
     }
 
     createUpdateOrder(action: string, order?: OrderEntity): void {
@@ -122,9 +130,5 @@ export class ManageOrdersComponent implements OnInit {
                 }
             },
         })
-    }
-
-    applySearch(event: Event) {
-        console.log('applySearch', event)
     }
 }

@@ -21,6 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
+import { FormatTimePipe } from 'src/core/common/pipes/format-time.pipe'
 
 @NgModule({
     declarations: [
@@ -39,6 +40,7 @@ import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
         LayoutComponent,
         FilterDialogComponent,
         FormatDatePipe,
+        FormatTimePipe,
     ],
     imports: [
         BrowserModule,
@@ -48,7 +50,7 @@ import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
         HttpClientModule,
         ReactiveFormsModule,
     ],
-    providers: [FormatDatePipe],
+    providers: [FormatDatePipe, FormatTimePipe],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

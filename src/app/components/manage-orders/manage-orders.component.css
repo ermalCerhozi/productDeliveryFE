@@ -3,8 +3,9 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    margin-top: 10px;
 }
-  
+
 .mat-mdc-form-field {
     margin: 15px 0 0 10px;
     flex-grow: 1;
