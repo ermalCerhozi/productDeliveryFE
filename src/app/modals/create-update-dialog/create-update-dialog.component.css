@@ -21,4 +21,18 @@ form{
 
 .dialog-actions {
     flex-shrink: 0;
+    background-color: #eeeeee;
+    color: #000000;
+}
+
+.total-price {
+    margin-left: 10px;
+    margin-top: 14px;
+    margin-right: auto;
+    font-weight: bold;
+    transition: transform 0.3s ease-in-out;
+}
+
+.total-price.animate {
+    transform: scale(1.2);
 }

@@ -15,6 +15,7 @@ import { FormatTimePipe } from 'src/core/common/pipes/format-time.pipe'
 })
 export class BakeryManagementService {
     public ordersList: OrderEntity[] = []
+    activeFilters: FiltersEntity | null = null
 
     constructor(
         private bakeryManagementApiService: BakeryManagementApiService,
@@ -23,6 +24,8 @@ export class BakeryManagementService {
     ) {}
 
     getFilteredResults(filters: FiltersEntity): void {
+        this.activeFilters = filters
+
         const params: any = {}
 
         if (filters.startDate) {
@@ -42,6 +45,10 @@ export class BakeryManagementService {
             this.ordersList = res
             console.log('res', res)
         })
+    }
+
+    hasActiveFilters(): boolean {
+        return this.activeFilters !== null
     }
 
     updateOrdersList(): Observable<OrderEntity[]> {
@@ -71,9 +78,14 @@ export class BakeryManagementService {
         // Build an array with the information of the selected rows
         let total_price = 0 // Initialize total_price
         const data = selection.selected.map((row: any, index: number) => {
-            const order_items = row.order_items
-                .map((item: any) => `${item.quantity} ${item.product?.product_name}`)
-                .join('\n')
+            const itemDetails = row.order_items.map((item: any) => ({
+                order_item: `${item.quantity} ${item.product?.product_name}`,
+                order_return: `${item.returned_quantity}`,
+            }))
+
+            const order_items = itemDetails.map((item: any) => item.order_item).join('\n')
+            const order_returns = itemDetails.map((item: any) => item.order_return).join('\n')
+
             total_price += Number(row.total_price) // Calculate the total_price
             return [
                 index + 1, // Auto-incremented column
@@ -81,6 +93,7 @@ export class BakeryManagementService {
                 row.seller.first_name + ' ' + row.seller.last_name,
                 row.client.first_name + ' ' + row.client.last_name,
                 order_items,
+                order_returns,
                 this.formatDatePipe.transform(row.created_at),
                 this.formatTimePipe.transform(row.created_at),
                 Math.round(row.total_price).toLocaleString() + ' ' + 'Lekë',
@@ -88,10 +101,21 @@ export class BakeryManagementService {
         })
 
         // Insert column titles
-        data.unshift(['#', 'ORDER ID', 'Seller', 'Client', 'Order', 'Date', 'Time', 'Price'])
+        data.unshift([
+            '#',
+            'ORDER ID',
+            'Seller',
+            'Client',
+            'Order',
+            'Returns',
+            'Date',
+            'Time',
+            'Price',
+        ])
 
         // Insert a row with the total price
         data.push([
+            '',
             '',
             '',
             '',

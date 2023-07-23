@@ -15,18 +15,20 @@ export class FilterDialogComponent implements OnInit {
     clients: UserEntity[] = []
     sellers: UserEntity[] = []
 
-    filterForm = new FormGroup({
-        client: new FormControl(''),
-        seller: new FormControl(''),
-        startDate: new FormControl(''),
-        endDate: new FormControl(''),
-    })
+    filterForm: FormGroup = new FormGroup({})
 
     constructor(
         public dialogRef: MatDialogRef<FilterDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any,
         private bakeryManagementService: BakeryManagementService
-    ) {}
+    ) {
+        this.filterForm = new FormGroup({
+            client: new FormControl(data?.client || ''),
+            seller: new FormControl(data?.seller || ''),
+            startDate: new FormControl(data?.startDate || ''),
+            endDate: new FormControl(data?.endDate || ''),
+        })
+    }
 
     ngOnInit(): void {
         this.bakeryManagementService.getAllUsers().subscribe({
@@ -74,5 +76,9 @@ export class FilterDialogComponent implements OnInit {
     dateFilter = (d: Date | null): boolean => {
         const current = d || new Date()
         return current < new Date() // Allow only dates before today
+    }
+
+    compareUsers(user1: UserEntity, user2: UserEntity) {
+        return user1 && user2 ? user1.id === user2.id : user1 === user2
     }
 }

@@ -158,7 +158,7 @@
 
                         <div
                             formArrayName="order_items"
-                            *ngFor="let item of orderItemsFormArray.controls; let i = index"
+                            *ngFor="let item of orderItemsFormArray?.controls; let i = index"
                         >
                             <div [formGroupName]="i" style="display: flex; align-items: center">
                                 <mat-form-field style="flex: 2; margin-right: 5px">
@@ -176,13 +176,23 @@
                                 </mat-form-field>
 
                                 <mat-form-field style="flex: 1; margin-right: 5px">
-                                    <mat-label>Quantity</mat-label>
+                                    <mat-label style="font-size: 12px">Quantity</mat-label>
                                     <input
                                         matInput
                                         formControlName="quantity"
                                         type="number"
                                         min="1"
                                         required
+                                    />
+                                </mat-form-field>
+
+                                <mat-form-field style="flex: 1; margin-right: 5px">
+                                    <mat-label style="font-size: 12px">Returns</mat-label>
+                                    <input
+                                        matInput
+                                        formControlName="returned_quantity"
+                                        type="number"
+                                        min="0"
                                     />
                                 </mat-form-field>
 
@@ -203,6 +213,7 @@
     </div>
 
     <div mat-dialog-actions class="dialog-actions" align="end">
+        <h2 class="total-price">{{ totalOrderPrice.toLocaleString() }} Lekë</h2>
         <button mat-stroked-button color="warn" mat-dialog-close>Cancel</button>
         <button
             mat-stroked-button

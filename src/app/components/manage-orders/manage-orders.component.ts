@@ -52,7 +52,10 @@ export class ManageOrdersComponent implements OnInit {
     }
 
     openFilterOrdersDialog(): void {
-        const dialogRef = this.dialog.open(FilterDialogComponent)
+        const dialogRef = this.dialog.open(FilterDialogComponent, {
+            data: this.bakeryManagementService.activeFilters,
+        })
+
         dialogRef.afterClosed().subscribe({
             next: (result) => {
                 if (result) {
@@ -66,6 +69,7 @@ export class ManageOrdersComponent implements OnInit {
     }
 
     clearFilters() {
+        this.bakeryManagementService.activeFilters = null
         this.getOrders()
     }
 

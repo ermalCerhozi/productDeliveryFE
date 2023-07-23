@@ -4,6 +4,7 @@ import { UserEntity } from 'src/core/models/user.model'
 export interface OrderItemEntity {
     id: number
     quantity: number
+    returned_quantity: number
     product: ProductEntity
 }
 

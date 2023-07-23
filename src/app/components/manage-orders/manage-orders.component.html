@@ -10,7 +10,13 @@
     >
         Filter
     </button>
-    <button class="filter-button" mat-stroked-button color="primary" (click)="clearFilters()">
+    <button
+        class="filter-button"
+        mat-stroked-button
+        color="primary"
+        [disabled]="!bakeryManagementService.hasActiveFilters()"
+        (click)="clearFilters()"
+    >
         Clear Filters
     </button>
     <button
@@ -43,7 +49,10 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let row of bakeryManagementService.ordersList">
+        <tr
+            *ngFor="let row of bakeryManagementService.ordersList"
+            (dblclick)="createUpdateOrder('update', row)"
+        >
             <td>
                 <mat-checkbox
                     color="primary"
@@ -57,7 +66,11 @@
             <td class="product-column">
                 <div *ngFor="let item of row.order_items">
                     <div class="product-row">
-                        ({{ item.quantity }}) {{ item.product?.product_name }}
+                        {{ item.quantity }}
+                        <ng-container *ngIf="item.returned_quantity !== 0"
+                            >- {{ item.returned_quantity }}</ng-container
+                        >
+                        {{ item.product?.product_name }}
                     </div>
                 </div>
             </td>

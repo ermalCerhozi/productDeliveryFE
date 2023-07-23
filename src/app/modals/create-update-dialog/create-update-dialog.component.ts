@@ -1,18 +1,21 @@
-import { Component, Inject, OnInit } from '@angular/core'
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { OrderItemEntity } from 'src/core/models/order.model'
 import { ProductEntity } from 'src/core/models/product.model'
 import { UserEntity } from 'src/core/models/user.model'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
+import { Subject } from 'rxjs'
+import { takeUntil } from 'rxjs/operators'
 
 @Component({
     selector: 'app-create-update-dialog',
     templateUrl: './create-update-dialog.component.html',
     styleUrls: ['./create-update-dialog.component.css'],
 })
-export class CreateUpdateDialogComponent implements OnInit {
+export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     form: FormGroup = new FormGroup({})
+    private unsubscribe$ = new Subject<void>()
 
     seller: UserEntity = JSON.parse(localStorage.getItem('currentUser') || '')
     products: ProductEntity[] = []
@@ -20,6 +23,7 @@ export class CreateUpdateDialogComponent implements OnInit {
     clients: UserEntity[] = []
     orderItemsFormArray: any | undefined
     roles = ['manager', 'seller', 'client']
+    totalOrderPrice = 0
 
     constructor(
         public dialogRef: MatDialogRef<CreateUpdateDialogComponent>,
@@ -97,6 +101,7 @@ export class CreateUpdateDialogComponent implements OnInit {
             this.bakeryManagementService.getAllProducts().subscribe({
                 next: (res) => {
                     this.products = res
+                    this.calculateTotalOrderPrice(this.form.get('order_items')!.value)
                 },
                 error: (error) => {
                     console.log('There was an error getting products:', error)
@@ -113,6 +118,7 @@ export class CreateUpdateDialogComponent implements OnInit {
                     order_items: this.data.order.order_items.map((item: any) => ({
                         id: item.id,
                         quantity: item.quantity,
+                        returned_quantity: item.returned_quantity,
                         product: item.product.id,
                     })),
                 }
@@ -137,6 +143,7 @@ export class CreateUpdateDialogComponent implements OnInit {
                     this.orderItemsFormArray.push(
                         this.fb.group({
                             quantity: [orderItem.quantity, Validators.required],
+                            returned_quantity: [orderItem.returned_quantity, Validators.required],
                             product: [orderItem.product, Validators.required],
                         })
                     )
@@ -145,11 +152,29 @@ export class CreateUpdateDialogComponent implements OnInit {
                         this.fb.group({
                             id: [orderItem.id],
                             quantity: [orderItem.quantity, Validators.required],
+                            returned_quantity: [orderItem.returned_quantity, Validators.required],
                             product: [orderItem.product, Validators.required],
                         })
                     )
                 }
             })
+
+            this.orderItemsFormArray.valueChanges
+                .pipe(takeUntil(this.unsubscribe$))
+                .subscribe((orderItems: any) => {
+                    this.calculateTotalOrderPrice(orderItems)
+                })
+        }
+    }
+
+    calculateTotalOrderPrice(orderItems: any) {
+        this.totalOrderPrice = 0
+        for (const item of orderItems) {
+            const product = this.products.find((p) => p.id === item.product)
+            if (product) {
+                const productPrice = parseFloat(product.price)
+                this.totalOrderPrice += (item.quantity - item.returned_quantity) * productPrice
+            }
         }
     }
 
@@ -158,23 +183,24 @@ export class CreateUpdateDialogComponent implements OnInit {
         orderItemsFormArray.push(
             this.fb.group({
                 quantity: ['', Validators.required],
+                returned_quantity: [0, Validators.required],
                 product: ['', Validators.required],
             })
         )
 
         // Subscribe to product field changes
-        let previousProductId: any // Keep track of the previous product ID
+        let previousProductId: number // Keep track of the previous product ID
 
         orderItemsFormArray.controls[orderItemsFormArray.length - 1]
             .get('product')!
             .valueChanges.subscribe((productId) => {
                 this.handleProductChange(productId, previousProductId)
-                // Then update previousProductId with the new value
+                // Update previousProductId with the new value
                 previousProductId = productId
             })
     }
 
-    handleProductChange(newProductId: any, oldProductId?: any): void {
+    handleProductChange(newProductId: number, oldProductId?: number): void {
         // If a previous product was selected, remove it from the usedProducts array
         if (oldProductId) {
             this.usedProducts = this.usedProducts.filter((id) => id !== oldProductId)
@@ -185,6 +211,7 @@ export class CreateUpdateDialogComponent implements OnInit {
             this.usedProducts.push(newProductId)
         }
     }
+
     removeOrderItem(index: number): void {
         const orderItemsFormArray = this.form.get('order_items') as FormArray
         const orderItemId = orderItemsFormArray.at(index).value.id
@@ -219,5 +246,10 @@ export class CreateUpdateDialogComponent implements OnInit {
             this.dialogRef.close(this.form.value)
             console.log('onSubmit', JSON.stringify(this.form.value, null, 4))
         }
+    }
+
+    ngOnDestroy(): void {
+        this.unsubscribe$.next()
+        this.unsubscribe$.complete()
     }
 }
