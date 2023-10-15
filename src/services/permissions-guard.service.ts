@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router'
-import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { UserEntity } from 'src/core/models/user.model'
 import { AuthService } from 'src/services/auth.service'
 // import { UserRole } from 'src/core/common/enums'
 
@@ -9,23 +9,19 @@ import { AuthService } from 'src/services/auth.service'
     providedIn: 'root',
 })
 export class PermissionsGuard implements CanActivate {
+    currentUser!: UserEntity | null
+
     constructor(private authService: AuthService, private router: Router) {}
 
     canActivate(route: ActivatedRouteSnapshot): Observable<boolean | UrlTree> {
+        this.currentUser = this.authService.getAuthenticatedUser;
         const expectedRoles = route.data['expectedRoles'] as Array<string>
-
-        return this.authService.getLoggedInUser().pipe(
-            map((user) => {
-                if (user) {
-                    if (expectedRoles.includes(user.role)) {
-                        return true
-                    } else {
-                        return this.router.parseUrl('/not-authorized')
-                    }
-                } else {
-                    return false
-                }
-            })
-        )
+        
+        if (this.currentUser && expectedRoles.includes(this.currentUser.role)) {
+            return of(true)
+        } else {
+            // return of(false)
+            return of(this.router.parseUrl('/not-authorized'))
+        }
     }
 }

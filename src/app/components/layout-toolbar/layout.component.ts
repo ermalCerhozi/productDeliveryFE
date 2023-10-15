@@ -11,10 +11,15 @@ export class LayoutComponent {
     constructor(private authService: AuthService, private router: Router) {}
 
     logOut(): void {
-        this.authService.logout().subscribe(() => {
-            localStorage.removeItem('user')
-            localStorage.removeItem('token')
-            this.router.navigate([''])
+        this.authService.logout().subscribe({
+            next: () => {
+                this.authService.clearAuthenticatedUser()
+                this.router.navigate(['/login'])
+            },
+            error: (err) => {
+                console.error("Logout failed:", err)
+                // toast notification or alert
+            }
         })
-    }
+    }   
 }

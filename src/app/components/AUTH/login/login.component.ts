@@ -32,14 +32,15 @@ export class LoginComponent implements OnInit {
         })
     }
 
-    onSubmit(): void {
+    login(): void {
         this.authService.login(this.loginForm.value).subscribe({
             next: (res) => {
+                this.authService.setAuthenticatedUser(res)
                 this.router.navigate([''])
-                localStorage.setItem('currentUser', JSON.stringify(res)) //TODO: Not sure about this
             },
             error: () => {
                 console.log(Error)
+                // toast notification or alert
             },
         })
     }

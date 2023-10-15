@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { Observable } from 'rxjs'
+import { BehaviorSubject, Observable } from 'rxjs'
 import { UserEntity, LoginModel } from 'src/core/models/user.model'
 
 @Injectable({
@@ -8,8 +8,13 @@ import { UserEntity, LoginModel } from 'src/core/models/user.model'
 })
 export class AuthService {
     private readonly baseUrl = 'http://localhost:3000/users'
+    private currentLoggedUser: BehaviorSubject<UserEntity | null>
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) {
+        const storedUser = localStorage.getItem('currentUser')
+        const initialUser = storedUser ? JSON.parse(storedUser) : null
+        this.currentLoggedUser = new BehaviorSubject<UserEntity | null>(initialUser)
+    }
 
     login(loginForm: LoginModel): Observable<UserEntity> {
         return this.http.post<any>(
@@ -19,11 +24,21 @@ export class AuthService {
         )
     }
 
-    getLoggedInUser(): Observable<UserEntity> {
-        return this.http.get<UserEntity>(`${this.baseUrl}/loggedInUser`, { withCredentials: true })
+    logout(): Observable<void> {
+        return this.http.post<void>(`${this.baseUrl}/logout`, { withCredentials: true })
     }
 
-    logout(): Observable<any> {
-        return this.http.post<any>(`${this.baseUrl}/logout`, { withCredentials: true })
+    public setAuthenticatedUser(user: any): void {
+        localStorage.setItem('currentUser', JSON.stringify(user))
+        this.currentLoggedUser.next(user)
+    }
+
+    public get getAuthenticatedUser(): UserEntity | null {
+        return this.currentLoggedUser.value
+    }
+
+    public clearAuthenticatedUser(): void {
+        this.currentLoggedUser.next(null)
+        localStorage.removeItem('currentUser')
     }
 }

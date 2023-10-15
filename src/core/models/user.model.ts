@@ -1,6 +1,3 @@
-//an interface in TypeScript is a way to ensure a particular structure for an object,
-//while a class is a blueprint for creating objects with specific properties and behaviors
-
 export interface LoginModel {
     phoneNumber: string //TODO: convert it into a number insted of a string
     password: string
