@@ -17,9 +17,9 @@ export class LayoutComponent {
                 this.router.navigate(['/login'])
             },
             error: (err) => {
-                console.error("Logout failed:", err)
+                console.error('Logout failed:', err)
                 // toast notification or alert
-            }
+            },
         })
-    }   
+    }
 }

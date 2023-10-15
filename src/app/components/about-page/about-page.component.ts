@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core'
-import { ElementRef } from '@angular/core'
+import { AfterViewInit, Component, ElementRef, OnDestroy } from '@angular/core'
 import { trigger, state, style, animate, transition } from '@angular/animations'
 
 @Component({
-    selector: 'app-home-page',
-    templateUrl: './home-page.component.html',
-    styleUrls: ['./home-page.component.css'],
+    selector: 'app-about-page',
+    templateUrl: './about-page.component.html',
+    styleUrls: ['./about-page.component.css'],
     animations: [
         // Animate Right
         trigger('animateRight', [
@@ -36,7 +35,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
         ]),
     ],
 })
-export class HomePageComponent implements AfterViewInit, OnDestroy {
+export class AboutPageComponent implements AfterViewInit, OnDestroy {
     elementStates: { [key: string]: 'hidden' | 'visible' } = {
         animateRight: 'hidden',
         animateTop: 'hidden',

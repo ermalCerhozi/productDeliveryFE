@@ -6,19 +6,19 @@
                 <i class="fas fa-bars"></i>
                 <i class="fas fa-times"></i>
             </div>
-            <a href="index.html" class="logo">Bakery</a>
+            <a routerLink="" class="logo">Bakery</a>
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a routerLink="" class="nav-link active">Home</a>
+                    <a routerLink="" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a routerLink="/aboutPage" class="nav-link">About Us</a>
+                    <a routerLink="/aboutPage" class="nav-link active">About Us</a>
                 </li>
                 <li class="nav-item">
                     <a routerLink="/products-list" class="nav-link">our products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Log in</a>
+                    <a routerLink="/login" class="nav-link">Log in</a>
                 </li>
             </ul>
         </nav>
@@ -26,121 +26,67 @@
 </header>
 
 <!-- HERO SECTION -->
-<section class="hero" id="hero">
-    <div class="container">
-        <h1 class="headline">Let's Taste Perfection</h1>
-        <a href="index.html" class="btn btn-primary">Order Now</a>
-    </div>
-</section>
 
-<!-- STORY SECTION -->
-<section class="our-story">
+<section class="hero small-size-hero" id="hero"></section>
+
+<!-- ABOUT SECTION -->
+<section class="about">
     <div class="container">
         <div class="row">
             <div [@animateTop]="elementStates['animateLeft']" class="description padding-right">
                 <div class="global-headline">
-                    <h2 class="sub-headline">Discover</h2>
+                    <h2 class="sub-headline">Read</h2>
                     <h3 class="headline headline-dark">Our Story</h3>
                     <div class="asterisk"><i class="fas fa-asterisk"></i></div>
                 </div>
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci voluptatum
-                    dolor earum accusamus suscipit. Officia atque vitae excepturi deserunt nihil?
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Omnis harum, deserunt
+                    repellendus culpa animi minus similique blanditiis repudiandae nisi, explicabo
                 </p>
-                <a href="index.html" class="btn btn-secondary">Learn More</a>
-            </div>
-            <div [@animateRight]="elementStates['animateRight']">
-                <img class="story-img" src="assets/images/story-img.jpg" alt="bread" />
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ALWAYS FRESH -->
-<section class="always-fresh shared">
-    <div class="container">
-        <div class="global-headline">
-            <div [@animateTop]="elementStates['animateTop']">
-                <h2 class="sub-headline">Always</h2>
-            </div>
-            <div [@animateBottom]="elementStates['animateBottom']">
-                <h3 class="headline headline-dark">Fresh</h3>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- MENU SECTION -->
-<section class="menu">
-    <div class="container">
-        <div class="row">
-            <div [@animateTop]="elementStates['animateLeft']" class="image-group padding-right">
-                <img src="assets/images/square-1.jpg" alt="image" />
-                <img src="assets/images/square-2.jpg" alt="image" />
-                <img src="assets/images/square-3.jpg" alt="image" />
-                <img src="assets/images/square-4.jpg" alt="image" />
-            </div>
-            <div [@animateRight]="elementStates['animateRight']">
-                <div class="global-headline">
-                    <h2 class="sub-headline">Explore</h2>
-                    <h3 class="headline headline-dark">Menu</h3>
-                    <div class="asterisk"><i class="fas fa-asterisk"></i></div>
-                </div>
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci voluptatum
-                    dolor earum accusamus suscipit. Officia atque vitae excepturi deserunt nihil?
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Hic veritatis
+                    perferendis molestias eius velit repellendus
                 </p>
-                <a href="index.html" class="btn btn-secondary">See Full Menu</a>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- TASTY SECTION -->
-<section class="tasty shared">
-    <div class="container">
-        <div class="global-headline">
-            <div [@animateTop]="elementStates['animateTop']">
-                <h2 class="sub-headline">Everything</h2>
-            </div>
-            <div [@animateBottom]="elementStates['animateBottom']">
-                <h3 class="headline headline-dark">Tasty</h3>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- BAKERS DELIGHT SECTION -->
-<section class="delight">
-    <div class="container">
-        <div class="row">
-            <div [@animateTop]="elementStates['animateLeft']" class="description padding-right">
-                <div class="global-headline">
-                    <h2 class="sub-headline">Baker's</h2>
-                    <h3 class="headline headline-dark">Delight</h3>
-                    <div class="asterisk"><i class="fas fa-asterisk"></i></div>
-                </div>
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci voluptatum
-                    dolor earum accusamus suscipit. Officia atque vitae excepturi deserunt nihil?
-                </p>
-                <a href="index.html" class="btn btn-secondary">Make A Reservation</a>
-            </div>
-            <div [@animateRight]="elementStates['animateRight']">
+            <div [@animateRight]="elementStates['animateRight']" class="image">
                 <img
-                    [@animateTop]="elementStates['animateTop']"
-                    src="assets/images/bakers-delight-1.jpg"
-                    alt="bread"
-                />
-                <img
-                    [@animateBottom]="elementStates['animateBottom']"
-                    src="assets/images/bakers-delight-2.jpg"
+                    [@animateTop]="elementStates['animateLeft']"
+                    src="/assets/images/about-img-2.jpeg"
                     alt="bread"
                 />
             </div>
         </div>
     </div>
 </section>
+
+<!-- ABOUT SECTION -->
+<section class="about">
+    <div class="container">
+        <div class="row">
+            <div
+                [@animateTop]="elementStates['animateLeft']"
+                class="image padding-right margin-bottom"
+            >
+                <img src="/assets/images/about-img-1.jpeg" alt="bread" />
+            </div>
+            <div [@animateRight]="elementStates['animateRight']" class="description">
+                <div class="global-headline">
+                    <h2 class="sub-headline">Bread</h2>
+                    <h3 class="headline headline-dark">So Good</h3>
+                    <div class="asterisk"><i class="fas fa-asterisk"></i></div>
+                </div>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci voluptatum
+                    dolor earum accusamus suscipit. Officia atque vitae excepturi deserunt nihil?
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 
+<button class="btn btn-primary submit__reservation">Book Now</button> 
+-->
 
 <!-- FOOTER -->
 <footer>
@@ -149,7 +95,7 @@
             <a href="#hero"><i class="fas fa-chevron-up"></i></a>
         </div>
         <div class="footer__content">
-            <div [@animateTop]="elementStates['animateTop']" class="footer__content-about">
+            <div [@animateTop]="elementStates['animateLeft']" class="footer__content-about">
                 <h4>About Bakery</h4>
                 <div class="asterisk"><i class="fas fa-asterisk"></i></div>
                 <p>

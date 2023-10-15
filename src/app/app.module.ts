@@ -22,6 +22,7 @@ import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.compon
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
 import { FormatTimePipe } from 'src/core/common/pipes/format-time.pipe'
+import { AboutPageComponent } from 'src/app/components/about-page/about-page.component'
 
 @NgModule({
     declarations: [
@@ -41,6 +42,7 @@ import { FormatTimePipe } from 'src/core/common/pipes/format-time.pipe'
         FilterDialogComponent,
         FormatDatePipe,
         FormatTimePipe,
+        AboutPageComponent,
     ],
     imports: [
         BrowserModule,

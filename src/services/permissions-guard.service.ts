@@ -14,9 +14,9 @@ export class PermissionsGuard implements CanActivate {
     constructor(private authService: AuthService, private router: Router) {}
 
     canActivate(route: ActivatedRouteSnapshot): Observable<boolean | UrlTree> {
-        this.currentUser = this.authService.getAuthenticatedUser;
+        this.currentUser = this.authService.getAuthenticatedUser
         const expectedRoles = route.data['expectedRoles'] as Array<string>
-        
+
         if (this.currentUser && expectedRoles.includes(this.currentUser.role)) {
             return of(true)
         } else {

@@ -7,7 +7,6 @@ import { AuthService } from 'src/services/auth.service'
     providedIn: 'root',
 })
 export class AuthGuard implements CanActivate, CanActivateChild {
-
     constructor(private authService: AuthService, private router: Router) {}
 
     canActivate(): Observable<boolean | UrlTree> {
@@ -20,7 +19,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
     private checkLogin(): Observable<boolean | UrlTree> {
         const currentUser = this.authService.getAuthenticatedUser
-        
+
         if (currentUser) {
             return of(true)
         } else {

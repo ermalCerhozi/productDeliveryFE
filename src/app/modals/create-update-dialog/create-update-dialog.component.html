@@ -25,7 +25,6 @@
             "
         >
             <ng-container [ngSwitch]="data.type">
-
                 <!-- User Form Fields -->
                 <ng-container *ngSwitchCase="'user'">
                     <mat-form-field>
@@ -62,9 +61,7 @@
                     <mat-form-field>
                         <mat-label>email</mat-label>
                         <input matInput type="email" formControlName="email" required />
-                        <mat-error
-                            *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
-                        >
+                        <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
                             Email is required
                         </mat-error>
                     </mat-form-field>
