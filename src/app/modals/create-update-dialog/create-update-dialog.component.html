@@ -25,6 +25,92 @@
             "
         >
             <ng-container [ngSwitch]="data.type">
+
+                <!-- User Form Fields -->
+                <ng-container *ngSwitchCase="'user'">
+                    <mat-form-field>
+                        <mat-label>First Name</mat-label>
+                        <input matInput formControlName="first_name" required />
+                        <mat-error
+                            *ngIf="
+                                form.get('first_name')?.invalid && form.get('first_name')?.touched
+                            "
+                        >
+                            First Name is required
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Last Name</mat-label>
+                        <input matInput type="text" formControlName="last_name" required />
+                        <mat-error
+                            *ngIf="form.get('last_name')?.invalid && form.get('last_name')?.touched"
+                        >
+                            Last Name is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Nickname</mat-label>
+                        <input matInput type="text" formControlName="nickname" required />
+                        <mat-error
+                            *ngIf="form.get('nickname')?.invalid && form.get('nickname')?.touched"
+                        >
+                            Nickname is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>email</mat-label>
+                        <input matInput type="email" formControlName="email" required />
+                        <mat-error
+                            *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+                        >
+                            Email is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Phone Number</mat-label>
+                        <input matInput type="tel" formControlName="phone_number" required />
+                        <mat-error
+                            *ngIf="
+                                form.get('phone_number')?.invalid &&
+                                form.get('phone_number')?.touched
+                            "
+                        >
+                            <ng-container *ngIf="form.get('phone_number')?.errors?.['required']">
+                                Phone Number is required
+                            </ng-container>
+                            <ng-container *ngIf="form.get('phone_number')?.errors?.['minlength']">
+                                Phone Number must be at least 10 digits long
+                            </ng-container>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Role</mat-label>
+                        <mat-select formControlName="role" required>
+                            <mat-option value="client">Client</mat-option>
+                            <mat-option value="manager">Manager</mat-option>
+                            <mat-option value="admin">Admin</mat-option>
+                            <mat-option value="seller">Seller</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
+                            Role is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Password</mat-label>
+                        <input matInput type="text" formControlName="password" required />
+                        <mat-error
+                            *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
+                        >
+                            Password is required
+                        </mat-error>
+                    </mat-form-field>
+                </ng-container>
+
                 <!-- Product Form Fields -->
                 <ng-container *ngSwitchCase="'product'">
                     <mat-form-field>
@@ -61,81 +147,6 @@
                     <mat-form-field>
                         <mat-label>Ingredients</mat-label>
                         <textarea matInput formControlName="ingredients"></textarea>
-                    </mat-form-field>
-                </ng-container>
-
-                <!-- User Form Fields -->
-                <ng-container *ngSwitchCase="'user'">
-                    <mat-form-field>
-                        <mat-label>First Name</mat-label>
-                        <input matInput formControlName="first_name" required />
-                        <mat-error
-                            *ngIf="
-                                form.get('first_name')?.invalid && form.get('first_name')?.touched
-                            "
-                        >
-                            First Name is required
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Last Name</mat-label>
-                        <input matInput type="text" formControlName="last_name" required />
-                        <mat-error
-                            *ngIf="form.get('last_name')?.invalid && form.get('last_name')?.touched"
-                        >
-                            Last Name Email is required
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>Nickname</mat-label>
-                        <input matInput type="text" formControlName="nickname" required />
-                        <mat-error
-                            *ngIf="form.get('nickname')?.invalid && form.get('nickname')?.touched"
-                        >
-                            Nickname is required
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>Phone Number</mat-label>
-                        <input matInput type="tel" formControlName="phone_number" required />
-                        <mat-error
-                            *ngIf="
-                                form.get('phone_number')?.invalid &&
-                                form.get('phone_number')?.touched
-                            "
-                        >
-                            <ng-container *ngIf="form.get('phone_number')?.errors?.['required']">
-                                Phone Number is required
-                            </ng-container>
-                            <ng-container *ngIf="form.get('phone_number')?.errors?.['minlength']">
-                                Phone Number must be at least 10 digits long
-                            </ng-container>
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>Role</mat-label>
-                        <mat-select formControlName="role" required>
-                            <mat-option value="client">Client</mat-option>
-                            <mat-option value="manager">Manager</mat-option>
-                            <mat-option value="owner">Owner</mat-option>
-                            <mat-option value="seller">Seller</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
-                            Role is required
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>Password</mat-label>
-                        <input matInput type="text" formControlName="password" required />
-                        <mat-error
-                            *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
-                        >
-                            Password is required
-                        </mat-error>
                     </mat-form-field>
                 </ng-container>
 

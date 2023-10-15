@@ -14,11 +14,9 @@ export class PermissionsGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot): Observable<boolean | UrlTree> {
         const expectedRoles = route.data['expectedRoles'] as Array<string>
 
-        console.log('here')
         return this.authService.getLoggedInUser().pipe(
             map((user) => {
                 if (user) {
-                    console.log('user', user)
                     if (expectedRoles.includes(user.role)) {
                         return true
                     } else {

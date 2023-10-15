@@ -22,7 +22,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     usedProducts: number[] = []
     clients: UserEntity[] = []
     orderItemsFormArray: any | undefined
-    roles = ['manager', 'seller', 'client']
+    roles = ['admin', 'manager', 'seller', 'client']
     totalOrderPrice = 0
 
     constructor(
@@ -53,6 +53,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                           first_name: '',
                           last_name: '',
                           nickname: '',
+                          email: '',
                           phone_number: '',
                           role: '',
                           password: '',
@@ -62,6 +63,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                 first_name: [formData.first_name, Validators.required],
                 last_name: [formData.last_name, Validators.required],
                 nickname: [formData.nickname, Validators.required],
+                email: [formData.nickname, Validators.required],
                 phone_number: [
                     formData.phone_number,
                     [Validators.required, Validators.minLength(10)],
