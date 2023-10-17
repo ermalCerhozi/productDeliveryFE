@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core'
+import { AfterViewInit, Component, OnDestroy, QueryList, ViewChildren } from '@angular/core'
 import { ElementRef } from '@angular/core'
 import { trigger, state, style, animate, transition } from '@angular/animations'
 
@@ -13,40 +13,35 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
             state('visible', style({ transform: 'translateX(0)', opacity: 1 })),
             transition('hidden => visible', [animate('1s 600ms')]),
         ]),
-
         // Animate Left
         trigger('animateLeft', [
             state('hidden', style({ transform: 'translateX(-25rem)', opacity: 0 })),
             state('visible', style({ transform: 'translateX(0)', opacity: 1 })),
             transition('hidden => visible', [animate('1s 300ms')]),
         ]),
-
         // Animate Top
         trigger('animateTop', [
             state('hidden', style({ transform: 'translateY(-25rem)', opacity: 0 })),
             state('visible', style({ transform: 'translateY(0)', opacity: 1 })),
             transition('hidden => visible', [animate('1s 600ms')]),
         ]),
-
         // Animate Bottom
         trigger('animateBottom', [
             state('hidden', style({ transform: 'translateY(25rem)', opacity: 0 })),
             state('visible', style({ transform: 'translateY(0)', opacity: 1 })),
-            transition('hidden => visible', [animate('1s 600ms')]),
+            transition('hidden => visible', [animate('1s 200ms')]),
         ]),
     ],
 })
 export class HomePageComponent implements AfterViewInit, OnDestroy {
-    elementStates: { [key: string]: 'hidden' | 'visible' } = {
-        animateRight: 'hidden',
-        animateTop: 'hidden',
-        animateBottom: 'hidden',
-        animateLeft: 'hidden',
-    }
-
-    constructor(private el: ElementRef) {}
+    @ViewChildren('animatedElement', { read: ElementRef }) animatedElements!: QueryList<ElementRef>
+    elementStates: { [key: string]: 'hidden' | 'visible' } = {}
+    animationsMapping: string[] = ['animateRight', 'animateTop', 'animateBottom', 'animateLeft']
 
     ngAfterViewInit() {
+        this.animatedElements.forEach((_, index) => {
+            this.elementStates[`element${index}`] = 'hidden'
+        })
         window.addEventListener('scroll', this.scroll, true)
     }
 
@@ -55,15 +50,16 @@ export class HomePageComponent implements AfterViewInit, OnDestroy {
     }
 
     scroll = (): void => {
-        console.log('Scroll event detected')
-        const keys = Object.keys(this.elementStates)
-        keys.forEach((key) => {
-            const componentPosition = this.el.nativeElement.offsetTop
+        this.animatedElements.forEach((elRef, index) => {
+            const elementPosition =
+                elRef.nativeElement.getBoundingClientRect().top + window.pageYOffset
             const scrollPosition = window.pageYOffset + window.innerHeight
-            if (scrollPosition >= componentPosition) {
-                this.elementStates[key] = 'visible'
-            } else {
-                this.elementStates[key] = 'hidden'
+
+            if (
+                scrollPosition >= elementPosition &&
+                this.elementStates[`element${index}`] === 'hidden'
+            ) {
+                this.elementStates[`element${index}`] = 'visible'
             }
         })
     }

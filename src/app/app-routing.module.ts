@@ -14,35 +14,32 @@ import { PermissionsGuard } from 'src/services/permissions-guard.service'
 import { AboutPageComponent } from 'src/app/components/about-page/about-page.component'
 
 const routes: Routes = [
-    { path: 'login', component: LoginComponent },
+    {
+        path: '',
+        component: HomePageComponent,
+    },
+    {
+        path: 'aboutPage',
+        component: AboutPageComponent,
+    },
+    {
+        path: 'products-list',
+        component: ProductsComponent,
+    },
+    {
+        path: 'login',
+        component: LoginComponent,
+    },
     {
         path: '',
         component: LayoutComponent,
         canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.
         children: [
             {
-                path: '',
-                component: HomePageComponent,
-                canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin', 'Manager', 'Seller', 'Client'] },
-            },
-            {
-                path: 'aboutPage',
-                component: AboutPageComponent,
-                canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin', 'Manager', 'Seller', 'Client'] },
-            },
-            {
                 path: 'orders',
                 component: OrdersComponent,
                 canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
-            },
-            {
-                path: 'products-list',
-                component: ProductsComponent,
-                canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin', 'Manager', 'Seller', 'Client'] },
             },
             {
                 path: 'manageOrders',

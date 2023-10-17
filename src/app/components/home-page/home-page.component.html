@@ -18,7 +18,7 @@
                     <a routerLink="/products-list" class="nav-link">our products</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Log in</a>
+                    <a routerLink="/login" class="nav-link">Log in</a>
                 </li>
             </ul>
         </nav>
@@ -37,7 +37,11 @@
 <section class="our-story">
     <div class="container">
         <div class="row">
-            <div [@animateTop]="elementStates['animateLeft']" class="description padding-right">
+            <div
+                [@animateTop]="elementStates['element0']"
+                #animatedElement
+                class="description padding-right"
+            >
                 <div class="global-headline">
                     <h2 class="sub-headline">Discover</h2>
                     <h3 class="headline headline-dark">Our Story</h3>
@@ -49,7 +53,7 @@
                 </p>
                 <a href="index.html" class="btn btn-secondary">Learn More</a>
             </div>
-            <div [@animateRight]="elementStates['animateRight']">
+            <div [@animateRight]="elementStates['element1']" #animatedElement>
                 <img class="story-img" src="assets/images/story-img.jpg" alt="bread" />
             </div>
         </div>
@@ -60,10 +64,10 @@
 <section class="always-fresh shared">
     <div class="container">
         <div class="global-headline">
-            <div [@animateTop]="elementStates['animateTop']">
+            <div [@animateTop]="elementStates['element2']" #animatedElement>
                 <h2 class="sub-headline">Always</h2>
             </div>
-            <div [@animateBottom]="elementStates['animateBottom']">
+            <div [@animateBottom]="elementStates['element3']" #animatedElement>
                 <h3 class="headline headline-dark">Fresh</h3>
             </div>
         </div>
@@ -74,13 +78,17 @@
 <section class="menu">
     <div class="container">
         <div class="row">
-            <div [@animateTop]="elementStates['animateLeft']" class="image-group padding-right">
+            <div
+                [@animateTop]="elementStates['element4']"
+                #animatedElement
+                class="image-group padding-right"
+            >
                 <img src="assets/images/square-1.jpg" alt="image" />
                 <img src="assets/images/square-2.jpg" alt="image" />
                 <img src="assets/images/square-3.jpg" alt="image" />
                 <img src="assets/images/square-4.jpg" alt="image" />
             </div>
-            <div [@animateRight]="elementStates['animateRight']">
+            <div [@animateRight]="elementStates['element5']" #animatedElement>
                 <div class="global-headline">
                     <h2 class="sub-headline">Explore</h2>
                     <h3 class="headline headline-dark">Menu</h3>
@@ -100,10 +108,10 @@
 <section class="tasty shared">
     <div class="container">
         <div class="global-headline">
-            <div [@animateTop]="elementStates['animateTop']">
+            <div [@animateTop]="elementStates['element6']" #animatedElement>
                 <h2 class="sub-headline">Everything</h2>
             </div>
-            <div [@animateBottom]="elementStates['animateBottom']">
+            <div [@animateBottom]="elementStates['element7']" #animatedElement>
                 <h3 class="headline headline-dark">Tasty</h3>
             </div>
         </div>
@@ -114,7 +122,11 @@
 <section class="delight">
     <div class="container">
         <div class="row">
-            <div [@animateTop]="elementStates['animateLeft']" class="description padding-right">
+            <div
+                [@animateTop]="elementStates['element8']"
+                #animatedElement
+                class="description padding-right"
+            >
                 <div class="global-headline">
                     <h2 class="sub-headline">Baker's</h2>
                     <h3 class="headline headline-dark">Delight</h3>
@@ -126,14 +138,16 @@
                 </p>
                 <a href="index.html" class="btn btn-secondary">Make A Reservation</a>
             </div>
-            <div [@animateRight]="elementStates['animateRight']">
+            <div [@animateRight]="elementStates['element9']" #animatedElement>
                 <img
-                    [@animateTop]="elementStates['animateTop']"
+                    [@animateTop]="elementStates['element10']"
+                    #animatedElement
                     src="assets/images/bakers-delight-1.jpg"
                     alt="bread"
                 />
                 <img
-                    [@animateBottom]="elementStates['animateBottom']"
+                    [@animateBottom]="elementStates['element11']"
+                    #animatedElement
                     src="assets/images/bakers-delight-2.jpg"
                     alt="bread"
                 />
@@ -149,7 +163,11 @@
             <a href="#hero"><i class="fas fa-chevron-up"></i></a>
         </div>
         <div class="footer__content">
-            <div [@animateTop]="elementStates['animateTop']" class="footer__content-about">
+            <div
+                [@animateTop]="elementStates['element12']"
+                #animatedElement
+                class="footer__content-about"
+            >
                 <h4>About Bakery</h4>
                 <div class="asterisk"><i class="fas fa-asterisk"></i></div>
                 <p>
@@ -157,8 +175,12 @@
                     sit repudiandae incidunt quod eius recusandae blanditiis voluptates consectetur?
                 </p>
             </div>
-            <div [@animateBottom]="elementStates['animateBottom']" class="footer__content-divider">
-                <div class="social-media">
+            <div class="footer__content-divider">
+                <div
+                    [@animateLeft]="elementStates['element13']"
+                    #animatedElement
+                    class="social-media"
+                >
                     <h4>Follow Us</h4>
                     <ul class="social-icons">
                         <li>
@@ -183,7 +205,11 @@
                         </li>
                     </ul>
                 </div>
-                <div class="newsletter-container">
+                <div
+                    [@animateRight]="elementStates['element13']"
+                    #animatedElement
+                    class="newsletter-container"
+                >
                     <h4>Newsletter</h4>
                     <form action="" class="newsletter-form">
                         <div class="newsletter-form-box">

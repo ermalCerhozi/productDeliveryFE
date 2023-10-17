@@ -157,24 +157,14 @@ header {
 }
 
 .headline {
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 3.5rem;
-    font-weight: 900;
+    font-family: 'Poiret One';
+    font-size: 5.5rem;
+    font-weight: 400;
     color: #fff;
     text-transform: uppercase;
     letter-spacing: .5rem;
     margin-right: -.5rem;
-    opacity: 0;
-    animation-name: scaleBigger;
-    animation-duration: .5s;
-    animation-fill-mode: both;
-}
-
-h1.headline { 
-    font-family: 'Poiret One';
     margin-bottom: 4rem;
-    font-weight: 400;
-    font-size: 5.5rem;
     opacity: 0;
     animation-name: scaleBigger;
     animation-duration: .5s;
@@ -188,8 +178,6 @@ h1.headline {
     font-weight: 100;
     line-height: .4;
     letter-spacing: 2px;
-    opacity: 0;
-    animation-name: fadeUp;
     animation-duration: .5s;
     animation-fill-mode: both;
     animation-delay: .5s;
@@ -325,7 +313,7 @@ h1.headline {
 
 /* FOOTER */
 footer {
-    color: #121212;
+    background-color: #121212;
     color: #fff;
     padding: 7rem 0 5rem;
     position: relative;
@@ -333,7 +321,7 @@ footer {
 }
 
 .back-to-top {
-    color: #121212;
+    background-color: #121212;
     border-radius: 50%;
     position: absolute;
     top: -3rem;
@@ -654,17 +642,6 @@ footer .asterisk {
 }
 
 /*          ANIMATIONS           */
-
-@keyframes fadeUp {
-    0% {
-        transform: translateY(4rem);
-    }
-
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 @keyframes scaleBigger {
     0% {
