@@ -33,7 +33,11 @@
 <section class="about">
     <div class="container">
         <div class="row">
-            <div [@animateTop]="elementStates['animateLeft']" class="description padding-right">
+            <div
+                [@animateTop]="elementStates['element0']"
+                #animatedElement
+                class="description padding-right"
+            >
                 <div class="global-headline">
                     <h2 class="sub-headline">Read</h2>
                     <h3 class="headline headline-dark">Our Story</h3>
@@ -48,9 +52,10 @@
                     perferendis molestias eius velit repellendus
                 </p>
             </div>
-            <div [@animateRight]="elementStates['animateRight']" class="image">
+            <div [@animateTop]="elementStates['element1']" #animatedElement class="image">
                 <img
-                    [@animateTop]="elementStates['animateLeft']"
+                    [@animateTop]="elementStates['element2']"
+                    #animatedElement
                     src="/assets/images/about-img-2.jpeg"
                     alt="bread"
                 />
@@ -64,12 +69,13 @@
     <div class="container">
         <div class="row">
             <div
-                [@animateTop]="elementStates['animateLeft']"
+                [@animateTop]="elementStates['element3']"
+                #animatedElement
                 class="image padding-right margin-bottom"
             >
                 <img src="/assets/images/about-img-1.jpeg" alt="bread" />
             </div>
-            <div [@animateRight]="elementStates['animateRight']" class="description">
+            <div [@animateTop]="elementStates['element4']" #animatedElement class="description">
                 <div class="global-headline">
                     <h2 class="sub-headline">Bread</h2>
                     <h3 class="headline headline-dark">So Good</h3>
@@ -95,7 +101,11 @@
             <a href="#hero"><i class="fas fa-chevron-up"></i></a>
         </div>
         <div class="footer__content">
-            <div [@animateTop]="elementStates['animateLeft']" class="footer__content-about">
+            <div
+                [@animateTop]="elementStates['element12']"
+                #animatedElement
+                class="footer__content-about"
+            >
                 <h4>About Bakery</h4>
                 <div class="asterisk"><i class="fas fa-asterisk"></i></div>
                 <p>
@@ -103,7 +113,11 @@
                     sit repudiandae incidunt quod eius recusandae blanditiis voluptates consectetur?
                 </p>
             </div>
-            <div [@animateBottom]="elementStates['animateBottom']" class="footer__content-divider">
+            <div
+                [@animateBottom]="elementStates['element12']"
+                #animatedElement
+                class="footer__content-divider"
+            >
                 <div class="social-media">
                     <h4>Follow Us</h4>
                     <ul class="social-icons">

@@ -229,7 +229,8 @@ header {
 }
 
 .headline-dark {
-    color: var(--main-font-color-dark);
+    color: #252525;
+    font-family: 'Source Sans Pro';
     letter-spacing: .7rem;
     margin-right: -.7rem;
 }
@@ -271,7 +272,7 @@ header {
 
 .btn-secondary:hover,
 .btn-secondary:focus {
-    color: var(--main-font-color-dark);
+    color: #252525;
 }
 
 .btn-secondary:hover::before,
@@ -405,7 +406,7 @@ footer .asterisk {
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--main-font-color-dark);
+    color: #252525;
     font-size: 1.6rem;
     padding: 1px .6rem;
     outline: none;
@@ -441,7 +442,7 @@ footer .asterisk {
 }
 
 .submit__reservation:hover {
-    border: 1px solid var(--secondary-font-color);
+    border: 1px solid #e1b164;
 }
 
 .margin-bottom {

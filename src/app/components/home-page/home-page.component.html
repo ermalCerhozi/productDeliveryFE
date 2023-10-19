@@ -38,7 +38,7 @@
     <div class="container">
         <div class="row">
             <div
-                [@animateTop]="elementStates['element0']"
+                [@animateLeft]="elementStates['element0']"
                 #animatedElement
                 class="description padding-right"
             >
@@ -67,7 +67,7 @@
             <div [@animateTop]="elementStates['element2']" #animatedElement>
                 <h2 class="sub-headline">Always</h2>
             </div>
-            <div [@animateBottom]="elementStates['element3']" #animatedElement>
+            <div [@animateBottom]="elementStates['element2']" #animatedElement>
                 <h3 class="headline headline-dark">Fresh</h3>
             </div>
         </div>
@@ -79,7 +79,7 @@
     <div class="container">
         <div class="row">
             <div
-                [@animateTop]="elementStates['element4']"
+                [@animateLeft]="elementStates['element4']"
                 #animatedElement
                 class="image-group padding-right"
             >
@@ -111,7 +111,7 @@
             <div [@animateTop]="elementStates['element6']" #animatedElement>
                 <h2 class="sub-headline">Everything</h2>
             </div>
-            <div [@animateBottom]="elementStates['element7']" #animatedElement>
+            <div [@animateBottom]="elementStates['element6']" #animatedElement>
                 <h3 class="headline headline-dark">Tasty</h3>
             </div>
         </div>
@@ -175,12 +175,12 @@
                     sit repudiandae incidunt quod eius recusandae blanditiis voluptates consectetur?
                 </p>
             </div>
-            <div class="footer__content-divider">
-                <div
-                    [@animateLeft]="elementStates['element13']"
-                    #animatedElement
-                    class="social-media"
-                >
+            <div
+                [@animateBottom]="elementStates['element12']"
+                #animatedElement
+                class="footer__content-divider"
+            >
+                <div class="social-media">
                     <h4>Follow Us</h4>
                     <ul class="social-icons">
                         <li>
@@ -205,11 +205,7 @@
                         </li>
                     </ul>
                 </div>
-                <div
-                    [@animateRight]="elementStates['element13']"
-                    #animatedElement
-                    class="newsletter-container"
-                >
+                <div class="newsletter-container">
                     <h4>Newsletter</h4>
                     <form action="" class="newsletter-form">
                         <div class="newsletter-form-box">
