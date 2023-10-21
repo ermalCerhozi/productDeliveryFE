@@ -6,6 +6,7 @@ import {
     animateTop,
     animateBottom,
 } from 'src/core/animations/animations'
+import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-home-page',
@@ -17,6 +18,8 @@ export class HomePageComponent implements AfterViewInit, OnDestroy {
     @ViewChildren('animatedElement', { read: ElementRef }) animatedElements!: QueryList<ElementRef>
     elementStates: { [key: string]: 'hidden' | 'visible' } = {}
     animationsMapping: string[] = ['animateRight', 'animateTop', 'animateBottom', 'animateLeft']
+
+    constructor(private router: Router) {}
 
     ngAfterViewInit() {
         this.animatedElements.forEach((_, index) => {

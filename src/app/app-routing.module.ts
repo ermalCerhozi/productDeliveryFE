@@ -7,7 +7,7 @@ import { ManageUsersComponent } from 'src/app/components/manage-users/manage-use
 import { ManageOrdersComponent } from 'src/app/components/manage-orders/manage-orders.component'
 import { ManageProductsComponent } from 'src/app/components/manage-products/manage-products.component'
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component'
-import { LoginComponent } from 'src/app/components/AUTH/login/login.component'
+import { signInSignUpComponent } from 'src/app/components/AUTH/SignInSignUp/signInSignUp.component'
 import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component'
 import { AuthGuard } from 'src/services/auth-guard.service'
 import { PermissionsGuard } from 'src/services/permissions-guard.service'
@@ -28,7 +28,7 @@ const routes: Routes = [
     },
     {
         path: 'login',
-        component: LoginComponent,
+        component: signInSignUpComponent,
     },
     {
         path: '',

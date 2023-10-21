@@ -14,7 +14,7 @@ export class LayoutComponent {
         this.authService.logout().subscribe({
             next: () => {
                 this.authService.clearAuthenticatedUser()
-                this.router.navigate(['/login'])
+                this.router.navigate([''])
             },
             error: (err) => {
                 console.error('Logout failed:', err)

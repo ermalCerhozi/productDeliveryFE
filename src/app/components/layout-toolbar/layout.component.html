@@ -1,8 +1,14 @@
 <mat-sidenav-container class="example-container">
     <mat-sidenav #drawer class="example-sidenav" mode="over">
         <mat-nav-list>
-            <a mat-list-item (click)="drawer.toggle()" routerLink="">Home</a>
-            <a mat-list-item (click)="drawer.toggle()" routerLink="/products-list">Products</a>
+            <a mat-list-item (click)="drawer.toggle()" routerLink="">
+                <div class="icon-text-wrapper">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon"
+                        >arrow_back</mat-icon
+                    >
+                    Back to Main Screen
+                </div>
+            </a>
             <a mat-list-item (click)="drawer.toggle()" routerLink="/orders">Orders</a>
             <a mat-list-item (click)="drawer.toggle()" routerLink="/manageUsers">Manage users</a>
             <a mat-list-item (click)="drawer.toggle()" routerLink="/manageOrders">Manage orders</a>

@@ -1,6 +1,12 @@
 .example-spacer {
-    flex: 1 1 auto;
-  }
+  flex: 1 1 auto;
+}
+
+.icon-text-wrapper {
+  display: flex;
+  align-items: center;
+}
+
 .example-container {
   height: 100%;
   position: absolute;

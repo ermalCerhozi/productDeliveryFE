@@ -5,8 +5,7 @@ import { AppComponent } from 'src/app/app.component'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MaterialModule } from 'src/app/material.module'
 import { HomePageComponent } from 'src/app/components/home-page/home-page.component'
-import { LoginComponent } from 'src/app/components/AUTH/login/login.component'
-import { SignInComponent } from 'src/app/components/AUTH/sign-in/sign-in.component'
+import { signInSignUpComponent } from 'src/app/components/AUTH/SignInSignUp/signInSignUp.component'
 import { AppRoutingModule } from 'src/app/app-routing.module'
 import { HttpClientModule } from '@angular/common/http'
 import { ProductsComponent } from 'src/app/components/products/products.component'
@@ -28,8 +27,7 @@ import { AboutPageComponent } from 'src/app/components/about-page/about-page.com
     declarations: [
         AppComponent,
         HomePageComponent,
-        LoginComponent,
-        SignInComponent,
+        signInSignUpComponent,
         ProductsComponent,
         OrdersComponent,
         ManageOrdersComponent,
