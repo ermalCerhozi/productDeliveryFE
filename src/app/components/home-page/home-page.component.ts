@@ -18,6 +18,7 @@ export class HomePageComponent implements AfterViewInit, OnDestroy {
     @ViewChildren('animatedElement', { read: ElementRef }) animatedElements!: QueryList<ElementRef>
     elementStates: { [key: string]: 'hidden' | 'visible' } = {}
     animationsMapping: string[] = ['animateRight', 'animateTop', 'animateBottom', 'animateLeft']
+    show = false
 
     constructor(private router: Router) {}
 
@@ -28,8 +29,8 @@ export class HomePageComponent implements AfterViewInit, OnDestroy {
         window.addEventListener('scroll', this.scroll, true)
     }
 
-    ngOnDestroy() {
-        window.removeEventListener('scroll', this.scroll, true)
+    toggleShow() {
+        this.show = !this.show
     }
 
     scroll = (): void => {
@@ -45,5 +46,9 @@ export class HomePageComponent implements AfterViewInit, OnDestroy {
                 this.elementStates[`element${index}`] = 'visible'
             }
         })
+    }
+
+    ngOnDestroy() {
+        window.removeEventListener('scroll', this.scroll, true)
     }
 }

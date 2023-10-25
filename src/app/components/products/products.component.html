@@ -12,27 +12,31 @@
 </div> -->
 
 <!-- HEADER -->
-<body>
+<body [class.show]="show">
+    <!-- HEADER -->
     <header>
         <div class="container">
             <nav class="navbar">
                 <div class="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                    <i class="fas fa-times"></i>
+                    <i (click)="toggleShow()" class="fas fa-bars"></i>
+                    <i (click)="toggleShow()" class="fas fa-times"></i>
                 </div>
-                <a routerLink="" class="logo">Bakery</a>
+                <a href="index.html" class="logo">Bakery</a>
                 <ul class="nav-list">
                     <li class="nav-item">
-                        <a routerLink="" class="nav-link">Home</a>
+                        <a routerLink="" class="nav-link active">Home</a>
                     </li>
                     <li class="nav-item">
                         <a routerLink="/aboutPage" class="nav-link">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a routerLink="/products-list" class="nav-link active">our products</a>
+                        <a routerLink="/products-list" class="nav-link">our products</a>
                     </li>
+                    <!-- <li class="nav-item">
+                        <a href="about.html#reservation" class="nav-link">Reservation</a>
+                    </li> -->
                     <li class="nav-item">
-                        <a routerLink="/login" class="nav-link">My Profile</a>
+                        <a routerLink="/orders" class="nav-link">My Profile</a>
                     </li>
                 </ul>
             </nav>

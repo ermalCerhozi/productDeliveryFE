@@ -9,11 +9,17 @@ import { BakeryManagementApiService } from 'src/services/bakery-management-api.s
 })
 export class ProductsComponent implements OnInit {
     products: ProductEntity[] | undefined
+    show = false
+
     constructor(private bakeryManagementApiService: BakeryManagementApiService) {}
 
     ngOnInit() {
         this.bakeryManagementApiService.getProducts().subscribe((products) => {
             this.products = products
         })
+    }
+
+    toggleShow() {
+        this.show = !this.show
     }
 }

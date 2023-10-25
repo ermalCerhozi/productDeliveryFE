@@ -23,6 +23,7 @@ export class AboutPageComponent implements AfterViewInit, OnDestroy {
     @ViewChildren('animatedElement', { read: ElementRef }) animatedElements!: QueryList<ElementRef>
     elementStates: { [key: string]: 'hidden' | 'visible' } = {}
     animationsMapping: string[] = ['animateRight', 'animateTop', 'animateBottom', 'animateLeft']
+    show = false
 
     ngAfterViewInit() {
         this.animatedElements.forEach((_, index) => {
@@ -32,6 +33,10 @@ export class AboutPageComponent implements AfterViewInit, OnDestroy {
         //     this.checkViewportElements()
         // })
         window.addEventListener('scroll', this.scroll, true)
+    }
+
+    toggleShow() {
+        this.show = !this.show
     }
 
     ngOnDestroy() {

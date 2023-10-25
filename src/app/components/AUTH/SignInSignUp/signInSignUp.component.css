@@ -400,3 +400,23 @@ form.sign-in-form {
     left: 50%;
   }
 }
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: transparent;
+  position: absolute; 
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* this ensures the top bar stays on top of other content */
+}
+
+.top-bar i, span {
+  font-size: 24px;
+  color: #000000;
+  opacity: 70%;
+  margin-right: 10px;
+  cursor: pointer;
+}

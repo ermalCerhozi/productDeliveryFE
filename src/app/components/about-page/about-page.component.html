@@ -1,11 +1,11 @@
-<body>
+<body [class.show]="show">
     <!-- HEADER -->
     <header>
         <div class="container">
             <nav class="navbar">
                 <div class="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                    <i class="fas fa-times"></i>
+                    <i (click)="toggleShow()" class="fas fa-bars"></i>
+                    <i (click)="toggleShow()" class="fas fa-times"></i>
                 </div>
                 <a href="index.html" class="logo">Bakery</a>
                 <ul class="nav-list">

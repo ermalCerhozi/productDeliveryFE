@@ -1,4 +1,9 @@
 <body>
+    <div routerLink="" class="top-bar">
+        <i class="fas fa-arrow-left"></i>
+        <span>Back</span>
+    </div>
+
     <div class="container" #containerDiv>
         <div class="forms-container">
             <div class="signin-signup">
@@ -18,7 +23,7 @@
                     <div class="input-field">
                         <i class="fas fa-user"></i>
                         <input
-                            type="text"
+                            type="number"
                             formControlName="phoneNumber"
                             placeholder="Phone Number"
                         />
@@ -40,7 +45,7 @@
                     </div>
                     <input type="submit" value="Sign In" class="btn solid" />
 
-                    <p class="social-text">sit our social media platforms</p>
+                    <p class="social-text">Visit our social media platforms</p>
                     <div class="social-media">
                         <a href="#" class="social-icon">
                             <i class="fab fa-facebook-f"></i>
@@ -60,8 +65,8 @@
                 <form action="" class="sign-up-form">
                     <h2 class="title">Sign Up</h2>
                     <div class="input-field">
-                        <i class="fas fa-user"></i>
-                        <input type="text" placeholder="Phone Number" />
+                        <i class="fas fa-phone"></i>
+                        <input type="number" placeholder="Phone Number" />
                     </div>
                     <div class="input-field">
                         <i class="fas fa-envelope"></i>
