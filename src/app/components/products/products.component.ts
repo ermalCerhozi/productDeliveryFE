@@ -14,8 +14,8 @@ export class ProductsComponent implements OnInit {
     constructor(private bakeryManagementApiService: BakeryManagementApiService) {}
 
     ngOnInit() {
-        this.bakeryManagementApiService.getProducts().subscribe((products) => {
-            this.products = products
+        this.bakeryManagementApiService.getProducts().subscribe((res) => {
+            this.products = res
         })
     }
 

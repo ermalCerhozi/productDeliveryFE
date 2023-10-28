@@ -24,13 +24,13 @@
                 <a href="index.html" class="logo">Bakery</a>
                 <ul class="nav-list">
                     <li class="nav-item">
-                        <a routerLink="" class="nav-link active">Home</a>
+                        <a routerLink="" class="nav-link">Home</a>
                     </li>
                     <li class="nav-item">
                         <a routerLink="/aboutPage" class="nav-link">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a routerLink="/products-list" class="nav-link">our products</a>
+                        <a routerLink="/products-list" class="nav-link active">our products</a>
                     </li>
                     <!-- <li class="nav-item">
                         <a href="about.html#reservation" class="nav-link">Reservation</a>
@@ -55,86 +55,14 @@
                 <div class="asterisk"><i class="fas fa-asterisk"></i></div>
             </div>
             <div class="bakers__container">
-                <div class="baker">
-                    <img src="/assets/images/baker-1.jpg" alt="baker" />
-                    <h5>John Doe</h5>
+                <div class="baker" *ngFor="let product of products">
+                    <img [src]="product.image" alt="baker" />
+                    <h5>{{product.product_name}}</h5>
+                    <h6>{{ product.price | number : '1.0-0' }} LEK</h6>
                     <ul class="social-icons">
                         <li>
                             <a href="#">
                                 <i class="fab fa-facebook-f"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="baker">
-                    <img src="/assets/images/baker-2.jpg" alt="baker" />
-                    <h5>Smith Doe</h5>
-                    <ul class="social-icons">
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="baker">
-                    <img src="/assets/images/baker-3.jpg" alt="baker" />
-                    <h5>Jane Doe</h5>
-                    <ul class="social-icons">
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="baker">
-                    <img src="/assets/images/baker-4.jpg" alt="baker" />
-                    <h5>Chris Doe</h5>
-                    <ul class="social-icons">
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fab fa-instagram"></i>
                             </a>
                         </li>
                     </ul>

@@ -27,7 +27,6 @@ export class ManageProductsComponent implements OnInit {
 
     ngOnInit() {
         this.getProducts()
-        console.log('dataSource', this.dataSource)
     }
 
     getProducts() {
