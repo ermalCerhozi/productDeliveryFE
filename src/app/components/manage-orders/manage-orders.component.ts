@@ -9,9 +9,6 @@ import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { SelectionModel } from '@angular/cdk/collections'
 import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
 
-/**
- * @title Data table with pagination, and filtering.
- */
 @Component({
     selector: 'app-manage-orders',
     templateUrl: './manage-orders.component.html',
@@ -98,8 +95,8 @@ export class ManageOrdersComponent implements OnInit {
                                 console.log('Error: ', error)
                             },
                         })
-                    } else if (action === 'update') {
-                        this.bakeryManagementApiService.updateOrder(order!, result).subscribe({
+                    } else if (action === 'update' && order) {
+                        this.bakeryManagementApiService.updateOrder(order, result).subscribe({
                             next: () => {
                                 this.getOrders()
                             },

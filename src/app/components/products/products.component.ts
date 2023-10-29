@@ -14,8 +14,9 @@ export class ProductsComponent implements OnInit {
     constructor(private bakeryManagementApiService: BakeryManagementApiService) {}
 
     ngOnInit() {
-        this.bakeryManagementApiService.getProducts().subscribe((res) => {
-            this.products = res
+        // TODO: Implement pagination or just leave as is to display only some of the available items
+        this.bakeryManagementApiService.getProducts(0, 20).subscribe((res) => {
+            this.products = res.products
         })
     }
 

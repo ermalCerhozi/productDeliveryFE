@@ -13,3 +13,9 @@
 .filter-button{
   margin: 0 10px 0 10px;
 }
+
+/* TODO: fix the height here */
+.scroll-container {
+  max-height: 80%;
+  overflow-y: auto;
+}

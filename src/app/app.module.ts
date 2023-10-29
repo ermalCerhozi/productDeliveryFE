@@ -22,6 +22,7 @@ import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialo
 import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
 import { FormatTimePipe } from 'src/core/common/pipes/format-time.pipe'
 import { AboutPageComponent } from 'src/app/components/about-page/about-page.component'
+import { ScrollingModule } from '@angular/cdk/scrolling'
 
 @NgModule({
     declarations: [
@@ -49,6 +50,7 @@ import { AboutPageComponent } from 'src/app/components/about-page/about-page.com
         AppRoutingModule,
         HttpClientModule,
         ReactiveFormsModule,
+        ScrollingModule,
     ],
     providers: [FormatDatePipe, FormatTimePipe],
     bootstrap: [AppComponent],

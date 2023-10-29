@@ -100,9 +100,11 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                     console.log('There was an error getting clients:', err)
                 },
             })
-            this.bakeryManagementService.getAllProducts().subscribe({
+            // TODO: implement pagination
+            this.bakeryManagementService.getAllProducts(0, 20).subscribe({
                 next: (res) => {
-                    this.products = res
+                    // TODO: Implement pagination
+                    this.products = res.products
                     this.calculateTotalOrderPrice(this.form.get('order_items')!.value)
                 },
                 error: (error) => {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { Observable, tap } from 'rxjs'
 import { FiltersEntity } from 'src/core/models/filters.model'
 import { OrderEntity } from 'src/core/models/order.model'
-import { ProductEntity } from 'src/core/models/product.model'
+import { ProductResponse } from 'src/core/models/product.model'
 import { UserEntity } from 'src/core/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { jsPDF } from 'jspdf'
@@ -22,6 +22,14 @@ export class BakeryManagementService {
         private formatDatePipe: FormatDatePipe,
         private formatTimePipe: FormatTimePipe
     ) {}
+
+    updateOrdersList(): Observable<OrderEntity[]> {
+        return this.bakeryManagementApiService.getOrders().pipe(
+            tap((res) => {
+                this.ordersList = res
+            })
+        )
+    }
 
     getFilteredResults(filters: FiltersEntity): void {
         this.activeFilters = filters
@@ -43,7 +51,6 @@ export class BakeryManagementService {
 
         this.bakeryManagementApiService.getFilteredOrders(params).subscribe((res) => {
             this.ordersList = res
-            console.log('res', res)
         })
     }
 
@@ -51,16 +58,9 @@ export class BakeryManagementService {
         return this.activeFilters !== null
     }
 
-    updateOrdersList(): Observable<OrderEntity[]> {
-        return this.bakeryManagementApiService.getOrders().pipe(
-            tap((res) => {
-                this.ordersList = res
-            })
-        )
-    }
-
-    getAllProducts(): Observable<ProductEntity[]> {
-        return this.bakeryManagementApiService.getProducts()
+    // TODO: Implement pagination
+    getAllProducts(offset: number, limit: number): Observable<ProductResponse> {
+        return this.bakeryManagementApiService.getProducts(offset, limit)
     }
 
     getAllUsers(): Observable<UserEntity[]> {

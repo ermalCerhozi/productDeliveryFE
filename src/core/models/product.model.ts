@@ -1,3 +1,8 @@
+export interface ProductResponse {
+    products: ProductEntity[]
+    hasMoreItems: boolean
+}
+
 export interface ProductEntity {
     id: number
     product_name: string

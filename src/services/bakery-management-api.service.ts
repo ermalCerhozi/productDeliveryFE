@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs'
-import { ProductEntity } from 'src/core/models/product.model'
+import { ProductResponse, ProductEntity } from 'src/core/models/product.model'
 import { UserEntity } from 'src/core/models/user.model'
 import { environment } from 'src/environments/environment'
 import { OrderEntity } from 'src/core/models/order.model'
@@ -40,8 +40,12 @@ export class BakeryManagementApiService {
         return this.http.post<ProductEntity>(`${this.apiUrl}products`, product)
     }
 
-    getProducts(): Observable<ProductEntity[]> {
-        return this.http.get<ProductEntity[]>(`${this.apiUrl}products`)
+    getProducts(offset: number, limit: number): Observable<ProductResponse> {
+        const params = new HttpParams()
+            .set('offset', offset.toString())
+            .set('limit', limit.toString())
+
+        return this.http.get<ProductResponse>(`${this.apiUrl}products`, { params })
     }
 
     updateProduct(product: ProductEntity, result: Partial<ProductEntity>): Observable<any> {

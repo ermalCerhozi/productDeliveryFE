@@ -30,6 +30,7 @@ export class FilterDialogComponent implements OnInit {
         })
     }
 
+    // TODO: Check product requirements. Do we actually want to filter by product??
     ngOnInit(): void {
         this.bakeryManagementService.getAllUsers().subscribe({
             next: (res) => {
@@ -43,9 +44,10 @@ export class FilterDialogComponent implements OnInit {
                 console.log('There was an error getting users:', err)
             },
         })
-        this.bakeryManagementService.getAllProducts().subscribe({
+        // TODO: Implement Pagination
+        this.bakeryManagementService.getAllProducts(0, 20).subscribe({
             next: (res) => {
-                this.products = res
+                this.products = res.products
             },
             error: (error) => {
                 console.log('There was an error getting products:', error)
