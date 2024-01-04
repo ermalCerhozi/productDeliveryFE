@@ -1,0 +1,9 @@
+.grid-viewport {
+    display: block;
+    height: inherit;
+    overflow: auto;
+}
+
+.virtual-viewport {
+    height: inherit;
+}

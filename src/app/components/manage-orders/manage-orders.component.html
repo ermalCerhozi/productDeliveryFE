@@ -50,7 +50,7 @@
     </thead>
     <tbody>
         <tr
-            *ngFor="let row of bakeryManagementService.ordersList"
+            *ngFor="let row of bakeryManagementService.ordersList.orders"
             (dblclick)="createUpdateOrder('update', row)"
         >
             <td>
@@ -74,7 +74,9 @@
                     </div>
                 </div>
             </td>
-            <td>{{ row.created_at | formatDate }}</td>
+            <!-- TODO: -->
+            <!-- <td>{{ row.created_at | formatDate }}</td>  -->
+            <td>{{ row.created_at }}</td>
             <td>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
                     <mat-icon>more_vert</mat-icon>

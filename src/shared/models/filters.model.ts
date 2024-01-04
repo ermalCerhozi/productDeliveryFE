@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/core/models/user.model'
+import { UserEntity } from 'src/shared/models/user.model'
 
 export interface FiltersEntity {
     startDate?: Date

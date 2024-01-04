@@ -3,11 +3,10 @@ import { MatDialog } from '@angular/material/dialog'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
-import { OrderEntity } from 'src/core/models/order.model'
+import { OrderEntity } from 'src/shared/models/order.model'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { SelectionModel } from '@angular/cdk/collections'
-import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
 
 @Component({
     selector: 'app-manage-orders',
@@ -20,8 +19,7 @@ export class ManageOrdersComponent implements OnInit {
     constructor(
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
-        public dialog: MatDialog,
-        private formatDatePipe: FormatDatePipe
+        public dialog: MatDialog
     ) {}
 
     ngOnInit() {
@@ -34,7 +32,7 @@ export class ManageOrdersComponent implements OnInit {
 
     isAllSelected() {
         const numSelected = this.selection.selected.length
-        const numRows = this.bakeryManagementService.ordersList.length
+        const numRows = this.bakeryManagementService.ordersList.orders.length
         return numSelected === numRows
     }
 
@@ -45,7 +43,9 @@ export class ManageOrdersComponent implements OnInit {
     toggleAll() {
         this.isAllSelected()
             ? this.selection.clear()
-            : this.bakeryManagementService.ordersList.forEach((row) => this.selection.select(row))
+            : this.bakeryManagementService.ordersList.orders.forEach((row) =>
+                  this.selection.select(row)
+              )
     }
 
     openFilterOrdersDialog(): void {

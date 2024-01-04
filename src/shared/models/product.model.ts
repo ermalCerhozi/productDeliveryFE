@@ -4,6 +4,7 @@ export interface ProductResponse {
 }
 
 export interface ProductEntity {
+    created_at: string
     id: number
     product_name: string
     price: string

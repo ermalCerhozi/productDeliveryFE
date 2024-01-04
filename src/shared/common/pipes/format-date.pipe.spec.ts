@@ -1,4 +1,4 @@
-import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
+import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe'
 
 describe('FormatDatePipe', () => {
     it('create an instance', () => {

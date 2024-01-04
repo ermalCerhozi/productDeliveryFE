@@ -1,0 +1,53 @@
+<div mat-row class="item-cards-list" (dblclick)="editItem.emit(item)">
+    <div mat-cell class="item-cards-list-thumbnail">
+        <img [src]="item.image" alt="No image" />
+    </div>
+
+    <div mat-cell class="item-cards-list-id">
+        {{ item.id }}
+    </div>
+
+    <div class="item-cards-list-title">
+        {{ item.product_name }}
+    </div>
+
+    <div mat-cell class="item-cards-list-price">
+        {{ item.price }}
+    </div>
+
+    <!-- <div mat-cell class="item-cards-list-weight">
+        {{ item.weight | unitPipe: 'weight' }}
+    </div> -->
+
+    <div mat-cell class="item-cards-list-actions">
+        <ng-container *ngTemplateOutlet="actionsTemplate; context: { media: item }"></ng-container>
+    </div>
+</div>
+
+<ng-template #actionsTemplate>
+    <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+        <mat-icon class="item-cards-action-icon">more_vert</mat-icon>
+    </button>
+    <mat-menu #mainMenu="matMenu" class="item-cards-actions-container">
+        <ng-container>
+            <!-- *ngFor="let menu of filterDropdownMenuList(dropdownMenuList, activeTab.valueOf())" -->
+            <ng-container *ngFor="let menu of dropdownMenuList">
+                <!-- disabled="{{ !(menu.permission | canOnWorkspace) }}" -->
+                <button
+                    mat-menu-item
+                    (click)="onDropdownMenuClick(menu, $event)"
+                    class="item-cards-mat-menu-item"
+                >
+                    <div class="item-cards-mat-menu-item-label">
+                        {{ menu.label }}
+                    </div>
+                    <mat-icon
+                        class="item-cards-action-item-icon"
+                        fontSet="material-icons-outlined"
+                        >{{ menu.icon }}</mat-icon
+                    >
+                </button>
+            </ng-container>
+        </ng-container>
+    </mat-menu>
+</ng-template>

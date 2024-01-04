@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { ProductEntity } from 'src/core/models/product.model'
+import { ProductEntity } from 'src/shared/models/product.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 
 @Component({

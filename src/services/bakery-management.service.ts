@@ -1,32 +1,36 @@
 import { Injectable } from '@angular/core'
 import { Observable, tap } from 'rxjs'
-import { FiltersEntity } from 'src/core/models/filters.model'
-import { OrderEntity } from 'src/core/models/order.model'
-import { ProductResponse } from 'src/core/models/product.model'
-import { UserEntity } from 'src/core/models/user.model'
+import { FiltersEntity } from 'src/shared/models/filters.model'
+import { OrderResponse, OrderEntity } from 'src/shared/models/order.model'
+import { ProductResponse } from 'src/shared/models/product.model'
+import { UserEntity } from 'src/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
-import { FormatTimePipe } from 'src/core/common/pipes/format-time.pipe'
 
 @Injectable({
     providedIn: 'root',
 })
 export class BakeryManagementService {
-    public ordersList: OrderEntity[] = []
+    public ordersList!: OrderResponse
+    public productsList!: ProductResponse
     activeFilters: FiltersEntity | null = null
 
-    constructor(
-        private bakeryManagementApiService: BakeryManagementApiService,
-        private formatDatePipe: FormatDatePipe,
-        private formatTimePipe: FormatTimePipe
-    ) {}
+    constructor(private bakeryManagementApiService: BakeryManagementApiService) {}
 
     updateOrdersList(): Observable<OrderEntity[]> {
         return this.bakeryManagementApiService.getOrders().pipe(
             tap((res) => {
-                this.ordersList = res
+                this.ordersList = { orders: res }
+            })
+        )
+    }
+
+    // TODO: Implement pagination
+    getAllProducts(offset: number, limit: number): Observable<ProductResponse> {
+        return this.bakeryManagementApiService.getProducts(offset, limit).pipe(
+            tap((res) => {
+                this.productsList = res
             })
         )
     }
@@ -50,17 +54,12 @@ export class BakeryManagementService {
         }
 
         this.bakeryManagementApiService.getFilteredOrders(params).subscribe((res) => {
-            this.ordersList = res
+            this.ordersList = { orders: res }
         })
     }
 
     hasActiveFilters(): boolean {
         return this.activeFilters !== null
-    }
-
-    // TODO: Implement pagination
-    getAllProducts(offset: number, limit: number): Observable<ProductResponse> {
-        return this.bakeryManagementApiService.getProducts(offset, limit)
     }
 
     getAllUsers(): Observable<UserEntity[]> {
@@ -69,6 +68,30 @@ export class BakeryManagementService {
 
     deleteOrderItem(id: number): Observable<any> {
         return this.bakeryManagementApiService.deleteOrderItem(id)
+    }
+
+    hasMoreItemsToLoad(item: string): boolean {
+        switch (item) {
+            case 'product':
+                return this.productsList.hasMoreItems
+            case 'order':
+                return this.ordersList.hasMoreItems || false
+            default:
+                return false
+        }
+    }
+
+    loadMoreItems(item: string): void {
+        switch (item) {
+            case 'product':
+                this.getAllProducts(this.productsList.products.length, 20).subscribe()
+                break
+            case 'order':
+                this.updateOrdersList().subscribe()
+                break
+            default:
+                break
+        }
     }
 
     downloadSelected(selection: any) {
@@ -94,8 +117,8 @@ export class BakeryManagementService {
                 row.client.first_name + ' ' + row.client.last_name,
                 order_items,
                 order_returns,
-                this.formatDatePipe.transform(row.created_at),
-                this.formatTimePipe.transform(row.created_at),
+                // this.formatDatePipe.transform(row.created_at),
+                // this.formatTimePipe.transform(row.created_at),
                 Math.round(row.total_price).toLocaleString() + ' ' + 'Lekë',
             ]
         })

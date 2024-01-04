@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { BehaviorSubject, Observable } from 'rxjs'
-import { UserEntity, LoginModel } from 'src/core/models/user.model'
+import { UserEntity, LoginModel } from 'src/shared/models/user.model'
 
 @Injectable({
     providedIn: 'root',

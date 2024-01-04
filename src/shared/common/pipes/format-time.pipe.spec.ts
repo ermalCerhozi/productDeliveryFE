@@ -1,4 +1,4 @@
-import { FormatTimePipe } from 'src/core/common/pipes/format-time.pipe'
+import { FormatTimePipe } from 'src/shared/common/pipes/format-time.pipe'
 
 describe('FormatTimePipe', () => {
     it('create an instance', () => {

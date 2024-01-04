@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs'
-import { ProductResponse, ProductEntity } from 'src/core/models/product.model'
-import { UserEntity } from 'src/core/models/user.model'
+import { ProductResponse, ProductEntity } from 'src/shared/models/product.model'
+import { UserEntity } from 'src/shared/models/user.model'
 import { environment } from 'src/environments/environment'
-import { OrderEntity } from 'src/core/models/order.model'
+import { OrderEntity } from 'src/shared/models/order.model'
 
 @Injectable({
     providedIn: 'root',
@@ -48,16 +48,24 @@ export class BakeryManagementApiService {
         return this.http.get<ProductResponse>(`${this.apiUrl}products`, { params })
     }
 
-    updateProduct(product: ProductEntity, result: Partial<ProductEntity>): Observable<any> {
-        return this.http.put<any>(`${this.apiUrl}products/${product.id}`, result)
+    updateProduct(
+        product: ProductEntity,
+        result: Partial<ProductEntity>
+    ): Observable<ProductEntity> {
+        return this.http.put<ProductEntity>(`${this.apiUrl}products/${product.id}`, result)
     }
 
     deleteProduct(id: number): Observable<ProductEntity> {
-        return this.http.delete<any>(`${this.apiUrl}products/${id}`)
+        return this.http.delete<ProductEntity>(`${this.apiUrl}products/${id}`)
     }
 
     getProduct(id: number): Observable<ProductEntity> {
         return this.http.get<ProductEntity>(`${this.apiUrl}products/${id}`)
+    }
+
+    searchProduct(searchQuery: string): Observable<ProductEntity[]> {
+        const params = new HttpParams().set('search', searchQuery)
+        return this.http.get<ProductEntity[]>(`${this.apiUrl}products/search`, { params })
     }
 
     //CRUD for orders

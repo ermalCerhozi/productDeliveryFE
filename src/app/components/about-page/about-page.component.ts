@@ -11,7 +11,7 @@ import {
     animateLeft,
     animateTop,
     animateBottom,
-} from 'src/core/animations/animations'
+} from 'src/shared/animations/animations'
 
 @Component({
     selector: 'app-about-page',
