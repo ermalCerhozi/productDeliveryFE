@@ -23,7 +23,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
+              "src/styles.scss",
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/font-awesome/css/font-awesome.css"
             ],
@@ -93,7 +93,7 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": []
           }
