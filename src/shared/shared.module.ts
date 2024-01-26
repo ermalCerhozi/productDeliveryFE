@@ -27,10 +27,16 @@ import { MatTooltipModule } from '@angular/material/tooltip'
 import { InfiniteScrollModule } from 'ngx-infinite-scroll'
 
 import { GridTableListComponent } from 'src/shared/components/grid-table-list/grid-table-list.component'
+import { FormatTimePipe } from './common/pipes/format-time.pipe'
+import { FormatDatePipe } from './common/pipes/format-date.pipe'
 
 @NgModule({
     //TODO: declare the pipes here...
-    declarations: [GridTableListComponent],
+    declarations: [
+        GridTableListComponent,
+        FormatDatePipe,
+        FormatTimePipe,
+    ],
     imports: [
         CommonModule,
         // I18NextModule,
@@ -59,7 +65,11 @@ import { GridTableListComponent } from 'src/shared/components/grid-table-list/gr
         MatCheckboxModule,
         MatTooltipModule,
     ],
-    exports: [GridTableListComponent],
+    exports: [
+        GridTableListComponent, 
+        FormatDatePipe,
+        FormatTimePipe
+    ],
     providers: [],
 })
 export class SharedModule {}

@@ -21,8 +21,6 @@ import { FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms'
 import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
-// import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe'
-// import { FormatTimePipe } from 'src/shared/common/pipes/format-time.pipe'
 import { AboutPageComponent } from 'src/app/components/about-page/about-page.component'
 import { ProductsTableListComponent } from 'src/app/components/products-table-list/products-table-list.component'
 
@@ -42,8 +40,6 @@ import { ProductsTableListComponent } from 'src/app/components/products-table-li
         LayoutComponent,
         FilterDialogComponent,
         ProductsTableListComponent,
-        // FormatDatePipe,
-        // FormatTimePipe,
         AboutPageComponent,
     ],
     imports: [
