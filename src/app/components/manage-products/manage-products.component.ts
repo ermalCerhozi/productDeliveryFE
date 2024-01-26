@@ -24,23 +24,21 @@ export class ManageProductsComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.getProducts(0, 20)
+        this.getProducts(true)
     }
 
-    getProducts(offset: number, limit: number) {
+    getProducts(append: boolean) {
         this.isLoading = true
-        this.bakeryManagementService.getAllProducts(offset, limit).subscribe((res) => {
-            this.hasMoreProductsToLoad = res.hasMoreItems
-            this.isLoading = false
-        })
+        this.bakeryManagementService.updatelProductList(append).subscribe()
+        this.isLoading = false
     }
 
     getItemList(item: string) {
         switch (item) {
             case 'product':
-                return this.bakeryManagementService.productsList.products
+                return this.bakeryManagementService.productsList
             case 'order':
-                return this.bakeryManagementService.ordersList.orders
+                return this.bakeryManagementService.ordersList
             default:
                 return []
         }

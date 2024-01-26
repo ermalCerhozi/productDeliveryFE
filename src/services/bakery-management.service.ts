@@ -7,30 +7,74 @@ import { UserEntity } from 'src/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { NavigationContext } from 'src/shared/models/navigation-context.model'
 
 @Injectable({
     providedIn: 'root',
 })
 export class BakeryManagementService {
-    public ordersList!: OrderResponse
-    public productsList!: ProductResponse
+    public ordersList: OrderResponse[] = []
+    public productsList: ProductResponse[] = []
+    public navigationContext: NavigationContext
     activeFilters: FiltersEntity | null = null
 
-    constructor(private bakeryManagementApiService: BakeryManagementApiService) {}
+    constructor(private bakeryManagementApiService: BakeryManagementApiService) {
+        this.navigationContext = this.getBaseNavigationContext()
+    }
 
     updateOrdersList(): Observable<OrderEntity[]> {
         return this.bakeryManagementApiService.getOrders().pipe(
             tap((res) => {
-                this.ordersList = { orders: res }
+                // this.ordersList = res.orders
             })
         )
     }
 
+    getBaseNavigationContext(): NavigationContext {
+        return {
+            pagination: {
+                offset: 0,
+                limit: 20,
+            },
+            // filters: {
+            //     active: true,
+            //     date: 'any-time',
+            // },
+            // sorts: {
+            //     $created_at: SortDirection.DESC,
+            // },
+            // searchOptions: {
+            //     title: true,
+            //     metadata: true,
+            // },
+            // filteredCount: false,
+        }
+    }
+
     // TODO: Implement pagination
-    getAllProducts(offset: number, limit: number): Observable<ProductResponse> {
-        return this.bakeryManagementApiService.getProducts(offset, limit).pipe(
-            tap((res) => {
-                this.productsList = res
+    updatelProductList(append: boolean): Observable<ProductResponse> {
+        if (!append) {
+            this.productsList = []
+            this.navigationContext.pagination.limit = 20
+            this.navigationContext.pagination.offset = 0
+        }
+
+        const requestPayload: any = {
+            // workspace_id: this.localStorageService.retrieve('workspaceId'),
+            navigation_context: this.navigationContext,
+        }
+
+        return this.bakeryManagementApiService.searchProduct(requestPayload).pipe(
+            tap((productResult: any) => {
+                if (append) {
+                    this.productsList = this.productsList.concat(productResult.results)
+                } else {
+                    this.productsList = productResult.results
+                }
+                // TODO: Get the total number of products from the API
+                // if (this.navigationContext.filteredCount) {
+                //     this.count = productResult.count
+                // }
             })
         )
     }

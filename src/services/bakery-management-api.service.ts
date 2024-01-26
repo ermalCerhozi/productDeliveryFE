@@ -40,7 +40,7 @@ export class BakeryManagementApiService {
         return this.http.post<ProductEntity>(`${this.apiUrl}products`, product)
     }
 
-    getProducts(offset: number, limit: number): Observable<ProductResponse> {
+    searchProduct(requestPayload: any): Observable<ProductResponse> {
         const params = new HttpParams()
             .set('offset', offset.toString())
             .set('limit', limit.toString())
@@ -61,11 +61,6 @@ export class BakeryManagementApiService {
 
     getProduct(id: number): Observable<ProductEntity> {
         return this.http.get<ProductEntity>(`${this.apiUrl}products/${id}`)
-    }
-
-    searchProduct(searchQuery: string): Observable<ProductEntity[]> {
-        const params = new HttpParams().set('search', searchQuery)
-        return this.http.get<ProductEntity[]>(`${this.apiUrl}products/search`, { params })
     }
 
     //CRUD for orders
