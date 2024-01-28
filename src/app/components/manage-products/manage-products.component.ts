@@ -10,6 +10,8 @@ import { MatPaginator } from '@angular/material/paginator'
 import { SearchOptions } from 'src/shared/models/navigation-context.model'
 import { MediaLibrarySearchService } from 'src/services/media-library-search-service.service'
 import { take, map } from 'rxjs/operators'
+import { DropdownEvent, DropdownMenuListItem } from 'src/shared/models/DropdownMenuListItem'
+import { DropdownActionOptions } from 'src/shared/models/actionOptions'
 
 @Component({
     selector: 'app-manage-products',
@@ -44,6 +46,15 @@ export class ManageProductsComponent implements OnInit {
             }
         })
     }
+
+    actionDropdown: DropdownMenuListItem[] = [
+        {
+            label: DropdownActionOptions.EDIT,
+        },
+        {
+            label: DropdownActionOptions.DELETE,
+        },
+    ]
 
     getProducts(append: boolean) {
         this.isLoading = true
@@ -140,5 +151,19 @@ export class ManageProductsComponent implements OnInit {
 
     setSearchOptions(searchOptions: SearchOptions) {
         this.searchService.setSearchOptions(searchOptions)
+    }
+
+    onDropdownMenuClick(item: DropdownEvent, product: ProductEntity): void {
+        const { option } = item
+        switch (option.label) {
+            case DropdownActionOptions.EDIT:
+                this.createUpdateProduct('update', product)
+                break
+            case DropdownActionOptions.DELETE:
+                this.deleteProduct(product)
+                break
+            default:
+                break
+        }
     }
 }

@@ -29,14 +29,19 @@
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let row">
-            <button mat-icon-button color="primary" (click)="createUpdateProduct('update', row)">
-                <mat-icon>edit</mat-icon>
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+            <!-- button and dropdown for selecting action -->
+            <button mat-button [matMenuTriggerFor]="actionMenu.menu">
+                <mat-icon class="media-library-options-bar-sort-icon">menu</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="deleteProduct(row)">
-                <mat-icon>delete</mat-icon>
-            </button>
+            <app-dropdown-menu-list
+                #actionMenu
+                [width]="'100px'"
+                [options]="actionDropdown"
+                (menuClick)="onDropdownMenuClick($event, element)"
+            >
+            </app-dropdown-menu-list>
         </td>
     </ng-container>
 

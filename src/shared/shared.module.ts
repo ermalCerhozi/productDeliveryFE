@@ -29,14 +29,16 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll'
 import { GridTableListComponent } from 'src/shared/components/grid-table-list/grid-table-list.component'
 import { TopBarComponent } from 'src/shared/components/top-bar/top-bar.component'
 import { FormatTimePipe } from 'src/shared/common/pipes/format-time.pipe'
-import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe'
+import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe';
+import { DropdownMenuListComponent } from './components/dropdown-menu-list/dropdown-menu-list.component'
 
 @NgModule({
     declarations: [
         GridTableListComponent,
         TopBarComponent,
         FormatDatePipe,
-        FormatTimePipe
+        FormatTimePipe,
+        DropdownMenuListComponent
     ],
     imports: [
         CommonModule,
@@ -70,6 +72,7 @@ import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe'
         InfiniteScrollModule,
         TopBarComponent,
         GridTableListComponent,
+        DropdownMenuListComponent,
         FormatDatePipe,
         FormatTimePipe
     ],
