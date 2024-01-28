@@ -11,7 +11,7 @@
                 #input
                 (input)="searchProduct()"
             />
-            <button mat-icon-button matSuffix color="primary" (click)="clearSearch()">
+            <button mat-icon-button matSuffix color="primary" (click)="clearSearch($event)">
                 <mat-icon>close</mat-icon>
             </button>
         </mat-form-field>
@@ -27,9 +27,9 @@
 
     <app-grid-table-list
         class="manage-products-item-list"
-        [items]="getItemList('product')"
+        [items]="bakeryManagementService.productsList"
         [minItemHeight]="50"
-        [minItemWidth]="4000"
+        [minItemWidth]="300"
         [gutterSize]="0"
         [scrollType]="'infinite'"
         (infiniteScrollDown)="scrolledToBottom('product')"
@@ -38,8 +38,8 @@
             <app-products-table-list
                 class="table-list"
                 [item]="item"
-                (editItem)="editItem($event)"
-                (deleteItem)="deleteItem($event)"
+                (editItem)="createUpdateProduct('update', item)"
+                (deleteItem)="deleteProduct(item)"
             ></app-products-table-list>
         </ng-template>
     </app-grid-table-list>

@@ -45,14 +45,14 @@ export class FilterDialogComponent implements OnInit {
             },
         })
         // TODO: Implement Pagination
-        this.bakeryManagementService.getAllProducts(0, 20).subscribe({
-            next: (res) => {
-                this.products = res.products
-            },
-            error: (error) => {
-                console.log('There was an error getting products:', error)
-            },
-        })
+        // this.bakeryManagementService.getAllProducts(0, 20).subscribe({
+        //     next: (res) => {
+        //         this.products = res.products
+        //     },
+        //     error: (error) => {
+        //         console.log('There was an error getting products:', error)
+        //     },
+        // })
     }
 
     applyFilter() {

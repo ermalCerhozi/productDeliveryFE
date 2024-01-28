@@ -18,7 +18,7 @@ export class ManageProductsComponent implements OnInit {
     hasMoreProductsToLoad = false
 
     constructor(
-        private bakeryManagementService: BakeryManagementService,
+        public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
         public dialog: MatDialog
     ) {}
@@ -29,23 +29,22 @@ export class ManageProductsComponent implements OnInit {
 
     getProducts(append: boolean) {
         this.isLoading = true
-        this.bakeryManagementService.updatelProductList(append).subscribe()
-        this.isLoading = false
-    }
-
-    getItemList(item: string) {
-        switch (item) {
-            case 'product':
-                return this.bakeryManagementService.productsList
-            case 'order':
-                return this.bakeryManagementService.ordersList
-            default:
-                return []
-        }
+        this.bakeryManagementService.updateProductList(append).subscribe({
+            next: () => {
+                this.isLoading = false
+            },
+            error: (error) => {
+                this.isLoading = false
+                console.log('Error: ', error)
+            },
+        })
     }
 
     scrolledToBottom(item: string) {
+        // TODO: fix this function
+        console.log('scrolled to bottom')
         if (this.bakeryManagementService.hasMoreItemsToLoad(item)) {
+            console.log('scrolled and has items')
             this.bakeryManagementService.loadMoreItems(item)
         }
     }
@@ -108,29 +107,16 @@ export class ManageProductsComponent implements OnInit {
         })
     }
 
-    // TODO: Implement pagination on search results
     // TODO: Implement debounce and min length on search input to optimize searchProduct function
     searchProduct(): void {
-        this.bakeryManagementApiService.searchProduct(this.searchTerm).subscribe({
-            next: (res) => {
-                // TODO: find a way to update the product list with the search results
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
+        this.bakeryManagementService.navigationContext.productFilters.search = this.searchTerm
+        this.getProducts(true)
     }
 
-    clearSearch(): void {
+    // TODO: Fix clear search functionality
+    clearSearch(event: Event): void {
+        event.stopPropagation()
         this.searchTerm = ''
         this.searchProduct()
-    }
-
-    editItem(item: any) {
-        this.createUpdateProduct('update', item)
-    }
-
-    deleteItem(item: any) {
-        this.deleteProduct(item)
     }
 }

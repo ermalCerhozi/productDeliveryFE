@@ -1,10 +1,11 @@
 // TODO: Remove from optional when full implementation is done
 export interface NavigationContext {
     pagination: Pagination
-    filters?: Filters
+    productFilters: ProductFilters
+    orderFilters: OrderFilters
     sorts?: Sorts
     searchOptions?: SearchOptions
-    filteredCount?: boolean
+    getCount: boolean
 }
 
 interface Pagination {
@@ -12,9 +13,19 @@ interface Pagination {
     limit: number
 }
 
-interface Filters {
-    active: boolean
-    date: string
+interface ProductFilters {
+    active?: boolean
+    minPrice?: number
+    maxPrice?: number
+    search?: string
+}
+
+interface OrderFilters {
+    active?: boolean
+    client?: string
+    seller?: string
+    date?: string
+    search?: string
 }
 
 export enum SortDirection {

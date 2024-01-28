@@ -22,21 +22,16 @@ import { MatTabsModule } from '@angular/material/tabs'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
 
-// TODO:
+// TODO: Implement translation service
 // import { I18NextModule } from 'ngx-i18next'
 import { InfiniteScrollModule } from 'ngx-infinite-scroll'
 
 import { GridTableListComponent } from 'src/shared/components/grid-table-list/grid-table-list.component'
-import { FormatTimePipe } from './common/pipes/format-time.pipe'
-import { FormatDatePipe } from './common/pipes/format-date.pipe'
+import { FormatTimePipe } from 'src/shared/common/pipes/format-time.pipe'
+import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe'
 
 @NgModule({
-    //TODO: declare the pipes here...
-    declarations: [
-        GridTableListComponent,
-        FormatDatePipe,
-        FormatTimePipe,
-    ],
+    declarations: [GridTableListComponent, FormatDatePipe, FormatTimePipe],
     imports: [
         CommonModule,
         // I18NextModule,
@@ -65,11 +60,7 @@ import { FormatDatePipe } from './common/pipes/format-date.pipe'
         MatCheckboxModule,
         MatTooltipModule,
     ],
-    exports: [
-        GridTableListComponent, 
-        FormatDatePipe,
-        FormatTimePipe
-    ],
+    exports: [InfiniteScrollModule, GridTableListComponent, FormatDatePipe, FormatTimePipe],
     providers: [],
 })
 export class SharedModule {}

@@ -45,7 +45,7 @@ export class ManageUsersComponent implements OnInit {
         dialogRef.afterClosed().subscribe({
             next: (result) => {
                 if (result) {
-                    this.bakeryManagementService.getFilteredResults(result)
+                    // this.bakeryManagementService.getFilteredResults(result)
                 }
             },
             error: (error) => {

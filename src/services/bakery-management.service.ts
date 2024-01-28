@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Observable, tap } from 'rxjs'
-import { FiltersEntity } from 'src/shared/models/filters.model'
 import { OrderResponse, OrderEntity } from 'src/shared/models/order.model'
-import { ProductResponse } from 'src/shared/models/product.model'
+import { ProductEntity, ProductResponse } from 'src/shared/models/product.model'
 import { UserEntity } from 'src/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { jsPDF } from 'jspdf'
@@ -13,21 +12,14 @@ import { NavigationContext } from 'src/shared/models/navigation-context.model'
     providedIn: 'root',
 })
 export class BakeryManagementService {
-    public ordersList: OrderResponse[] = []
-    public productsList: ProductResponse[] = []
+    public ordersList!: OrderEntity[]
+    public productsList!: ProductEntity[]
+    public productsCount!: number
+    public ordersCount!: number
     public navigationContext: NavigationContext
-    activeFilters: FiltersEntity | null = null
 
     constructor(private bakeryManagementApiService: BakeryManagementApiService) {
         this.navigationContext = this.getBaseNavigationContext()
-    }
-
-    updateOrdersList(): Observable<OrderEntity[]> {
-        return this.bakeryManagementApiService.getOrders().pipe(
-            tap((res) => {
-                // this.ordersList = res.orders
-            })
-        )
     }
 
     getBaseNavigationContext(): NavigationContext {
@@ -36,10 +28,13 @@ export class BakeryManagementService {
                 offset: 0,
                 limit: 20,
             },
-            // filters: {
-            //     active: true,
-            //     date: 'any-time',
-            // },
+            productFilters: {},
+            orderFilters: {
+                client: '',
+                seller: '',
+                date: 'any-time',
+                search: '',
+            },
             // sorts: {
             //     $created_at: SortDirection.DESC,
             // },
@@ -47,12 +42,12 @@ export class BakeryManagementService {
             //     title: true,
             //     metadata: true,
             // },
-            // filteredCount: false,
+            getCount: true,
         }
     }
 
     // TODO: Implement pagination
-    updatelProductList(append: boolean): Observable<ProductResponse> {
+    updateProductList(append: boolean): Observable<ProductResponse> {
         if (!append) {
             this.productsList = []
             this.navigationContext.pagination.limit = 20
@@ -65,12 +60,42 @@ export class BakeryManagementService {
         }
 
         return this.bakeryManagementApiService.searchProduct(requestPayload).pipe(
-            tap((productResult: any) => {
+            tap((response: ProductResponse) => {
                 if (append) {
-                    this.productsList = this.productsList.concat(productResult.results)
+                    this.productsList = response.products
                 } else {
-                    this.productsList = productResult.results
+                    this.productsList = response.products
                 }
+
+                this.productsCount = response.count
+                if (this.navigationContext.getCount) {
+                    this.productsCount = response.count
+                }
+            })
+        )
+    }
+
+    updateOrdersList(append: boolean): Observable<ProductResponse> {
+        console.log('updateOrdersList')
+        if (!append) {
+            this.productsList = []
+            this.navigationContext.pagination.limit = 20
+            this.navigationContext.pagination.offset = 0
+        }
+
+        const requestPayload: any = {
+            // workspace_id: this.localStorageService.retrieve('workspaceId'),
+            navigation_context: this.navigationContext,
+        }
+
+        return this.bakeryManagementApiService.searchProduct(requestPayload).pipe(
+            tap((response: ProductResponse) => {
+                if (append) {
+                    this.productsList = [...this.productsList, ...response.products]
+                } else {
+                    this.productsList = response.products
+                }
+                this.productsCount = response.count
                 // TODO: Get the total number of products from the API
                 // if (this.navigationContext.filteredCount) {
                 //     this.count = productResult.count
@@ -79,47 +104,27 @@ export class BakeryManagementService {
         )
     }
 
-    getFilteredResults(filters: FiltersEntity): void {
-        this.activeFilters = filters
-
-        const params: any = {}
-
-        if (filters.startDate) {
-            params.startDate = filters.startDate
-        }
-        if (filters.endDate) {
-            params.endDate = filters.endDate
-        }
-        if (filters.client) {
-            params.clientId = filters.client.id
-        }
-        if (filters.seller) {
-            params.sellerId = filters.seller.id
-        }
-
-        this.bakeryManagementApiService.getFilteredOrders(params).subscribe((res) => {
-            this.ordersList = { orders: res }
-        })
-    }
-
-    hasActiveFilters(): boolean {
-        return this.activeFilters !== null
-    }
-
     getAllUsers(): Observable<UserEntity[]> {
         return this.bakeryManagementApiService.getUsers()
     }
 
-    deleteOrderItem(id: number): Observable<any> {
-        return this.bakeryManagementApiService.deleteOrderItem(id)
+    hasActiveFilters(item: string): boolean {
+        switch (item) {
+            case 'product':
+                return Object.keys(this.navigationContext.productFilters).length > 0
+            case 'order':
+                return Object.keys(this.navigationContext.orderFilters).length > 0
+            default:
+                return false
+        }
     }
 
     hasMoreItemsToLoad(item: string): boolean {
         switch (item) {
             case 'product':
-                return this.productsList.hasMoreItems
+                return this.productsList.length < this.productsCount
             case 'order':
-                return this.ordersList.hasMoreItems || false
+                return this.ordersList.length < this.ordersCount
             default:
                 return false
         }
@@ -128,16 +133,21 @@ export class BakeryManagementService {
     loadMoreItems(item: string): void {
         switch (item) {
             case 'product':
-                this.getAllProducts(this.productsList.products.length, 20).subscribe()
+                this.updateProductList(true).subscribe()
                 break
             case 'order':
-                this.updateOrdersList().subscribe()
+                // this.updateOrdersList().subscribe()
                 break
             default:
                 break
         }
     }
 
+    deleteOrderItem(id: number): Observable<any> {
+        return this.bakeryManagementApiService.deleteOrderItem(id)
+    }
+
+    // TODO: Move this implementation to the back end
     downloadSelected(selection: any) {
         // Create a new jsPDF instance
         const doc = new jsPDF()

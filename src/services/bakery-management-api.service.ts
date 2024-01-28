@@ -4,7 +4,7 @@ import { Observable } from 'rxjs'
 import { ProductResponse, ProductEntity } from 'src/shared/models/product.model'
 import { UserEntity } from 'src/shared/models/user.model'
 import { environment } from 'src/environments/environment'
-import { OrderEntity } from 'src/shared/models/order.model'
+import { OrderEntity, OrderResponse } from 'src/shared/models/order.model'
 
 @Injectable({
     providedIn: 'root',
@@ -41,11 +41,10 @@ export class BakeryManagementApiService {
     }
 
     searchProduct(requestPayload: any): Observable<ProductResponse> {
-        const params = new HttpParams()
-            .set('offset', offset.toString())
-            .set('limit', limit.toString())
-
-        return this.http.get<ProductResponse>(`${this.apiUrl}products`, { params })
+        return this.http.post<ProductResponse>(
+            `${this.apiUrl}products/search`,
+            requestPayload.navigation_context
+        )
     }
 
     updateProduct(
@@ -68,7 +67,7 @@ export class BakeryManagementApiService {
         return this.http.post<any>(`${this.apiUrl}orders`, order)
     }
 
-    getOrders(): Observable<any> {
+    getOrders(): Observable<OrderResponse> {
         return this.http.get<any>(`${this.apiUrl}orders`)
     }
 

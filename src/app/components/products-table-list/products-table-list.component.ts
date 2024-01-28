@@ -14,12 +14,12 @@ export class ProductsTableListComponent {
 
     dropdownMenuList = [
         {
-            label: 'GT_MEDIA_EDIT',
+            label: 'Edit',
             icon: 'remove_red_eye',
             // tabs: [ActiveTab.MediaLibrary.valueOf(), ActiveTab.TrashBin.valueOf()],
         },
         {
-            label: 'GT_MEDIA_DELETE',
+            label: 'Delete',
             icon: 'delete',
             // tabs: [ActiveTab.MediaLibrary.valueOf()],
             // permission: WorkspacePermission.UpdateMediaInMediaLibrary,
@@ -36,10 +36,10 @@ export class ProductsTableListComponent {
 
     onDropdownMenuClick(menuItem: any, event: MouseEvent) {
         switch (menuItem.label) {
-            case 'GT_MEDIA_EDIT':
+            case 'Edit':
                 this.editItem.emit(this.item)
                 break
-            case 'GT_MEDIA_DELETE':
+            case 'Delete':
                 this.deleteItem.emit(this.item)
                 break
             default:

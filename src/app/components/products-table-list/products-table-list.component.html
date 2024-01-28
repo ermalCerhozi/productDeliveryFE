@@ -15,6 +15,7 @@
         {{ item.price }}
     </div>
 
+    <!-- TODO: implement item weight and unitPipe -->
     <!-- <div mat-cell class="item-cards-list-weight">
         {{ item.weight | unitPipe: 'weight' }}
     </div> -->
@@ -41,11 +42,7 @@
                     <div class="item-cards-mat-menu-item-label">
                         {{ menu.label }}
                     </div>
-                    <mat-icon
-                        class="item-cards-action-item-icon"
-                        fontSet="material-icons-outlined"
-                        >{{ menu.icon }}</mat-icon
-                    >
+                    <mat-icon class="item-cards-action-item-icon">{{ menu.icon }}</mat-icon>
                 </button>
             </ng-container>
         </ng-container>

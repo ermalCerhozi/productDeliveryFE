@@ -44,11 +44,13 @@ export class GridTableListComponent implements AfterViewChecked, OnChanges {
     }
 
     onInfiniteScrollDown() {
-        this.infiniteScrollDown.emit()
+        console.log('Scrolling down');
+        this.infiniteScrollDown.emit();
     }
-
+    
     onInfiniteScrollUp() {
-        this.infiniteScrollUp.emit()
+        console.log('Scrolling up');
+        this.infiniteScrollUp.emit();
     }
 
     /* istanbul ignore next: not easy to test */

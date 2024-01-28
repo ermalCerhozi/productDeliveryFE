@@ -101,7 +101,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                 },
             })
             // TODO: implement pagination
-            this.bakeryManagementService.getAllProducts(0, 20).subscribe({
+            this.bakeryManagementService.updateProductList(true).subscribe({
                 next: (res) => {
                     // TODO: Implement pagination
                     this.products = res.products

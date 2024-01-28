@@ -1,14 +1,14 @@
 export interface ProductResponse {
     products: ProductEntity[]
-    hasMoreItems: boolean
+    count: number
 }
 
 export interface ProductEntity {
-    created_at: string
     id: number
     product_name: string
     price: string
     description: string
     image: string
-    ingredients: string
+    created_at?: string
+    ingredients?: string
 }

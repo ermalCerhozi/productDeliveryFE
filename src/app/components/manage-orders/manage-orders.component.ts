@@ -27,12 +27,12 @@ export class ManageOrdersComponent implements OnInit {
     }
 
     getOrders() {
-        this.bakeryManagementService.updateOrdersList().subscribe()
+        // this.bakeryManagementService.updateOrdersList().subscribe()
     }
 
     isAllSelected() {
         const numSelected = this.selection.selected.length
-        const numRows = this.bakeryManagementService.ordersList.orders.length
+        const numRows = this.bakeryManagementService.ordersList.length
         return numSelected === numRows
     }
 
@@ -43,30 +43,27 @@ export class ManageOrdersComponent implements OnInit {
     toggleAll() {
         this.isAllSelected()
             ? this.selection.clear()
-            : this.bakeryManagementService.ordersList.orders.forEach((row) =>
-                  this.selection.select(row)
-              )
+            : this.bakeryManagementService.ordersList.forEach((row) => this.selection.select(row))
     }
 
     openFilterOrdersDialog(): void {
-        const dialogRef = this.dialog.open(FilterDialogComponent, {
-            data: this.bakeryManagementService.activeFilters,
-        })
-
-        dialogRef.afterClosed().subscribe({
-            next: (result) => {
-                if (result) {
-                    this.bakeryManagementService.getFilteredResults(result)
-                }
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
+        // const dialogRef = this.dialog.open(FilterDialogComponent, {
+        //     data: this.bakeryManagementService.navigationContext.orderFilters,
+        // })
+        // dialogRef.afterClosed().subscribe({
+        //     next: (result) => {
+        //         if (result) {
+        //             this.bakeryManagementService.getFilteredResults(result)
+        //         }
+        //     },
+        //     error: (error) => {
+        //         console.log('Error: ', error)
+        //     },
+        // })
     }
 
     clearFilters() {
-        this.bakeryManagementService.activeFilters = null
+        this.bakeryManagementService.navigationContext.orderFilters = {}
         this.getOrders()
     }
 

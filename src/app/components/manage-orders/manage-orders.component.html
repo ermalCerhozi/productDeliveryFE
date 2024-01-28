@@ -14,7 +14,7 @@
         class="filter-button"
         mat-stroked-button
         color="primary"
-        [disabled]="!bakeryManagementService.hasActiveFilters()"
+        [disabled]="!bakeryManagementService.hasActiveFilters('order')"
         (click)="clearFilters()"
     >
         Clear Filters
@@ -50,7 +50,7 @@
     </thead>
     <tbody>
         <tr
-            *ngFor="let row of bakeryManagementService.ordersList.orders"
+            *ngFor="let row of bakeryManagementService.ordersList"
             (dblclick)="createUpdateOrder('update', row)"
         >
             <td>

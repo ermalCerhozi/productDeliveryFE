@@ -1,10 +1,9 @@
 import { ProductEntity } from 'src/shared/models/product.model'
 import { UserEntity } from 'src/shared/models/user.model'
 
-// TODO: add has more items
 export interface OrderResponse {
     orders: OrderEntity[]
-    hasMoreItems?: boolean
+    count: number
 }
 
 export interface OrderEntity {
