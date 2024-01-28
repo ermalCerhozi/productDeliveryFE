@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
 import { Observable } from 'rxjs'
-import { ProductResponse, ProductEntity } from 'src/core/models/product.model'
-import { UserEntity } from 'src/core/models/user.model'
+import { ProductResponse, ProductEntity } from 'src/shared/models/product.model'
+import { UserEntity } from 'src/shared/models/user.model'
 import { environment } from 'src/environments/environment'
-import { OrderEntity } from 'src/core/models/order.model'
+import { OrderEntity, OrderResponse } from 'src/shared/models/order.model'
 
 @Injectable({
     providedIn: 'root',
@@ -40,20 +40,22 @@ export class BakeryManagementApiService {
         return this.http.post<ProductEntity>(`${this.apiUrl}products`, product)
     }
 
-    getProducts(offset: number, limit: number): Observable<ProductResponse> {
-        const params = new HttpParams()
-            .set('offset', offset.toString())
-            .set('limit', limit.toString())
-
-        return this.http.get<ProductResponse>(`${this.apiUrl}products`, { params })
+    searchProduct(requestPayload: any): Observable<ProductResponse> {
+        return this.http.post<ProductResponse>(
+            `${this.apiUrl}products/search`,
+            requestPayload.navigation_context
+        )
     }
 
-    updateProduct(product: ProductEntity, result: Partial<ProductEntity>): Observable<any> {
-        return this.http.put<any>(`${this.apiUrl}products/${product.id}`, result)
+    updateProduct(
+        product: ProductEntity,
+        result: Partial<ProductEntity>
+    ): Observable<ProductEntity> {
+        return this.http.put<ProductEntity>(`${this.apiUrl}products/${product.id}`, result)
     }
 
     deleteProduct(id: number): Observable<ProductEntity> {
-        return this.http.delete<any>(`${this.apiUrl}products/${id}`)
+        return this.http.delete<ProductEntity>(`${this.apiUrl}products/${id}`)
     }
 
     getProduct(id: number): Observable<ProductEntity> {
@@ -65,7 +67,7 @@ export class BakeryManagementApiService {
         return this.http.post<any>(`${this.apiUrl}orders`, order)
     }
 
-    getOrders(): Observable<any> {
+    getOrders(): Observable<OrderResponse> {
         return this.http.get<any>(`${this.apiUrl}orders`)
     }
 

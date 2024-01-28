@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core'
 import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router'
 import { Observable, of } from 'rxjs'
-import { UserEntity } from 'src/core/models/user.model'
+import { UserEntity } from 'src/shared/models/user.model'
 import { AuthService } from 'src/services/auth.service'
-// import { UserRole } from 'src/core/common/enums'
+// import { UserRole } from 'src/shared/common/enums'
 
 @Injectable({
     providedIn: 'root',
