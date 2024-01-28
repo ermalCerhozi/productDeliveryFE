@@ -1,0 +1,84 @@
+.media-library-top-bar {
+    height: 88px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .media-library-top-bar-title-container {
+        display: flex;
+        flex-shrink: 0;
+        flex-direction: column;
+        
+        .media-library-top-bar-title {
+            font-size: 24px;
+        }
+
+        .media-library-top-bar-subtitle {
+            font-size: 12px;
+            color: var(--00-on-surface-medium-emphasis, rgba(0, 0, 0, 0.60));
+        }
+    }
+
+    .media-library-top-bar-search-container {
+        flex: 1 1;
+        min-width: 10%;
+
+        .media-library-top-bar-search-container-form {
+            min-width: 0;
+            width: 100%;
+
+            .media-library-top-bar-search-container-form-search-icon {
+                cursor: pointer;
+                padding-right: 30px;
+                position: relative;
+                bottom: 2px;
+                opacity: 0.7;
+            }
+
+            .media-library-top-bar-search-container-form-suffix {
+                display: flex;
+
+                .media-library-top-bar-search-container-form-suffix-cancel-icon {
+                    color: #00000099;
+                    font-size: 24px !important;
+                    margin-right: 10px;
+                    cursor: pointer;
+                }
+            }   
+
+        }
+    }
+
+    .media-library-top-bar-upload-button {
+        flex-shrink: 0;
+        align-items: center;
+        height: 36px !important;
+        padding-right: 10px !important;
+        position: relative;
+        bottom: 10px;
+        
+        mat-icon {
+            padding-right: 10px;
+        }
+
+        span {
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 16px;
+            letter-spacing: 1.35px;
+            padding-right: 10px;
+        }
+    }
+
+    @media (max-width: 999px) {
+        .media-library-top-bar-title-container {
+            display: none;
+        }
+    }
+    @media (min-width: 1001px) {
+        .media-library-top-bar-search-container {
+            padding: 0px 50px 0px 50px;
+        }
+    }
+}

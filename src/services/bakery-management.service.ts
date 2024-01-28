@@ -12,8 +12,8 @@ import { NavigationContext } from 'src/shared/models/navigation-context.model'
     providedIn: 'root',
 })
 export class BakeryManagementService {
-    public ordersList!: OrderEntity[]
-    public productsList!: ProductEntity[]
+    public ordersList: OrderEntity[] = []
+    public productsList: ProductEntity[] = []
     public productsCount!: number
     public ordersCount!: number
     public navigationContext: NavigationContext
@@ -26,7 +26,7 @@ export class BakeryManagementService {
         return {
             pagination: {
                 offset: 0,
-                limit: 20,
+                limit: 31,
             },
             productFilters: {},
             orderFilters: {
@@ -38,10 +38,10 @@ export class BakeryManagementService {
             // sorts: {
             //     $created_at: SortDirection.DESC,
             // },
-            // searchOptions: {
-            //     title: true,
-            //     metadata: true,
-            // },
+            searchOptions: {
+                title: true,
+                all: false,
+            },
             getCount: true,
         }
     }
@@ -50,7 +50,7 @@ export class BakeryManagementService {
     updateProductList(append: boolean): Observable<ProductResponse> {
         if (!append) {
             this.productsList = []
-            this.navigationContext.pagination.limit = 20
+            this.navigationContext.pagination.limit = 31
             this.navigationContext.pagination.offset = 0
         }
 
@@ -62,16 +62,16 @@ export class BakeryManagementService {
         return this.bakeryManagementApiService.searchProduct(requestPayload).pipe(
             tap((response: ProductResponse) => {
                 if (append) {
-                    this.productsList = response.products
+                    this.productsList = [...this.productsList, ...response.products]
                 } else {
                     this.productsList = response.products
                 }
-
-                this.productsCount = response.count
+                this.navigationContext.pagination.offset += response.products.length
                 if (this.navigationContext.getCount) {
                     this.productsCount = response.count
-                }
+                }                
             })
+            
         )
     }
 

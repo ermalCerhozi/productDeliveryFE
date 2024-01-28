@@ -1,0 +1,74 @@
+<div class="media-library-top-bar">
+    <div class="media-library-top-bar-title-container">
+        <span class="media-library-top-bar-title"> {{ title }} Library</span>
+        <span class="media-library-top-bar-subtitle">
+            Total number of results {{mediaCount}}
+        </span>
+    </div>
+    <!-- search bar -->
+    <div class="media-library-top-bar-search-container">
+        <mat-form-field appearance="fill" class="media-library-top-bar-search-container-form">
+            <mat-icon matPrefix class="media-library-top-bar-search-container-form-search-icon"
+                >search</mat-icon
+            >
+            <mat-label>{{ placeholder }}</mat-label>
+            <input
+                [formControl]="searchQuery"
+                matInput
+                [matAutocomplete]="topBarSearchAutocomplete"
+                #matAutocomplete
+                placeholder="{{ placeholder }}"
+            />
+            <mat-autocomplete #topBarSearchAutocomplete="matAutocomplete">
+                <mat-option
+                    class="media-library-top-bar-search-container-form-options-menu"
+                    disabled="true"
+                >
+                    <div class="media-library-top-bar-search-container-form-options-menu-checkbox">
+                        <span> Search By: </span>
+                        <mat-checkbox
+                            color="primary"
+                            name="title"
+                            [(ngModel)]="searchOptions.title"
+                            [ngModelOptions]="{ standalone: true }"
+                            (ngModelChange)="changeSearchOptions()"
+                        >
+                            Title</mat-checkbox
+                        >
+                        <mat-checkbox
+                            color="primary"
+                            name="meta"
+                            [(ngModel)]="searchOptions.all"
+                            [ngModelOptions]="{ standalone: true }"
+                            (ngModelChange)="changeSearchOptions()"
+                        >
+                            All  </mat-checkbox
+                        >
+                    </div>
+                </mat-option>
+            </mat-autocomplete>
+            <div class="media-library-top-bar-search-container-form-suffix" matSuffix>
+                <mat-icon
+                    *ngIf="searchQuery.value?.length"
+                    class="media-library-top-bar-search-container-form-suffix-cancel-icon"
+                    (click)="clearSearchQuery()"
+                    >cancel</mat-icon
+                >
+            </div>
+        </mat-form-field>
+    </div>
+
+    <!-- button for media upload -->
+    <div>
+        <button
+            class="media-library-top-bar-upload-button"
+            mat-flat-button
+            color="primary"
+            [disabled]="disableAddItem"
+            (click)="openUploadPanel()"
+        >
+            <mat-icon>file_upload</mat-icon
+            ><span> Add {{ title }}</span>
+        </button>
+    </div>
+</div>

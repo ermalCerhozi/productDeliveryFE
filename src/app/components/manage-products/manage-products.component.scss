@@ -1,33 +1,33 @@
-.manage-products {
-  // height: 100%;
+.controls-container {
+  padding: 0px 10px 0px 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
-  .manage-products-controls-container {
+  .controls-search{
     display: flex;
-    flex-direction: row;
-    margin: 10px 5px 0px 5px;
-    justify-content: center;
+    flex: 1 1 auto;
     align-items: center;
-    overflow-y: hidden;
 
-    mat-form-field {  
-      display: flex;
-      flex: 1 1;
-      justify-content: center;
-      align-items: center;
+    mat-icon {
+      opacity: 0.7;
     }
+  }
 
-    .add-button{
-      margin: 0 10px 0 10px;
-    }
+  .controls-add{
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
   }
 }
 
-.manage-products-item-list {
+.mat-mdc-form-field {
+  margin: 15px 10px 0 10px;
   flex-grow: 1;
-  overflow-y: auto;
-  height: 100%;
-  
-  .table-list {
-    flex-grow: 1;
-  }
+}
+
+.filter-button{
+  margin: 0 10px 0 10px;
 }

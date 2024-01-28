@@ -1,10 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core'
+import { MatTableDataSource } from '@angular/material/table'
 import { ProductEntity } from 'src/shared/models/product.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
+import { ChangeDetectorRef } from '@angular/core'
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { SearchOptions } from 'src/shared/models/navigation-context.model'
+
 
 @Component({
     selector: 'app-manage-products',
@@ -14,24 +19,47 @@ import { MatDialog } from '@angular/material/dialog'
 })
 export class ManageProductsComponent implements OnInit {
     searchTerm = ''
+    items = 100
+    displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
+    @ViewChild(MatPaginator) paginator!: MatPaginator
+
+    dataSource: MatTableDataSource<ProductEntity> = new MatTableDataSource<ProductEntity>([])
     isLoading = false
     hasMoreProductsToLoad = false
 
     constructor(
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private cd: ChangeDetectorRef
     ) {}
 
     ngOnInit() {
         this.getProducts(true)
     }
 
+    ngAfterViewInit() {
+        this.dataSource.paginator = this.paginator
+        this.paginator.page.subscribe((event) => {
+            console.log('event: ', event.pageIndex, event.previousPageIndex);
+            
+            if (event.pageIndex > event.previousPageIndex!) {
+                this.getProducts(true)
+            }
+        });
+    
+      }
+
     getProducts(append: boolean) {
         this.isLoading = true
         this.bakeryManagementService.updateProductList(append).subscribe({
             next: () => {
                 this.isLoading = false
+                this.dataSource.data = this.bakeryManagementService.productsList
+                this.items = this.bakeryManagementService.productsCount
+
+                this.cd.detectChanges()
+                
             },
             error: (error) => {
                 this.isLoading = false
@@ -107,16 +135,34 @@ export class ManageProductsComponent implements OnInit {
         })
     }
 
-    // TODO: Implement debounce and min length on search input to optimize searchProduct function
-    searchProduct(): void {
-        this.bakeryManagementService.navigationContext.productFilters.search = this.searchTerm
-        this.getProducts(true)
+    getSearchOptions() : SearchOptions {
+        return this.bakeryManagementService.navigationContext.searchOptions
     }
 
-    // TODO: Fix clear search functionality
-    clearSearch(event: Event): void {
-        event.stopPropagation()
-        this.searchTerm = ''
-        this.searchProduct()
+    setSearchQuery(data: string) {
+        console.log('data: ', data);
+        
+        // this.searchService.setSearchQuery(data)
     }
+
+    setSearchOptions(searchOptions: SearchOptions) {
+        console.log('searchOptions: ', searchOptions);
+        // this.searchService.setSearchOptions(searchOptions)
+    }
+
+    // TODO: Implement debounce and min length on search input to optimize searchProduct function
+    // searchProduct(): void {
+    //     this.bakeryManagementService.navigationContext.productFilters.search = this.searchTerm
+    //     this.getProducts(true)
+    //     if (this.dataSource.paginator) {
+    //         this.dataSource.paginator.firstPage();
+    //     }
+    // }
+
+    // TODO: Fix clear search functionality
+    // clearSearch(event: Event): void {
+    //     event.stopPropagation()
+    //     this.searchTerm = ''
+    //     this.searchProduct()
+    // }
 }

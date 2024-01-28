@@ -4,7 +4,7 @@ export interface NavigationContext {
     productFilters: ProductFilters
     orderFilters: OrderFilters
     sorts?: Sorts
-    searchOptions?: SearchOptions
+    searchOptions: SearchOptions
     getCount: boolean
 }
 
@@ -37,7 +37,7 @@ interface Sorts {
     $created_at: SortDirection
 }
 
-interface SearchOptions {
+export interface SearchOptions {
     title: boolean
-    metadata: boolean
+    all: boolean
 }

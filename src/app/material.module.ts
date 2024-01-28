@@ -15,6 +15,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker'
 import { MatNativeDateModule } from '@angular/material/core'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 const materialComponents = [
     MatCardModule,
@@ -33,6 +34,7 @@ const materialComponents = [
     MatNativeDateModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
+    MatAutocompleteModule,
 ]
 
 @NgModule({
