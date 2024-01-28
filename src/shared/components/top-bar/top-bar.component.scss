@@ -54,12 +54,13 @@
         flex-shrink: 0;
         align-items: center;
         height: 36px !important;
-        padding-right: 10px !important;
+        margin: 0px 5px 0px 5px;
         position: relative;
         bottom: 10px;
         
         mat-icon {
-            padding-right: 10px;
+            padding-right: 5px;
+            transform: scale(1.4);
         }
 
         span {
@@ -67,7 +68,6 @@
             font-size: 14px;
             line-height: 16px;
             letter-spacing: 1.35px;
-            padding-right: 10px;
         }
     }
 

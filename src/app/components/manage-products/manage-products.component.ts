@@ -50,9 +50,11 @@ export class ManageProductsComponent implements OnInit {
     actionDropdown: DropdownMenuListItem[] = [
         {
             label: DropdownActionOptions.EDIT,
+            icon: 'edit',
         },
         {
             label: DropdownActionOptions.DELETE,
+            icon: 'delete',
         },
     ]
 

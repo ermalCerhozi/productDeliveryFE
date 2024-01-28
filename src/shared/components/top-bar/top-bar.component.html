@@ -51,6 +51,7 @@
                 <mat-icon
                     *ngIf="searchQuery.value?.length"
                     class="media-library-top-bar-search-container-form-suffix-cancel-icon"
+                    fontSet="material-icons-outlined"
                     (click)="clearSearchQuery()"
                     >cancel</mat-icon
                 >
@@ -59,15 +60,14 @@
     </div>
 
     <!-- button for media upload -->
-    <div>
-        <button
-            class="media-library-top-bar-upload-button"
-            mat-flat-button
-            color="primary"
-            [disabled]="disableAddItem"
-            (click)="openUploadPanel()"
-        >
-            <mat-icon>file_upload</mat-icon><span> Add {{ title }}</span>
-        </button>
-    </div>
+    <button
+        class="media-library-top-bar-upload-button"
+        mat-flat-button
+        color="primary"
+        [disabled]="disableAddItem"
+        (click)="openUploadPanel()"
+    >
+        <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
+        <span> Add {{ title }}</span>
+    </button>
 </div>
