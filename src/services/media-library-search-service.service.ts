@@ -22,28 +22,29 @@ export class MediaLibrarySearchService implements OnDestroy {
     private onDestroy = new Subject<void>()
     private debounceTimeout: ReturnType<typeof setTimeout> | undefined
 
-    public readonly defaultDateFilter: {value: string, label: string} = {
+    public readonly defaultDateFilter: { value: string; label: string } = {
         value: 'any-time',
         label: 'GT_MEDIA_DATE_ANY_TIME',
     }
 
-    private mediaDates: BehaviorSubject<{value: string, label: string}[]> = new BehaviorSubject<{value: string, label: string}[]>([
-      { value: 'any-time', label: 'GT_MEDIA_DATE_ANY_TIME' },
-      { value: 'last-24h', label: 'GT_MEDIA_DATE_LAST_24_HOURS' },
-      { value: 'last-48h', label: 'GT_MEDIA_DATE_LAST_48_HOURS' },
-      { value: 'last-72h', label: 'GT_MEDIA_DATE_LAST_72_HOURS' },
-      { value: 'last-7days', label: 'GT_MEDIA_DATE_LAST_7_DAYS' },
-      { value: 'last-30days', label: 'GT_MEDIA_DATE_LAST_30_DAYS' },
-      { value: 'last-12months', label: 'GT_MEDIA_DATE_LAST_12_MONTHS' },
+    private mediaDates: BehaviorSubject<{ value: string; label: string }[]> = new BehaviorSubject<
+        { value: string; label: string }[]
+    >([
+        { value: 'any-time', label: 'GT_MEDIA_DATE_ANY_TIME' },
+        { value: 'last-24h', label: 'GT_MEDIA_DATE_LAST_24_HOURS' },
+        { value: 'last-48h', label: 'GT_MEDIA_DATE_LAST_48_HOURS' },
+        { value: 'last-72h', label: 'GT_MEDIA_DATE_LAST_72_HOURS' },
+        { value: 'last-7days', label: 'GT_MEDIA_DATE_LAST_7_DAYS' },
+        { value: 'last-30days', label: 'GT_MEDIA_DATE_LAST_30_DAYS' },
+        { value: 'last-12months', label: 'GT_MEDIA_DATE_LAST_12_MONTHS' },
     ])
 
-    private selectedDate: BehaviorSubject<{value: string, label: string}> = new BehaviorSubject<{value: string, label: string}>(
-      this.defaultDateFilter
-    )
+    private selectedDate: BehaviorSubject<{ value: string; label: string }> = new BehaviorSubject<{
+        value: string
+        label: string
+    }>(this.defaultDateFilter)
 
-    constructor(
-        private bakeryManagementService: BakeryManagementService,
-    ) {}
+    constructor(private bakeryManagementService: BakeryManagementService) {}
 
     ngOnDestroy() {
         this.onDestroy.next()
@@ -97,7 +98,7 @@ export class MediaLibrarySearchService implements OnDestroy {
         }
     }
 
-    applyDateFilter(data: {value: string, label: string}) {
+    applyDateFilter(data: { value: string; label: string }) {
         this.selectedDate.next(data)
         this.applyFiltersDebounced()
     }
@@ -117,7 +118,7 @@ export class MediaLibrarySearchService implements OnDestroy {
         this.bakeryManagementService.clearFilters()
     }
 
-    getMediaLibraryFilterResults(): Observable<{value: string, label: string}[]> {
+    getMediaLibraryFilterResults(): Observable<{ value: string; label: string }[]> {
         // return this.getBaseFilterResults().pipe(
         //     combineLatestWith(this.selectedProjects,),
         //     map(([previous, projects, tags]) => [...previous, ...projects, ...tags]),
@@ -136,8 +137,8 @@ export class MediaLibrarySearchService implements OnDestroy {
 
     hasSearched(): boolean {
         return (
-            (this.bakeryManagementService.navigationContext.filters.queryString !== undefined &&
-                this.bakeryManagementService.navigationContext.filters.queryString.length > 0)
+            this.bakeryManagementService.navigationContext.filters.queryString !== undefined &&
+            this.bakeryManagementService.navigationContext.filters.queryString.length > 0
         )
     }
 
@@ -153,12 +154,12 @@ export class MediaLibrarySearchService implements OnDestroy {
         )
     }
 
-    private getBaseFilterResults(): Observable<{value: string, label: string}[]> {
+    private getBaseFilterResults(): Observable<{ value: string; label: string }[]> {
         // can add other base filters in the future
-        return this.getSelectedDateFilterResults();
+        return this.getSelectedDateFilterResults()
     }
 
-    private getSelectedDateFilterResults(): Observable<{value: string, label: string}[]> {
+    private getSelectedDateFilterResults(): Observable<{ value: string; label: string }[]> {
         return this.selectedDate.asObservable().pipe(
             map((date) => {
                 if (date.value === 'any-time') {
@@ -216,8 +217,8 @@ export class MediaLibrarySearchService implements OnDestroy {
 
     // checks if the temporary selected filters are different from the current selected filters
     private haveFiltersChanged(
-        temporaryFilterArray: {value: string, label: string}[],
-        selectedFilterArray: {value: string, label: string}[]
+        temporaryFilterArray: { value: string; label: string }[],
+        selectedFilterArray: { value: string; label: string }[]
     ): boolean {
         if (temporaryFilterArray.length === selectedFilterArray.length) {
             return temporaryFilterArray.every(

@@ -41,7 +41,9 @@ export class BakeryManagementApiService {
         return this.http.post<ProductEntity>(`${this.apiUrl}products`, product)
     }
 
-    searchProduct(requestPayload: { navigation_context: NavigationContext }): Observable<ProductResponse> {
+    searchProduct(requestPayload: {
+        navigation_context: NavigationContext
+    }): Observable<ProductResponse> {
         return this.http.post<ProductResponse>(
             `${this.apiUrl}products/search`,
             requestPayload.navigation_context

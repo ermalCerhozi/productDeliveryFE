@@ -14,7 +14,9 @@ import { NavigationContext } from 'src/shared/models/navigation-context.model'
 export class BakeryManagementService {
     public ordersList: OrderEntity[] = []
 
-    private productsListSubject: BehaviorSubject<ProductEntity[]> = new BehaviorSubject<ProductEntity[]>([]);
+    private productsListSubject: BehaviorSubject<ProductEntity[]> = new BehaviorSubject<
+        ProductEntity[]
+    >([])
     public productsList$: Observable<ProductEntity[]> = this.productsListSubject.asObservable()
 
     public productsCount!: number
@@ -52,8 +54,8 @@ export class BakeryManagementService {
 
     // TODO: Implement pagination
     updateProductList(append: boolean): Observable<ProductResponse> {
-        console.log('updateProductList');
-        
+        console.log('updateProductList')
+
         if (!append) {
             this.productsListSubject.next([])
             this.navigationContext.pagination.limit = 31
@@ -67,25 +69,23 @@ export class BakeryManagementService {
 
         return this.bakeryManagementApiService.searchProduct(requestPayload).pipe(
             tap((response: ProductResponse) => {
-                let newProductsList;
+                let newProductsList
                 if (append) {
-                    newProductsList = [...this.productsListSubject.getValue(), ...response.products];
+                    newProductsList = [...this.productsListSubject.getValue(), ...response.products]
                 } else {
-                    newProductsList = response.products;
+                    newProductsList = response.products
                 }
-                this.productsListSubject.next(newProductsList);
+                this.productsListSubject.next(newProductsList)
 
                 this.navigationContext.pagination.offset += response.products.length
                 if (this.navigationContext.getCount) {
                     this.productsCount = response.count
-                }                
+                }
             })
-            
         )
     }
 
     updateOrdersList(append: boolean): Observable<ProductResponse> {
-        console.log('updateOrdersList')
         if (!append) {
             this.productsListSubject.next([])
             this.navigationContext.pagination.limit = 20
@@ -120,9 +120,9 @@ export class BakeryManagementService {
     hasActiveFilters(item: string): boolean {
         switch (item) {
             case 'product':
-                // return Object.keys(this.navigationContext.productFilters).length > 0
+            // return Object.keys(this.navigationContext.productFilters).length > 0
             case 'order':
-                // return Object.keys(this.navigationContext.orderFilters).length > 0
+            // return Object.keys(this.navigationContext.orderFilters).length > 0
             default:
                 return false
         }
