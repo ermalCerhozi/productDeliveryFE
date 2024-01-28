@@ -27,20 +27,20 @@
                     <div class="media-library-top-bar-search-container-form-options-menu-checkbox">
                         <span> Search By: </span>
                         <mat-checkbox
-                            color="primary"
                             name="title"
                             [(ngModel)]="searchOptions.title"
                             [ngModelOptions]="{ standalone: true }"
-                            (ngModelChange)="changeSearchOptions()"
+                            (ngModelChange)="changeSearchOptions('title')"
+                            [disabled]="searchOptions.title"
                         >
                             Title</mat-checkbox
                         >
                         <mat-checkbox
-                            color="primary"
                             name="meta"
                             [(ngModel)]="searchOptions.all"
                             [ngModelOptions]="{ standalone: true }"
-                            (ngModelChange)="changeSearchOptions()"
+                            (ngModelChange)="changeSearchOptions('all')"
+                            [disabled]="searchOptions.all"
                         >
                             All  </mat-checkbox
                         >

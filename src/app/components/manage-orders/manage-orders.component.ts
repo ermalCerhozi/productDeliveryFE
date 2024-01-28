@@ -63,7 +63,7 @@ export class ManageOrdersComponent implements OnInit {
     }
 
     clearFilters() {
-        this.bakeryManagementService.navigationContext.orderFilters = {}
+        this.bakeryManagementService.navigationContext.filters = {}
         this.getOrders()
     }
 

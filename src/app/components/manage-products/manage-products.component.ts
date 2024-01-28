@@ -6,9 +6,9 @@ import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
-import { ChangeDetectorRef } from '@angular/core'
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import { SearchOptions } from 'src/shared/models/navigation-context.model'
+import { MediaLibrarySearchService } from 'src/services/media-library-search-service.service'
 
 
 @Component({
@@ -18,8 +18,6 @@ import { SearchOptions } from 'src/shared/models/navigation-context.model'
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ManageProductsComponent implements OnInit {
-    searchTerm = ''
-    items = 100
     displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
     @ViewChild(MatPaginator) paginator!: MatPaginator
 
@@ -30,8 +28,8 @@ export class ManageProductsComponent implements OnInit {
     constructor(
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
+        private searchService: MediaLibrarySearchService,
         public dialog: MatDialog,
-        private cd: ChangeDetectorRef
     ) {}
 
     ngOnInit() {
@@ -50,16 +48,14 @@ export class ManageProductsComponent implements OnInit {
     
       }
 
-    getProducts(append: boolean) {
+      getProducts(append: boolean) {
         this.isLoading = true
         this.bakeryManagementService.updateProductList(append).subscribe({
             next: () => {
                 this.isLoading = false
-                this.dataSource.data = this.bakeryManagementService.productsList
-                this.items = this.bakeryManagementService.productsCount
-
-                this.cd.detectChanges()
-                
+                this.bakeryManagementService.productsList$.subscribe(products => {
+                    this.dataSource.data = products;
+                });                
             },
             error: (error) => {
                 this.isLoading = false
@@ -67,17 +63,6 @@ export class ManageProductsComponent implements OnInit {
             },
         })
     }
-
-    scrolledToBottom(item: string) {
-        // TODO: fix this function
-        console.log('scrolled to bottom')
-        if (this.bakeryManagementService.hasMoreItemsToLoad(item)) {
-            console.log('scrolled and has items')
-            this.bakeryManagementService.loadMoreItems(item)
-        }
-    }
-
-    // TODO: Fix product update for the product added after the initial 20 items
     createUpdateProduct(action: string, product?: ProductEntity): void {
         const dialogRef = this.dialog.open(CreateUpdateDialogComponent, {
             width: '80%',
@@ -124,7 +109,7 @@ export class ManageProductsComponent implements OnInit {
                 if (result) {
                     this.bakeryManagementApiService.deleteProduct(product.id).subscribe({
                         next: () => {
-                            // TODO: Update the product list
+                            this.bakeryManagementService.updateProductList(false).subscribe()
                         },
                         error: (error) => {
                             console.log('Error: ', error)
@@ -136,33 +121,14 @@ export class ManageProductsComponent implements OnInit {
     }
 
     getSearchOptions() : SearchOptions {
-        return this.bakeryManagementService.navigationContext.searchOptions
+        return this.searchService.getSearchOptions()
     }
 
     setSearchQuery(data: string) {
-        console.log('data: ', data);
-        
-        // this.searchService.setSearchQuery(data)
+        this.searchService.setSearchQuery(data)
     }
 
     setSearchOptions(searchOptions: SearchOptions) {
-        console.log('searchOptions: ', searchOptions);
-        // this.searchService.setSearchOptions(searchOptions)
+        this.searchService.setSearchOptions(searchOptions)
     }
-
-    // TODO: Implement debounce and min length on search input to optimize searchProduct function
-    // searchProduct(): void {
-    //     this.bakeryManagementService.navigationContext.productFilters.search = this.searchTerm
-    //     this.getProducts(true)
-    //     if (this.dataSource.paginator) {
-    //         this.dataSource.paginator.firstPage();
-    //     }
-    // }
-
-    // TODO: Fix clear search functionality
-    // clearSearch(event: Event): void {
-    //     event.stopPropagation()
-    //     this.searchTerm = ''
-    //     this.searchProduct()
-    // }
 }

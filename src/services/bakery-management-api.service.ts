@@ -5,6 +5,7 @@ import { ProductResponse, ProductEntity } from 'src/shared/models/product.model'
 import { UserEntity } from 'src/shared/models/user.model'
 import { environment } from 'src/environments/environment'
 import { OrderEntity, OrderResponse } from 'src/shared/models/order.model'
+import { NavigationContext } from 'src/shared/models/navigation-context.model'
 
 @Injectable({
     providedIn: 'root',
@@ -40,7 +41,7 @@ export class BakeryManagementApiService {
         return this.http.post<ProductEntity>(`${this.apiUrl}products`, product)
     }
 
-    searchProduct(requestPayload: any): Observable<ProductResponse> {
+    searchProduct(requestPayload: { navigation_context: NavigationContext }): Observable<ProductResponse> {
         return this.http.post<ProductResponse>(
             `${this.apiUrl}products/search`,
             requestPayload.navigation_context
