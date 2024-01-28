@@ -3,11 +3,10 @@ import { MatDialog } from '@angular/material/dialog'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
-import { OrderEntity } from 'src/core/models/order.model'
+import { OrderEntity } from 'src/shared/models/order.model'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { SelectionModel } from '@angular/cdk/collections'
-import { FormatDatePipe } from 'src/core/common/pipes/format-date.pipe'
 
 @Component({
     selector: 'app-manage-orders',
@@ -20,8 +19,7 @@ export class ManageOrdersComponent implements OnInit {
     constructor(
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
-        public dialog: MatDialog,
-        private formatDatePipe: FormatDatePipe
+        public dialog: MatDialog
     ) {}
 
     ngOnInit() {
@@ -29,7 +27,7 @@ export class ManageOrdersComponent implements OnInit {
     }
 
     getOrders() {
-        this.bakeryManagementService.updateOrdersList().subscribe()
+        // this.bakeryManagementService.updateOrdersList().subscribe()
     }
 
     isAllSelected() {
@@ -49,24 +47,23 @@ export class ManageOrdersComponent implements OnInit {
     }
 
     openFilterOrdersDialog(): void {
-        const dialogRef = this.dialog.open(FilterDialogComponent, {
-            data: this.bakeryManagementService.activeFilters,
-        })
-
-        dialogRef.afterClosed().subscribe({
-            next: (result) => {
-                if (result) {
-                    this.bakeryManagementService.getFilteredResults(result)
-                }
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
+        // const dialogRef = this.dialog.open(FilterDialogComponent, {
+        //     data: this.bakeryManagementService.navigationContext.orderFilters,
+        // })
+        // dialogRef.afterClosed().subscribe({
+        //     next: (result) => {
+        //         if (result) {
+        //             this.bakeryManagementService.getFilteredResults(result)
+        //         }
+        //     },
+        //     error: (error) => {
+        //         console.log('Error: ', error)
+        //     },
+        // })
     }
 
     clearFilters() {
-        this.bakeryManagementService.activeFilters = null
+        this.bakeryManagementService.navigationContext.orderFilters = {}
         this.getOrders()
     }
 

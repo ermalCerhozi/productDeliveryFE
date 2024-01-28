@@ -5,7 +5,7 @@ import {
     animateLeft,
     animateTop,
     animateBottom,
-} from 'src/core/animations/animations'
+} from 'src/shared/animations/animations'
 import { Router } from '@angular/router'
 
 @Component({

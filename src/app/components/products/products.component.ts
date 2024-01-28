@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { ProductEntity } from 'src/core/models/product.model'
+import { ProductEntity } from 'src/shared/models/product.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 
 @Component({
@@ -15,9 +15,9 @@ export class ProductsComponent implements OnInit {
 
     ngOnInit() {
         // TODO: Implement pagination or just leave as is to display only some of the available items
-        this.bakeryManagementApiService.getProducts(0, 20).subscribe((res) => {
-            this.products = res.products
-        })
+        // this.bakeryManagementApiService.getProducts(0, 20).subscribe((res) => {
+        //     this.products = res.products
+        // })
     }
 
     toggleShow() {

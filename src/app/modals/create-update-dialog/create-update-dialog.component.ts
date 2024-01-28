@@ -1,9 +1,9 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
-import { OrderItemEntity } from 'src/core/models/order.model'
-import { ProductEntity } from 'src/core/models/product.model'
-import { UserEntity } from 'src/core/models/user.model'
+import { OrderItemEntity } from 'src/shared/models/order.model'
+import { ProductEntity } from 'src/shared/models/product.model'
+import { UserEntity } from 'src/shared/models/user.model'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
@@ -101,7 +101,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                 },
             })
             // TODO: implement pagination
-            this.bakeryManagementService.getAllProducts(0, 20).subscribe({
+            this.bakeryManagementService.updateProductList(true).subscribe({
                 next: (res) => {
                     // TODO: Implement pagination
                     this.products = res.products

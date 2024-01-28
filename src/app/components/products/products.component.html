@@ -57,7 +57,7 @@
             <div class="bakers__container">
                 <div class="baker" *ngFor="let product of products">
                     <img [src]="product.image" alt="baker" />
-                    <h5>{{product.product_name}}</h5>
+                    <h5>{{ product.product_name }}</h5>
                     <h6>{{ product.price | number : '1.0-0' }} LEK</h6>
                     <ul class="social-icons">
                         <li>

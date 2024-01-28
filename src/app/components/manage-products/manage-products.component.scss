@@ -1,0 +1,33 @@
+.manage-products {
+  // height: 100%;
+
+  .manage-products-controls-container {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 5px 0px 5px;
+    justify-content: center;
+    align-items: center;
+    overflow-y: hidden;
+
+    mat-form-field {  
+      display: flex;
+      flex: 1 1;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .add-button{
+      margin: 0 10px 0 10px;
+    }
+  }
+}
+
+.manage-products-item-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 100%;
+  
+  .table-list {
+    flex-grow: 1;
+  }
+}

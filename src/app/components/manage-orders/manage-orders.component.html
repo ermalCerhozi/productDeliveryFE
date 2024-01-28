@@ -14,7 +14,7 @@
         class="filter-button"
         mat-stroked-button
         color="primary"
-        [disabled]="!bakeryManagementService.hasActiveFilters()"
+        [disabled]="!bakeryManagementService.hasActiveFilters('order')"
         (click)="clearFilters()"
     >
         Clear Filters
@@ -74,7 +74,9 @@
                     </div>
                 </div>
             </td>
-            <td>{{ row.created_at | formatDate }}</td>
+            <!-- TODO: -->
+            <!-- <td>{{ row.created_at | formatDate }}</td>  -->
+            <td>{{ row.created_at }}</td>
             <td>
                 <button mat-icon-button [matMenuTriggerFor]="menu">
                     <mat-icon>more_vert</mat-icon>

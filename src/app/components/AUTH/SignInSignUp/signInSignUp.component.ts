@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
-import { phoneNumberRegex } from 'src/core/common/constants'
+import { phoneNumberRegex } from 'src/shared/common/constants'
 import { AuthService } from 'src/services/auth.service'
 
 @Component({

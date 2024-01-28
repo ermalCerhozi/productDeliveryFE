@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
-import { ProductEntity } from 'src/core/models/product.model'
-import { UserEntity } from 'src/core/models/user.model'
+import { ProductEntity } from 'src/shared/models/product.model'
+import { UserEntity } from 'src/shared/models/user.model'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
 
 @Component({
@@ -45,14 +45,14 @@ export class FilterDialogComponent implements OnInit {
             },
         })
         // TODO: Implement Pagination
-        this.bakeryManagementService.getAllProducts(0, 20).subscribe({
-            next: (res) => {
-                this.products = res.products
-            },
-            error: (error) => {
-                console.log('There was an error getting products:', error)
-            },
-        })
+        // this.bakeryManagementService.getAllProducts(0, 20).subscribe({
+        //     next: (res) => {
+        //         this.products = res.products
+        //     },
+        //     error: (error) => {
+        //         console.log('There was an error getting products:', error)
+        //     },
+        // })
     }
 
     applyFilter() {
