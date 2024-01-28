@@ -53,12 +53,12 @@ export class TopBarComponent implements OnInit, OnDestroy {
     changeSearchOptions(item: string) {
         switch (item) {
             case 'title':
-                    this.searchOptions.title = true
-                    this.searchOptions.all = false
+                this.searchOptions.title = true
+                this.searchOptions.all = false
                 break
-                case 'all':
-                    this.searchOptions.all = true
-                    this.searchOptions.title = false
+            case 'all':
+                this.searchOptions.all = true
+                this.searchOptions.title = false
                 break
         }
         this.searchOptionsChange.emit(this.searchOptions)

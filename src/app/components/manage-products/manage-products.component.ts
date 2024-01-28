@@ -6,10 +6,10 @@ import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator } from '@angular/material/paginator'
 import { SearchOptions } from 'src/shared/models/navigation-context.model'
 import { MediaLibrarySearchService } from 'src/services/media-library-search-service.service'
-
+import { take, map } from 'rxjs/operators'
 
 @Component({
     selector: 'app-manage-products',
@@ -29,7 +29,7 @@ export class ManageProductsComponent implements OnInit {
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
         private searchService: MediaLibrarySearchService,
-        public dialog: MatDialog,
+        public dialog: MatDialog
     ) {}
 
     ngOnInit() {
@@ -39,23 +39,20 @@ export class ManageProductsComponent implements OnInit {
     ngAfterViewInit() {
         this.dataSource.paginator = this.paginator
         this.paginator.page.subscribe((event) => {
-            console.log('event: ', event.pageIndex, event.previousPageIndex);
-            
             if (event.pageIndex > event.previousPageIndex!) {
                 this.getProducts(true)
             }
-        });
-    
-      }
+        })
+    }
 
-      getProducts(append: boolean) {
+    getProducts(append: boolean) {
         this.isLoading = true
         this.bakeryManagementService.updateProductList(append).subscribe({
             next: () => {
                 this.isLoading = false
-                this.bakeryManagementService.productsList$.subscribe(products => {
-                    this.dataSource.data = products;
-                });                
+                this.bakeryManagementService.productsList$.subscribe((products) => {
+                    this.dataSource.data = products
+                })
             },
             error: (error) => {
                 this.isLoading = false
@@ -63,6 +60,7 @@ export class ManageProductsComponent implements OnInit {
             },
         })
     }
+
     createUpdateProduct(action: string, product?: ProductEntity): void {
         const dialogRef = this.dialog.open(CreateUpdateDialogComponent, {
             width: '80%',
@@ -76,7 +74,15 @@ export class ManageProductsComponent implements OnInit {
                     if (action === 'create') {
                         this.bakeryManagementApiService.createProduct(result).subscribe({
                             next: (res) => {
-                                // TODO: update the product list with the new product
+                                this.bakeryManagementService.productsList$.pipe(
+                                    take(1),
+                                    map((products: any[]) => {
+                                        products.unshift(res);
+                                        return products;
+                                    })
+                                ).subscribe((products) => {
+                                    this.dataSource.data = products;
+                                });
                             },
                             error: (error) => {
                                 console.log('Error: ', error)
@@ -84,8 +90,10 @@ export class ManageProductsComponent implements OnInit {
                         })
                     } else if (action === 'update' && product) {
                         this.bakeryManagementApiService.updateProduct(product, result).subscribe({
-                            next: (res) => {
-                                // TODO: update the product list with the updated product
+                            next: () => {
+                                this.bakeryManagementService.productsList$.subscribe((products) => {
+                                    this.dataSource.data = products
+                                })
                             },
                             error: (error) => {
                                 console.log('Error: ', error)
@@ -109,7 +117,9 @@ export class ManageProductsComponent implements OnInit {
                 if (result) {
                     this.bakeryManagementApiService.deleteProduct(product.id).subscribe({
                         next: () => {
-                            this.bakeryManagementService.updateProductList(false).subscribe()
+                            this.bakeryManagementService.productsList$.subscribe((products) => {
+                                this.dataSource.data = products
+                            })
                         },
                         error: (error) => {
                             console.log('Error: ', error)
@@ -120,7 +130,7 @@ export class ManageProductsComponent implements OnInit {
         })
     }
 
-    getSearchOptions() : SearchOptions {
+    getSearchOptions(): SearchOptions {
         return this.searchService.getSearchOptions()
     }
 

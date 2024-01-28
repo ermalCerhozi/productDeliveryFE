@@ -54,8 +54,6 @@ export class BakeryManagementService {
 
     // TODO: Implement pagination
     updateProductList(append: boolean): Observable<ProductResponse> {
-        console.log('updateProductList')
-
         if (!append) {
             this.productsListSubject.next([])
             this.navigationContext.pagination.limit = 31

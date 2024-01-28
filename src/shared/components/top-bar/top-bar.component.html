@@ -2,7 +2,7 @@
     <div class="media-library-top-bar-title-container">
         <span class="media-library-top-bar-title"> {{ title }} Library</span>
         <span class="media-library-top-bar-subtitle">
-            Total number of results {{mediaCount}}
+            Total number of results {{ mediaCount }}
         </span>
     </div>
     <!-- search bar -->
@@ -42,8 +42,8 @@
                             (ngModelChange)="changeSearchOptions('all')"
                             [disabled]="searchOptions.all"
                         >
-                            All  </mat-checkbox
-                        >
+                            All
+                        </mat-checkbox>
                     </div>
                 </mat-option>
             </mat-autocomplete>
@@ -67,8 +67,7 @@
             [disabled]="disableAddItem"
             (click)="openUploadPanel()"
         >
-            <mat-icon>file_upload</mat-icon
-            ><span> Add {{ title }}</span>
+            <mat-icon>file_upload</mat-icon><span> Add {{ title }}</span>
         </button>
     </div>
 </div>

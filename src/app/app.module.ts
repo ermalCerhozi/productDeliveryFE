@@ -22,8 +22,7 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { AboutPageComponent } from 'src/app/components/about-page/about-page.component'
-import { ProductsTableListComponent } from 'src/app/components/products-table-list/products-table-list.component';
-import { TopBarComponent } from './components/top-bar/top-bar.component'
+import { ProductsTableListComponent } from 'src/app/components/products-table-list/products-table-list.component'
 
 @NgModule({
     declarations: [
@@ -42,7 +41,6 @@ import { TopBarComponent } from './components/top-bar/top-bar.component'
         FilterDialogComponent,
         ProductsTableListComponent,
         AboutPageComponent,
-        TopBarComponent,
     ],
     imports: [
         BrowserModule,
