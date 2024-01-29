@@ -73,9 +73,6 @@
         [type]="'product'"
         [action]="actionState!"
         [product]="activeProduct!"
-        [seller]="getSeller()"
-        [products]="getProducts() | async"
-        [clients]="getClients()"
         (updateProduct)="updateProduct($event)"
         (createProduct)="createProduct($event)"
     ></app-create-update-dialog>

@@ -21,6 +21,7 @@ import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.compon
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { AboutPageComponent } from 'src/app/components/about-page/about-page.component'
 import { ProductsTableListComponent } from 'src/app/components/products-table-list/products-table-list.component'
+import { CreateUpdateOrdersComponent } from 'src/app/components/create-update-orders/create-update-orders.component'
 
 @NgModule({
     declarations: [
@@ -36,6 +37,7 @@ import { ProductsTableListComponent } from 'src/app/components/products-table-li
         LayoutComponent,
         FilterDialogComponent,
         ProductsTableListComponent,
+        CreateUpdateOrdersComponent,
         AboutPageComponent,
     ],
     imports: [
