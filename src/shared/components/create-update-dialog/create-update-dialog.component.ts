@@ -1,6 +1,5 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
+import { Component, Input, Output, EventEmitter, OnDestroy, OnInit } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { OrderItemEntity } from 'src/shared/models/order.model'
 import { ProductEntity } from 'src/shared/models/product.model'
 import { UserEntity } from 'src/shared/models/user.model'
@@ -11,26 +10,29 @@ import { takeUntil } from 'rxjs/operators'
 @Component({
     selector: 'app-create-update-dialog',
     templateUrl: './create-update-dialog.component.html',
-    styleUrls: ['./create-update-dialog.component.css'],
+    styleUrls: ['./create-update-dialog.component.scss'],
 })
 export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     form: FormGroup = new FormGroup({})
     private unsubscribe$ = new Subject<void>()
 
-    seller: UserEntity = JSON.parse(localStorage.getItem('currentUser') || '')
-    products: ProductEntity[] = []
+    @Input() type!: string
+    @Input() action!: string
+    @Input() product!: ProductEntity
+    @Input() user!: UserEntity
+    @Input() order!: any
+    @Input() seller: UserEntity = JSON.parse(localStorage.getItem('currentUser') || '')
+    @Input() products: ProductEntity[] | null = []
+    @Input() clients: UserEntity[] = []
+    @Output() updateProduct = new EventEmitter<ProductEntity>()
+    @Output() createProduct = new EventEmitter()
+
     usedProducts: number[] = []
-    clients: UserEntity[] = []
     orderItemsFormArray: any | undefined
     roles = ['admin', 'manager', 'seller', 'client']
     totalOrderPrice = 0
 
-    constructor(
-        public dialogRef: MatDialogRef<CreateUpdateDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        public bakeryManagementService: BakeryManagementService,
-        private fb: FormBuilder
-    ) {}
+    constructor(public bakeryManagementService: BakeryManagementService, private fb: FormBuilder) {}
 
     initialFormValues: any
 
@@ -42,12 +44,12 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     initializeForm(): void {
         let formData
 
-        if (this.data.type === 'user') {
+        if (this.type === 'user') {
             formData =
-                this.data.action === 'update' && this.data.user
+                this.action === 'update' && this.user
                     ? {
-                          ...this.data.user,
-                          role: this.data.user.role.toLowerCase(),
+                          ...this.user,
+                          role: this.user.role.toLowerCase(),
                       }
                     : {
                           first_name: '',
@@ -72,10 +74,10 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                 password: [formData.password, Validators.required],
             })
             console.log(JSON.stringify(formData, null, 4))
-        } else if (this.data.type === 'product') {
+        } else if (this.type === 'product') {
             formData =
-                this.data.action === 'update' && this.data.product
-                    ? this.data.product
+                this.action === 'update' && this.product
+                    ? this.product
                     : {
                           product_name: '',
                           price: '',
@@ -91,7 +93,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                 image: [formData.image],
                 ingredients: [formData.ingredients],
             })
-        } else if (this.data.type === 'order') {
+        } else if (this.type === 'order') {
             this.bakeryManagementService.getAllUsers().subscribe({
                 next: (res) => {
                     this.clients = res.filter((user) => user.role === 'Client')
@@ -111,15 +113,13 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                     console.log('There was an error getting products:', error)
                 },
             })
-
             let formData
-
-            if (this.data.action === 'update' && this.data.order) {
-                this.usedProducts = this.data.order.order_items.map((item: any) => item.product.id)
+            if (this.action === 'update' && this.order) {
+                this.usedProducts = this.order.order_items.map((item: any) => item.product.id)
                 formData = {
-                    client: this.data.order.client.id,
-                    seller: this.data.order.seller.id,
-                    order_items: this.data.order.order_items.map((item: any) => ({
+                    client: this.order.client.id,
+                    seller: this.order.seller.id,
+                    order_items: this.order.order_items.map((item: any) => ({
                         id: item.id,
                         quantity: item.quantity,
                         returned_quantity: item.returned_quantity,
@@ -134,13 +134,11 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                     order_items: [],
                 }
             }
-
             this.form = this.fb.group({
                 client: [formData.client, Validators.required],
                 seller: [formData.seller, Validators.required],
                 order_items: this.fb.array([]),
             })
-
             this.orderItemsFormArray = this.form.get('order_items') as FormArray
             formData.order_items.forEach((orderItem: OrderItemEntity) => {
                 if (orderItem.id === undefined) {
@@ -174,7 +172,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     calculateTotalOrderPrice(orderItems: any) {
         this.totalOrderPrice = 0
         for (const item of orderItems) {
-            const product = this.products.find((p) => p.id === item.product)
+            const product = this.products!.find((p) => p.id === item.product)
             if (product) {
                 const productPrice = parseFloat(product.price)
                 this.totalOrderPrice += (item.quantity - item.returned_quantity) * productPrice
@@ -238,17 +236,20 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     }
 
     getUnusedProducts() {
-        return this.products.filter((product) => !this.usedProducts.includes(product.id))
+        return this.products!.filter((product) => !this.usedProducts.includes(product.id))
     }
 
     formHasChanged(): boolean {
         return JSON.stringify(this.initialFormValues) !== JSON.stringify(this.form.value)
     }
 
-    onSubmit(): void {
+    inserItem(): void {
         if (this.form.valid) {
-            this.dialogRef.close(this.form.value)
-            console.log('onSubmit', JSON.stringify(this.form.value, null, 4))
+            if (this.action === 'create') {
+                this.createProduct.emit(this.form.value)
+            } else if (this.action === 'update') {
+                this.updateProduct.emit(this.form.value)
+            }
         }
     }
 

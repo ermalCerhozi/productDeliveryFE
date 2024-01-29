@@ -1,21 +1,25 @@
-mat-form-field {
-    display: block;
-}
-
 .dialog-container {
     display: flex;
     flex-direction: column;
     height: 100%;
-}
+    width: 100%;
 
-.dialog-content {
-    max-height: calc(100vh - 150px);
-    overflow-y: auto;
-    flex-grow: 1;
+    .dialog-content {
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+        flex-grow: 1;
+
+        .dialog-content-form{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100%;
+        }
+    }
 }
 
 form{
-    width: 90%;
+    width: 95%;
     margin: auto;
 }
 
@@ -35,4 +39,8 @@ form{
 
 .total-price.animate {
     transform: scale(1.2);
+}
+
+mat-form-field {
+    display: block;
 }

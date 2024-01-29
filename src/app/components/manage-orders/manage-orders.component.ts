@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
-import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
-import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
+import { ConfirmationDialogComponent } from 'src/shared/components/confirmation-dialog/confirmation-dialog.component'
+import { CreateUpdateDialogComponent } from 'src/shared/components/create-update-dialog/create-update-dialog.component'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { OrderEntity } from 'src/shared/models/order.model'
-import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { SelectionModel } from '@angular/cdk/collections'
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Observable, tap, BehaviorSubject } from 'rxjs'
-import { OrderResponse, OrderEntity } from 'src/shared/models/order.model'
+import { OrderEntity } from 'src/shared/models/order.model'
 import { ProductEntity, ProductResponse } from 'src/shared/models/product.model'
 import { UserEntity } from 'src/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
@@ -60,7 +60,7 @@ export class BakeryManagementService {
             this.navigationContext.pagination.offset = 0
         }
 
-        const requestPayload: any = {
+        const requestPayload: { navigation_context: NavigationContext } = {
             // workspace_id: this.localStorageService.retrieve('workspaceId'),
             navigation_context: this.navigationContext,
         }
@@ -115,16 +115,16 @@ export class BakeryManagementService {
         return this.bakeryManagementApiService.getUsers()
     }
 
-    hasActiveFilters(item: string): boolean {
-        switch (item) {
-            case 'product':
-            // return Object.keys(this.navigationContext.productFilters).length > 0
-            case 'order':
-            // return Object.keys(this.navigationContext.orderFilters).length > 0
-            default:
-                return false
-        }
-    }
+    // hasActiveFilters(item: string): boolean {
+    //     switch (item) {
+    //         case 'product':
+    //         // return Object.keys(this.navigationContext.productFilters).length > 0
+    //         case 'order':
+    //         // return Object.keys(this.navigationContext.orderFilters).length > 0
+    //         default:
+    //             return false
+    //     }
+    // }
 
     loadMoreItems(item: string): void {
         switch (item) {

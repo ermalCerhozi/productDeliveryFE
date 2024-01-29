@@ -1,35 +1,26 @@
 <div class="dialog-container">
-    <h1 mat-dialog-title>
-        <ng-container [ngSwitch]="data.type">
+    <div mat-dialog-title>
+        <ng-container [ngSwitch]="type">
             <ng-container *ngSwitchCase="'product'"
-                >{{ data.action === 'create' ? 'Create' : 'Update' }} Product</ng-container
+                >{{ action === 'create' ? 'Create' : 'Update' }} Product</ng-container
             >
             <ng-container *ngSwitchCase="'user'"
-                >{{ data.action === 'create' ? 'Create' : 'Update' }} User</ng-container
+                >{{ action === 'create' ? 'Create' : 'Update' }} User</ng-container
             >
             <ng-container *ngSwitchCase="'order'"
-                >{{ data.action === 'create' ? 'Create' : 'Update' }} Order</ng-container
+                >{{ action === 'create' ? 'Create' : 'Update' }} Order</ng-container
             >
         </ng-container>
-    </h1>
+    </div>
 
     <div class="dialog-content">
-        <form
-            [formGroup]="form"
-            (ngSubmit)="onSubmit()"
-            style="
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                min-height: 100%;
-            "
-        >
-            <ng-container [ngSwitch]="data.type">
+        <form [formGroup]="form" (ngSubmit)="inserItem()" class="dialog-content-form">
+            <ng-container [ngSwitch]="type">
                 <!-- User Form Fields -->
                 <ng-container *ngSwitchCase="'user'">
                     <mat-form-field>
                         <mat-label>First Name</mat-label>
-                        <input matInput formControlName="first_name" required />
+                        <input matInput formControlName="first_name" required title="First Name" />
                         <mat-error
                             *ngIf="
                                 form.get('first_name')?.invalid && form.get('first_name')?.touched
@@ -40,7 +31,13 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Last Name</mat-label>
-                        <input matInput type="text" formControlName="last_name" required />
+                        <input
+                            matInput
+                            type="text"
+                            formControlName="last_name"
+                            required
+                            title="Last Name"
+                        />
                         <mat-error
                             *ngIf="form.get('last_name')?.invalid && form.get('last_name')?.touched"
                         >
@@ -50,7 +47,13 @@
 
                     <mat-form-field>
                         <mat-label>Nickname</mat-label>
-                        <input matInput type="text" formControlName="nickname" required />
+                        <input
+                            matInput
+                            type="text"
+                            formControlName="nickname"
+                            required
+                            title="Nickname"
+                        />
                         <mat-error
                             *ngIf="form.get('nickname')?.invalid && form.get('nickname')?.touched"
                         >
@@ -60,7 +63,13 @@
 
                     <mat-form-field>
                         <mat-label>email</mat-label>
-                        <input matInput type="email" formControlName="email" required />
+                        <input
+                            matInput
+                            type="email"
+                            formControlName="email"
+                            required
+                            title="email"
+                        />
                         <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
                             Email is required
                         </mat-error>
@@ -68,7 +77,13 @@
 
                     <mat-form-field>
                         <mat-label>Phone Number</mat-label>
-                        <input matInput type="tel" formControlName="phone_number" required />
+                        <input
+                            matInput
+                            type="tel"
+                            formControlName="phone_number"
+                            required
+                            title="Phone Number"
+                        />
                         <mat-error
                             *ngIf="
                                 form.get('phone_number')?.invalid &&
@@ -99,7 +114,13 @@
 
                     <mat-form-field>
                         <mat-label>Password</mat-label>
-                        <input matInput type="text" formControlName="password" required />
+                        <input
+                            matInput
+                            type="text"
+                            formControlName="password"
+                            required
+                            title="Password"
+                        />
                         <mat-error
                             *ngIf="form.get('password')?.invalid && form.get('password')?.touched"
                         >
@@ -112,7 +133,12 @@
                 <ng-container *ngSwitchCase="'product'">
                     <mat-form-field>
                         <mat-label>Product Name</mat-label>
-                        <input matInput formControlName="product_name" required />
+                        <input
+                            matInput
+                            formControlName="product_name"
+                            required
+                            title="Product Name"
+                        />
                         <mat-error
                             *ngIf="
                                 form.get('product_name')?.invalid &&
@@ -125,7 +151,14 @@
 
                     <mat-form-field>
                         <mat-label>Price</mat-label>
-                        <input matInput type="number" min="0" formControlName="price" required />
+                        <input
+                            matInput
+                            type="number"
+                            min="0"
+                            formControlName="price"
+                            required
+                            title="Price"
+                        />
                         <mat-error *ngIf="form.get('price')?.invalid && form.get('price')?.touched">
                             Price is required
                         </mat-error>
@@ -133,17 +166,25 @@
 
                     <mat-form-field>
                         <mat-label>Image URL</mat-label>
-                        <input matInput formControlName="image" />
+                        <input matInput formControlName="image" title="Image URL" />
                     </mat-form-field>
 
                     <mat-form-field>
                         <mat-label>Description</mat-label>
-                        <textarea matInput formControlName="description"></textarea>
+                        <textarea
+                            matInput
+                            formControlName="description"
+                            title="Description"
+                        ></textarea>
                     </mat-form-field>
 
                     <mat-form-field>
                         <mat-label>Ingredients</mat-label>
-                        <textarea matInput formControlName="ingredients"></textarea>
+                        <textarea
+                            matInput
+                            formControlName="ingredients"
+                            title="Ingredients"
+                        ></textarea>
                     </mat-form-field>
                 </ng-container>
 
@@ -191,6 +232,7 @@
                                         type="number"
                                         min="1"
                                         required
+                                        title="Quantity"
                                     />
                                 </mat-form-field>
 
@@ -201,6 +243,7 @@
                                         formControlName="returned_quantity"
                                         type="number"
                                         min="0"
+                                        title="Returns"
                                     />
                                 </mat-form-field>
 
@@ -229,21 +272,9 @@
             type="submit"
             [disabled]="form.invalid || !formHasChanged()"
             autofocus
-            *ngIf="data.action === 'create'"
-            (click)="onSubmit()"
+            (click)="inserItem()"
         >
-            Create
-        </button>
-        <button
-            mat-stroked-button
-            color="primary"
-            type="submit"
-            [disabled]="form.invalid || !formHasChanged()"
-            autofocus
-            *ngIf="data.action !== 'create'"
-            (click)="onSubmit()"
-        >
-            Update
+            {{ action }}
         </button>
     </div>
 </div>

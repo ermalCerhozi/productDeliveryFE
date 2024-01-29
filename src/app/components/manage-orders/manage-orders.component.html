@@ -10,13 +10,7 @@
     >
         Filter
     </button>
-    <button
-        class="filter-button"
-        mat-stroked-button
-        color="primary"
-        [disabled]="!bakeryManagementService.hasActiveFilters('order')"
-        (click)="clearFilters()"
-    >
+    <button class="filter-button" mat-stroked-button color="primary" (click)="clearFilters()">
         Clear Filters
     </button>
     <button

@@ -15,8 +15,6 @@ import { ManageOrdersComponent } from 'src/app/components/manage-orders/manage-o
 import { ManageProductsComponent } from 'src/app/components/manage-products/manage-products.component'
 import { ManageUsersComponent } from 'src/app/components/manage-users/manage-users.component'
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component'
-import { ConfirmationDialogComponent } from 'src/app/modals/confirmation-dialog/confirmation-dialog.component'
-import { CreateUpdateDialogComponent } from 'src/app/modals/create-update-dialog/create-update-dialog.component'
 import { FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms'
 import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component'
@@ -35,8 +33,6 @@ import { ProductsTableListComponent } from 'src/app/components/products-table-li
         ManageProductsComponent,
         ManageUsersComponent,
         NotFoundComponent,
-        ConfirmationDialogComponent,
-        CreateUpdateDialogComponent,
         LayoutComponent,
         FilterDialogComponent,
         ProductsTableListComponent,

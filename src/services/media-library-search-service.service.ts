@@ -1,19 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core'
-import {
-    BehaviorSubject,
-    bufferTime,
-    combineLatestWith,
-    distinctUntilChanged,
-    iif,
-    map,
-    Observable,
-    Subject,
-    take,
-    takeUntil,
-    tap,
-} from 'rxjs'
+import { BehaviorSubject, map, Observable, Subject } from 'rxjs'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
-import { SearchOptions, Filters } from 'src/shared/models/navigation-context.model'
+import { SearchOptions } from 'src/shared/models/navigation-context.model'
 
 @Injectable({
     providedIn: 'root',
@@ -246,7 +234,7 @@ export class MediaLibrarySearchService implements OnDestroy {
 
     private onApplyFilters() {
         this.bakeryManagementService.navigationContext.getCount = true
-        this.bakeryManagementService.updateProductList(true).subscribe()
+        this.bakeryManagementService.updateProductList(false).subscribe()
     }
 
     // private getPaginatedProjects() {

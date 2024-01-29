@@ -25,20 +25,23 @@ import { MatTooltipModule } from '@angular/material/tooltip'
 // TODO: Implement translation service
 // import { I18NextModule } from 'ngx-i18next'
 import { InfiniteScrollModule } from 'ngx-infinite-scroll'
-
 import { GridTableListComponent } from 'src/shared/components/grid-table-list/grid-table-list.component'
 import { TopBarComponent } from 'src/shared/components/top-bar/top-bar.component'
+import { DropdownMenuListComponent } from 'src/shared/components/dropdown-menu-list/dropdown-menu-list.component'
+import { CreateUpdateDialogComponent } from 'src/shared/components/create-update-dialog/create-update-dialog.component'
+import { ConfirmationDialogComponent } from 'src/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { FormatTimePipe } from 'src/shared/common/pipes/format-time.pipe'
-import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe';
-import { DropdownMenuListComponent } from './components/dropdown-menu-list/dropdown-menu-list.component'
+import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe'
 
 @NgModule({
     declarations: [
         GridTableListComponent,
         TopBarComponent,
+        DropdownMenuListComponent,
+        CreateUpdateDialogComponent,
+        ConfirmationDialogComponent,
         FormatDatePipe,
         FormatTimePipe,
-        DropdownMenuListComponent
     ],
     imports: [
         CommonModule,
@@ -70,11 +73,13 @@ import { DropdownMenuListComponent } from './components/dropdown-menu-list/dropd
     ],
     exports: [
         InfiniteScrollModule,
-        TopBarComponent,
         GridTableListComponent,
+        TopBarComponent,
         DropdownMenuListComponent,
+        CreateUpdateDialogComponent,
+        ConfirmationDialogComponent,
         FormatDatePipe,
-        FormatTimePipe
+        FormatTimePipe,
     ],
     providers: [],
 })
