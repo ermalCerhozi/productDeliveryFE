@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
     styleUrls: ['./confirmation-dialog.component.css'],
 })
 export class ConfirmationDialogComponent {
-    @Input() title!: string
+    @Input() title!: string | number
     @Output() confirm = new EventEmitter()
 
     onConfirm(): void {

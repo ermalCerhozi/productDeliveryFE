@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core'
-import { HttpClient, HttpParams } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { ProductResponse, ProductEntity } from 'src/shared/models/product.model'
 import { UserEntity } from 'src/shared/models/user.model'
 import { environment } from 'src/environments/environment'
-import { OrderEntity, OrderResponse } from 'src/shared/models/order.model'
+import { OrderResponse } from 'src/shared/models/order.model'
 import { NavigationContext } from 'src/shared/models/navigation-context.model'
 
 @Injectable({
@@ -87,8 +87,13 @@ export class BakeryManagementApiService {
     }
 
     //CRUD for order items
-    getFilteredOrders(params: any) {
-        return this.http.get<OrderEntity[]>(`${this.apiUrl}orders/filter`, { params })
+    getFilteredOrders(requestPayload: {
+        navigation_context: NavigationContext
+    }): Observable<OrderResponse> {
+        return this.http.post<OrderResponse>(
+            `${this.apiUrl}orders/search`,
+            requestPayload.navigation_context
+        )
     }
 
     deleteOrderItem(id: number): Observable<any> {

@@ -14,8 +14,10 @@ interface Pagination {
 
 export interface Filters {
     date?: string
-    client?: string
-    seller?: string
+    startDate?: string
+    endDate?: string
+    clientId?: number
+    sellerId?: number
     minPrice?: number
     maxPrice?: number
     queryString?: string

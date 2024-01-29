@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Observable, tap, BehaviorSubject } from 'rxjs'
-import { OrderEntity } from 'src/shared/models/order.model'
+import { OrderEntity, OrderResponse } from 'src/shared/models/order.model'
 import { ProductEntity, ProductResponse } from 'src/shared/models/product.model'
 import { UserEntity } from 'src/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
@@ -12,7 +12,10 @@ import { NavigationContext } from 'src/shared/models/navigation-context.model'
     providedIn: 'root',
 })
 export class BakeryManagementService {
-    public ordersList: OrderEntity[] = []
+    private ordersListSubject: BehaviorSubject<OrderEntity[]> = new BehaviorSubject<OrderEntity[]>(
+        []
+    )
+    public ordersList$: Observable<OrderEntity[]> = this.ordersListSubject.asObservable()
 
     private productsListSubject: BehaviorSubject<ProductEntity[]> = new BehaviorSubject<
         ProductEntity[]
@@ -21,25 +24,20 @@ export class BakeryManagementService {
 
     public productsCount!: number
     public ordersCount!: number
-    public navigationContext: NavigationContext
+    public navigationContext!: NavigationContext
 
     constructor(private bakeryManagementApiService: BakeryManagementApiService) {
-        this.navigationContext = this.getBaseNavigationContext()
+        this.getBaseNavigationContext()
     }
 
-    getBaseNavigationContext(): NavigationContext {
-        return {
+    getBaseNavigationContext(): void {
+        this.navigationContext = {
             pagination: {
                 offset: 0,
-                limit: 31,
+                limit: 21,
             },
             filters: {
-                client: '',
-                seller: '',
                 date: 'any-time',
-                queryString: '',
-                minPrice: 1,
-                maxPrice: 9999,
             },
             // sorts: {
             //     $created_at: SortDirection.DESC,
@@ -52,11 +50,10 @@ export class BakeryManagementService {
         }
     }
 
-    // TODO: Implement pagination
     updateProductList(append: boolean): Observable<ProductResponse> {
         if (!append) {
             this.productsListSubject.next([])
-            this.navigationContext.pagination.limit = 31
+            this.navigationContext.pagination.limit = 21
             this.navigationContext.pagination.offset = 0
         }
 
@@ -83,30 +80,32 @@ export class BakeryManagementService {
         )
     }
 
-    updateOrdersList(append: boolean): Observable<ProductResponse> {
+    updateOrdersList(append: boolean): Observable<OrderResponse> {
         if (!append) {
             this.productsListSubject.next([])
-            this.navigationContext.pagination.limit = 20
+            this.navigationContext.pagination.limit = 21
             this.navigationContext.pagination.offset = 0
         }
 
-        const requestPayload: any = {
+        const requestPayload: { navigation_context: NavigationContext } = {
             // workspace_id: this.localStorageService.retrieve('workspaceId'),
             navigation_context: this.navigationContext,
         }
 
-        return this.bakeryManagementApiService.searchProduct(requestPayload).pipe(
-            tap((response: ProductResponse) => {
+        return this.bakeryManagementApiService.getFilteredOrders(requestPayload).pipe(
+            tap((response: OrderResponse) => {
+                let newOrdersList
                 if (append) {
-                    // this.productsList = [...this.productsList, ...response.products]
+                    newOrdersList = [...this.ordersListSubject.getValue(), ...response.orders]
                 } else {
-                    // this.productsList = response.products
+                    newOrdersList = response.orders
                 }
-                this.productsCount = response.count
-                // TODO: Get the total number of products from the API
-                // if (this.navigationContext.filteredCount) {
-                //     this.count = productResult.count
-                // }
+                this.ordersListSubject.next(newOrdersList)
+
+                this.navigationContext.pagination.offset += response.orders.length
+                if (this.navigationContext.getCount) {
+                    this.ordersCount = response.count
+                }
             })
         )
     }
@@ -132,7 +131,7 @@ export class BakeryManagementService {
                 this.updateProductList(true).subscribe()
                 break
             case 'order':
-                // this.updateOrdersList().subscribe()
+                this.updateOrdersList(true).subscribe()
                 break
             default:
                 break
@@ -144,8 +143,8 @@ export class BakeryManagementService {
     }
 
     clearFilters(): void {
-        this.navigationContext = this.getBaseNavigationContext()
-        this.updateProductList(false).subscribe()
+        this.getBaseNavigationContext()
+        // this.updateProductList(false).subscribe()
     }
 
     // TODO: Move this implementation to the back end

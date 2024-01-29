@@ -44,7 +44,7 @@
     </thead>
     <tbody>
         <tr
-            *ngFor="let row of bakeryManagementService.ordersList"
+            *ngFor="let row of bakeryManagementService.ordersList$ | async"
             (dblclick)="createUpdateOrder('update', row)"
         >
             <td>
@@ -72,20 +72,40 @@
             <!-- <td>{{ row.created_at | formatDate }}</td>  -->
             <td>{{ row.created_at }}</td>
             <td>
-                <button mat-icon-button [matMenuTriggerFor]="menu">
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="createUpdateOrder('update', row)">
-                        <mat-icon color="primary">edit</mat-icon>
-                        <span>Edit</span>
+                <ng-container matColumnDef="actions">
+                    <!-- button and dropdown for selecting action -->
+                    <button mat-button [matMenuTriggerFor]="actionMenu.menu">
+                        <mat-icon class="media-library-options-bar-sort-icon">menu</mat-icon>
                     </button>
-                    <button mat-menu-item (click)="deleteOrder(row)">
-                        <mat-icon color="warn">delete</mat-icon>
-                        <span>Delete</span>
-                    </button>
-                </mat-menu>
+                    <app-dropdown-menu-list
+                        #actionMenu
+                        [width]="'120px'"
+                        [options]="actionDropdown"
+                        (menuClick)="onDropdownMenuClick($event, row)"
+                    >
+                    </app-dropdown-menu-list>
+                </ng-container>
             </td>
         </tr>
     </tbody>
 </table>
+
+<!-- <ng-template #createUpdateContainer>
+    <app-create-update-dialog
+        [type]="'order'"
+        [action]="actionState!"
+        [product]="activeProduct!"
+        [seller]="getSeller()"
+        [products]="getProducts() | async"
+        [clients]="getClients()"
+        (updateProduct)="updateProduct($event)"
+        (createProduct)="createProduct($event)"
+    ></app-create-update-dialog>
+</ng-template> -->
+
+<ng-template #confirmationDialogContainer>
+    <app-confirmation-dialog
+        [title]="activeOrder!.id"
+        (confirm)="onDeleteProduct()"
+    ></app-confirmation-dialog>
+</ng-template>

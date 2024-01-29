@@ -61,6 +61,7 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     ) {}
 
     ngOnInit() {
+        this.bakeryManagementService.getBaseNavigationContext()
         this.getProductsList(false)
     }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { ConfirmationDialogComponent } from 'src/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/shared/components/create-update-dialog/create-update-dialog.component'
@@ -6,6 +6,9 @@ import { BakeryManagementApiService } from 'src/services/bakery-management-api.s
 import { OrderEntity } from 'src/shared/models/order.model'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { SelectionModel } from '@angular/cdk/collections'
+import { DropdownEvent, DropdownMenuListItem } from 'src/shared/models/DropdownMenuListItem'
+import { DropdownActionOptions } from 'src/shared/models/actionOptions'
+import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 
 @Component({
     selector: 'app-manage-orders',
@@ -14,6 +17,26 @@ import { SelectionModel } from '@angular/cdk/collections'
 })
 export class ManageOrdersComponent implements OnInit {
     selection = new SelectionModel<any>(true, [])
+    activeOrder!: OrderEntity
+    actionState!: string
+
+    @ViewChild('confirmationDialogContainer')
+    confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
+
+    dataSource: any
+
+    isLoading = false
+
+    actionDropdown: DropdownMenuListItem[] = [
+        {
+            label: DropdownActionOptions.EDIT,
+            icon: 'edit',
+        },
+        {
+            label: DropdownActionOptions.DELETE,
+            icon: 'delete',
+        },
+    ]
 
     constructor(
         public bakeryManagementService: BakeryManagementService,
@@ -22,17 +45,48 @@ export class ManageOrdersComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.getOrders()
+        this.bakeryManagementService.getBaseNavigationContext()
+        this.getOrdersList(false)
     }
 
-    getOrders() {
-        // this.bakeryManagementService.updateOrdersList().subscribe()
+    getOrdersList(append: boolean) {
+        this.isLoading = true
+        this.bakeryManagementService.updateOrdersList(append).subscribe({
+            next: () => {
+                this.isLoading = false
+                this.bakeryManagementService.productsList$.subscribe((products) => {
+                    this.dataSource = products
+                })
+                console.log('Orders List: ', this.dataSource)
+            },
+            error: (error) => {
+                this.isLoading = false
+                console.log('Error: ', error)
+            },
+        })
+    }
+
+    onDropdownMenuClick(item: DropdownEvent, product: OrderEntity): void {
+        this.activeOrder = product
+        const { option } = item
+        switch (option.label) {
+            case DropdownActionOptions.EDIT:
+                this.actionState = 'update'
+                // this.openCreateUpdateProduct()
+                break
+            case DropdownActionOptions.DELETE:
+                this.deleteOrder()
+                break
+            default:
+                break
+        }
     }
 
     isAllSelected() {
-        const numSelected = this.selection.selected.length
-        const numRows = this.bakeryManagementService.ordersList.length
-        return numSelected === numRows
+        // const numSelected = this.selection.selected.length
+        // const numRows = this.bakeryManagementService.ordersList.length
+        // return numSelected === numRows
+        return false
     }
 
     isAllUnselected() {
@@ -40,30 +94,31 @@ export class ManageOrdersComponent implements OnInit {
     }
 
     toggleAll() {
-        this.isAllSelected()
-            ? this.selection.clear()
-            : this.bakeryManagementService.ordersList.forEach((row) => this.selection.select(row))
+        // this.isAllSelected()
+        //     ? this.selection.clear()
+        //     : this.bakeryManagementService.ordersList.forEach((row) => this.selection.select(row))
     }
 
     openFilterOrdersDialog(): void {
-        // const dialogRef = this.dialog.open(FilterDialogComponent, {
-        //     data: this.bakeryManagementService.navigationContext.orderFilters,
-        // })
-        // dialogRef.afterClosed().subscribe({
-        //     next: (result) => {
-        //         if (result) {
-        //             this.bakeryManagementService.getFilteredResults(result)
-        //         }
-        //     },
-        //     error: (error) => {
-        //         console.log('Error: ', error)
-        //     },
-        // })
+        const dialogRef = this.dialog.open(FilterDialogComponent, {
+            data: this.bakeryManagementService.navigationContext.filters,
+        })
+        dialogRef.afterClosed().subscribe({
+            next: (result) => {
+                if (result) {
+                    this.bakeryManagementService.navigationContext.filters = result
+                    this.bakeryManagementService.updateOrdersList(false)
+                }
+            },
+            error: (error) => {
+                console.log('Error: ', error)
+            },
+        })
     }
 
     clearFilters() {
         this.bakeryManagementService.navigationContext.filters = {}
-        this.getOrders()
+        this.getOrdersList(false)
     }
 
     downloadSelectedOrders() {
@@ -85,7 +140,7 @@ export class ManageOrdersComponent implements OnInit {
                     if (action === 'create') {
                         this.bakeryManagementApiService.createOrder(result).subscribe({
                             next: () => {
-                                this.getOrders()
+                                this.getOrdersList(false)
                             },
                             error: (error) => {
                                 console.log('Error: ', error)
@@ -94,7 +149,7 @@ export class ManageOrdersComponent implements OnInit {
                     } else if (action === 'update' && order) {
                         this.bakeryManagementApiService.updateOrder(order, result).subscribe({
                             next: () => {
-                                this.getOrders()
+                                this.getOrdersList(false)
                             },
                             error: (error) => {
                                 console.log('Error: ', error)
@@ -106,25 +161,21 @@ export class ManageOrdersComponent implements OnInit {
         })
     }
 
-    deleteOrder(order: OrderEntity): void {
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+    deleteOrder(): void {
+        this.dialog.open(this.confirmationDialogContainer, {
             width: '80%',
             height: '25%',
-            data: order,
         })
+    }
 
-        dialogRef.afterClosed().subscribe({
-            next: (result: OrderEntity) => {
-                if (result) {
-                    this.bakeryManagementApiService.deleteOrder(order.id).subscribe({
-                        next: () => {
-                            this.getOrders()
-                        },
-                        error: (error) => {
-                            console.log('Error: ', error)
-                        },
-                    })
-                }
+    onDeleteProduct(): void {
+        this.dialog.closeAll()
+        this.bakeryManagementApiService.deleteOrder(this.activeOrder.id).subscribe({
+            next: () => {
+                this.getOrdersList(false)
+            },
+            error: (error) => {
+                console.log('Error: ', error)
             },
         })
     }
