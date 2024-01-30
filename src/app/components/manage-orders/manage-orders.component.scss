@@ -1,0 +1,34 @@
+.manage-orders-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .manage-orders-controls-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+
+        .filter-button{
+            margin: 0 10px 0 10px;
+        }
+    }
+
+    .manage-orders-table-container{
+        width: 100%;
+
+        table {
+            width: 100%;
+        }
+    }
+}
+
+.product-row {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}

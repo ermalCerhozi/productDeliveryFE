@@ -1,12 +1,4 @@
-<app-top-bar
-    [mediaCount]="bakeryManagementService.usersCount"
-    [title]="'Users'"
-    [placeholder]="'Search Users'"
-    [searchOptions]="getSearchOptions()"
-    (searchQueryChange)="setSearchQuery($event)"
-    (searchOptionsChange)="setSearchOptions($event)"
-    (addItem)="addUser()"
-></app-top-bar>
+<ng-container *ngTemplateOutlet="topBarContainer"></ng-container>
 
 <table mat-table [dataSource]="dataSource">
     <!-- ID Column -->
@@ -61,6 +53,18 @@
 </table>
 
 <mat-paginator [pageSize]="20" aria-label="Select page of users"></mat-paginator>
+
+<ng-template #topBarContainer>
+    <app-top-bar
+        [mediaCount]="bakeryManagementService.usersCount"
+        [title]="'Users'"
+        [placeholder]="'Search Users'"
+        [searchOptions]="getSearchOptions()"
+        (searchQueryChange)="setSearchQuery($event)"
+        (searchOptionsChange)="setSearchOptions($event)"
+        (addItem)="addUser()"
+    ></app-top-bar>
+</ng-template>
 
 <ng-template #createUpdateContainer>
     <app-create-update-dialog

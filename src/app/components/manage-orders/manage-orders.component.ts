@@ -12,20 +12,25 @@ import { ProductEntity } from 'src/shared/models/product.model'
 import { Observable } from 'rxjs'
 import { CreateUpdateOrdersComponent } from 'src/app/components/create-update-orders/create-update-orders.component'
 import { UserEntity } from 'src/shared/models/user.model'
+import { MatTableDataSource } from '@angular/material/table'
+import { MatPaginator } from '@angular/material/paginator'
 
 @Component({
     selector: 'app-manage-orders',
     templateUrl: './manage-orders.component.html',
-    styleUrls: ['./manage-orders.component.css'],
+    styleUrls: ['./manage-orders.component.scss'],
 })
 export class ManageOrdersComponent implements OnInit {
+    displayedColumns: string[] = ['client', 'order', 'date', 'actions']
+    activeOrder!: OrderEntity
+    actionState!: string
+
+    @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
 
-    dataSource: any
+    dataSource: MatTableDataSource<OrderEntity> = new MatTableDataSource<OrderEntity>([])
     isLoading = false
-    activeOrder!: OrderEntity
-    actionState!: string
     loggedInUser!: UserEntity
 
     selection = new SelectionModel<any>(true, []) //to be removed
@@ -53,13 +58,22 @@ export class ManageOrdersComponent implements OnInit {
         this.loggedInUser = this.bakeryManagementService.getLoggedInUser()
     }
 
+    ngAfterViewInit() {
+        this.dataSource.paginator = this.paginator
+        this.paginator.page.subscribe((event) => {
+            if (event.pageIndex > event.previousPageIndex!) {
+                this.getOrdersList(true)
+            }
+        })
+    }
+
     getOrdersList(append: boolean) {
         this.isLoading = true
         this.bakeryManagementService.updateOrdersList(append).subscribe({
             next: () => {
                 this.isLoading = false
                 this.bakeryManagementService.ordersList$.subscribe((orders) => {
-                    this.dataSource = orders
+                    this.dataSource = new MatTableDataSource(orders) //TODO:
                 })
             },
             error: (error) => {
