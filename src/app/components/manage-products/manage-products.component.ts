@@ -20,7 +20,6 @@ import { take, map } from 'rxjs/operators'
 import { DropdownEvent, DropdownMenuListItem } from 'src/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/shared/models/actionOptions'
 import { Observable } from 'rxjs'
-import { UserEntity } from 'src/shared/models/user.model'
 
 @Component({
     selector: 'app-manage-products',
@@ -129,41 +128,8 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
         return this.searchService.getSearchOptions()
     }
 
-    getSeller() {
-        return JSON.parse(localStorage.getItem('currentUser') || '')
-    }
-
     getProducts(): Observable<ProductEntity[]> {
         return this.bakeryManagementService.productsList$
-    }
-
-    // TODO: Remove mock data and lazy load actual users
-    getClients() {
-        const mockUsers: UserEntity[] = [
-            {
-                id: 1,
-                created_at: '2022-01-01T00:00:00Z',
-                updated_at: '2022-01-02T00:00:00Z',
-                first_name: 'John',
-                last_name: 'Doe',
-                nickname: 'johndoe',
-                phone_number: '1234567890',
-                role: 'admin',
-                password: 'password1',
-            },
-            {
-                id: 2,
-                created_at: '2022-01-03T00:00:00Z',
-                updated_at: '2022-01-04T00:00:00Z',
-                first_name: 'Jane',
-                last_name: 'Doe',
-                nickname: 'janedoe',
-                phone_number: '0987654321',
-                role: 'user',
-                password: 'password2',
-            },
-        ]
-        return mockUsers
     }
 
     setSearchQuery(data: string) {

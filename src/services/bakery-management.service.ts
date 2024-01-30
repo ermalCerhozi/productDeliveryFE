@@ -114,6 +114,10 @@ export class BakeryManagementService {
         return this.bakeryManagementApiService.getUsers()
     }
 
+    getLoggedInUser() {
+        return JSON.parse(localStorage.getItem('currentUser') || '')
+    }
+
     // hasActiveFilters(item: string): boolean {
     //     switch (item) {
     //         case 'product':
@@ -145,6 +149,10 @@ export class BakeryManagementService {
     clearFilters(): void {
         this.getBaseNavigationContext()
         // this.updateProductList(false).subscribe()
+    }
+
+    getAllProducts(): Observable<ProductEntity[]> {
+        return this.bakeryManagementApiService.getProducts()
     }
 
     // TODO: Move this implementation to the back end

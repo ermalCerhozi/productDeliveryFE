@@ -1,37 +1,31 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Subject, takeUntil } from 'rxjs'
-import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { OrderItemEntity } from 'src/shared/models/order.model'
 import { ProductEntity } from 'src/shared/models/product.model'
-import { UserEntity } from 'src/shared/models/user.model'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { BakeryManagementService } from 'src/services/bakery-management.service'
 
 @Component({
     selector: 'app-create-update-orders',
     templateUrl: './create-update-orders.component.html',
     styleUrls: ['./create-update-orders.component.css'],
 })
+// TODO: fix OnDestroy
 export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     private unsubscribe$ = new Subject<void>()
     form: FormGroup = new FormGroup({})
-    roles = ['admin', 'manager', 'seller', 'client']
 
     usedProducts: number[] = []
     orderItemsFormArray: any | undefined
     totalOrderPrice = 0
 
-    // @Input
-    @Input() action!: string
-    @Input() order!: any //Order to be updated
-    @Input() seller: UserEntity = JSON.parse(localStorage.getItem('currentUser') || '') //Seller that creates the order
-    @Input() clients!: UserEntity[] //Clients to whom we can create orders for
-    @Input() products!: ProductEntity[] //Products to create orders with
-
-    // @Output
-    @Output() updateProduct = new EventEmitter<ProductEntity>()
-    @Output() createProduct = new EventEmitter()
-
-    constructor(public bakeryManagementService: BakeryManagementService, private fb: FormBuilder) {}
+    constructor(
+        private fb: FormBuilder,
+        private bakeryManagementService: BakeryManagementService,
+        public dialogRef: MatDialogRef<CreateUpdateOrdersComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) {}
 
     initialFormValues: any
 
@@ -41,32 +35,31 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     initializeForm() {
-        this.bakeryManagementService.getAllUsers().subscribe({
-            next: (res) => {
-                this.clients = res.filter((user) => user.role === 'Client')
-            },
-            error: (err) => {
-                console.log('There was an error getting clients:', err)
-            },
+        const formData = this.getFormData()
+
+        this.form = this.fb.group({
+            client: [formData.client, Validators.required],
+            seller: [formData.seller, Validators.required],
+            order_items: this.fb.array([]), //The order_items field is initialized as an empty FormArray because each item in order_items needs to be a FormGroup itself.
         })
-        // TODO: implement pagination
-        this.bakeryManagementService.updateProductList(true).subscribe({
-            next: (res) => {
-                // TODO: Implement pagination
-                this.products = res.products
-                this.calculateTotalOrderPrice(this.form.get('order_items')!.value)
-            },
-            error: (error) => {
-                console.log('There was an error getting products:', error)
-            },
-        })
-        let formData
-        if (this.action === 'update' && this.order) {
-            this.usedProducts = this.order.order_items.map((item: any) => item.product.id)
-            formData = {
-                client: this.order.client.id,
-                seller: this.order.seller.id,
-                order_items: this.order.order_items.map((item: any) => ({
+
+        this.orderItemsFormArray = this.form.get('order_items') as FormArray
+        this.populateOrderItems(formData.order_items)
+
+        this.orderItemsFormArray.valueChanges
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((orderItems: any) => {
+                this.calculateTotalOrderPrice(orderItems)
+            })
+    }
+
+    getFormData() {
+        if (this.data.action === 'update' && this.data.order) {
+            this.usedProducts = this.data.order.order_items.map((item: any) => item.product.id)
+            return {
+                client: this.data.order.client.id,
+                seller: this.data.order.seller.id,
+                order_items: this.data.order.order_items.map((item: any) => ({
                     id: item.id,
                     quantity: item.quantity,
                     returned_quantity: item.returned_quantity,
@@ -74,20 +67,17 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                 })),
             }
         } else {
-            this.usedProducts = [] // Ensure that usedProducts is empty if not in update mode
-            formData = {
+            this.usedProducts = []
+            return {
                 client: '',
-                seller: this.seller.id,
+                seller: this.data.seller.id,
                 order_items: [],
             }
         }
-        this.form = this.fb.group({
-            client: [formData.client, Validators.required],
-            seller: [formData.seller, Validators.required],
-            order_items: this.fb.array([]),
-        })
-        this.orderItemsFormArray = this.form.get('order_items') as FormArray
-        formData.order_items.forEach((orderItem: OrderItemEntity) => {
+    }
+
+    populateOrderItems(orderItems: OrderItemEntity[]) {
+        orderItems.forEach((orderItem: OrderItemEntity) => {
             if (orderItem.id === undefined) {
                 this.orderItemsFormArray.push(
                     this.fb.group({
@@ -107,18 +97,12 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                 )
             }
         })
-
-        this.orderItemsFormArray.valueChanges
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((orderItems: any) => {
-                this.calculateTotalOrderPrice(orderItems)
-            })
     }
 
     calculateTotalOrderPrice(orderItems: any) {
         this.totalOrderPrice = 0
         for (const item of orderItems) {
-            const product = this.products!.find((p) => p.id === item.product)
+            const product = this.data.products.find((p: ProductEntity) => p.id === item.product)
             if (product) {
                 const productPrice = parseFloat(product.price)
                 this.totalOrderPrice += (item.quantity - item.returned_quantity) * productPrice
@@ -182,7 +166,9 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     getUnusedProducts() {
-        return this.products!.filter((product) => !this.usedProducts.includes(product.id))
+        return this.data.products.filter(
+            (product: ProductEntity) => !this.usedProducts.includes(product.id)
+        )
     }
 
     formHasChanged(): boolean {
@@ -191,11 +177,8 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
 
     inserItem(): void {
         if (this.form.valid) {
-            if (this.action === 'create') {
-                this.createProduct.emit(this.form.value)
-            } else if (this.action === 'update') {
-                this.updateProduct.emit(this.form.value)
-            }
+            this.dialogRef.close(this.form.value)
+            console.log('onSubmit', JSON.stringify(this.form.value, null, 4))
         }
     }
 

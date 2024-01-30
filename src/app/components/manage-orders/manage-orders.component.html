@@ -1,5 +1,5 @@
 <div class="controls-container">
-    <button mat-icon-button matSuffix color="primary" (click)="createUpdateOrder('create')">
+    <button mat-icon-button matSuffix color="primary" (click)="openCreateUpdateOrder('create')">
         <mat-icon>add</mat-icon>
     </button>
     <button
@@ -45,7 +45,7 @@
     <tbody>
         <tr
             *ngFor="let row of bakeryManagementService.ordersList$ | async"
-            (dblclick)="createUpdateOrder('update', row)"
+            (dblclick)="openCreateUpdateOrder('update')"
         >
             <td>
                 <mat-checkbox
@@ -89,19 +89,6 @@
         </tr>
     </tbody>
 </table>
-
-<!-- <ng-template #createUpdateContainer>
-    <app-create-update-dialog
-        [type]="'order'"
-        [action]="actionState!"
-        [product]="activeProduct!"
-        [seller]="getSeller()"
-        [products]="getProducts() | async"
-        [clients]="getClients()"
-        (updateProduct)="updateProduct($event)"
-        (createProduct)="createProduct($event)"
-    ></app-create-update-dialog>
-</ng-template> -->
 
 <ng-template #confirmationDialogContainer>
     <app-confirmation-dialog

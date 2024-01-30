@@ -7,9 +7,10 @@ export interface OrderResponse {
 }
 
 export interface OrderEntity {
-    id: number
     created_at: string
     updated_at: string
+    id: number
+    total_price: string
     client: UserEntity
     seller: UserEntity
     order_items: OrderItemEntity[]
