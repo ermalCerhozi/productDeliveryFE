@@ -31,8 +31,8 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
     activeProduct!: ProductEntity
     actionState!: string | undefined
-    @ViewChild(MatPaginator) paginator!: MatPaginator
 
+    @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('createUpdateContainer')
     createUpdateContainer!: TemplateRef<CreateUpdateDialogComponent>
     @ViewChild('confirmationDialogContainer')
@@ -173,7 +173,6 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     }
 
     onDeleteProduct(): void {
-        this.dialog.closeAll()
         this.bakeryManagementApiService.deleteProduct(this.activeProduct.id).subscribe({
             next: () => {
                 this.bakeryManagementService.productsList$

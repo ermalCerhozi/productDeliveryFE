@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { Observable, tap, BehaviorSubject } from 'rxjs'
 import { OrderEntity, OrderResponse } from 'src/shared/models/order.model'
 import { ProductEntity, ProductResponse } from 'src/shared/models/product.model'
-import { UserEntity } from 'src/shared/models/user.model'
+import { UserEntity, UserResponse } from 'src/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -22,8 +22,12 @@ export class BakeryManagementService {
     >([])
     public productsList$: Observable<ProductEntity[]> = this.productsListSubject.asObservable()
 
+    private usersListSubject: BehaviorSubject<UserEntity[]> = new BehaviorSubject<UserEntity[]>([])
+    public usersList$: Observable<UserEntity[]> = this.usersListSubject.asObservable()
+
     public productsCount!: number
     public ordersCount!: number
+    public usersCount!: number
     public navigationContext!: NavigationContext
 
     constructor(private bakeryManagementApiService: BakeryManagementApiService) {
@@ -105,6 +109,36 @@ export class BakeryManagementService {
                 this.navigationContext.pagination.offset += response.orders.length
                 if (this.navigationContext.getCount) {
                     this.ordersCount = response.count
+                }
+            })
+        )
+    }
+
+    updateUsersList(append: boolean): Observable<UserResponse> {
+        if (!append) {
+            this.usersListSubject.next([])
+            this.navigationContext.pagination.limit = 21
+            this.navigationContext.pagination.offset = 0
+        }
+
+        const requestPayload: { navigation_context: NavigationContext } = {
+            // workspace_id: this.localStorageService.retrieve('workspaceId'),
+            navigation_context: this.navigationContext,
+        }
+
+        return this.bakeryManagementApiService.searchUsers(requestPayload).pipe(
+            tap((response: UserResponse) => {
+                let newUsersList
+                if (append) {
+                    newUsersList = [...this.usersListSubject.getValue(), ...response.users]
+                } else {
+                    newUsersList = response.users
+                }
+                this.usersListSubject.next(newUsersList)
+
+                this.navigationContext.pagination.offset += response.users.length
+                if (this.navigationContext.getCount) {
+                    this.usersCount = response.count
                 }
             })
         )

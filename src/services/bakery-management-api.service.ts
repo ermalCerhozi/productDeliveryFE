@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { ProductResponse, ProductEntity } from 'src/shared/models/product.model'
-import { UserEntity } from 'src/shared/models/user.model'
+import { UserEntity, UserResponse } from 'src/shared/models/user.model'
 import { environment } from 'src/environments/environment'
 import { OrderResponse } from 'src/shared/models/order.model'
 import { NavigationContext } from 'src/shared/models/navigation-context.model'
@@ -34,6 +34,16 @@ export class BakeryManagementApiService {
 
     getUser(id: number): Observable<UserEntity> {
         return this.http.get<UserEntity>(`${this.apiUrl}users/${id}`)
+    }
+
+    // TODO: Implement this for users not products
+    searchUsers(requestPayload: {
+        navigation_context: NavigationContext
+    }): Observable<UserResponse> {
+        return this.http.post<UserResponse>(
+            `${this.apiUrl}users/search`,
+            requestPayload.navigation_context
+        )
     }
 
     //CRUD for products

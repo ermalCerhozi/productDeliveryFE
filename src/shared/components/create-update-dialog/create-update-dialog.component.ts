@@ -13,7 +13,6 @@ import { Subject } from 'rxjs'
 export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     private unsubscribe$ = new Subject<void>()
     form: FormGroup = new FormGroup({})
-    roles = ['admin', 'manager', 'seller', 'client']
     initialFormValues: any
 
     // @Input
@@ -24,6 +23,8 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     // @Output
     @Output() updateProduct = new EventEmitter<ProductEntity>()
     @Output() createProduct = new EventEmitter()
+    @Output() createUser = new EventEmitter()
+    @Output() updateUser = new EventEmitter<UserEntity>()
 
     constructor(public bakeryManagementService: BakeryManagementService, private fb: FormBuilder) {}
     ngOnInit(): void {
@@ -92,10 +93,18 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
 
     inserItem(): void {
         if (this.form.valid) {
-            if (this.action === 'create') {
-                this.createProduct.emit(this.form.value)
-            } else if (this.action === 'update') {
-                this.updateProduct.emit(this.form.value)
+            if (this.type === 'product') {
+                if (this.action === 'create') {
+                    this.createProduct.emit(this.form.value)
+                } else if (this.action === 'update') {
+                    this.updateProduct.emit(this.form.value)
+                }
+            } else if (this.type === 'user') {
+                if (this.action === 'create') {
+                    this.createUser.emit(this.form.value)
+                } else if (this.action === 'update') {
+                    this.updateUser.emit(this.form.value)
+                }
             }
         }
     }

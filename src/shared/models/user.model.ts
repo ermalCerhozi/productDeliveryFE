@@ -3,6 +3,11 @@ export interface LoginModel {
     password: string
 }
 
+export interface UserResponse {
+    users: UserEntity[]
+    count: number
+}
+
 export interface UserEntity {
     id: number
     created_at: string
