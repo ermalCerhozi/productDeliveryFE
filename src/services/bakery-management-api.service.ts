@@ -36,7 +36,6 @@ export class BakeryManagementApiService {
         return this.http.get<UserEntity>(`${this.apiUrl}users/${id}`)
     }
 
-    // TODO: Implement this for users not products
     searchUsers(requestPayload: {
         navigation_context: NavigationContext
     }): Observable<UserResponse> {
@@ -44,6 +43,10 @@ export class BakeryManagementApiService {
             `${this.apiUrl}users/search`,
             requestPayload.navigation_context
         )
+    }
+
+    getClientUsers(): Observable<UserEntity[]> {
+        return this.http.get<UserEntity[]>(`${this.apiUrl}users/client`)
     }
 
     //CRUD for products

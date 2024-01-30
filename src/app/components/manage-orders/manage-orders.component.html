@@ -1,7 +1,13 @@
 <div class="manage-orders-container">
     <div class="manage-orders-controls-container">
-        <button mat-icon-button matSuffix color="primary" (click)="openCreateUpdateOrder('create')">
+        <button
+            class="filter-button"
+            mat-raised-button
+            color="primary"
+            (click)="openCreateUpdateOrder('create')"
+        >
             <mat-icon>add</mat-icon>
+            <span> Create Order </span>
         </button>
         <button
             class="filter-button"
@@ -10,9 +16,6 @@
             (click)="openFilterOrdersDialog()"
         >
             Filter
-        </button>
-        <button class="filter-button" mat-stroked-button color="primary" (click)="clearFilters()">
-            Clear Filters
         </button>
         <button
             class="filter-button"
@@ -24,7 +27,15 @@
             Download
         </button>
     </div>
-    <hr />
+
+    <div *ngIf="hasFiltersSelected()">
+        <app-filters-result
+            [labelTK]="'Clear Filters'"
+            [results]="getAppliedFilters()"
+            (clearResults)="clearFilters()"
+            (removeFilter)="removeFilters($event)"
+        ></app-filters-result>
+    </div>
 
     <div class="manage-orders-table-container">
         <table mat-table [dataSource]="dataSource">
@@ -114,6 +125,12 @@
         </table>
     </div>
 </div>
+
+<mat-paginator
+    [length]="bakeryManagementService.ordersCount"
+    [pageSize]="20"
+    aria-label="Select page of users"
+></mat-paginator>
 
 <ng-template #confirmationDialogContainer>
     <app-confirmation-dialog

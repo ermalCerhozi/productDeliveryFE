@@ -40,9 +40,7 @@ export class BakeryManagementService {
                 offset: 0,
                 limit: 21,
             },
-            filters: {
-                date: 'any-time',
-            },
+            filters: {},
             // sorts: {
             //     $created_at: SortDirection.DESC,
             // },

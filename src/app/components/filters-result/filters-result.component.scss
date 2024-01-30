@@ -1,0 +1,40 @@
+mat-chip-set {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 0px 0px 5px;
+
+    mat-chip {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        .cancel-icon {
+            display: flex;
+            position: relative;
+            right: -6px;
+            align-items: center;
+            width: inherit !important;
+            opacity: 0.6;
+            font-size: 18px
+        }
+
+        span {
+            /* Body 2 */
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 20px; /* 142.857% */
+            letter-spacing: 0.25px;
+        }
+    }
+    
+    .clear-all-chip {
+        background-color: #fafafa;
+        color: var(--Primary, #0288D1);
+    }
+}
+
+.mat-standard-chip {
+    min-height: 32px !important;
+}

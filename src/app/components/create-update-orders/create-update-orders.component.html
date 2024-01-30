@@ -1,81 +1,82 @@
 <div class="dialog-container">
     <div mat-dialog-title>{{ data.action === 'create' ? 'Create' : 'Update' }} Order</div>
 
-    <mat-dialog-content class="dialog-content">
-        <form [formGroup]="form" (ngSubmit)="inserItem()" class="dialog-content-form">
-            <div>
-                <mat-form-field>
-                    <mat-label>Client</mat-label>
-                    <mat-select formControlName="client" required>
-                        <mat-option *ngFor="let client of data.clients" [value]="client.id">{{
-                            client.first_name + ' ' + client.last_name
-                        }}</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="form.get('client')?.invalid && form.get('client')?.touched">
-                        Client is required
-                    </mat-error>
-                </mat-form-field>
+    <div class="dialog-content">
+        <form [formGroup]="form" (ngSubmit)="inserItem()">
+            <mat-form-field>
+                <mat-label>Client</mat-label>
+                <mat-select formControlName="client" required>
+                    <mat-option *ngFor="let client of data.clients" [value]="client.id">{{
+                        client.first_name + ' ' + client.last_name
+                    }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('client')?.invalid && form.get('client')?.touched">
+                    Client is required
+                </mat-error>
+            </mat-form-field>
 
-                <div
-                    formArrayName="order_items"
-                    *ngFor="let item of orderItemsFormArray?.controls; let i = index"
-                >
-                    <div [formGroupName]="i" style="display: flex; align-items: center">
-                        <mat-form-field style="flex: 2; margin-right: 5px">
-                            <mat-label>Product</mat-label>
-                            <mat-select formControlName="product" required>
-                                <ng-container *ngFor="let product of data.products">
-                                    <mat-option
-                                        [disabled]="usedProducts.includes(product.id)"
-                                        [value]="product.id"
-                                    >
-                                        {{ product.product_name }}
-                                    </mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
+            <div
+                formArrayName="order_items"
+                *ngFor="let item of orderItemsFormArray?.controls; let i = index"
+            >
+                <div [formGroupName]="i" class="dialog-content-order-items">
+                    <mat-form-field style="flex: 2; margin-right: 5px">
+                        <mat-label>Product</mat-label>
+                        <mat-select formControlName="product" required>
+                            <ng-container *ngFor="let product of data.products">
+                                <mat-option
+                                    [disabled]="usedProducts.includes(product.id)"
+                                    [value]="product.id"
+                                >
+                                    {{ product.product_name }}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
 
-                        <mat-form-field style="flex: 1; margin-right: 5px">
-                            <mat-label style="font-size: 12px">Quantity</mat-label>
-                            <input
-                                matInput
-                                formControlName="quantity"
-                                type="number"
-                                min="1"
-                                required
-                                title="Quantity"
-                            />
-                        </mat-form-field>
+                    <mat-form-field style="flex: 1; margin-right: 5px">
+                        <mat-label style="font-size: 12px">Quantity</mat-label>
+                        <input
+                            matInput
+                            formControlName="quantity"
+                            type="number"
+                            min="1"
+                            required
+                            title="Quantity"
+                        />
+                    </mat-form-field>
 
-                        <mat-form-field style="flex: 1; margin-right: 5px">
-                            <mat-label style="font-size: 12px">Returns</mat-label>
-                            <input
-                                matInput
-                                formControlName="returned_quantity"
-                                type="number"
-                                min="0"
-                                title="Returns"
-                            />
-                        </mat-form-field>
+                    <mat-form-field style="flex: 1; margin-right: 5px">
+                        <mat-label style="font-size: 12px">Returns</mat-label>
+                        <input
+                            matInput
+                            formControlName="returned_quantity"
+                            type="number"
+                            min="0"
+                            title="Returns"
+                        />
+                    </mat-form-field>
 
-                        <button mat-mini-fab color="warn" (click)="removeOrderItem(i)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </div>
-                </div>
-                <div style="display: flex; justify-content: center">
-                    <button mat-fab color="primary" type="button" (click)="addOrderItem()">
-                        <mat-icon>add</mat-icon>
+                    <button mat-mini-fab color="warn" (click)="removeOrderItem(i)" type="button">
+                        <mat-icon>delete</mat-icon>
                     </button>
                 </div>
             </div>
+            <div style="display: flex; justify-content: center">
+                <button mat-fab color="primary" (click)="addOrderItem()" type="button">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
         </form>
-    </mat-dialog-content>
+    </div>
 
-    <mat-dialog-actions align="end">
+    <mat-dialog-actions align="end" class="insert-panel">
         <h2 class="total-price">{{ totalOrderPrice.toLocaleString() }} Lekë</h2>
-        <button mat-stroked-button color="warn" mat-dialog-close>Cancel</button>
+        <button class="insert-panel-actions" mat-stroked-button color="warn" mat-dialog-close>
+            Cancel
+        </button>
         <button
+            class="insert-panel-actions"
             mat-stroked-button
             color="primary"
             type="submit"

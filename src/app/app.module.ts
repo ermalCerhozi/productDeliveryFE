@@ -22,6 +22,7 @@ import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialo
 import { AboutPageComponent } from 'src/app/components/about-page/about-page.component'
 import { ProductsTableListComponent } from 'src/app/components/products-table-list/products-table-list.component'
 import { CreateUpdateOrdersComponent } from 'src/app/components/create-update-orders/create-update-orders.component'
+import { FiltersResultComponent } from 'src/app/components/filters-result/filters-result.component'
 
 @NgModule({
     declarations: [
@@ -39,6 +40,7 @@ import { CreateUpdateOrdersComponent } from 'src/app/components/create-update-or
         ProductsTableListComponent,
         CreateUpdateOrdersComponent,
         AboutPageComponent,
+        FiltersResultComponent,
     ],
     imports: [
         BrowserModule,

@@ -22,6 +22,7 @@ export interface Filters {
     maxPrice?: number
     queryString?: string
     active?: boolean
+    [key: string]: string | number | boolean | undefined
 }
 
 export enum SortDirection {
