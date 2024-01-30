@@ -1,33 +1,41 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { Form, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Subject, takeUntil } from 'rxjs'
-import { OrderItemEntity } from 'src/shared/models/order.model'
+import { OrderEntity, OrderItemEntity } from 'src/shared/models/order.model'
 import { ProductEntity } from 'src/shared/models/product.model'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
+import { UserEntity } from 'src/shared/models/user.model'
+
+interface CreateUpdateOrderData {
+    action: string
+    order?: OrderEntity
+    seller: UserEntity
+    clients: UserEntity[]
+    products: ProductEntity[]
+}
 
 @Component({
     selector: 'app-create-update-orders',
     templateUrl: './create-update-orders.component.html',
     styleUrls: ['./create-update-orders.component.scss'],
 })
-// TODO: fix OnDestroy
 export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     private unsubscribe$ = new Subject<void>()
     form: FormGroup = new FormGroup({})
 
     usedProducts: number[] = []
-    orderItemsFormArray: any | undefined
+    orderItemsFormArray!: FormArray
     totalOrderPrice = 0
+    initialFormValues!: Form
 
     constructor(
         private fb: FormBuilder,
         private bakeryManagementService: BakeryManagementService,
         public dialogRef: MatDialogRef<CreateUpdateOrdersComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any
+        @Inject(MAT_DIALOG_DATA)
+        public data: CreateUpdateOrderData
     ) {}
-
-    initialFormValues: any
 
     ngOnInit(): void {
         this.initializeForm()
