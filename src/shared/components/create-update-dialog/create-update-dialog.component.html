@@ -13,7 +13,7 @@
         </ng-container>
     </div>
 
-    <div class="dialog-content">
+    <mat-dialog-content class="dialog-content">
         <form [formGroup]="form" (ngSubmit)="inserItem()" class="dialog-content-form">
             <ng-container [ngSwitch]="type">
                 <!-- User Form Fields -->
@@ -189,5 +189,22 @@
                 </ng-container>
             </ng-container>
         </form>
-    </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button class="button cancel" mat-stroked-button color="warn" mat-dialog-close>
+            Cancel
+        </button>
+        <button
+            class="button"
+            mat-stroked-button
+            color="primary"
+            type="submit"
+            [disabled]="form.invalid || !formHasChanged()"
+            autofocus
+            (click)="inserItem()"
+        >
+            {{ action }}
+        </button>
+    </mat-dialog-actions>
 </div>

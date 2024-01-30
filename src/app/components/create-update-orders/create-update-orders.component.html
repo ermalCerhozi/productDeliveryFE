@@ -1,9 +1,8 @@
 <div class="dialog-container">
     <div mat-dialog-title>{{ data.action === 'create' ? 'Create' : 'Update' }} Order</div>
 
-    <div class="dialog-content">
+    <mat-dialog-content class="dialog-content">
         <form [formGroup]="form" (ngSubmit)="inserItem()" class="dialog-content-form">
-            <!-- Order Form Fields -->
             <div>
                 <mat-form-field>
                     <mat-label>Client</mat-label>
@@ -71,9 +70,9 @@
                 </div>
             </div>
         </form>
-    </div>
+    </mat-dialog-content>
 
-    <div mat-dialog-data.actions class="dialog-data.actions" align="end">
+    <mat-dialog-actions align="end">
         <h2 class="total-price">{{ totalOrderPrice.toLocaleString() }} Lekë</h2>
         <button mat-stroked-button color="warn" mat-dialog-close>Cancel</button>
         <button
@@ -86,5 +85,5 @@
         >
             {{ data.action }}
         </button>
-    </div>
+    </mat-dialog-actions>
 </div>

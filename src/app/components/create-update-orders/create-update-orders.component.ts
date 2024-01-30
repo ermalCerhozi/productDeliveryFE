@@ -9,7 +9,7 @@ import { BakeryManagementService } from 'src/services/bakery-management.service'
 @Component({
     selector: 'app-create-update-orders',
     templateUrl: './create-update-orders.component.html',
-    styleUrls: ['./create-update-orders.component.css'],
+    styleUrls: ['./create-update-orders.component.scss'],
 })
 // TODO: fix OnDestroy
 export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {

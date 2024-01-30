@@ -29,7 +29,7 @@ import { Observable } from 'rxjs'
 })
 export class ManageProductsComponent implements OnInit, AfterViewInit {
     displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
-    activeProduct: ProductEntity | undefined
+    activeProduct!: ProductEntity
     actionState!: string | undefined
     @ViewChild(MatPaginator) paginator!: MatPaginator
 
@@ -112,7 +112,7 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
 
     openCreateUpdateProduct(): void {
         this.dialog.open(this.createUpdateContainer, {
-            maxWidth: '100%',
+            width: '100%',
             maxHeight: '80%',
         })
     }
@@ -120,7 +120,78 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     deleteProduct(): void {
         this.dialog.open(this.confirmationDialogContainer, {
             width: '80%',
-            height: '25%',
+            maxHeight: '40%',
+        })
+    }
+
+    createProduct(product: ProductEntity) {
+        this.dialog.closeAll()
+        this.bakeryManagementApiService.createProduct(product).subscribe({
+            next: (res) => {
+                this.bakeryManagementService.productsList$
+                    .pipe(
+                        take(1),
+                        map((products: ProductEntity[]) => {
+                            products.unshift(res)
+                            return products
+                        })
+                    )
+                    .subscribe((products) => {
+                        this.dataSource.data = products
+                    })
+            },
+            error: (error) => {
+                console.log('Error: ', error)
+            },
+        })
+    }
+
+    updateProduct(product: ProductEntity) {
+        this.dialog.closeAll()
+        this.bakeryManagementApiService.updateProduct(this.activeProduct, product).subscribe({
+            next: (res) => {
+                this.bakeryManagementService.productsList$
+                    .pipe(
+                        take(1),
+                        map((products: ProductEntity[]) => {
+                            const index = products.findIndex((p) => p.id === res.id)
+                            if (index > -1) {
+                                console.log('index: ', index)
+                                products[index] = res
+                            }
+                            return products
+                        })
+                    )
+                    .subscribe((products) => {
+                        this.dataSource.data = products
+                    })
+            },
+            error: (error) => {
+                console.log('Error: ', error)
+            },
+        })
+    }
+
+    onDeleteProduct(): void {
+        this.dialog.closeAll()
+        this.bakeryManagementApiService.deleteProduct(this.activeProduct.id).subscribe({
+            next: () => {
+                this.bakeryManagementService.productsList$
+                    .pipe(
+                        take(1),
+                        map((products: ProductEntity[]) => {
+                            return products.filter(
+                                (product) => product.id !== this.activeProduct.id
+                            )
+                        })
+                    )
+                    .subscribe((products) => {
+                        this.dataSource.data = products
+                    })
+            },
+            error: (error) => {
+                console.log('Error: ', error)
+            },
         })
     }
 
@@ -138,55 +209,5 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
 
     setSearchOptions(searchOptions: SearchOptions) {
         this.searchService.setSearchOptions(searchOptions)
-    }
-
-    createProduct(product: ProductEntity) {
-        this.dialog.closeAll()
-        this.bakeryManagementApiService.createProduct(product).subscribe({
-            next: (res) => {
-                this.bakeryManagementService.productsList$
-                    .pipe(
-                        take(1),
-                        map((products: any[]) => {
-                            products.unshift(res)
-                            return products
-                        })
-                    )
-                    .subscribe((products) => {
-                        this.dataSource.data = products
-                    })
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
-    }
-
-    updateProduct(product: ProductEntity) {
-        this.dialog.closeAll()
-        this.bakeryManagementApiService.updateProduct(this.activeProduct!, product).subscribe({
-            next: () => {
-                this.bakeryManagementService.productsList$.subscribe((products) => {
-                    this.dataSource.data = products
-                })
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
-    }
-
-    onDeleteProduct(): void {
-        this.dialog.closeAll()
-        this.bakeryManagementApiService.deleteProduct(this.activeProduct!.id).subscribe({
-            next: () => {
-                this.bakeryManagementService.productsList$.subscribe((products) => {
-                    this.dataSource.data = products
-                })
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
     }
 }

@@ -1,16 +1,12 @@
-<div class="media-library-top-bar">
-    <div class="media-library-top-bar-title-container">
-        <span class="media-library-top-bar-title"> {{ title }} Library</span>
-        <span class="media-library-top-bar-subtitle">
-            Total number of results {{ mediaCount }}
-        </span>
+<div class="top-bar">
+    <div class="top-bar-title-container">
+        <span class="top-bar-title"> {{ title }} Library</span>
+        <span class="top-bar-subtitle"> Total number of results {{ mediaCount }} </span>
     </div>
     <!-- search bar -->
-    <div class="media-library-top-bar-search-container">
-        <mat-form-field appearance="fill" class="media-library-top-bar-search-container-form">
-            <mat-icon matPrefix class="media-library-top-bar-search-container-form-search-icon"
-                >search</mat-icon
-            >
+    <div class="top-bar-search-container">
+        <mat-form-field appearance="fill" class="top-bar-search-container-form">
+            <mat-icon matPrefix class="top-bar-search-container-form-search-icon">search</mat-icon>
             <mat-label>{{ placeholder }}</mat-label>
             <input
                 [formControl]="searchQuery"
@@ -20,11 +16,8 @@
                 placeholder="{{ placeholder }}"
             />
             <mat-autocomplete #topBarSearchAutocomplete="matAutocomplete">
-                <mat-option
-                    class="media-library-top-bar-search-container-form-options-menu"
-                    disabled="true"
-                >
-                    <div class="media-library-top-bar-search-container-form-options-menu-checkbox">
+                <mat-option class="top-bar-search-container-form-options-menu" disabled="true">
+                    <div class="top-bar-search-container-form-options-menu-checkbox">
                         <span> Search By: </span>
                         <mat-checkbox
                             name="title"
@@ -47,21 +40,20 @@
                     </div>
                 </mat-option>
             </mat-autocomplete>
-            <div class="media-library-top-bar-search-container-form-suffix" matSuffix>
-                <mat-icon
-                    *ngIf="searchQuery.value?.length"
-                    class="media-library-top-bar-search-container-form-suffix-cancel-icon"
-                    fontSet="material-icons-outlined"
-                    (click)="clearSearchQuery()"
-                    >cancel</mat-icon
-                >
-            </div>
+            <mat-icon
+                class="top-bar-search-container-form-suffix"
+                matSuffix
+                *ngIf="searchQuery.value?.length"
+                fontSet="material-icons-outlined"
+                (click)="clearSearchQuery()"
+                >cancel</mat-icon
+            >
         </mat-form-field>
     </div>
 
     <!-- button for media upload -->
     <button
-        class="media-library-top-bar-upload-button"
+        class="top-bar-upload-button"
         mat-flat-button
         color="primary"
         [disabled]="disableAddItem"
