@@ -23,6 +23,10 @@ import { AboutPageComponent } from 'src/app/components/about-page/about-page.com
 import { ProductsTableListComponent } from 'src/app/components/products-table-list/products-table-list.component'
 import { CreateUpdateOrdersComponent } from 'src/app/components/create-update-orders/create-update-orders.component'
 import { FiltersResultComponent } from 'src/app/components/filters-result/filters-result.component'
+import * as PlotlyJS from 'plotly.js-dist-min'
+import { PlotlyModule } from 'angular-plotly.js'
+
+PlotlyModule.plotlyjs = PlotlyJS
 
 @NgModule({
     declarations: [
@@ -51,6 +55,7 @@ import { FiltersResultComponent } from 'src/app/components/filters-result/filter
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
+        PlotlyModule,
     ],
     bootstrap: [AppComponent],
 })

@@ -2853,6 +2853,18 @@
   resolved "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.2.tgz"
   integrity sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==
 
+"@types/plotly.js-dist-min@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@types/plotly.js-dist-min/-/plotly.js-dist-min-2.3.4.tgz#dcac506a1e5dc87aa84d0dc910830127f3cd4482"
+  integrity sha512-ISwLFV6Zs/v3DkaRFLyk2rvYAfVdnYP2VVVy7h+fBDWw52sn7sMUzytkWiN4M75uxr1uz1uiBioePTDpAfoFIg==
+  dependencies:
+    "@types/plotly.js" "*"
+
+"@types/plotly.js@*":
+  version "2.12.32"
+  resolved "https://registry.yarnpkg.com/@types/plotly.js/-/plotly.js-2.12.32.tgz#c5c7711013a2c8675b803a8f57c188024c435407"
+  integrity sha512-pCE60W1v77zxobnA1oGIisHhGzTHv8c4fAtM81Y1h7gezeKpLpx4E0fQ3ThKIPOIvGlnoVseUjSpFwFqIKdsXg==
+
 "@types/qs@*":
   version "6.9.11"
   resolved "https://registry.npmjs.org/@types/qs/-/qs-6.9.11.tgz"
@@ -3253,6 +3265,13 @@ ajv@^6.12.4, ajv@^6.12.5:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
+
+angular-plotly.js@^5.2.2:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/angular-plotly.js/-/angular-plotly.js-5.2.2.tgz#d93d9ceae9d5f341bf9d2d2b9f3c6bd9fbd56592"
+  integrity sha512-DDVQ28Y5lHtRq9C5xuQ99pxOB3M6kwOiuF8yF6n13atccwZwGD2RaNjKGxOcP1/d73rERZz1tmkfSzplD1jjOg==
+  dependencies:
+    tslib "^2.3.1"
 
 ansi-colors@4.1.3:
   version "4.1.3"
@@ -7263,6 +7282,11 @@ pkg-dir@^4.1.0, pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
+plotly.js-dist-min@^2.28.0:
+  version "2.28.0"
+  resolved "https://registry.yarnpkg.com/plotly.js-dist-min/-/plotly.js-dist-min-2.28.0.tgz#22359b12a971224248547d32a853c21e3f914558"
+  integrity sha512-TzoB4RRSL4WcbAVP9fjeZRKNnRhHLBWmXxIIMQ3O7GAwadQ/IpO6kSS0q8Ahmr6eewvKKiJeXqc4sA6oEQre/A==
+
 postcss-loader@7.0.2:
   version "7.0.2"
   resolved "https://registry.npmjs.org/postcss-loader/-/postcss-loader-7.0.2.tgz"
@@ -8362,7 +8386,7 @@ tslib@^1.8.1, tslib@^1.9.0:
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.1.0, tslib@^2.3.0:
+tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1:
   version "2.6.2"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
