@@ -45,6 +45,10 @@ export class BakeryManagementApiService {
         )
     }
 
+    getSellerUsers(): Observable<UserEntity[]> {
+        return this.http.get<UserEntity[]>(`${this.apiUrl}users/seller`)
+    }
+
     getClientUsers(): Observable<UserEntity[]> {
         return this.http.get<UserEntity[]>(`${this.apiUrl}users/client`)
     }

@@ -17,10 +17,10 @@ import { map, take } from 'rxjs'
 @Component({
     selector: 'app-manage-users',
     templateUrl: './manage-users.component.html',
-    styleUrls: ['./manage-users.component.css'],
+    styleUrls: ['./manage-users.component.scss'],
 })
 export class ManageUsersComponent implements OnInit, AfterViewInit {
-    displayedColumns: string[] = ['id', 'first_name', 'role', 'phone_number', 'actions']
+    displayedColumns: string[] = ['first_name', 'role', 'phone_number', 'actions']
     activeUser!: UserEntity
     actionState!: string
 

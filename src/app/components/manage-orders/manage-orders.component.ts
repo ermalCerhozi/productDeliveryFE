@@ -142,19 +142,38 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
     }
 
     openFilterOrdersDialog(): void {
-        const dialogRef = this.dialog.open(FilterDialogComponent, {
-            data: this.bakeryManagementService.navigationContext.filters,
-        })
-        dialogRef.afterClosed().subscribe({
-            next: (result) => {
-                if (result) {
-                    this.bakeryManagementService.navigationContext.filters = result
-                    this.bakeryManagementService.updateOrdersList(false)
-                }
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
+        forkJoin({
+            sellers: this.bakeryManagementApiService.getSellerUsers(),
+            clients: this.bakeryManagementApiService.getClientUsers(),
+        }).subscribe(({ sellers, clients }) => {
+            // The selected filters
+            const sellerId = this.bakeryManagementService.navigationContext.filters?.sellerId
+            const clientId = this.bakeryManagementService.navigationContext.filters?.clientId
+            const startDate = this.bakeryManagementService.navigationContext.filters?.startDate
+            const endDate = this.bakeryManagementService.navigationContext.filters?.endDate
+
+            const dialogRef = this.dialog.open(FilterDialogComponent, {
+                data: { sellers, clients, startDate, endDate, sellerId, clientId },
+            })
+
+            dialogRef.afterClosed().subscribe({
+                next: (result) => {
+                    if (result) {
+                        this.bakeryManagementService.navigationContext.filters.startDate =
+                            result.startDate
+                        this.bakeryManagementService.navigationContext.filters.endDate =
+                            result.endDate
+                        this.bakeryManagementService.navigationContext.filters.clientId =
+                            result.client?.id
+                        this.bakeryManagementService.navigationContext.filters.sellerId =
+                            result.seller?.id
+                        this.bakeryManagementService.updateOrdersList(false).subscribe()
+                    }
+                },
+                error: (error) => {
+                    console.log('Error: ', error)
+                },
+            })
         })
     }
 

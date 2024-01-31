@@ -17,6 +17,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatChipsModule } from '@angular/material/chips'
+import { MAT_DATE_LOCALE } from '@angular/material/core'
 
 const materialComponents = [
     MatCardModule,
@@ -42,5 +43,6 @@ const materialComponents = [
 @NgModule({
     imports: [materialComponents],
     exports: [materialComponents],
+    providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }], //dd/MM/yyyy
 })
 export class MaterialModule {}

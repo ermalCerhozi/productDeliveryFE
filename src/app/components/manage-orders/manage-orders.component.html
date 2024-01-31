@@ -28,14 +28,15 @@
         </button>
     </div>
 
-    <div *ngIf="hasFiltersSelected()">
+    <!-- TODO: Maybe implemt in the furture as an improvement -->
+    <!-- <div *ngIf="hasFiltersSelected()">
         <app-filters-result
             [labelTK]="'Clear Filters'"
             [results]="getAppliedFilters()"
             (clearResults)="clearFilters()"
             (removeFilter)="removeFilters($event)"
         ></app-filters-result>
-    </div>
+    </div> -->
 
     <div class="manage-orders-table-container">
         <table mat-table [dataSource]="dataSource">

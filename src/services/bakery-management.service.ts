@@ -84,6 +84,7 @@ export class BakeryManagementService {
     }
 
     updateOrdersList(append: boolean): Observable<OrderResponse> {
+        console.log('Navigation context:', this.navigationContext)
         if (!append) {
             this.productsListSubject.next([])
             this.navigationContext.pagination.limit = 21
@@ -103,7 +104,8 @@ export class BakeryManagementService {
                     newOrdersList = [...this.ordersListSubject.getValue(), ...response.orders]
                 } else {
                     newOrdersList = response.orders
-                }                this.ordersListSubject.next(newOrdersList)
+                }
+                this.ordersListSubject.next(newOrdersList)
 
                 this.navigationContext.pagination.offset += this.navigationContext.pagination.limit
                 if (this.navigationContext.getCount) {

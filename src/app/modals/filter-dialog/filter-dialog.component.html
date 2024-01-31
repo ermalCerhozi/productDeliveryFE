@@ -4,7 +4,7 @@
     <form [formGroup]="filterForm" class="filter-form">
         <mat-form-field>
             <mat-label>Client</mat-label>
-            <mat-select formControlName="client" [compareWith]="compareUsers">
+            <mat-select formControlName="client">
                 <mat-option *ngFor="let client of clients" [value]="client">{{
                     client.first_name + ' ' + client.last_name
                 }}</mat-option>
@@ -13,7 +13,7 @@
 
         <mat-form-field>
             <mat-label>Seller</mat-label>
-            <mat-select formControlName="seller" [compareWith]="compareUsers">
+            <mat-select formControlName="seller">
                 <mat-option *ngFor="let seller of sellers" [value]="seller">
                     {{ seller.first_name + ' ' + seller.last_name }}
                 </mat-option>
@@ -27,6 +27,7 @@
                 [matDatepicker]="startPicker"
                 [matDatepickerFilter]="dateFilter"
                 formControlName="startDate"
+                aria-label="Start Date"
             />
             <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
             <mat-datepicker #startPicker></mat-datepicker>
@@ -39,6 +40,7 @@
                 [matDatepicker]="endPicker"
                 [matDatepickerFilter]="dateFilter"
                 formControlName="endDate"
+                aria-label="End Date"
             />
             <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
             <mat-datepicker #endPicker></mat-datepicker>
