@@ -71,7 +71,7 @@ export class OrdersComponent implements OnInit {
                     'Nov',
                     'Dec',
                 ],
-                y: [19, 14, 22, 14, 16, 19, 15, 14, 10, 12, 12, 16],
+                y: [2, 8, 4, 3, 6, 9, 5, 4, 0, 2, 2, 6],
                 type: 'bar',
                 name: 'Returns',
                 marker: {

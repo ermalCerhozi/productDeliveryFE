@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { TopBarComponent } from './top-bar.component'
+import { TopBarComponent } from 'src/shared/components/top-bar/top-bar.component'
 
 describe('TopBarComponent', () => {
     let component: TopBarComponent
@@ -17,6 +17,6 @@ describe('TopBarComponent', () => {
     })
 
     it('should create', () => {
-        expect(component).toBeTruthy()w
+        expect(component).toBeTruthy()
     })
 })

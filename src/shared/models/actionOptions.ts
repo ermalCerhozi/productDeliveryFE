@@ -1,4 +1,4 @@
 export enum DropdownActionOptions {
     EDIT = 'edit',
-    DELETE = 'delete'
+    DELETE = 'delete',
 }
