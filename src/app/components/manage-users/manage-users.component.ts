@@ -9,7 +9,6 @@ import { BakeryManagementApiService } from 'src/services/bakery-management-api.s
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { SearchOptions } from 'src/shared/models/navigation-context.model'
-import { MediaLibrarySearchService } from 'src/services/media-library-search-service.service'
 import { DropdownEvent, DropdownMenuListItem } from 'src/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/shared/models/actionOptions'
 import { map, take } from 'rxjs'
@@ -46,13 +45,13 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
     constructor(
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
-        private searchService: MediaLibrarySearchService,
         public dialog: MatDialog
     ) {}
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
         this.getUsersList(false)
+        this.bakeryManagementService.activeTab = 'users'
     }
 
     ngAfterViewInit() {
@@ -207,7 +206,7 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
     }
 
     getSearchOptions(): SearchOptions {
-        return this.searchService.getSearchOptions()
+        return this.bakeryManagementService.getSearchOptions()
     }
 
     setSearchQuery(data: string) {
@@ -219,6 +218,6 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
     }
 
     setSearchOptions(searchOptions: SearchOptions) {
-        this.searchService.setSearchOptions(searchOptions)
+        this.bakeryManagementService.setSearchOptions(searchOptions)
     }
 }

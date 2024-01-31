@@ -9,6 +9,13 @@ import { AuthService } from 'src/services/auth.service'
 })
 export class LayoutComponent {
     constructor(private authService: AuthService, private router: Router) {}
+    routes = [
+        { path: '', name: 'Back to Main Screen', icon: 'arrow_back' },
+        { path: '/orders', name: 'Orders' },
+        { path: '/manageUsers', name: 'Manage users' },
+        { path: '/manageOrders', name: 'Manage orders' },
+        { path: '/manageProducts', name: 'Manage products' },
+    ]
 
     logOut(): void {
         this.authService.logout().subscribe({

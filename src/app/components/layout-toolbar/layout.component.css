@@ -1,26 +1,26 @@
 .example-spacer {
-  flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 .icon-text-wrapper {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .example-container {
-  height: 100%;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
 }
 
 .example-sidenav{
-  width: 250px;
+    width: 250px;
 }
 
 mat-sidenav-container, mat-sidenav-content, mat-sidenav {
-  height: 100%;
+    height: 100%;
 }

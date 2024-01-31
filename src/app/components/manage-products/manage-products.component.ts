@@ -15,7 +15,6 @@ import { ConfirmationDialogComponent } from 'src/shared/components/confirmation-
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator } from '@angular/material/paginator'
 import { SearchOptions } from 'src/shared/models/navigation-context.model'
-import { MediaLibrarySearchService } from 'src/services/media-library-search-service.service'
 import { take, map } from 'rxjs/operators'
 import { DropdownEvent, DropdownMenuListItem } from 'src/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/shared/models/actionOptions'
@@ -55,13 +54,13 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     constructor(
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
-        private searchService: MediaLibrarySearchService,
         public dialog: MatDialog
     ) {}
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
         this.getProductsList(false)
+        this.bakeryManagementService.activeTab = 'products'
     }
 
     ngAfterViewInit() {
@@ -195,7 +194,7 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     }
 
     getSearchOptions(): SearchOptions {
-        return this.searchService.getSearchOptions()
+        return this.bakeryManagementService.getSearchOptions()
     }
 
     getProducts(): Observable<ProductEntity[]> {
@@ -203,10 +202,10 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     }
 
     setSearchQuery(data: string) {
-        this.searchService.setSearchQuery(data)
+        this.bakeryManagementService.setSearchQuery(data)
     }
 
     setSearchOptions(searchOptions: SearchOptions) {
-        this.searchService.setSearchOptions(searchOptions)
+        this.bakeryManagementService.setSearchOptions(searchOptions)
     }
 }

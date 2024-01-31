@@ -4,7 +4,7 @@ import { OrderEntity, OrderResponse } from 'src/shared/models/order.model'
 import { ProductEntity, ProductResponse } from 'src/shared/models/product.model'
 import { UserEntity, UserResponse } from 'src/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
-import { NavigationContext } from 'src/shared/models/navigation-context.model'
+import { NavigationContext, SearchOptions } from 'src/shared/models/navigation-context.model'
 
 @Injectable({
     providedIn: 'root',
@@ -12,6 +12,7 @@ import { NavigationContext } from 'src/shared/models/navigation-context.model'
 
 //TODO: OnDestroy
 export class BakeryManagementService {
+    public activeTab!: string
     private ordersListSubject: BehaviorSubject<OrderEntity[]> = new BehaviorSubject<OrderEntity[]>(
         []
     )
@@ -147,6 +148,27 @@ export class BakeryManagementService {
         )
     }
 
+    setSearchQuery(data: string) {
+        if (data !== this.navigationContext.filters.queryString) {
+            this.navigationContext.filters.queryString = data
+            this.navigationContext.getCount = true
+            if (this.activeTab === 'users') {
+                this.updateUsersList(false).subscribe()
+            } else if (this.activeTab === 'products') {
+                this.updateProductList(false).subscribe()
+            }
+        }
+    }
+
+    setSearchOptions(searchOptions: SearchOptions) {
+        this.navigationContext.searchOptions = searchOptions
+        this.navigationContext.getCount = true
+    }
+
+    getSearchOptions(): SearchOptions {
+        return this.navigationContext.searchOptions
+    }
+
     getAllUsers(): Observable<UserEntity[]> {
         return this.bakeryManagementApiService.getUsers()
     }
@@ -154,17 +176,6 @@ export class BakeryManagementService {
     getLoggedInUser() {
         return JSON.parse(localStorage.getItem('currentUser') || '')
     }
-
-    // hasActiveFilters(item: string): boolean {
-    //     switch (item) {
-    //         case 'product':
-    //         // return Object.keys(this.navigationContext.productFilters).length > 0
-    //         case 'order':
-    //         // return Object.keys(this.navigationContext.orderFilters).length > 0
-    //         default:
-    //             return false
-    //     }
-    // }
 
     deleteOrderItem(id: number): Observable<any> {
         return this.bakeryManagementApiService.deleteOrderItem(id)
