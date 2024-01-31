@@ -10,7 +10,7 @@ export class OrdersComponent implements OnInit {
         console.log('OrdersComponent')
     }
 
-    donut = {
+    donutChart = {
         data: [
             {
                 values: [19, 26, 55],
@@ -31,7 +31,7 @@ export class OrdersComponent implements OnInit {
         grid: { rows: 1, columns: 2 },
     }
 
-    groupedBarChart = {
+    barChart = {
         data: [
             {
                 x: [
