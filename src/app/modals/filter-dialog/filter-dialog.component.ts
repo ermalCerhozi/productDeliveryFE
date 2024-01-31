@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
+import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { UserEntity } from 'src/shared/models/user.model'
 
 @Component({
@@ -15,7 +16,8 @@ export class FilterDialogComponent implements OnInit {
 
     constructor(
         public dialogRef: MatDialogRef<FilterDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any
+        @Inject(MAT_DIALOG_DATA) public data: any,
+        private bakeryManagementService: BakeryManagementService
     ) {
         this.clients = data?.clients
         this.sellers = data?.sellers
@@ -56,5 +58,9 @@ export class FilterDialogComponent implements OnInit {
     dateFilter = (d: Date | null): boolean => {
         const current = d || new Date()
         return current <= new Date() // Allow only dates before today and today
+    }
+
+    downloadOrdersPdf() {
+        this.bakeryManagementService.downloadOrdersPdf()
     }
 }

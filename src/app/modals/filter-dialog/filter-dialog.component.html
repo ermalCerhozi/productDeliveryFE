@@ -1,4 +1,12 @@
-<h2 mat-dialog-title>Filter</h2>
+<div class="filter-header-container">
+    <h2 mat-dialog-title>Filter</h2>
+    <mat-dialog-actions [align]="'end'">
+        <button mat-button color="primary" (click)="downloadOrdersPdf()">
+            <mat-icon fontSet="material-icons-outlined">download</mat-icon>
+            Download PDF
+        </button>
+    </mat-dialog-actions>
+</div>
 
 <mat-dialog-content>
     <form [formGroup]="filterForm" class="filter-form">
@@ -48,7 +56,7 @@
     </form>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-    <button mat-stroked-button color="warn" (click)="dialogRef.close()">Cancel</button>
+<mat-dialog-actions [align]="'end'">
+    <button mat-stroked-button color="warn" mat-dialog-close>Cancel</button>
     <button mat-stroked-button color="primary" (click)="applyFilter()">Apply</button>
 </mat-dialog-actions>

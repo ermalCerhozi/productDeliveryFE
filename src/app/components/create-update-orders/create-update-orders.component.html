@@ -70,7 +70,7 @@
         </form>
     </div>
 
-    <mat-dialog-actions align="end" class="insert-panel">
+    <mat-dialog-actions [align]="'end'" class="insert-panel">
         <h2 class="total-price">{{ totalOrderPrice.toLocaleString() }} Lekë</h2>
         <button class="insert-panel-actions" mat-stroked-button color="warn" mat-dialog-close>
             Cancel

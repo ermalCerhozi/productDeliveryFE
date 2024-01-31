@@ -1,3 +1,9 @@
+.filter-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .filter-form {
     display: flex;
     flex-direction: column;

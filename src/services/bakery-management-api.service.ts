@@ -120,4 +120,11 @@ export class BakeryManagementApiService {
     deleteOrderItem(id: number): Observable<any> {
         return this.http.delete<any>(`${this.apiUrl}order-items/${id}`)
     }
+
+    //Download orders
+    downloadOrdersPdf(requestPayload: { navigation_context: NavigationContext }): Observable<Blob> {
+        return this.http.post(`${this.apiUrl}orders/download`, requestPayload.navigation_context, {
+            responseType: 'blob',
+        })
+    }
 }

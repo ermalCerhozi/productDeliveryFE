@@ -57,7 +57,7 @@
 </div>
 
 <mat-paginator
-    *ngIf="!isLoading || dataSource.data.length > 0"
+    [length]="bakeryManagementService.usersCount"
     [pageSize]="20"
     aria-label="Select page of users"
 ></mat-paginator>
