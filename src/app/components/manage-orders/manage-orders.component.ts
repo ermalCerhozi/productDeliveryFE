@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { ConfirmationDialogComponent } from 'src/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
@@ -20,7 +20,7 @@ import { MatPaginator } from '@angular/material/paginator'
     templateUrl: './manage-orders.component.html',
     styleUrls: ['./manage-orders.component.scss'],
 })
-export class ManageOrdersComponent implements OnInit {
+export class ManageOrdersComponent implements OnInit, AfterViewInit {
     displayedColumns: string[] = ['client', 'order', 'date', 'actions']
     activeOrder!: OrderEntity
     actionState!: string
@@ -59,7 +59,7 @@ export class ManageOrdersComponent implements OnInit {
     }
 
     ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator
+        // this.dataSource.paginator = this.paginator
         this.paginator.page.subscribe((event) => {
             if (event.pageIndex > event.previousPageIndex!) {
                 this.getOrdersList(true)
@@ -74,6 +74,7 @@ export class ManageOrdersComponent implements OnInit {
                 this.isLoading = false
                 this.bakeryManagementService.ordersList$.subscribe((orders) => {
                     this.dataSource = new MatTableDataSource(orders) //TODO:
+                    this.dataSource.paginator = this.paginator
                 })
             },
             error: (error) => {

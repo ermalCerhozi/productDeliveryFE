@@ -36,3 +36,10 @@
     text-overflow: ellipsis;
     max-width: 100px;
 }
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+}

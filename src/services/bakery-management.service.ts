@@ -52,7 +52,7 @@ export class BakeryManagementService {
         }
     }
 
-    updateProductList(append: boolean): Observable<ProductResponse> {
+    updateProductList(append?: boolean): Observable<ProductResponse> {
         if (!append) {
             this.productsListSubject.next([])
             this.navigationContext.pagination.limit = 21
@@ -66,6 +66,7 @@ export class BakeryManagementService {
 
         return this.bakeryManagementApiService.searchProduct(requestPayload).pipe(
             tap((response: ProductResponse) => {
+                console.log('Products fetched:', response.products.length)
                 let newProductsList
                 if (append) {
                     newProductsList = [...this.productsListSubject.getValue(), ...response.products]
@@ -74,7 +75,7 @@ export class BakeryManagementService {
                 }
                 this.productsListSubject.next(newProductsList)
 
-                this.navigationContext.pagination.offset += response.products.length
+                this.navigationContext.pagination.offset += this.navigationContext.pagination.limit
                 if (this.navigationContext.getCount) {
                     this.productsCount = response.count
                 }
@@ -96,15 +97,15 @@ export class BakeryManagementService {
 
         return this.bakeryManagementApiService.getFilteredOrders(requestPayload).pipe(
             tap((response: OrderResponse) => {
+                console.log('Orders fetched:', response.orders.length)
                 let newOrdersList
                 if (append) {
                     newOrdersList = [...this.ordersListSubject.getValue(), ...response.orders]
                 } else {
                     newOrdersList = response.orders
-                }
-                this.ordersListSubject.next(newOrdersList)
+                }                this.ordersListSubject.next(newOrdersList)
 
-                this.navigationContext.pagination.offset += response.orders.length
+                this.navigationContext.pagination.offset += this.navigationContext.pagination.limit
                 if (this.navigationContext.getCount) {
                     this.ordersCount = response.count
                 }
@@ -126,6 +127,7 @@ export class BakeryManagementService {
 
         return this.bakeryManagementApiService.searchUsers(requestPayload).pipe(
             tap((response: UserResponse) => {
+                console.log('Users fetched:', response.users.length)
                 let newUsersList
                 if (append) {
                     newUsersList = [...this.usersListSubject.getValue(), ...response.users]
@@ -133,8 +135,9 @@ export class BakeryManagementService {
                     newUsersList = response.users
                 }
                 this.usersListSubject.next(newUsersList)
+                this.usersListSubject.next(newUsersList)
 
-                this.navigationContext.pagination.offset += response.users.length
+                this.navigationContext.pagination.offset += this.navigationContext.pagination.limit
                 if (this.navigationContext.getCount) {
                     this.usersCount = response.count
                 }
@@ -160,19 +163,6 @@ export class BakeryManagementService {
     //             return false
     //     }
     // }
-
-    loadMoreItems(item: string): void {
-        switch (item) {
-            case 'product':
-                this.updateProductList(true).subscribe()
-                break
-            case 'order':
-                this.updateOrdersList(true).subscribe()
-                break
-            default:
-                break
-        }
-    }
 
     deleteOrderItem(id: number): Observable<any> {
         return this.bakeryManagementApiService.deleteOrderItem(id)

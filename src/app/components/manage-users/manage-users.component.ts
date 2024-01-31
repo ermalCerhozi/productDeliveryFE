@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatTableDataSource } from '@angular/material/table'
@@ -19,7 +19,7 @@ import { map, take } from 'rxjs'
     templateUrl: './manage-users.component.html',
     styleUrls: ['./manage-users.component.css'],
 })
-export class ManageUsersComponent implements OnInit {
+export class ManageUsersComponent implements OnInit, AfterViewInit {
     displayedColumns: string[] = ['id', 'first_name', 'role', 'phone_number', 'actions']
     activeUser!: UserEntity
     actionState!: string
