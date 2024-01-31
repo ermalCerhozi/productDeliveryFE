@@ -20,11 +20,11 @@
         <button
             class="filter-button"
             mat-raised-button
-            [disabled]="this.isAllUnselected()"
+            [disabled]="!this.hasFiltersSelected()"
             color="primary"
-            (click)="downloadSelectedOrders()"
+            (click)="clearFilters()"
         >
-            Download
+            Clear Filters
         </button>
     </div>
 
@@ -40,26 +40,6 @@
 
     <div class="manage-orders-table-container">
         <table mat-table [dataSource]="dataSource">
-            <!-- Checkbox Column -->
-            <ng-container matColumnDef="checkbox">
-                <th mat-header-cell *matHeaderCellDef>
-                    <mat-checkbox
-                        color="primary"
-                        (change)="$event ? toggleAll() : null"
-                        [checked]="selection.hasValue() && isAllSelected()"
-                        [indeterminate]="selection.hasValue() && !isAllSelected()"
-                    ></mat-checkbox>
-                </th>
-                <td mat-cell *matCellDef="let row">
-                    <mat-checkbox
-                        color="primary"
-                        (click)="$event.stopPropagation()"
-                        (change)="$event ? selection.toggle(row) : null"
-                        [checked]="selection.isSelected(row)"
-                    ></mat-checkbox>
-                </td>
-            </ng-container>
-
             <!-- Seller Column -->
             <ng-container matColumnDef="seller">
                 <th mat-header-cell *matHeaderCellDef>Seller</th>
@@ -142,9 +122,10 @@
     [pageSize]="20"
     aria-label="Select page of users"
 ></mat-paginator>
+
 <ng-template #confirmationDialogContainer>
     <app-confirmation-dialog
         [title]="activeOrder!.id"
-        (confirm)="onDeleteProduct()"
+        (confirm)="onDeleteOrder()"
     ></app-confirmation-dialog>
 </ng-template>

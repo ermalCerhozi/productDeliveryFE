@@ -182,31 +182,8 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
         this.getOrdersList(false)
     }
 
-    removeFilters(filter: string) {
-        console.log('filter: ', filter)
-        this.getOrdersList(false)
-    }
-
-    getAppliedFilters(): any[] {
-        const filters = this.bakeryManagementService.navigationContext.filters
-        const filterValues: any[] = []
-
-        for (const key in filters) {
-            if (
-                Object.prototype.hasOwnProperty.call(filters, key) &&
-                key !== 'queryString' &&
-                key !== 'active'
-            ) {
-                filterValues.push(filters[key])
-            }
-        }
-
-        return filterValues
-    }
-
     hasFiltersSelected(): boolean {
         const filters = this.bakeryManagementService.navigationContext.filters
-
         for (const key in filters) {
             if (
                 Object.prototype.hasOwnProperty.call(filters, key) &&
@@ -217,7 +194,6 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
                 return true
             }
         }
-
         return false
     }
 
@@ -228,7 +204,7 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
         })
     }
 
-    onDeleteProduct(): void {
+    onDeleteOrder(): void {
         this.dialog.closeAll()
         this.bakeryManagementApiService.deleteOrder(this.activeOrder.id).subscribe({
             next: () => {
@@ -238,30 +214,5 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
                 console.log('Error: ', error)
             },
         })
-    }
-
-    getProducts(): Observable<ProductEntity[]> {
-        return this.bakeryManagementService.productsList$
-    }
-
-    isAllSelected() {
-        // const numSelected = this.selection.selected.length
-        // const numRows = this.bakeryManagementService.ordersList.length
-        // return numSelected === numRows
-        return false
-    }
-
-    isAllUnselected() {
-        return this.selection.selected.length === 0
-    }
-
-    toggleAll() {
-        // this.isAllSelected()
-        //     ? this.selection.clear()
-        //     : this.bakeryManagementService.ordersList.forEach((row) => this.selection.select(row))
-    }
-
-    downloadSelectedOrders() {
-        this.bakeryManagementService.downloadSelected(this.selection)
     }
 }
