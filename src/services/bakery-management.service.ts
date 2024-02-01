@@ -177,6 +177,10 @@ export class BakeryManagementService {
         return JSON.parse(localStorage.getItem('currentUser') || '')
     }
 
+    updateUser(user: UserEntity): void {
+        this.bakeryManagementApiService.updateUser(user, user).subscribe()
+    }
+
     deleteOrderItem(id: number): Observable<any> {
         return this.bakeryManagementApiService.deleteOrderItem(id)
     }

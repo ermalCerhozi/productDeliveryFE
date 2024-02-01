@@ -1,0 +1,50 @@
+<div class="profile-container">
+    <img src="/assets/images/avatar.png" alt="Description of the image" />
+
+    <div class="profile-username">{{ loggedInUser.first_name }} {{ loggedInUser.last_name }}</div>
+
+    <div class="profile-registered-since">
+        <span>Registered since: {{ loggedInUser.created_at | date : 'd/M/yy' }}</span>
+    </div>
+
+    <form class="profile-edit-form" #form="ngForm" (ngSubmit)="onSubmit()">
+        <!-- <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input
+                matInput
+                type="email"
+                [(ngModel)]="loggedInUser.id"
+                name="email"
+                #email="ngModel"
+            />
+        </mat-form-field> -->
+
+        <mat-form-field appearance="fill">
+            <mat-label>Phone Number</mat-label>
+            <input
+                matInput
+                type="tel"
+                [(ngModel)]="loggedInUser.phone_number"
+                name="phone"
+                #phone="ngModel"
+            />
+        </mat-form-field>
+
+        <!-- <mat-form-field appearance="fill">
+            <mat-label>Password</mat-label>
+            <input
+                matInput
+                type="password"
+                [(ngModel)]="loggedInUser.password"
+                name="password"
+                #password="ngModel"
+            />
+        </mat-form-field> -->
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="!form.form.dirty">
+            Update
+        </button>
+
+        <span style="margin-top: 250px">Update email and password to be implemented </span>
+    </form>
+</div>

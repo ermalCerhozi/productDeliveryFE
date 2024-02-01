@@ -15,6 +15,7 @@ export class LayoutComponent {
         { path: '/manageUsers', name: 'Manage users' },
         { path: '/manageOrders', name: 'Manage orders' },
         { path: '/manageProducts', name: 'Manage products' },
+        { path: '/profile', name: 'Profile' },
     ]
 
     logOut(): void {

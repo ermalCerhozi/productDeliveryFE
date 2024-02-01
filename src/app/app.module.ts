@@ -19,6 +19,7 @@ import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.compon
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { CreateUpdateOrdersComponent } from 'src/app/components/create-update-orders/create-update-orders.component'
 import { FiltersResultComponent } from 'src/app/components/filters-result/filters-result.component'
+import { UserProfileComponent } from 'src/app/components/user-profile/user-profile.component'
 import * as PlotlyJS from 'plotly.js-dist-min'
 import { PlotlyModule } from 'angular-plotly.js'
 
@@ -37,6 +38,7 @@ PlotlyModule.plotlyjs = PlotlyJS
         FilterDialogComponent,
         CreateUpdateOrdersComponent,
         FiltersResultComponent,
+        UserProfileComponent,
     ],
     imports: [
         BrowserModule,

@@ -14,7 +14,7 @@ export class OrdersComponent implements OnInit {
         data: [
             {
                 values: [19, 26, 55],
-                labels: ['Residential', 'Non-Residential', 'Utility'],
+                labels: ['Other', 'Fruits', 'Drinks'],
                 type: 'pie',
                 hole: 0.3,
             },

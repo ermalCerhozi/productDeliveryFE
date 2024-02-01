@@ -9,6 +9,7 @@ import { signInSignUpComponent } from 'src/app/components/SignInSignUp/signInSig
 import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component'
 import { AuthGuard } from 'src/services/auth-guard.service'
 import { PermissionsGuard } from 'src/services/permissions-guard.service'
+import { UserProfileComponent } from 'src/app/components/user-profile/user-profile.component'
 
 const routes: Routes = [
     {
@@ -43,6 +44,10 @@ const routes: Routes = [
                 component: ManageUsersComponent,
                 canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin'] },
+            },
+            {
+                path: 'profile',
+                component: UserProfileComponent,
             },
         ],
     },

@@ -24,6 +24,8 @@ export class BakeryManagementApiService {
         return this.http.get<UserEntity[]>(`${this.apiUrl}users`)
     }
 
+    // TODO:take only user
+    // TODO: when the logged in user edits its info update teh user info in the local storage
     updateUser(user: UserEntity, result: Partial<UserEntity>): Observable<any> {
         return this.http.put<UserEntity>(`${this.apiUrl}users/${user.id}`, result)
     }
