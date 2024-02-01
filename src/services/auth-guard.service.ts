@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         if (currentUser) {
             return of(true)
         } else {
-            return of(this.router.parseUrl('/login'))
+            return of(this.router.parseUrl('/not-found'))
         }
     }
 }

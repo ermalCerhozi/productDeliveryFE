@@ -1,6 +1,12 @@
-<img
-    src="assets/images/not-found.webp"
-    width="70%"
-    style="margin-top: 20px; display: flex; justify-content: center"
-    class="container"
-/>
+<div class="page-not-found">
+    <h1 class="title">Oops! Something went wrong…</h1>
+    <span class="sub-title">
+        The page you are trying to access does not exist. We apologize for any inconvenience caused.
+    </span>
+
+    <img src="assets/images/page-not-found.png" class="container" alt="Page not found" />
+
+    <button mat-raised-button color="primary" (click)="goBack()" class="back-button">
+        Go Back
+    </button>
+</div>

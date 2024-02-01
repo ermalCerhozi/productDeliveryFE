@@ -25,25 +25,21 @@ export class signInSignUpComponent implements OnInit {
     }
 
     initializeForm() {
-        //TODO: Why use FormBuilder insted of Using FormGroup and FormControl
         this.loginForm = this.formBuilder.group({
             phoneNumber: ['', [Validators.required, Validators.pattern(phoneNumberRegex)]],
             password: ['', [Validators.required]],
-            // password: ['', [Validators.required, Validators.pattern(passwordRegex)]],
         })
     }
 
     login(): void {
-        this.router.navigate(['/orders'])
-
+        // this.router.navigate(['/orders'])
         this.authService.login(this.loginForm.value).subscribe({
             next: (res) => {
                 this.authService.setAuthenticatedUser(res)
                 this.router.navigate(['/orders'])
             },
             error: () => {
-                console.log(Error)
-                // toast notification or alert
+                console.log('error:', Error)
             },
         })
     }
@@ -53,7 +49,7 @@ export class signInSignUpComponent implements OnInit {
         this.containerDiv.nativeElement.classList.remove('sign-up-mode')
     }
 
-    signUp(): void {
+    forgotPassword(): void {
         console.log('signUp method triggered')
         this.containerDiv.nativeElement.classList.add('sign-up-mode')
     }

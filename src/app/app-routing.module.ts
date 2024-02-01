@@ -7,8 +7,8 @@ import { ManageProductsComponent } from 'src/app/components/manage-products/mana
 import { NotFoundComponent } from 'src/app/components/not-found/not-found.component'
 import { signInSignUpComponent } from 'src/app/components/SignInSignUp/signInSignUp.component'
 import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component'
-// import { AuthGuard } from 'src/services/auth-guard.service'
-// import { PermissionsGuard } from 'src/services/permissions-guard.service'
+import { AuthGuard } from 'src/services/auth-guard.service'
+import { PermissionsGuard } from 'src/services/permissions-guard.service'
 
 const routes: Routes = [
     {
@@ -18,30 +18,30 @@ const routes: Routes = [
     {
         path: '',
         component: LayoutComponent,
-        // canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.
+        canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.
         children: [
             {
                 path: 'orders',
                 component: OrdersComponent,
-                // canActivate: [PermissionsGuard],
+                canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
             },
             {
                 path: 'manageOrders',
                 component: ManageOrdersComponent,
-                // canActivate: [PermissionsGuard],
+                canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin', 'Manager'] },
             },
             {
                 path: 'manageProducts',
                 component: ManageProductsComponent,
-                // canActivate: [PermissionsGuard],
+                canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin'] },
             },
             {
                 path: 'manageUsers',
                 component: ManageUsersComponent,
-                // canActivate: [PermissionsGuard],
+                canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin'] },
             },
         ],
