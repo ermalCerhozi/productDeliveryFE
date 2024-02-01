@@ -16,5 +16,5 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Flow for User Login and usage
 
-![Login](screenshots/login.png)
-![Porgot Password](forgotPassword/login.png)
+<img src="screenshots/login.png" alt="Login" width="400"/>
+<img src="screenshots/forgotPassword.png" alt="Forgot Password" width="400"/>
