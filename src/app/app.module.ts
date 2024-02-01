@@ -5,11 +5,9 @@ import { AppComponent } from 'src/app/app.component'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MaterialModule } from 'src/app/material.module'
 import { SharedModule } from 'src/shared/shared.module'
-import { HomePageComponent } from 'src/app/components/home-page/home-page.component'
-import { signInSignUpComponent } from 'src/app/components/AUTH/SignInSignUp/signInSignUp.component'
+import { signInSignUpComponent } from 'src/app/components/SignInSignUp/signInSignUp.component'
 import { AppRoutingModule } from 'src/app/app-routing.module'
 import { HttpClientModule } from '@angular/common/http'
-import { ProductsComponent } from 'src/app/components/products/products.component'
 import { OrdersComponent } from 'src/app/components/orders/orders.component'
 import { ManageOrdersComponent } from 'src/app/components/manage-orders/manage-orders.component'
 import { ManageProductsComponent } from 'src/app/components/manage-products/manage-products.component'
@@ -19,8 +17,6 @@ import { FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms'
 import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.component'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
-import { AboutPageComponent } from 'src/app/components/about-page/about-page.component'
-import { ProductsTableListComponent } from 'src/app/components/products-table-list/products-table-list.component'
 import { CreateUpdateOrdersComponent } from 'src/app/components/create-update-orders/create-update-orders.component'
 import { FiltersResultComponent } from 'src/app/components/filters-result/filters-result.component'
 import * as PlotlyJS from 'plotly.js-dist-min'
@@ -31,9 +27,7 @@ PlotlyModule.plotlyjs = PlotlyJS
 @NgModule({
     declarations: [
         AppComponent,
-        HomePageComponent,
         signInSignUpComponent,
-        ProductsComponent,
         OrdersComponent,
         ManageOrdersComponent,
         ManageProductsComponent,
@@ -41,9 +35,7 @@ PlotlyModule.plotlyjs = PlotlyJS
         NotFoundComponent,
         LayoutComponent,
         FilterDialogComponent,
-        ProductsTableListComponent,
         CreateUpdateOrdersComponent,
-        AboutPageComponent,
         FiltersResultComponent,
     ],
     imports: [

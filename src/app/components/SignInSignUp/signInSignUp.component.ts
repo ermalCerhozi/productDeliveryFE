@@ -34,7 +34,7 @@ export class signInSignUpComponent implements OnInit {
     }
 
     login(): void {
-        console.log('logIn method triggered')
+        this.router.navigate(['/orders'])
 
         this.authService.login(this.loginForm.value).subscribe({
             next: (res) => {
