@@ -16,5 +16,14 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Flow for User Login and usage
 
-<img src="screenshots/login.png" alt="Login" width="400"/>
-<img src="screenshots/forgotPassword.png" alt="Forgot Password" width="400"/>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+    <img src="screenshots/login.png" alt="Login" width="200"/>
+    <img src="screenshots/forgotPassword.png" alt="Forgot Password" width="200"/>
+    <img src="screenshots/chart.png" alt="Chart" width="200"/>
+    <img src="screenshots/profile.png" alt="Profile" width="200"/>
+    <img src="screenshots/productList.png" alt="Products List" width="200"/>
+    <img src="screenshots/filterOrders.png" alt="Filter Orders" width="200"/>
+    <img src="screenshots/downloadedPDF.png" alt="Downloaded PDF" width="200"/>
+    <img src="screenshots/createOrder.png" alt="Create Order" width="200"/>
+    <img src="screenshots/clientList.png" alt="Client List" width="200"/>
+</div>
