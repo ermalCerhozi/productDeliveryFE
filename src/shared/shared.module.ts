@@ -30,8 +30,7 @@ import { TopBarComponent } from 'src/shared/components/top-bar/top-bar.component
 import { DropdownMenuListComponent } from 'src/shared/components/dropdown-menu-list/dropdown-menu-list.component'
 import { CreateUpdateDialogComponent } from 'src/shared/components/create-update-dialog/create-update-dialog.component'
 import { ConfirmationDialogComponent } from 'src/shared/components/confirmation-dialog/confirmation-dialog.component'
-import { FormatTimePipe } from 'src/shared/common/pipes/format-time.pipe'
-import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe'
+import { ExternalUrlSanitizerPipe } from 'src/shared/common/pipes/external-url-sanitizer.pipe'
 
 @NgModule({
     declarations: [
@@ -40,8 +39,7 @@ import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe'
         DropdownMenuListComponent,
         CreateUpdateDialogComponent,
         ConfirmationDialogComponent,
-        FormatDatePipe,
-        FormatTimePipe,
+        ExternalUrlSanitizerPipe,
     ],
     imports: [
         CommonModule,
@@ -78,8 +76,7 @@ import { FormatDatePipe } from 'src/shared/common/pipes/format-date.pipe'
         DropdownMenuListComponent,
         CreateUpdateDialogComponent,
         ConfirmationDialogComponent,
-        FormatDatePipe,
-        FormatTimePipe,
+        ExternalUrlSanitizerPipe,
     ],
     providers: [],
 })

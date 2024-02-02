@@ -8,6 +8,7 @@ import { UserEntity } from 'src/shared/models/user.model'
     styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent implements OnInit {
+    url = ''
     loggedInUser!: UserEntity
 
     constructor(private bakeryManagementService: BakeryManagementService) {}
