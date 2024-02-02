@@ -41,10 +41,35 @@
             />
         </mat-form-field> -->
 
-        <button mat-raised-button color="primary" type="submit" [disabled]="!form.form.dirty">
+        <!-- <button mat-raised-button color="primary" type="submit" [disabled]="!form.form.dirty">
             Update
-        </button>
-
-        <span style="margin-top: 250px">Update email and password to be implemented </span>
+        </button> -->
     </form>
+
+    <mat-form-field appearance="fill" class="google-url-input">
+        <mat-label>Maps URL</mat-label>
+        <input matInput [(ngModel)]="url" />
+    </mat-form-field>
+
+    <iframe
+        *ngIf="url"
+        [src]="url | externalUrlSanitizer"
+        width="400"
+        height="300"
+        style="border: 0"
+        allowfullscreen=""
+        loading="lazy"
+    ></iframe>
+
+    <mat-toolbar class="insert-panel" color="primary">
+        <button class="insert-panel-actions cancel" mat-stroked-button color="warn">Cancel</button>
+        <button
+            class="insert-panel-actions"
+            mat-stroked-button
+            color="primary"
+            (click)="onSubmit()"
+        >
+            Save
+        </button>
+    </mat-toolbar>
 </div>
