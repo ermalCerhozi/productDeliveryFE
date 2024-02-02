@@ -1,12 +1,4 @@
-import {
-    Component,
-    EventEmitter,
-    Input,
-    OnDestroy,
-    OnInit,
-    Output,
-    ViewEncapsulation,
-} from '@angular/core'
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { Subject, debounceTime, takeUntil } from 'rxjs'
 import { SearchOptions } from 'src/shared/models/navigation-context.model'
@@ -15,7 +7,6 @@ import { SearchOptions } from 'src/shared/models/navigation-context.model'
     selector: 'app-top-bar',
     templateUrl: './top-bar.component.html',
     styleUrls: ['./top-bar.component.scss'],
-    encapsulation: ViewEncapsulation.None,
 })
 export class TopBarComponent implements OnInit, OnDestroy {
     searchQuery = new FormControl('')

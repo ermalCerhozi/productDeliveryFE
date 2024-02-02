@@ -178,6 +178,7 @@ export class BakeryManagementService {
     }
 
     updateUser(user: UserEntity): void {
+        console.log(user)
         this.bakeryManagementApiService.updateUser(user, user).subscribe()
     }
 

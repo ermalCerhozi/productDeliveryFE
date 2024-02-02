@@ -17,5 +17,6 @@ export interface UserEntity {
     nickname: string
     phone_number: string
     role: string
+    profile_picture?: string
     password?: string
 }

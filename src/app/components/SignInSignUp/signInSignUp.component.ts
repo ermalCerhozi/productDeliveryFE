@@ -12,6 +12,7 @@ import { AuthService } from 'src/services/auth.service'
 export class signInSignUpComponent implements OnInit {
     @ViewChild('containerDiv') containerDiv!: ElementRef
     loginForm: FormGroup = new FormGroup({})
+    errorMessage = false
     hide = true
 
     constructor(
@@ -32,13 +33,14 @@ export class signInSignUpComponent implements OnInit {
     }
 
     login(): void {
-        // this.router.navigate(['/orders'])
         this.authService.login(this.loginForm.value).subscribe({
             next: (res) => {
+                this.errorMessage = false
                 this.authService.setAuthenticatedUser(res)
                 this.router.navigate(['/orders'])
             },
             error: () => {
+                this.errorMessage = true
                 console.log('error:', Error)
             },
         })

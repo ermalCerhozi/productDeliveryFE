@@ -39,6 +39,12 @@
                         <input type="password" formControlName="password" placeholder="Password" />
                     </div>
                     <input type="submit" value="Sign In" class="btn solid" />
+                    <div *ngIf="errorMessage" class="error-text">
+                        An error occurred during login
+                    </div>
+                    <div *ngIf="errorMessage" class="error-text">
+                        Please check you phone number and password are correct!
+                    </div>
 
                     <p class="social-text">Visit our social media platforms</p>
                     <div class="social-media">

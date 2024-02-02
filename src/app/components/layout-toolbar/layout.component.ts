@@ -1,22 +1,27 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { AuthService } from 'src/services/auth.service'
 
 @Component({
     selector: 'app-layout',
     templateUrl: './layout.component.html',
-    styleUrls: ['./layout.component.css'],
+    styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
+    activeLink!: string
+
     constructor(private authService: AuthService, private router: Router) {}
     routes = [
-        { path: '', name: 'Back to Main Screen', icon: 'arrow_back' },
-        { path: '/orders', name: 'Orders' },
-        { path: '/manageUsers', name: 'Manage users' },
-        { path: '/manageOrders', name: 'Manage orders' },
-        { path: '/manageProducts', name: 'Manage products' },
-        { path: '/profile', name: 'Profile' },
+        { path: '/orders', name: 'Orders', icon: 'shopping_cart' },
+        { path: '/manageUsers', name: 'Manage users', icon: 'people' },
+        { path: '/manageOrders', name: 'Manage orders', icon: 'assignment' },
+        { path: '/manageProducts', name: 'Manage products', icon: 'store' },
+        { path: '/profile', name: 'Profile', icon: 'account_circle' },
     ]
+
+    ngOnInit(): void {
+        this.activeLink = this.routes[0].path
+    }
 
     logOut(): void {
         this.authService.logout().subscribe({

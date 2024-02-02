@@ -1,13 +1,37 @@
 <div class="profile-container">
-    <img src="/assets/images/avatar.png" alt="Description of the image" />
-
+    <input
+        type="file"
+        accept="image/*"
+        #fileInput
+        style="display: none"
+        (change)="onFileSelected($event)"
+    />
+    <div class="image-container">
+        <img
+            [src]="
+                loggedInUser.profile_picture
+                    ? loggedInUser.profile_picture
+                    : '/assets/images/avatar.png'
+            "
+            alt="Profile image"
+        />
+    </div>
+    <button
+        class="profile-picture-upload-button"
+        mat-flat-button
+        color="primary"
+        (click)="openUploadPanel()"
+    >
+        <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
+        <span>Change Image</span>
+    </button>
     <div class="profile-username">{{ loggedInUser.first_name }} {{ loggedInUser.last_name }}</div>
 
     <div class="profile-registered-since">
         <span>Registered since: {{ loggedInUser.created_at | date : 'd/M/yy' }}</span>
     </div>
 
-    <form class="profile-edit-form" #form="ngForm" (ngSubmit)="onSubmit()">
+    <form class="profile-edit-form" #form="ngForm" (ngSubmit)="updateUser()">
         <!-- <mat-form-field appearance="fill">
             <mat-label>Email</mat-label>
             <input
@@ -27,6 +51,7 @@
                 [(ngModel)]="loggedInUser.phone_number"
                 name="phone"
                 #phone="ngModel"
+                placeholder="Phone Number"
             />
         </mat-form-field>
 
@@ -63,13 +88,6 @@
 
     <mat-toolbar class="insert-panel" color="primary">
         <button class="insert-panel-actions cancel" mat-stroked-button color="warn">Cancel</button>
-        <button
-            class="insert-panel-actions"
-            mat-stroked-button
-            color="primary"
-            (click)="onSubmit()"
-        >
-            Save
-        </button>
+        <button class="insert-panel-actions" mat-stroked-button color="primary">Save</button>
     </mat-toolbar>
 </div>

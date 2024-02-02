@@ -1,18 +1,17 @@
-<mat-sidenav-container class="example-container">
-    <mat-sidenav #drawer class="example-sidenav" mode="over">
-        <mat-nav-list>
+<mat-sidenav-container class="layout-container">
+    <mat-sidenav #drawer class="layout-sidenav" mode="over">
+        <mat-list>
             <ng-container *ngFor="let route of routes">
-                <a mat-list-item (click)="drawer.toggle()" [routerLink]="route.path">
-                    <div *ngIf="route.icon" class="icon-text-wrapper">
-                        <mat-icon aria-hidden="false" aria-label="Example home icon">{{
-                            route.icon
-                        }}</mat-icon>
-                        {{ route.name }}
-                    </div>
-                    <span *ngIf="!route.icon">{{ route.name }}</span>
-                </a>
+                <mat-list-item
+                    class="layout-sidenav-options"
+                    [routerLink]="route.path"
+                    [routerLinkActive]="['is-active']"
+                >
+                    <mat-icon fontSet="material-icons-outlined">{{ route.icon }}</mat-icon>
+                    <span>{{ route.name }}</span>
+                </mat-list-item>
             </ng-container>
-        </mat-nav-list>
+        </mat-list>
     </mat-sidenav>
 
     <mat-sidenav-content>
@@ -21,7 +20,7 @@
                 <mat-icon>menu</mat-icon>
             </button>
             <span>Bakery Management App</span>
-            <span class="example-spacer"></span>
+            <span class="spacer"></span>
             <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon>more_vert</mat-icon>
             </button>

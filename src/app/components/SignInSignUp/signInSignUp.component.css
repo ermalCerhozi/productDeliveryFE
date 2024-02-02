@@ -56,6 +56,7 @@ form.sign-up-form {
 
 form.sign-in-form {
   z-index: 2;
+  padding-bottom: 5cap;
 }
 
 .title {
@@ -102,11 +103,14 @@ form.sign-in-form {
 
 .error-text {
   color: red;
+  text-align: center;
+  white-space: pre-wrap;
 }
 
 .social-text {
   padding: 0.7rem 0;
   font-size: 1rem;
+  padding-top: 50px;
 }
 
 .social-media {
@@ -121,9 +125,9 @@ form.sign-in-form {
   justify-content: center;
   align-items: center;
   margin: 0 0.45rem;
-  color: #333;
+  color: #4481eb;
   border-radius: 50%;
-  border: 1px solid #333;
+  border: 1px solid #4481eb;
   text-decoration: none;
   font-size: 1.1rem;
   transition: 0.3s;
