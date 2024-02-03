@@ -12,11 +12,14 @@ export class LayoutComponent implements OnInit {
 
     constructor(private authService: AuthService, private router: Router) {}
     routes = [
-        { path: '/orders', name: 'Orders', icon: 'shopping_cart' },
+        { path: '/homePage', name: 'Home Page', icon: 'home' },
         { path: '/manageUsers', name: 'Manage users', icon: 'people' },
         { path: '/manageOrders', name: 'Manage orders', icon: 'assignment' },
         { path: '/manageProducts', name: 'Manage products', icon: 'store' },
         { path: '/profile', name: 'Profile', icon: 'account_circle' },
+        { path: '/earnings', name: 'Earnings', icon: 'show_chart' },
+        { path: '/trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
+        { path: '/settings', name: 'Settings', icon: 'settings' },
     ]
 
     ngOnInit(): void {

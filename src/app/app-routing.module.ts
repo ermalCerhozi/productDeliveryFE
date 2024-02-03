@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
-import { OrdersComponent } from 'src/app/components/orders/orders.component'
+import { HomePageComponent } from 'src/app/components/home-page/home-page.component'
 import { ManageUsersComponent } from 'src/app/components/manage-users/manage-users.component'
 import { ManageOrdersComponent } from 'src/app/components/manage-orders/manage-orders.component'
 import { ManageProductsComponent } from 'src/app/components/manage-products/manage-products.component'
@@ -22,8 +22,8 @@ const routes: Routes = [
         canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.
         children: [
             {
-                path: 'orders',
-                component: OrdersComponent,
+                path: 'homePage',
+                component: HomePageComponent,
                 canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
             },

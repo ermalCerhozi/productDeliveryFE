@@ -31,63 +31,58 @@
         <span>Registered since: {{ loggedInUser.created_at | date : 'd/M/yy' }}</span>
     </div>
 
-    <form class="profile-edit-form" #form="ngForm" (ngSubmit)="updateUser()">
-        <!-- <mat-form-field appearance="fill">
+    <form
+        class="profile-edit-form"
+        [formGroup]="profileForm"
+        (ngSubmit)="updateUser()"
+        #profileFormRef="ngForm"
+    >
+        <mat-form-field appearance="fill">
             <mat-label>Email</mat-label>
-            <input
-                matInput
-                type="email"
-                [(ngModel)]="loggedInUser.id"
-                name="email"
-                #email="ngModel"
-            />
-        </mat-form-field> -->
+            <input matInput type="email" formControlName="email" placeholder="Email" />
+        </mat-form-field>
 
         <mat-form-field appearance="fill">
             <mat-label>Phone Number</mat-label>
-            <input
-                matInput
-                type="tel"
-                [(ngModel)]="loggedInUser.phone_number"
-                name="phone"
-                #phone="ngModel"
-                placeholder="Phone Number"
-            />
+            <input matInput type="tel" formControlName="phone_number" placeholder="Phone Number" />
         </mat-form-field>
 
-        <!-- <mat-form-field appearance="fill">
-            <mat-label>Password</mat-label>
+        <mat-form-field appearance="fill">
+            <mat-label>Location</mat-label>
             <input
                 matInput
-                type="password"
-                [(ngModel)]="loggedInUser.password"
-                name="password"
-                #password="ngModel"
+                type="text"
+                formControlName="location"
+                placeholder="Location"
+                #locationInput
             />
-        </mat-form-field> -->
-
-        <!-- <button mat-raised-button color="primary" type="submit" [disabled]="!form.form.dirty">
-            Update
-        </button> -->
+            <button
+                mat-icon-button
+                matSuffix
+                (click)="copyToClipboard(locationInput.value)"
+                type="button"
+            >
+                <mat-icon>content_copy</mat-icon>
+            </button>
+        </mat-form-field>
     </form>
 
-    <mat-form-field appearance="fill" class="google-url-input">
-        <mat-label>Maps URL</mat-label>
-        <input matInput [(ngModel)]="url" />
-    </mat-form-field>
-
-    <iframe
-        *ngIf="url"
-        [src]="url | externalUrlSanitizer"
-        width="400"
-        height="300"
-        style="border: 0"
-        allowfullscreen=""
-        loading="lazy"
-    ></iframe>
-
-    <mat-toolbar class="insert-panel" color="primary">
-        <button class="insert-panel-actions cancel" mat-stroked-button color="warn">Cancel</button>
-        <button class="insert-panel-actions" mat-stroked-button color="primary">Save</button>
+    <mat-toolbar class="insert-panel" *ngIf="isFormChanged()" color="primary">
+        <button
+            class="insert-panel-actions cancel"
+            mat-stroked-button
+            (click)="cancelEdition()"
+            color="warn"
+        >
+            Cancel
+        </button>
+        <button
+            class="insert-panel-actions"
+            mat-stroked-button
+            color="primary"
+            (click)="profileFormRef.ngSubmit.emit()"
+        >
+            Save
+        </button>
     </mat-toolbar>
 </div>

@@ -8,7 +8,7 @@ import { SharedModule } from 'src/shared/shared.module'
 import { signInSignUpComponent } from 'src/app/components/SignInSignUp/signInSignUp.component'
 import { AppRoutingModule } from 'src/app/app-routing.module'
 import { HttpClientModule } from '@angular/common/http'
-import { OrdersComponent } from 'src/app/components/orders/orders.component'
+import { HomePageComponent } from 'src/app/components/home-page/home-page.component'
 import { ManageOrdersComponent } from 'src/app/components/manage-orders/manage-orders.component'
 import { ManageProductsComponent } from 'src/app/components/manage-products/manage-products.component'
 import { ManageUsersComponent } from 'src/app/components/manage-users/manage-users.component'
@@ -29,7 +29,7 @@ PlotlyModule.plotlyjs = PlotlyJS
     declarations: [
         AppComponent,
         signInSignUpComponent,
-        OrdersComponent,
+        HomePageComponent,
         ManageOrdersComponent,
         ManageProductsComponent,
         ManageUsersComponent,
