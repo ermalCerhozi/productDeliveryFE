@@ -59,26 +59,22 @@
             <button
                 mat-icon-button
                 matSuffix
-                (click)="copyToClipboard(locationInput.value)"
+                (click)="openInNewWindow(locationInput.value)"
                 type="button"
             >
-                <mat-icon>content_copy</mat-icon>
+                <mat-icon>open_in_new</mat-icon>
             </button>
         </mat-form-field>
     </form>
+    <span class="change-password-link" (click)="openChangePasswordDialog()">Change Password?</span>
 
-    <mat-toolbar class="insert-panel" *ngIf="isFormChanged()" color="primary">
-        <button
-            class="insert-panel-actions cancel"
-            mat-stroked-button
-            (click)="cancelEdition()"
-            color="warn"
-        >
+    <mat-toolbar class="insert-panel" *ngIf="isFormChanged() && profileForm.valid" color="primary">
+        <button class="insert-panel-actions" mat-flat-button (click)="cancelEdition()">
             Cancel
         </button>
         <button
             class="insert-panel-actions"
-            mat-stroked-button
+            mat-raised-button
             color="primary"
             (click)="profileFormRef.ngSubmit.emit()"
         >

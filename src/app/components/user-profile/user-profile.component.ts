@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { BakeryManagementService } from 'src/services/bakery-management.service'
 import { UserEntity } from 'src/shared/models/user.model'
 import { isEqual, cloneDeep } from 'lodash'
-import { Clipboard } from '@angular/cdk/clipboard'
+import { MatDialog } from '@angular/material/dialog'
+import { ChangePasswordComponent } from 'src/app/components/change-password/change-password.component'
 
 @Component({
     selector: 'app-user-profile',
@@ -20,7 +21,7 @@ export class UserProfileComponent implements OnInit {
     constructor(
         private bakeryManagementService: BakeryManagementService,
         private formBuilder: FormBuilder,
-        private clipboard: Clipboard
+        private dialog: MatDialog
     ) {}
 
     ngOnInit(): void {
@@ -30,16 +31,17 @@ export class UserProfileComponent implements OnInit {
     }
 
     initializeFormWithDefaultValues() {
+        const phoneRegex = /^[0-9]{10}$/ //TODO: Add a more complex regex to validate phone numbers, forr login as well
+
         this.profileForm = this.formBuilder.group({
+            id: [this.loggedInUser.id], // Hidden input, used to send the user id to the server. A user can't change his id
             email: [this.loggedInUser.email, Validators.required],
-            phone_number: [this.loggedInUser.phone_number, Validators.required],
-            location: [this.loggedInUser.location, Validators.required],
+            phone_number: [
+                this.loggedInUser.phone_number,
+                [Validators.required, Validators.pattern(phoneRegex)],
+            ],
+            location: [this.loggedInUser.location ?? '', Validators.required],
         })
-    }
-
-    updateUser() {
-        this.bakeryManagementService.updateUser(this.loggedInUser)
-
     }
 
     openUploadPanel() {
@@ -58,15 +60,33 @@ export class UserProfileComponent implements OnInit {
         }
     }
 
+    openInNewWindow(value: string) {
+        const newWindow = window.open(value, '_blank')
+        if (newWindow) {
+            newWindow.opener = null
+        } else {
+            console.error(
+                'Unable to open link in a new window. Please check your browser settings.'
+            )
+        }
+    }
+
+    openChangePasswordDialog(): void {
+        this.dialog.open(ChangePasswordComponent, {
+            width: '400px',
+            data: { email: this.loggedInUser.id },
+        })
+    }
+
     isFormChanged() {
         return !isEqual(this.profileForm.value, this.initialFormValues)
     }
-
     cancelEdition() {
         this.profileForm.setValue(cloneDeep(this.initialFormValues))
     }
 
-    copyToClipboard(value: string) {
-        this.clipboard.copy(value)
+    updateUser() {
+        this.bakeryManagementService.updateUser(this.profileForm.value, true)
+        this.initialFormValues = cloneDeep(this.profileForm.value)
     }
 }

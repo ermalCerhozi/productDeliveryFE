@@ -5,6 +5,7 @@ import { ProductEntity, ProductResponse } from 'src/shared/models/product.model'
 import { UserEntity, UserResponse } from 'src/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/services/bakery-management-api.service'
 import { NavigationContext, SearchOptions } from 'src/shared/models/navigation-context.model'
+import { FormControl, FormGroup } from '@angular/forms'
 
 @Injectable({
     providedIn: 'root',
@@ -177,9 +178,17 @@ export class BakeryManagementService {
         return JSON.parse(localStorage.getItem('currentUser') || '')
     }
 
-    updateUser(user: UserEntity): void {
-        console.log(user)
-        this.bakeryManagementApiService.updateUser(user, user).subscribe()
+    updateUser(user: UserEntity, activeUser = false): void {
+        this.bakeryManagementApiService
+            .updateUser(user, user)
+            .pipe(
+                tap((res: UserEntity) => {
+                    if (activeUser) {
+                        localStorage.setItem('currentUser', JSON.stringify(res))
+                    }
+                })
+            )
+            .subscribe()
     }
 
     deleteOrderItem(id: number): Observable<any> {
@@ -208,5 +217,36 @@ export class BakeryManagementService {
             link.download = 'orders.pdf'
             link.click()
         })
+    }
+
+    // If our validation fails, we return an object with a key for the error name and a value of true.
+    // Otherwise, if the validation passes, we simply return null because there is no error.
+    areNotEqualPasswordValidator(formGroup: FormGroup) {
+        let firstControlValue: any
+        let valid = true
+
+        for (const key in formGroup.controls) {
+            if (formGroup.controls.hasOwnProperty(key)) {
+                const control: FormControl = <FormControl>formGroup.controls[key]
+
+                if (firstControlValue === undefined) {
+                    firstControlValue = control.value
+                } else {
+                    // check if the value of the first control is equal to the value of the second control
+                    if (firstControlValue !== control.value) {
+                        valid = false
+                        break
+                    }
+                }
+            }
+        }
+
+        if (valid) {
+            return null
+        }
+
+        return {
+            areNotEqual: true,
+        }
     }
 }
