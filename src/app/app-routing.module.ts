@@ -10,6 +10,7 @@ import { LayoutComponent } from 'src/app/components/layout-toolbar/layout.compon
 import { AuthGuard } from 'src/services/auth-guard.service'
 import { PermissionsGuard } from 'src/services/permissions-guard.service'
 import { UserProfileComponent } from 'src/app/components/user-profile/user-profile.component'
+import { SettingsComponent } from 'src/app/components/settings/settings.component'
 
 const routes: Routes = [
     {
@@ -48,6 +49,14 @@ const routes: Routes = [
             {
                 path: 'profile',
                 component: UserProfileComponent,
+                canActivate: [PermissionsGuard],
+                data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
+            },
+            {
+                path: 'settings',
+                component: SettingsComponent,
+                canActivate: [PermissionsGuard],
+                data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
             },
         ],
     },

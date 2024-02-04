@@ -7,6 +7,7 @@ import { AuthService } from 'src/services/auth.service'
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
 })
+// TODO: hide drawer when option si selected
 export class LayoutComponent implements OnInit {
     activeLink!: string
 
@@ -17,8 +18,8 @@ export class LayoutComponent implements OnInit {
         { path: '/manageOrders', name: 'Manage orders', icon: 'assignment' },
         { path: '/manageProducts', name: 'Manage products', icon: 'store' },
         { path: '/profile', name: 'Profile', icon: 'account_circle' },
-        { path: '/earnings', name: 'Earnings', icon: 'show_chart' },
-        { path: '/trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
+        // { path: '/earnings', name: 'Earnings', icon: 'show_chart' },
+        // { path: '/trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
         { path: '/settings', name: 'Settings', icon: 'settings' },
     ]
 

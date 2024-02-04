@@ -21,6 +21,7 @@ import { CreateUpdateOrdersComponent } from 'src/app/components/create-update-or
 import { FiltersResultComponent } from 'src/app/components/filters-result/filters-result.component'
 import { UserProfileComponent } from 'src/app/components/user-profile/user-profile.component'
 import { ChangePasswordComponent } from 'src/app/components/change-password/change-password.component'
+import { SettingsComponent } from 'src/app/components/settings/settings.component'
 import * as PlotlyJS from 'plotly.js-dist-min'
 import { PlotlyModule } from 'angular-plotly.js'
 
@@ -41,6 +42,7 @@ PlotlyModule.plotlyjs = PlotlyJS
         FiltersResultComponent,
         UserProfileComponent,
         ChangePasswordComponent,
+        SettingsComponent,
     ],
     imports: [
         BrowserModule,
