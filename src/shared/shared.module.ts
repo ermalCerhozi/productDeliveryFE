@@ -21,6 +21,7 @@ import { MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from '@angular/material/tabs'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatSliderModule } from '@angular/material/slider'
 
 // TODO: Implement translation service
 // import { I18NextModule } from 'ngx-i18next'
@@ -30,6 +31,7 @@ import { TopBarComponent } from 'src/shared/components/top-bar/top-bar.component
 import { DropdownMenuListComponent } from 'src/shared/components/dropdown-menu-list/dropdown-menu-list.component'
 import { CreateUpdateDialogComponent } from 'src/shared/components/create-update-dialog/create-update-dialog.component'
 import { ConfirmationDialogComponent } from 'src/shared/components/confirmation-dialog/confirmation-dialog.component'
+import { PasswordStrengthComponent } from 'src/shared/components/password-strength/password-strength.component'
 import { ExternalUrlSanitizerPipe } from 'src/shared/common/pipes/external-url-sanitizer.pipe'
 
 @NgModule({
@@ -39,6 +41,7 @@ import { ExternalUrlSanitizerPipe } from 'src/shared/common/pipes/external-url-s
         DropdownMenuListComponent,
         CreateUpdateDialogComponent,
         ConfirmationDialogComponent,
+        PasswordStrengthComponent,
         ExternalUrlSanitizerPipe,
     ],
     imports: [
@@ -68,6 +71,7 @@ import { ExternalUrlSanitizerPipe } from 'src/shared/common/pipes/external-url-s
         MatRadioModule,
         MatCheckboxModule,
         MatTooltipModule,
+        MatSliderModule,
     ],
     exports: [
         InfiniteScrollModule,
@@ -76,6 +80,7 @@ import { ExternalUrlSanitizerPipe } from 'src/shared/common/pipes/external-url-s
         DropdownMenuListComponent,
         CreateUpdateDialogComponent,
         ConfirmationDialogComponent,
+        PasswordStrengthComponent,
         ExternalUrlSanitizerPipe,
     ],
     providers: [],
