@@ -10,13 +10,11 @@ interface Hint {
 
 interface Constants {
     readonly DIGIT_REGEX: RegExp
-    initialCopyrightYear: number
     readonly SYMBOL_REGEX: RegExp
 }
 
 const CONSTANTS: Constants = {
     DIGIT_REGEX: /[0-9]/,
-    initialCopyrightYear: 2021,
     SYMBOL_REGEX: /[-+_!@#$%^&*,.?]/,
 }
 
@@ -37,7 +35,7 @@ export class PasswordStrengthComponent implements OnInit, OnDestroy {
     passwordSlider = 0
 
     ngOnInit(): void {
-        this.setIndicatorValues(this.password.value)
+        this.setIndicatorValues(this.newPassword.value)
         this.setupConditionalValidators()
     }
 
@@ -96,14 +94,14 @@ export class PasswordStrengthComponent implements OnInit, OnDestroy {
 
     /** Listens to the password input in the form and updates the requirements list. */
     private setupConditionalValidators(): void {
-        const passwordControlSubscription: Subscription = this.password.valueChanges.subscribe(
+        const passwordControlSubscription: Subscription = this.newPassword.valueChanges.subscribe(
             (controlValue: string) => this.setIndicatorValues(controlValue)
         )
         this.subscriptions.push(passwordControlSubscription)
     }
 
-    private get password(): AbstractControl {
-        return this.form.get('password') as AbstractControl
+    private get newPassword(): AbstractControl {
+        return this.form.get('newPassword') as AbstractControl
     }
     private get passwordMin(): AbstractControl {
         return this.form.get('passwordMin') as AbstractControl

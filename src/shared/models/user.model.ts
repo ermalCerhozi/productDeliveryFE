@@ -22,3 +22,9 @@ export interface UserEntity {
     profile_picture?: string
     password?: string
 }
+
+export interface changeUserPassword {
+    actualPassword: string
+    newPassword: string
+    confirmPassword: string
+}

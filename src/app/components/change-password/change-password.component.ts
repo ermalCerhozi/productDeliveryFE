@@ -7,15 +7,14 @@ import {
     ValidatorFn,
     Validators,
 } from '@angular/forms'
+import { MatDialogRef } from '@angular/material/dialog'
 
 interface Constants {
     readonly DIGIT_REGEX: RegExp
-    initialCopyrightYear: number
     readonly SYMBOL_REGEX: RegExp
 }
 const CONSTANTS: Constants = {
     DIGIT_REGEX: /[0-9]/,
-    initialCopyrightYear: 2021,
     SYMBOL_REGEX: /[-+_!@#$%^&*,.?]/,
 }
 
@@ -27,11 +26,11 @@ const CONSTANTS: Constants = {
 export class ChangePasswordComponent implements OnInit {
     showActualPassword = false
     showNewPassword = false
-    showConfirmNewPassword = false
+    showConfirmPassword = false
 
     public form: FormGroup = new FormGroup({})
 
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: FormBuilder, public dialogRef: MatDialogRef<ChangePasswordComponent>) {}
 
     ngOnInit(): void {
         this.form = this.createForm()
@@ -40,7 +39,8 @@ export class ChangePasswordComponent implements OnInit {
     private createForm(): FormGroup {
         return this.fb.group(
             {
-                password: ['', Validators.compose([this.validPassword(true)])],
+                actualPassword: ['', Validators.required],
+                newPassword: ['', Validators.compose([this.validPassword()])],
                 confirmPassword: [''],
                 passwordMin: { value: false, disabled: true },
                 passwordDigit: { value: false, disabled: true },
@@ -48,17 +48,14 @@ export class ChangePasswordComponent implements OnInit {
             },
             {
                 validators: Validators.compose([
-                    this.validFieldMatch('password', 'confirmPassword', 'Password'),
+                    this.validFieldMatch('newPassword', 'confirmPassword', 'Password'),
                 ]),
             }
         )
     }
 
-    validPassword(isRequired = false): ValidatorFn {
+    validPassword(): ValidatorFn {
         return (control: AbstractControl): ValidationErrors | null => {
-            if (!control.value) {
-                return isRequired ? { invalidPassword: `Password is required.` } : null
-            }
             if (control.value.length < 8) {
                 return { invalidPassword: `Password is too short.` }
             }
@@ -102,6 +99,22 @@ export class ChangePasswordComponent implements OnInit {
         }
     }
 
+    changeUserPassword(): void {
+        this.dialogRef.close(this.form.value)
+    }
+
+    // TODO: Convert into pipe
+    getErrorMessage(
+        errors: ValidationErrors | null | undefined
+    ): ValidationErrors | null | undefined {
+        if (errors) {
+            return Object.values(errors).map((value) => {
+                return value
+            })
+        }
+        return null
+    }
+
     togglePasswordVisibility(field: string): void {
         switch (field) {
             case 'actualPassword':
@@ -110,8 +123,8 @@ export class ChangePasswordComponent implements OnInit {
             case 'newPassword':
                 this.showNewPassword = !this.showNewPassword
                 break
-            case 'confirmNewPassword':
-                this.showConfirmNewPassword = !this.showConfirmNewPassword
+            case 'confirmPassword':
+                this.showConfirmPassword = !this.showConfirmPassword
                 break
         }
     }

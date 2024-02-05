@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { ProductResponse, ProductEntity } from 'src/shared/models/product.model'
-import { UserEntity, UserResponse } from 'src/shared/models/user.model'
+import { UserEntity, UserResponse, changeUserPassword } from 'src/shared/models/user.model'
 import { environment } from 'src/environments/environment'
 import { OrderResponse } from 'src/shared/models/order.model'
 import { NavigationContext } from 'src/shared/models/navigation-context.model'
@@ -54,6 +54,10 @@ export class BakeryManagementApiService {
 
     getClientUsers(): Observable<UserEntity[]> {
         return this.http.get<UserEntity[]>(`${this.apiUrl}users/client`)
+    }
+
+    changeUserPassword(id: number, newPass: changeUserPassword): Observable<any> {
+        return this.http.patch<UserEntity>(`${this.apiUrl}users/${id}/password`, newPass)
     }
 
     //CRUD for products
