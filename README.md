@@ -14,7 +14,6 @@
   * [:computer: Code Examples](#computer-code-examples)
   <!-- * [:cool: Features](#cool-features) -->
   * [:clipboard: Status & To-Do List](#clipboard-status--to-do-list)
-  * [:clap: Inspiration](#clap-inspiration)
   <!-- * [:file_folder: License](#file_folder-license) -->
   * [:envelope: Contact](#envelope-contact)
 
@@ -44,7 +43,7 @@
 
 ## :floppy_disk: Setup
 
-* Install dependencies using `yarn i`.
+* Install dependencies using `yarn install`.
 * Run `ng serve` for a dev server.
 * Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
