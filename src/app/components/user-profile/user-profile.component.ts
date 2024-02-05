@@ -74,17 +74,19 @@ export class UserProfileComponent implements OnInit {
     openChangePasswordDialog(): void {
         const dealogRef = this.dialog.open(ChangePasswordComponent, {
             width: '400px',
-            data: { email: this.loggedInUser.id },
         })
 
         dealogRef.afterClosed().subscribe((result) => {
-            this.bakeryManagementService.changeUserPassword(this.loggedInUser.id, result)
+            if (result) {
+                this.bakeryManagementService.changeUserPassword(this.loggedInUser.id, result)
+            }
         })
     }
 
     isFormChanged() {
         return !isEqual(this.profileForm.value, this.initialFormValues)
     }
+
     cancelEdition() {
         this.profileForm.setValue(cloneDeep(this.initialFormValues))
     }
