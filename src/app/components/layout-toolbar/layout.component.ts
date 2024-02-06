@@ -16,6 +16,7 @@ export class LayoutComponent {
         private breakpointObserver: BreakpointObserver,
         private router: Router
     ) {}
+
     routes = [
         { path: '/homePage', name: 'Home Page', icon: 'home' },
         { path: '/manageUsers', name: 'Manage users', icon: 'people' },

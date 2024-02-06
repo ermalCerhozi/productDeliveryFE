@@ -20,8 +20,12 @@ export class HomePageComponent implements OnInit {
             },
         ],
         layout: {
-            autosize: true, // makes the chart responsive
             title: 'Products Sales 2023',
+            autosize: true, // makes the chart responsive
+            font: {
+                color: '#ffffff', // white font
+            },
+            paper_bgcolor: 'rgba(0, 0, 0, 0.87)', // black background
         },
         showlegend: true,
         legend: {
@@ -82,8 +86,11 @@ export class HomePageComponent implements OnInit {
         ],
         layout: {
             title: 'Sales Report 2023',
-            barmode: 'group',
             autosize: true, // makes the chart responsive
+            font: {
+                color: '#ffffff', // white font
+            },
+            paper_bgcolor: 'rgba(0, 0, 0, 0.87)', // black background
         },
     }
 }

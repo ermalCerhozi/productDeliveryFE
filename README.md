@@ -67,7 +67,7 @@
 
 <!-- ## :cool: Features
 
-* All fields are required, the email field must be a valid email address and the password field must have a min length of 6.
+* All fields are required, the email field must be a valid email address and the password fiesld must have a min length of 6.
 * A custom validator and directive called MustMatch is used to validate that the confirm password and password fields match.
 * The form validates on submit rather than as soon as each field is changed, this is implemented using the f.submitted property of the #f="ngForm" template variable which is true after the form is submitted for the first time. -->
 
