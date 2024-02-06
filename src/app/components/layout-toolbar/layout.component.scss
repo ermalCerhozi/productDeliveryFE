@@ -1,11 +1,5 @@
 .layout-container {
-    height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: white;
+  height: 100%;
 
     .layout-sidenav{
         width: 230px;
@@ -13,10 +7,16 @@
         .layout-sidenav-options {
             display: flex;
             align-items: center;
-            justify-content: center;
-
-            mat-icon{
-                padding-right: 24px;
+            justify-content: flex-start;
+        
+            .icon-text-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+        
+                mat-icon {
+                    padding-right: 24px;
+                }
             }
         }
     }
@@ -24,14 +24,4 @@
 
 .spacer {
     flex: 1 1 auto;
-}
-
-
-mat-toolbar {
-    background-color: #4481eb !important;
-    height: 50px;
-}
-
-.is-active {
-    background-color: rgb(219, 219, 219);
 }

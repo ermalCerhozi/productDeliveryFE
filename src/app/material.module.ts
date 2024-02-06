@@ -18,6 +18,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatChipsModule } from '@angular/material/chips'
 import { MAT_DATE_LOCALE } from '@angular/material/core'
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 
 const materialComponents = [
     MatCardModule,
@@ -38,6 +39,7 @@ const materialComponents = [
     MatProgressSpinnerModule,
     MatAutocompleteModule,
     MatChipsModule,
+    MatSlideToggleModule,
 ]
 
 @NgModule({

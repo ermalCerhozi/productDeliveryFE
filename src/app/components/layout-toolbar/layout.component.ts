@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core'
 import { Router } from '@angular/router'
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
+import { Observable, map, shareReplay } from 'rxjs'
 import { AuthService } from 'src/services/auth.service'
 
 @Component({
@@ -8,10 +10,12 @@ import { AuthService } from 'src/services/auth.service'
     styleUrls: ['./layout.component.scss'],
 })
 // TODO: hide drawer when option si selected
-export class LayoutComponent implements OnInit {
-    activeLink!: string
-
-    constructor(private authService: AuthService, private router: Router) {}
+export class LayoutComponent {
+    constructor(
+        private authService: AuthService,
+        private breakpointObserver: BreakpointObserver,
+        private router: Router
+    ) {}
     routes = [
         { path: '/homePage', name: 'Home Page', icon: 'home' },
         { path: '/manageUsers', name: 'Manage users', icon: 'people' },
@@ -23,9 +27,10 @@ export class LayoutComponent implements OnInit {
         { path: '/settings', name: 'Settings', icon: 'settings' },
     ]
 
-    ngOnInit(): void {
-        this.activeLink = this.routes[0].path
-    }
+    isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+        map((result) => result.matches),
+        shareReplay()
+    )
 
     logOut(): void {
         this.authService.logout().subscribe({

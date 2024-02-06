@@ -1,1 +1,30 @@
-<p>settings works!</p>
+<div class="settings-container">
+    <mat-card>
+        <mat-card-content>
+            <h2 class="example-h2">Notifications</h2>
+            <section class="example-section">
+                <mat-checkbox class="example-margin" [(ngModel)]="checked">Checked</mat-checkbox>
+            </section>
+
+            <section class="example-section">
+                <mat-checkbox class="example-margin" [(ngModel)]="unCheck">Disabled</mat-checkbox>
+            </section>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-content class="theme-toggle-card">
+            <h2>Dark Mode</h2>
+            <div class="theme-toggle">
+                <mat-icon class="mr-8" fontSet="material-icons-outlined">brightness_5</mat-icon>
+                <mat-slide-toggle
+                    [checked]="isDarkModeEnabled"
+                    (change)="toggleTheme()"
+                    class="mr-8"
+                >
+                </mat-slide-toggle>
+                <mat-icon fontSet="material-icons-outlined">bedtime</mat-icon>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
