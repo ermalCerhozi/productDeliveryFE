@@ -11,6 +11,29 @@ mat-card {
     margin: 24px 0px;
 }
 
+.notifications-toggle-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    .notifications-settings-container{
+        padding-top: 20px;
+
+        .notifications-settings{
+            padding: 14px 0px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+
+            mat-slide-toggle {
+                padding-right: 8px;
+            }
+        }
+    }
+}
+
 .theme-toggle-card {
     display: flex;
     flex-direction: row;

@@ -1,14 +1,20 @@
 <div class="settings-container">
     <mat-card>
-        <mat-card-content>
-            <h2>Notifications</h2>
-            <section>
-                <mat-checkbox [(ngModel)]="checked">Checked</mat-checkbox>
-            </section>
-
-            <section>
-                <mat-checkbox [(ngModel)]="unCheck">Disabled</mat-checkbox>
-            </section>
+        <mat-card-content class="notifications-toggle-card">
+            <div>
+                <h2>Notifications</h2>
+                <span>Receive e-mail notifications for the following events:</span>
+            </div>
+            <div class="notifications-settings-container">
+                <div class="notifications-settings">
+                    <mat-slide-toggle [(ngModel)]="checked"> </mat-slide-toggle>
+                    <span>When a order is updated or deleted.</span>
+                </div>
+                <div class="notifications-settings">
+                    <mat-slide-toggle [(ngModel)]="checked"> </mat-slide-toggle>
+                    <span>When a order is updated or deleted.</span>
+                </div>
+            </div>
         </mat-card-content>
     </mat-card>
 
