@@ -12,7 +12,7 @@
   * [:signal_strength: Technologies](#signal_strength-technologies)
   * [:floppy_disk: Setup](#floppy_disk-setup)
   * [:computer: Code Examples](#computer-code-examples)
-  <!-- * [:cool: Features](#cool-features) -->
+  * [:cool: Features](#cool-features)
   * [:clipboard: Status & To-Do List](#clipboard-status--to-do-list)
   <!-- * [:file_folder: License](#file_folder-license) -->
   * [:envelope: Contact](#envelope-contact)
@@ -25,14 +25,11 @@
 
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
     <img src="screenshots/login.png" alt="Login" width="200"/>
-    <img src="screenshots/forgotPassword.png" alt="Forgot Password" width="200"/>
     <img src="screenshots/chart.png" alt="Chart" width="200"/>
     <img src="screenshots/profile.png" alt="Profile" width="200"/>
-    <img src="screenshots/productList.png" alt="Products List" width="200"/>
     <img src="screenshots/filterOrders.png" alt="Filter Orders" width="200"/>
     <img src="screenshots/downloadedPDF.png" alt="Downloaded PDF" width="200"/>
-    <img src="screenshots/createOrder.png" alt="Create Order" width="200"/>
-    <img src="screenshots/clientList.png" alt="Client List" width="200"/>
+    <img src="screenshots/orderList.png" alt="Order List" width="200"/>
 </div>
 
 ## :signal_strength: Technologies
@@ -43,8 +40,10 @@
 
 ## :floppy_disk: Setup
 
+* git clone `https://github.com/ermalCerhozi/productDeliveryFE.git`.
+* Switch to the specific version of Node.js `nvm use`.
 * Install dependencies using `yarn install`.
-* Run `ng serve` for a dev server.
+* Run `ng serve`.
 * Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## :computer: Code Examples
@@ -65,16 +64,16 @@
 </ng-template>
 ```
 
-<!-- ## :cool: Features
+## :cool: Features
 
-* All fields are required, the email field must be a valid email address and the password fiesld must have a min length of 6.
-* A custom validator and directive called MustMatch is used to validate that the confirm password and password fields match.
-* The form validates on submit rather than as soon as each field is changed, this is implemented using the f.submitted property of the #f="ngForm" template variable which is true after the form is submitted for the first time. -->
+* Dark Mode.
+* Slider password strength indicator.
+* Sales reports with graps.
 
 ## :clipboard: Status & To-Do List
 
 * Status: Working.
-* To-Do: Theming, translations, analytics.
+* To-Do: Translations, analytics.
 
 <!-- ## :file_folder: License
 

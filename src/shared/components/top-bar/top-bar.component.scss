@@ -29,12 +29,11 @@
 
         mat-form-field {
             width: 100%;
+            padding: 0px;
 
             .top-bar-search-container-form-search-icon {
                 cursor: pointer;
-                padding-right: 15px;
-                position: relative;
-                bottom: 2px;
+                padding-right: 10px;
                 opacity: 0.7;
             }
 
@@ -43,7 +42,7 @@
                 font-size: 24px !important;
                 margin-right: 10px;
                 cursor: pointer;
-            }
+            } 
         }
     }
 
