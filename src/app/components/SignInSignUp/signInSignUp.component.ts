@@ -5,13 +5,14 @@ import { phoneNumberRegex } from 'src/shared/common/constants'
 import { AuthService } from 'src/services/auth.service'
 
 @Component({
-    selector: 'app-sign-in-sign-up',
+    selector: 'app-sign-in-forgot-password',
     templateUrl: './signInSignUp.component.html',
     styleUrls: ['./signInSignUp.component.css'],
 })
 export class signInSignUpComponent implements OnInit {
     @ViewChild('containerDiv') containerDiv!: ElementRef
     loginForm: FormGroup = new FormGroup({})
+    forgotPasswordForm: FormGroup = new FormGroup({})
     errorMessage = false
     hide = true
 
@@ -22,13 +23,28 @@ export class signInSignUpComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.initializeForm()
+        this.initializeForms()
     }
 
-    initializeForm() {
+    initializeForms() {
         this.loginForm = this.formBuilder.group({
             phoneNumber: ['', [Validators.required, Validators.pattern(phoneNumberRegex)]],
             password: ['', [Validators.required]],
+        })
+        this.forgotPasswordForm = this.formBuilder.group({
+            email: ['', [Validators.required]],
+        })
+    }
+
+    sendResetPasswordLink(): void {
+        this.authService.resetPassword(this.forgotPasswordForm.value).subscribe({
+            next: () => {
+                this.router.navigate([''])
+            },
+            error: () => {
+                this.errorMessage = true
+                console.log('error:', Error)
+            },
         })
     }
 
@@ -46,13 +62,14 @@ export class signInSignUpComponent implements OnInit {
         })
     }
 
-    signIn(): void {
-        console.log('signIn method triggered')
-        this.containerDiv.nativeElement.classList.remove('sign-up-mode')
-    }
-
-    forgotPassword(): void {
-        console.log('signUp method triggered')
-        this.containerDiv.nativeElement.classList.add('sign-up-mode')
+    goTo(navigateTo: string): void {
+        switch (navigateTo) {
+            case 'signIn':
+                this.containerDiv.nativeElement.classList.remove('forgot-password-mode')
+                break
+            case 'forgotPassword':
+                this.containerDiv.nativeElement.classList.add('forgot-password-mode')
+                break
+        }
     }
 }

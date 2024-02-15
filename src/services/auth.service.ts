@@ -28,6 +28,12 @@ export class AuthService {
         return this.http.post<void>(`${this.baseUrl}/logout`, { withCredentials: true })
     }
 
+    resetPassword(forgotPasswordForm: { email: string }): Observable<void> {
+        return this.http.post<void>(`${this.baseUrl}/resetPassword`, {
+            email: forgotPasswordForm.email,
+        })
+    }
+
     public setAuthenticatedUser(user: any): void {
         localStorage.setItem('currentUser', JSON.stringify(user))
         this.currentLoggedUser.next(user)
