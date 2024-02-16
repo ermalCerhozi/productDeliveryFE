@@ -6,10 +6,10 @@ import { AuthService } from 'src/app/services/auth.service'
 
 @Component({
     selector: 'app-sign-in-forgot-password',
-    templateUrl: './signInSignUp.component.html',
-    styleUrls: ['./signInSignUp.component.css'],
+    templateUrl: './sign-in.component.html',
+    styleUrls: ['./sign-in.component.css'],
 })
-export class signInSignUpComponent implements OnInit {
+export class SignInComponent implements OnInit {
     @ViewChild('containerDiv') containerDiv!: ElementRef
     loginForm: FormGroup = new FormGroup({})
     forgotPasswordForm: FormGroup = new FormGroup({})

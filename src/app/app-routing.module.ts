@@ -5,7 +5,7 @@ import { ManageUsersComponent } from 'src/app/track-ease/manage-users/manage-use
 import { ManageOrdersComponent } from 'src/app/track-ease/manage-orders/manage-orders.component'
 import { ManageProductsComponent } from 'src/app/track-ease/manage-products/manage-products.component'
 import { NotFoundComponent } from 'src/app/track-ease/not-found/not-found.component'
-import { signInSignUpComponent } from 'src/app/track-ease/SignInSignUp/signInSignUp.component'
+import { SignInComponent } from 'src/app/track-ease/sign-in/sign-in.component'
 import { LayoutComponent } from 'src/app/track-ease/layout-toolbar/layout.component'
 import { AuthGuard } from 'src/app/services/auth-guard.service'
 import { PermissionsGuard } from 'src/app/services/permissions-guard.service'
@@ -15,7 +15,7 @@ import { SettingsComponent } from 'src/app/track-ease/settings/settings.componen
 const routes: Routes = [
     {
         path: '',
-        component: signInSignUpComponent,
+        component: SignInComponent,
     },
     {
         path: '',

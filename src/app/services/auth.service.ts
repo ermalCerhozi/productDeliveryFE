@@ -24,7 +24,7 @@ export class AuthService {
         )
     }
 
-    logout(): Observable<void> {
+    logOut(): Observable<void> {
         return this.http.post<void>(`${this.baseUrl}/logout`, { withCredentials: true })
     }
 

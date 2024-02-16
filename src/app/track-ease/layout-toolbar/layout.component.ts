@@ -34,7 +34,7 @@ export class LayoutComponent {
     )
 
     logOut(): void {
-        this.authService.logout().subscribe({
+        this.authService.logOut().subscribe({
             next: () => {
                 this.authService.clearAuthenticatedUser()
                 this.router.navigate([''])
