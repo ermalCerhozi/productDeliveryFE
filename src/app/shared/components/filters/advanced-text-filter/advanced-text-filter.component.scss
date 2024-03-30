@@ -1,0 +1,131 @@
+@use '@angular/material' as mat;
+
+.mef-advanced-text-filter {
+    @include mat.form-field-density(-5);
+
+    .mat-form-field-appearance-fill .mat-mdc-select-arrow-wrapper {
+        transform: none;
+    }
+
+    .mat-mdc-select-value {
+        visibility: hidden;
+    }
+
+    .mat-mdc-text-field-wrapper {
+        border-radius: 16px;
+        padding-left: 16px;
+    }
+
+    .mat-mdc-form-field {
+        border-radius: 16px;
+    }
+
+    .mef-advanced-text-label {
+        position: absolute;
+        display: inline-flex;
+
+        .mef-advanced-text-label-icon {
+            padding-right: 7px;
+            margin-left: -7px;
+            color: #00000099;
+        }
+    }
+
+    .mdc-line-ripple {
+        display: none;
+    }
+
+    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+        background-color: unset;
+    }
+}
+
+.mef-advanced-text-filter-overlay {
+    @include mat.form-field-density(-1);
+
+    .mef-advanced-text-filter-input {
+        width: 100%;
+    }
+
+    .mat-mdc-form-field .mat-mdc-floating-label.mdc-floating-label {
+        line-height: inherit;
+    }
+
+    .mat-mdc-select-panel {
+        min-width: 254px;
+        max-height: 211px;
+        flex-direction: row-reverse;
+        padding: 0;
+    }
+
+    .mat-mdc-option {
+        flex-direction: row-reverse;
+
+        .mat-pseudo-checkbox {
+            margin: 0;
+        }
+    }
+
+    .mef-advanced-text-filter-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        .mef-advanced-text-filter-field-label-container {
+            width: 80%;
+            display: grid;
+
+            .mef-advanced-text-filter-field-label {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        .mef-advanced-text-filter-count {
+            margin-right: 10px;
+        }
+    }
+
+    .mat-mdc-primary .mat-mdc-option.mat-mdc-selected:not(.mat-mdc-option-disabled) {
+        color: unset;
+    }
+
+    .mat-mdc-option .mdc-list-item__primary-text {
+        width: 100%;
+    }
+
+    .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+        color: unset;
+    }
+
+    .mef-advanced-text-filter-search-icon {
+        color: #00000099;
+    }
+
+    .mef-advanced-text-filter-cancel-icon {
+        color: #00000099;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    .mef-advanced-text-filter-spinner:has(mat-spinner) {
+        display: flex;
+        justify-content: center;
+    }
+
+    .spinner-option {
+        display: flex;
+        justify-content: center;
+
+        .mat-pseudo-checkbox {
+            display: none;
+        }
+
+        .mdc-list-item__primary-text {
+            width: unset;
+            margin-right: unset;
+        }
+    }
+}

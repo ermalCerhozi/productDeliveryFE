@@ -27,15 +27,59 @@
         </button>
     </div>
 
-    <!-- TODO: Maybe implemt in the furture as an improvement -->
-    <!-- <div *ngIf="hasFiltersSelected()">
-        <app-filters-result
-            [labelTK]="'Clear Filters'"
-            [results]="getAppliedFilters()"
-            (clearResults)="clearFilters()"
-            (removeFilter)="removeFilters($event)"
-        ></app-filters-result>
-    </div> -->
+    <app-filters>
+        <!-- <app-simple-text-filter
+            [fields]="(mediaTypes | async)!"
+            [selection]="(selectedTypes | async)!"
+            [labelTK]="'GT_MEDIA_TYPE'"
+            [multiple]="true"
+            [customLabelWidth]="'109px'"
+            [panelClass]="'mef-media-library-toolbar-type-filter-panel'"
+            [loading]="loadingTypeFilter.value"
+            (selectionChange)="applyFilters($event, 'type')"
+            (openedChange)="onFilterOpenChange($event, 'type', loadingTypeFilter)"
+        >
+        </app-simple-text-filter> -->
+
+        <app-simple-radio-select-filter
+            [labelTK]="'GT_MEDIA_LIBRARY_UPLOAD_DATE'"
+            [fields]="(mediaDates | async)!"
+            [defaultEmptyValue]="defaultDate"
+            [selection]="(selectedDate | async)!"
+            [customLabelWidth]="'124px'"
+            [panelClass]="'mef-media-library-toolbar-date-filter-panel'"
+            (selectionChange)="applyFilters($event, 'date')"
+        ></app-simple-radio-select-filter>
+
+        <app-advanced-text-filter
+            [labelTK]="'GT_MEDIA_PROJECT'"
+            [loadingPage]="(projectsLoading | async)!"
+            [hasMoreItems]="(hasMoreProjectsToLoad | async)!"
+            [selection]="(selectedProjects | async)!"
+            [fields]="(mediaProjects | async)!"
+            [searchForTK]="'GT_MEDIA_PROJECT_SEARCH'"
+            [noResultsTK]="'GT_MEDIA_PROJECT_NO_RESULTS'"
+            [panelClass]="'mef-media-library-toolbar-project-categories-filter-panel'"
+            [customLabelWidth]="'131px'"
+            (searchChange)="projectSearchChange($event)"
+            (loadMore)="loadMoreProjects()"
+            (selectionChange)="applyFilters($event, 'project')"
+        >
+        </app-advanced-text-filter>
+    </app-filters>
+
+    <!-- [results]="
+        activeTab === 'media-library'
+            ? (mediaLibraryFilterResults | async)!
+            : (trashBinFilterResults | async)!
+    " -->
+    <app-filters-result
+        [labelTK]="'GT_CLEAR_MEDIA_FILTERS'"
+        [results]="mediaLibraryFilterResults | async"
+        (clearResults)="clearFilters()"
+        (removeFilter)="removeFilter($event)"
+    >
+    </app-filters-result>
 
     <div class="manage-orders-table-container">
         <table mat-table [dataSource]="dataSource">

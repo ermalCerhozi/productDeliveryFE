@@ -10,6 +10,8 @@ import {
 } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 
+import { FilterOption } from 'src/app/shared/models/filter-option.model'
+
 @Component({
     selector: 'app-filters-result',
     templateUrl: './filters-result.component.html',
@@ -18,10 +20,10 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 })
 export class FiltersResultComponent implements OnInit, OnChanges {
     @Input() labelTK?: string
-    @Input() results!: string[]
+    @Input() results!: FilterOption[] | null
 
     @Output() clearResults = new EventEmitter()
-    @Output() removeFilter = new EventEmitter<string>()
+    @Output() removeFilter = new EventEmitter<FilterOption>()
 
     constructor(private fb: FormBuilder) {}
 
@@ -45,8 +47,10 @@ export class FiltersResultComponent implements OnInit, OnChanges {
         this.clearResults.emit()
     }
 
-    onRemoveFilter(item: string) {
-        this.form.patchValue(this.form.value.results.filter((f: string) => f !== item))
+    onRemoveFilter(item: FilterOption) {
+        this.form.patchValue(
+            this.form.value.results.filter((f: FilterOption) => f.value !== item.value)
+        )
         this.removeFilter.emit(item)
     }
 }

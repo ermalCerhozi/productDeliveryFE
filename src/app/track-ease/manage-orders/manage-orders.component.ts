@@ -8,11 +8,14 @@ import { SelectionModel } from '@angular/cdk/collections'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
-import { forkJoin } from 'rxjs'
+import { Observable, forkJoin } from 'rxjs'
 import { CreateUpdateOrdersComponent } from 'src/app/track-ease/create-update-orders/create-update-orders.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { MatTableDataSource } from '@angular/material/table'
 import { MatPaginator } from '@angular/material/paginator'
+import { FilterOption } from 'src/app/shared/models/filter-option.model'
+import { SearchService } from 'src/app/services/search.service'
+import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
 
 @Component({
     selector: 'app-manage-orders',
@@ -20,6 +23,21 @@ import { MatPaginator } from '@angular/material/paginator'
     styleUrls: ['./manage-orders.component.scss'],
 })
 export class ManageOrdersComponent implements OnInit, AfterViewInit {
+    mediaLibraryFilterResults: Observable<FilterOption[]>
+
+    mediaDates: Observable<FilterOption[]>
+    defaultDate: FilterOption
+    selectedDate: Observable<FilterOption>
+
+    mediaProjects: Observable<FilterOption[]>
+    selectedProjects: Observable<FilterOption[]>
+    projectsLoading: Observable<boolean>
+    hasMoreProjectsToLoad: Observable<boolean>
+
+    // selectedTypes: Observable<FilterOption[]>
+    // mediaTypes: Observable<FilterOption[]>
+    // loadingTypeFilter = { value: true }
+
     displayedColumns: string[] = ['client', 'order', 'date', 'actions']
     activeOrder!: OrderEntity
     actionState!: string
@@ -47,9 +65,24 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
 
     constructor(
         public bakeryManagementService: BakeryManagementService,
+        public searchService: SearchService,
         private bakeryManagementApiService: BakeryManagementApiService,
         public dialog: MatDialog
-    ) {}
+    ) {
+        this.mediaLibraryFilterResults = this.searchService.getMediaLibraryFilterResults()
+
+        this.mediaDates = this.searchService.getMediaDates()
+        this.defaultDate = this.searchService.defaultDateFilter
+        this.selectedDate = this.searchService.getSelectedDate()
+
+        this.mediaProjects = this.searchService.getMediaProjects()
+        this.selectedProjects = this.searchService.getSelectedProjects()
+        this.projectsLoading = this.searchService.getProjectsLoading()
+        this.hasMoreProjectsToLoad = this.searchService.getHasMoreProjectsToLoad()
+
+        // this.mediaTypes = this.searchService.getMediaTypes()
+        // this.selectedTypes = this.searchService.getSelectedTypes()
+    }
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
@@ -182,19 +215,60 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
         this.getOrdersList(false)
     }
 
-    hasFiltersSelected(): boolean {
-        const filters = this.bakeryManagementService.navigationContext.filters
-        for (const key in filters) {
-            if (
-                Object.prototype.hasOwnProperty.call(filters, key) &&
-                key !== 'queryString' &&
-                key !== 'active' &&
-                filters[key] !== undefined
-            ) {
-                return true
-            }
+    projectSearchChange(data: string) {
+        this.searchService.projectSearchChange(data)
+    }
+
+    loadMoreProjects() {
+        this.searchService.loadMoreProjects()
+    }
+
+    onFilterOpenChange(isOpen: boolean, filterType: string, loadingState: { value: boolean }) {
+        if (isOpen) {
+            this.bakeryManagementService.setFilterOptionsCount(filterType).subscribe(() => {
+                loadingState.value = false
+            })
+        } else {
+            loadingState.value = true
         }
+    }
+
+    hasFiltersSelected(): boolean {
+        // TODO: Implement
+        // const filters = this.bakeryManagementService.navigationContext.filters
+        // for (const key in filters) {
+        //     if (
+        //         Object.prototype.hasOwnProperty.call(filters, key) &&
+        //         key !== 'queryString' &&
+        //         key !== 'active' &&
+        //         filters[key] !== undefined
+        //     ) {
+        //         return true
+        //     }
+        // }
         return false
+    }
+
+    applyFilters(data: FilterOption | FilterOption[] | AdvancedSelection, filterType: string) {
+        switch (filterType) {
+            // case 'type':
+            //     this.searchService.applyTypeFilters(data as FilterOption[])
+            //     break
+            // case 'missingData':
+            //     this.searchService.applyMissingDataFilters(data as FilterOption[])
+            //     break
+            case 'date':
+                console.log('data', data)
+                this.searchService.applyDateFilter(data as FilterOption)
+                break
+            case 'project':
+                this.searchService.applyProjectFilters(data as AdvancedSelection)
+                break
+        }
+    }
+
+    removeFilter(data: FilterOption) {
+        this.searchService.removeFilter(data)
     }
 
     deleteOrder(): void {

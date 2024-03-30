@@ -1,0 +1,31 @@
+<mat-chip-listbox multiple cdkDropListOrientation="horizontal" class="mef-filter-result">
+    <mat-chip-option
+        (click)="onRemoveFilter(filter)"
+        (removed)="onRemoveFilter(filter)"
+        [selectable]="false"
+        *ngFor="let filter of form.get('results')?.value"
+        mefTrackBy="RemoveFiltersClicked"
+    >
+        <span *ngIf="filter.isTranslated">
+            {{ filter.label }}
+        </span>
+        <span *ngIf="!filter.isTranslated">
+            {{ filter.label }}
+        </span>
+        <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+        </button>
+    </mat-chip-option>
+    <mat-chip-option
+        [color]="'primary'"
+        (click)="clearFilters()"
+        [selectable]="false"
+        *ngIf="labelTK"
+        class="mef-filter-clear-all"
+        mefTrackBy="ClearFiltersClicked"
+    >
+        <span class="mef-filter-clear-all-text">
+            {{ labelTK }}
+        </span>
+    </mat-chip-option>
+</mat-chip-listbox>

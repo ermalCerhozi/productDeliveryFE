@@ -1,0 +1,11 @@
+form.mef-filters-form {
+    display: flex;
+    flex-direction: row;
+    align-self: flex-start;
+    font-size: 14px;
+
+    & div {
+        display: flex;
+        padding: 0 4px;
+    }
+}

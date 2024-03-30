@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core'
-import { Observable, tap, BehaviorSubject } from 'rxjs'
+import { Observable, tap, BehaviorSubject, Subject, take, map } from 'rxjs'
 import { OrderEntity, OrderResponse } from 'src/app/shared/models/order.model'
 import { ProductEntity, ProductResponse } from 'src/app/shared/models/product.model'
 import { UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { NavigationContext, SearchOptions } from 'src/app/shared/models/navigation-context.model'
+import { ProjectFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
+import { LocalStorageService } from 'ngx-webstorage'
+import { cloneDeep } from 'lodash'
 
 @Injectable({
     providedIn: 'root',
@@ -26,12 +29,27 @@ export class BakeryManagementService {
     private usersListSubject: BehaviorSubject<UserEntity[]> = new BehaviorSubject<UserEntity[]>([])
     public usersList$: Observable<UserEntity[]> = this.usersListSubject.asObservable()
 
+    //TODO: make interface
+    public countData: any = {
+        countActive: 0,
+        // countTypes: [],
+        // countMissingData: {
+        //     missingAltText: 0,
+        //     missingLongDescription: 0,
+        // },
+    }
+    public synchronizeCountSubject = new Subject<void>()
+    public synchronizeFiltersSubject = new Subject<void>()
+
     public productsCount!: number
     public ordersCount!: number
     public usersCount!: number
     public navigationContext!: NavigationContext
 
-    constructor(private bakeryManagementApiService: BakeryManagementApiService) {
+    constructor(
+        private bakeryManagementApiService: BakeryManagementApiService,
+        private localStorageService: LocalStorageService
+    ) {
         this.getBaseNavigationContext()
     }
 
@@ -41,7 +59,9 @@ export class BakeryManagementService {
                 offset: 0,
                 limit: 21,
             },
-            filters: {},
+            filters: {
+                projects: [],
+            },
             // sorts: {
             //     $created_at: SortDirection.DESC,
             // },
@@ -206,6 +226,79 @@ export class BakeryManagementService {
 
     getAllProducts(): Observable<ProductEntity[]> {
         return this.bakeryManagementApiService.getProducts()
+    }
+
+    synchronizeFilters() {
+        this.synchronizeFiltersSubject.next()
+    }
+    synchronizeCount() {
+        this.synchronizeCountSubject.next()
+    }
+
+    resetPaginationAndDisableCount(): void {
+        this.navigationContext.pagination.offset = 0
+        this.navigationContext.pagination.limit = 40
+    }
+
+    clearActiveMedia(): void {
+        console.log('Clearing the selected item')
+    }
+
+    getProjectFiltersForMedia(
+        offset: number,
+        projectSearchQuery: string
+    ): Observable<ProjectFiltersResponse[]> {
+        // const workspaceId = this.localStorageService.retrieve('workspaceId') //TODO: When workspace is implemented
+        // const payload: MediaLibraryProjectFilterPayload = { //TODO When proper payload is implemented
+        //     workspace_id: workspaceId,
+        //     pagination: {
+        //         offset,
+        //         limit: 20,
+        //     },
+        // }
+
+        const payload: any = {
+            pagination: {
+                offset,
+                limit: 20,
+            },
+        }
+        if (projectSearchQuery) {
+            payload.projectName = projectSearchQuery
+        }
+        return this.bakeryManagementApiService.getProjectFiltersForMedia(payload).pipe(
+            take(1),
+            map((projectFilters: ProjectFiltersResponse[]) => projectFilters)
+        )
+    }
+
+    private getPayloadNavigationContext(): NavigationContext {
+        const payloadNavigationContext = cloneDeep(this.navigationContext)
+        payloadNavigationContext.filters.projectIds = payloadNavigationContext.filters.active
+            ? this.navigationContext.filters.projectIds
+            : undefined
+        delete payloadNavigationContext.filters.projects
+        return payloadNavigationContext
+    }
+
+    setFilterOptionsCount(filterType: string): Observable<any> {
+        const requestPayload: any = {
+            // workspace_id: this.localStorageService.retrieve('workspaceId'),
+            navigation_context: {
+                filters: this.getPayloadNavigationContext().filters,
+                searchOptions: this.navigationContext.searchOptions,
+            },
+            filterType,
+        }
+        return this.bakeryManagementApiService.countFilterOptions(requestPayload).pipe(
+            tap((response: any) => {
+                this.countData.countTypes = response.count.countTypes
+                this.countData.countFormats = response.count.countFormats
+                this.countData.countCategories = response.count.countCategories
+                this.countData.countMissingData = response.count.countMissingData
+                this.synchronizeCount()
+            })
+        )
     }
 
     downloadOrdersPdf(): void {

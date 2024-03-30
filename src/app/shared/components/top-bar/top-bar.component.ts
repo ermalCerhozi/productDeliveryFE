@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { Subject, debounceTime, takeUntil } from 'rxjs'
-import { SearchOptions } from 'src/app/shared/models/navigation-context.model'
+import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 
 @Component({
     selector: 'app-top-bar',

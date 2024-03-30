@@ -18,7 +18,6 @@ import { ReactiveFormsModule } from '@angular/forms'
 import { LayoutComponent } from 'src/app/track-ease/layout-toolbar/layout.component'
 import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { CreateUpdateOrdersComponent } from 'src/app/track-ease/create-update-orders/create-update-orders.component'
-import { FiltersResultComponent } from 'src/app/track-ease/filters-result/filters-result.component'
 import { UserProfileComponent } from 'src/app/track-ease/user-profile/user-profile.component'
 import { ChangePasswordComponent } from 'src/app/track-ease/change-password/change-password.component'
 import { SettingsComponent } from 'src/app/track-ease/settings/settings.component'
@@ -42,7 +41,6 @@ PlotlyModule.plotlyjs = PlotlyJS
         LayoutComponent,
         FilterDialogComponent,
         CreateUpdateOrdersComponent,
-        FiltersResultComponent,
         UserProfileComponent,
         ChangePasswordComponent,
         SettingsComponent,

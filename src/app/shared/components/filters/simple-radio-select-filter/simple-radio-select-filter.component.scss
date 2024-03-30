@@ -1,0 +1,85 @@
+@use '@angular/material' as mat;
+
+.mef-simple-radio-select-filter {
+    @include mat.form-field-density(-5);
+
+    .mat-form-field-appearance-fill .mat-mdc-select-arrow-wrapper {
+        transform: none;
+    }
+
+    .mat-mdc-select-value {
+        visibility: hidden;
+    }
+
+    .mat-mdc-text-field-wrapper {
+        border-radius: 16px;
+    }
+
+    .mat-mdc-form-field {
+        border-radius: 16px;
+    }
+
+    .mef-simple-radio-select-label {
+        position: absolute;
+        display: inline-flex;
+
+        .mef-simple-radio-select-label-icon {
+            padding-right: 7px;
+            margin-left: -7px;
+            color: #00000099;
+        }
+    }
+
+    .mdc-line-ripple {
+        display: none;
+    }
+
+    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+        background-color: unset;
+    }
+}
+
+.mef-simple-radio-select-filter-overlay {
+
+    .mat-mdc-select-panel {
+        min-width: 254px;
+        max-height: 211px;
+        flex-direction: row-reverse;
+        padding: 0;
+    }
+
+    .mat-mdc-option {
+        flex-direction: row-reverse;
+
+        .mat-pseudo-checkbox {
+            display: none;
+        }
+
+        .mat-icon {
+            margin: 0;
+        }
+    }
+
+    .mef-simple-radio-select-filter-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        .mef-simple-radio-select-filter-option-label {
+            padding-right: 40px;
+        }
+    }
+
+    .mat-mdc-primary .mat-mdc-option.mat-mdc-selected:not(.mat-mdc-option-disabled) {
+        color: unset;
+    }
+
+    .mat-mdc-option .mdc-list-item__primary-text {
+        width: 100%;
+    }
+
+    .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+        color: unset;
+    }
+}

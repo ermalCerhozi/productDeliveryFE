@@ -6,70 +6,71 @@ import { UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/mod
 import { environment } from 'src/environments/environment'
 import { OrderResponse } from 'src/app/shared/models/order.model'
 import { NavigationContext } from 'src/app/shared/models/navigation-context.model'
+import { ProjectFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
 
 @Injectable({
     providedIn: 'root',
 })
 export class BakeryManagementApiService {
-    private apiUrl = environment.baseUrl
+    private basePath = environment.baseUrl
 
-    constructor(private http: HttpClient) {}
+    constructor(private httpClient: HttpClient) {}
 
     //CRUD for users
     createUser(user: UserEntity): Observable<UserEntity> {
-        return this.http.post<UserEntity>(`${this.apiUrl}users`, user)
+        return this.httpClient.post<UserEntity>(`${this.basePath}users`, user)
     }
 
     getUsers(): Observable<UserEntity[]> {
-        return this.http.get<UserEntity[]>(`${this.apiUrl}users`)
+        return this.httpClient.get<UserEntity[]>(`${this.basePath}users`)
     }
 
     // TODO:take only user
     // TODO: when the logged in user edits its info update teh user info in the local storage
     updateUser(user: UserEntity, result: Partial<UserEntity>): Observable<any> {
         console.log(user)
-        return this.http.patch<UserEntity>(`${this.apiUrl}users/${user.id}`, result)
+        return this.httpClient.patch<UserEntity>(`${this.basePath}users/${user.id}`, result)
     }
 
     deleteUser(id: number): Observable<any> {
-        return this.http.delete<any>(`${this.apiUrl}users/${id}`)
+        return this.httpClient.delete<any>(`${this.basePath}users/${id}`)
     }
 
     getUser(id: number): Observable<UserEntity> {
-        return this.http.get<UserEntity>(`${this.apiUrl}users/${id}`)
+        return this.httpClient.get<UserEntity>(`${this.basePath}users/${id}`)
     }
 
     searchUsers(requestPayload: {
         navigation_context: NavigationContext
     }): Observable<UserResponse> {
-        return this.http.post<UserResponse>(
-            `${this.apiUrl}users/search`,
+        return this.httpClient.post<UserResponse>(
+            `${this.basePath}users/search`,
             requestPayload.navigation_context
         )
     }
 
     getSellerUsers(): Observable<UserEntity[]> {
-        return this.http.get<UserEntity[]>(`${this.apiUrl}users/seller`)
+        return this.httpClient.get<UserEntity[]>(`${this.basePath}users/seller`)
     }
 
     getClientUsers(): Observable<UserEntity[]> {
-        return this.http.get<UserEntity[]>(`${this.apiUrl}users/client`)
+        return this.httpClient.get<UserEntity[]>(`${this.basePath}users/client`)
     }
 
     changeUserPassword(id: number, newPass: changeUserPassword): Observable<any> {
-        return this.http.patch<UserEntity>(`${this.apiUrl}users/${id}/password`, newPass)
+        return this.httpClient.patch<UserEntity>(`${this.basePath}users/${id}/password`, newPass)
     }
 
     //CRUD for products
     createProduct(product: ProductEntity): Observable<ProductEntity> {
-        return this.http.post<ProductEntity>(`${this.apiUrl}products`, product)
+        return this.httpClient.post<ProductEntity>(`${this.basePath}products`, product)
     }
 
     searchProduct(requestPayload: {
         navigation_context: NavigationContext
     }): Observable<ProductResponse> {
-        return this.http.post<ProductResponse>(
-            `${this.apiUrl}products/search`,
+        return this.httpClient.post<ProductResponse>(
+            `${this.basePath}products/search`,
             requestPayload.navigation_context
         )
     }
@@ -78,60 +79,75 @@ export class BakeryManagementApiService {
         product: ProductEntity,
         result: Partial<ProductEntity>
     ): Observable<ProductEntity> {
-        return this.http.put<ProductEntity>(`${this.apiUrl}products/${product.id}`, result)
+        return this.httpClient.put<ProductEntity>(`${this.basePath}products/${product.id}`, result)
     }
 
     deleteProduct(id: number): Observable<ProductEntity> {
-        return this.http.delete<ProductEntity>(`${this.apiUrl}products/${id}`)
+        return this.httpClient.delete<ProductEntity>(`${this.basePath}products/${id}`)
     }
 
     getProduct(id: number): Observable<ProductEntity> {
-        return this.http.get<ProductEntity>(`${this.apiUrl}products/${id}`)
+        return this.httpClient.get<ProductEntity>(`${this.basePath}products/${id}`)
     }
 
     getProducts(): Observable<ProductEntity[]> {
-        return this.http.get<ProductEntity[]>(`${this.apiUrl}products`)
+        return this.httpClient.get<ProductEntity[]>(`${this.basePath}products`)
     }
 
     //CRUD for orders
     createOrder(order: any): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}orders`, order)
+        return this.httpClient.post<any>(`${this.basePath}orders`, order)
     }
 
     getOrders(): Observable<OrderResponse> {
-        return this.http.get<any>(`${this.apiUrl}orders`)
+        return this.httpClient.get<any>(`${this.basePath}orders`)
     }
 
     updateOrder(orderId: number, result: Partial<any>): Observable<any> {
-        return this.http.put<any>(`${this.apiUrl}orders/${orderId}`, result)
+        return this.httpClient.put<any>(`${this.basePath}orders/${orderId}`, result)
     }
 
     deleteOrder(id: number): Observable<any> {
-        return this.http.delete<any>(`${this.apiUrl}orders/${id}`)
+        return this.httpClient.delete<any>(`${this.basePath}orders/${id}`)
     }
 
     getOrder(id: number): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}orders/${id}`)
+        return this.httpClient.get<any>(`${this.basePath}orders/${id}`)
     }
 
     //CRUD for order items
     getFilteredOrders(requestPayload: {
         navigation_context: NavigationContext
     }): Observable<OrderResponse> {
-        return this.http.post<OrderResponse>(
-            `${this.apiUrl}orders/search`,
+        return this.httpClient.post<OrderResponse>(
+            `${this.basePath}orders/search`,
             requestPayload.navigation_context
         )
     }
 
     deleteOrderItem(id: number): Observable<any> {
-        return this.http.delete<any>(`${this.apiUrl}order-items/${id}`)
+        return this.httpClient.delete<any>(`${this.basePath}order-items/${id}`)
+    }
+
+    getProjectFiltersForMedia(payload: any): Observable<any[]> {
+        return this.httpClient.post<ProjectFiltersResponse[]>(
+            `${this.basePath}/projects/search`,
+            payload
+        )
     }
 
     //Download orders
     downloadOrdersPdf(requestPayload: { navigation_context: NavigationContext }): Observable<Blob> {
-        return this.http.post(`${this.apiUrl}orders/download`, requestPayload.navigation_context, {
-            responseType: 'blob',
-        })
+        return this.httpClient.post(
+            `${this.basePath}orders/download`,
+            requestPayload.navigation_context,
+            {
+                responseType: 'blob',
+            }
+        )
+    }
+
+    countFilterOptions(payload: any): Observable<any> {
+        return this.httpClient.post<any>(`${this.basePath}/filter/options/count`, payload)
     }
 }

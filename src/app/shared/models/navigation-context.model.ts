@@ -1,4 +1,6 @@
 // TODO: Remove from optional when full implementation is done
+import { FilterOption } from 'src/app/shared/models/filter-option.model'
+
 export interface NavigationContext {
     pagination: Pagination
     filters: Filters
@@ -22,7 +24,11 @@ export interface Filters {
     maxPrice?: number
     queryString?: string
     active?: boolean
-    [key: string]: string | number | boolean | undefined
+    type?: string[]
+    missingLongDescription?: boolean
+    missingAltText?: boolean
+    projectIds?: string[]
+    projects?: FilterOption[]
 }
 
 export enum SortDirection {

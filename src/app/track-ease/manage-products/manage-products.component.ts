@@ -14,7 +14,7 @@ import { CreateUpdateDialogComponent } from 'src/app/shared/components/create-up
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator } from '@angular/material/paginator'
-import { SearchOptions } from 'src/app/shared/models/navigation-context.model'
+import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 import { take, map } from 'rxjs/operators'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'

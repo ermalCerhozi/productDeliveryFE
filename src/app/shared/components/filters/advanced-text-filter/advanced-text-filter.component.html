@@ -1,0 +1,100 @@
+<ng-template>
+    <form [formGroup]="form" class="mef-advanced-text-filter">
+        <mat-form-field
+            floatLabel="auto"
+            class="form-field-without-hint"
+            [ngStyle]="{
+                backgroundColor: form.get('fields')?.value?.length ? '#dcdcdc' : '#eeeeee',
+                width: customLabelWidth ? customLabelWidth : null
+            }"
+        >
+            <span class="mef-advanced-text-label">
+                <mat-icon
+                    *ngIf="form && form.value.fields.length > 0"
+                    class="mef-advanced-text-label-icon"
+                    >check</mat-icon
+                >
+                <span>{{ labelTK }}</span></span
+            >
+            <mat-select
+                formControlName="fields"
+                multiple
+                #advancedTextFilterSelect
+                class="mef-advanced-text-filter-select"
+                [panelClass]="['mef-advanced-text-filter-select-overlay', panelClass]"
+                [compareWith]="compareObjects"
+                [disableOptionCentering]="true"
+                (openedChange)="onOpenedChange($event)"
+            >
+                <mat-option *ngIf="loading" class="spinner-option">
+                    <mat-spinner diameter="30"></mat-spinner>
+                </mat-option>
+                <mat-form-field
+                    *ngIf="searchForTK && !loading"
+                    class="mef-advanced-text-filter-input form-field-without-hint"
+                    appearance="fill"
+                >
+                    <mat-icon matPrefix class="mef-advanced-text-filter-search-icon"
+                        >search</mat-icon
+                    >
+                    <mat-label class="mef-advanced-text-filter-search-label">{{
+                        searchForTK
+                    }}</mat-label>
+                    <input
+                        [(ngModel)]="searchQuery"
+                        [ngModelOptions]="{ standalone: true }"
+                        matInput
+                        (input)="onSearchChange()"
+                        (keydown)="$event.stopPropagation()"
+                    />
+                    <mat-icon
+                        matSuffix
+                        class="mef-advanced-text-filter-cancel-icon"
+                        *ngIf="searchQuery.length"
+                        (click)="clearSearch()"
+                        >cancel</mat-icon
+                    >
+                </mat-form-field>
+                <mat-option
+                    *ngIf="
+                        !fields.length && !loadingPage && !hasMoreItems && noResultsTK;
+                        else emptyOption
+                    "
+                    disabled
+                >
+                    {{ noResultsTK }}
+                </mat-option>
+                <ng-template #emptyOption>
+                    <mat-option *ngIf="!fields.length" disabled>---</mat-option>
+                </ng-template>
+                <mat-option *ngFor="let field of fields" [value]="field">
+                    <div class="mef-advanced-text-filter-content">
+                        <div class="mef-advanced-text-filter-field-label-container">
+                            <span
+                                *ngIf="field.isTranslated"
+                                class="mef-advanced-text-filter-field-label"
+                            >
+                                {{ field.label }}
+                            </span>
+                            <span
+                                *ngIf="!field.isTranslated"
+                                class="mef-advanced-text-filter-field-label"
+                            >
+                                {{ field.label }}
+                            </span>
+                        </div>
+                        <div
+                            class="mef-advanced-text-filter-count"
+                            *ngIf="field.count || field.count === 0"
+                        >
+                            ({{ field.count }})
+                        </div>
+                    </div>
+                </mat-option>
+                <div class="mef-advanced-text-filter-spinner" *ngIf="loadingPage && hasMoreItems">
+                    <mat-spinner diameter="30"></mat-spinner>
+                </div>
+            </mat-select>
+        </mat-form-field>
+    </form>
+</ng-template>

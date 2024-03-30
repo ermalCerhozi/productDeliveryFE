@@ -33,6 +33,12 @@ import { CreateUpdateDialogComponent } from 'src/app/shared/components/create-up
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { PasswordStrengthComponent } from 'src/app/shared/components/password-strength/password-strength.component'
 import { ExternalUrlSanitizerPipe } from 'src/app/shared/common/pipes/external-url-sanitizer.pipe'
+import { FiltersComponent } from 'src/app/shared/components/filters/filters.component'
+import { SimpleTextFilterComponent } from 'src/app/shared/components/filters/simple-text-filter/simple-text-filter.component'
+import { SimpleRadioSelectFilterComponent } from 'src/app/shared/components/filters/simple-radio-select-filter/simple-radio-select-filter.component'
+import { FiltersPanelComponent } from 'src/app/shared/components/filters-panel/filters-panel.component'
+import { FiltersResultComponent } from 'src/app/shared/components/filters-panel/filters-result/filters-result.component';
+import { AdvancedTextFilterComponent } from 'src/app/shared/components/filters/advanced-text-filter/advanced-text-filter.component'
 
 @NgModule({
     declarations: [
@@ -43,6 +49,12 @@ import { ExternalUrlSanitizerPipe } from 'src/app/shared/common/pipes/external-u
         ConfirmationDialogComponent,
         PasswordStrengthComponent,
         ExternalUrlSanitizerPipe,
+        FiltersComponent,
+        SimpleTextFilterComponent,
+        SimpleRadioSelectFilterComponent,
+        FiltersPanelComponent,
+        FiltersResultComponent,
+        AdvancedTextFilterComponent,
     ],
     imports: [
         CommonModule,
@@ -82,6 +94,12 @@ import { ExternalUrlSanitizerPipe } from 'src/app/shared/common/pipes/external-u
         ConfirmationDialogComponent,
         PasswordStrengthComponent,
         ExternalUrlSanitizerPipe,
+        FiltersComponent,
+        SimpleTextFilterComponent,
+        SimpleRadioSelectFilterComponent,
+        FiltersPanelComponent,
+        FiltersResultComponent,
+        AdvancedTextFilterComponent,
     ],
     providers: [],
 })
