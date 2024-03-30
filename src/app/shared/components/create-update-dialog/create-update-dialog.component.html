@@ -103,12 +103,27 @@
                         <mat-label>Role</mat-label>
                         <mat-select formControlName="role" required>
                             <mat-option value="client">Client</mat-option>
-                            <mat-option value="manager">Manager</mat-option>
                             <mat-option value="admin">Admin</mat-option>
                             <mat-option value="seller">Seller</mat-option>
                         </mat-select>
                         <mat-error *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
                             Role is required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Location</mat-label>
+                        <input
+                            matInput
+                            type="text"
+                            formControlName="location"
+                            required
+                            title="Location"
+                        />
+                        <mat-error
+                            *ngIf="form.get('location')?.invalid && form.get('location')?.touched"
+                        >
+                            Location is required
                         </mat-error>
                     </mat-form-field>
 

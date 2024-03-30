@@ -1,12 +1,11 @@
-<div class="filter-header-container">
-    <h2 mat-dialog-title>Filter</h2>
-    <mat-dialog-actions [align]="'end'">
-        <button mat-button color="primary" (click)="downloadOrdersPdf()">
-            <mat-icon fontSet="material-icons-outlined">download</mat-icon>
-            Download PDF
-        </button>
-    </mat-dialog-actions>
-</div>
+<mat-dialog-actions class="header" [align]="'end'">
+    <span>Filter</span>
+    <!-- TODO: disble when tehre are no filter applied -->
+    <button class="download-pdf" mat-stroked-button (click)="downloadOrdersPdf()">
+        <mat-icon fontSet="material-icons-outlined">download</mat-icon>
+        <span>Download PDF</span>
+    </button>
+</mat-dialog-actions>
 
 <mat-dialog-content>
     <form [formGroup]="filterForm" class="filter-form">

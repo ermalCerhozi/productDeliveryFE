@@ -7,7 +7,7 @@ import { UserEntity } from 'src/app/shared/models/user.model'
 @Component({
     selector: 'app-filter-dialog',
     templateUrl: './filter-dialog.component.html',
-    styleUrls: ['./filter-dialog.component.css'],
+    styleUrls: ['./filter-dialog.component.scss'],
 })
 export class FilterDialogComponent implements OnInit {
     clients: UserEntity[] = []
@@ -57,7 +57,7 @@ export class FilterDialogComponent implements OnInit {
 
     dateFilter = (d: Date | null): boolean => {
         const current = d || new Date()
-        return current <= new Date() // Allow only dates before today and today
+        return current <= new Date() // Allow only dates before today
     }
 
     downloadOrdersPdf() {

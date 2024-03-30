@@ -166,6 +166,7 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
                             result.client?.id
                         this.bakeryManagementService.navigationContext.filters.sellerId =
                             result.seller?.id
+
                         this.bakeryManagementService.updateOrdersList(false).subscribe()
                     }
                 },

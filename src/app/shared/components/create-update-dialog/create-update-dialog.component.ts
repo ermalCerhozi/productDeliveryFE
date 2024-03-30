@@ -4,6 +4,7 @@ import { ProductEntity } from 'src/app/shared/models/product.model'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { Subject } from 'rxjs'
+import { cloneDeep, isEqual } from 'lodash'
 
 @Component({
     selector: 'app-create-update-dialog',
@@ -13,13 +14,13 @@ import { Subject } from 'rxjs'
 export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     private unsubscribe$ = new Subject<void>()
     form: FormGroup = new FormGroup({})
-    initialFormValues: any
+    initialFormValues: any //Any because the form can be a UserEntity or ProductEntity
 
     // @Input
     @Input() type!: string //UserEntity | ProductEntity
     @Input() action!: string //Create | Update
-    @Input() product!: ProductEntity //Product to be updated
-    @Input() user!: UserEntity //User to be updated
+    @Input() product?: ProductEntity //Product to be updated
+    @Input() user?: UserEntity //User to be updated
     // @Output
     @Output() updateProduct = new EventEmitter<ProductEntity>()
     @Output() createProduct = new EventEmitter()
@@ -27,9 +28,10 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     @Output() updateUser = new EventEmitter<UserEntity>()
 
     constructor(public bakeryManagementService: BakeryManagementService, private fb: FormBuilder) {}
+
     ngOnInit(): void {
         this.initializeForm()
-        this.initialFormValues = this.form.value
+        this.initialFormValues = cloneDeep(this.form.value)
     }
 
     initializeForm(): void {
@@ -49,6 +51,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                           email: '',
                           phone_number: '',
                           role: '',
+                          location: '',
                           password: '',
                       }
 
@@ -62,9 +65,9 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                     [Validators.required, Validators.minLength(10)],
                 ],
                 role: [formData.role, Validators.required],
+                location: [formData.location, Validators.required],
                 password: [formData.password, Validators.required],
             })
-            console.log(JSON.stringify(formData, null, 4))
         } else if (this.type === 'product') {
             formData =
                 this.action === 'update' && this.product
@@ -88,7 +91,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     }
 
     formHasChanged(): boolean {
-        return JSON.stringify(this.initialFormValues) !== JSON.stringify(this.form.value)
+        return !isEqual(this.initialFormValues, this.form.value)
     }
 
     inserItem(): void {
