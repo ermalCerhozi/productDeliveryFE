@@ -6,7 +6,6 @@ export interface MediaLibraryNavigationContext {
     sorts: Sorts
     searchOptions: SearchOptions
     count?: boolean
-    projectLocation?: boolean // remove when intuitive browsing becomes default ml
 }
 
 export interface Pagination {
@@ -24,9 +23,9 @@ export interface Filters {
     id?: string
     missingLongDescription?: boolean
     missingAltText?: boolean
-    projectIds?: string[]
+    clientIds?: string[]
     categories?: string[]
-    projects?: FilterOption[]
+    clients?: FilterOption[]
 }
 
 export enum SortDirection {

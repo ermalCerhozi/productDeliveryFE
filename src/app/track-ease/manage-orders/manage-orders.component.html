@@ -31,7 +31,7 @@
         <!-- <app-simple-text-filter
             [fields]="(mediaTypes | async)!"
             [selection]="(selectedTypes | async)!"
-            [labelTK]="'GT_MEDIA_TYPE'"
+            [labelTK]="'TE_ORDER_TYPE'"
             [multiple]="true"
             [customLabelWidth]="'109px'"
             [panelClass]="'mef-media-library-toolbar-type-filter-panel'"
@@ -42,28 +42,28 @@
         </app-simple-text-filter> -->
 
         <app-simple-radio-select-filter
-            [labelTK]="'GT_MEDIA_LIBRARY_UPLOAD_DATE'"
+            [labelTK]="'TE_ORDER_LIBRARY_UPLOAD_DATE'"
             [fields]="(mediaDates | async)!"
             [defaultEmptyValue]="defaultDate"
             [selection]="(selectedDate | async)!"
             [customLabelWidth]="'124px'"
-            [panelClass]="'mef-media-library-toolbar-date-filter-panel'"
+            [panelClass]="'date-filter-panel'"
             (selectionChange)="applyFilters($event, 'date')"
         ></app-simple-radio-select-filter>
 
         <app-advanced-text-filter
-            [labelTK]="'GT_MEDIA_PROJECT'"
-            [loadingPage]="(projectsLoading | async)!"
-            [hasMoreItems]="(hasMoreProjectsToLoad | async)!"
-            [selection]="(selectedProjects | async)!"
-            [fields]="(mediaProjects | async)!"
-            [searchForTK]="'GT_MEDIA_PROJECT_SEARCH'"
-            [noResultsTK]="'GT_MEDIA_PROJECT_NO_RESULTS'"
-            [panelClass]="'mef-media-library-toolbar-project-categories-filter-panel'"
+            [labelTK]="'TE_ORDER_CLIENT'"
+            [loadingPage]="(clientsLoading | async)!"
+            [hasMoreItems]="(hasMoreClientsToLoad | async)!"
+            [selection]="(selectedClients | async)!"
+            [fields]="(orderClients | async)!"
+            [searchForTK]="'TE_ORDER_CLIENT_SEARCH'"
+            [noResultsTK]="'TE_ORDER_CLIENT_NO_RESULTS'"
+            [panelClass]="'client-categories-filter-panel'"
             [customLabelWidth]="'131px'"
-            (searchChange)="projectSearchChange($event)"
-            (loadMore)="loadMoreProjects()"
-            (selectionChange)="applyFilters($event, 'project')"
+            (searchChange)="clientSearchChange($event)"
+            (loadMore)="loadMoreClients()"
+            (selectionChange)="applyFilters($event, 'client')"
         >
         </app-advanced-text-filter>
     </app-filters>
@@ -74,7 +74,7 @@
             : (trashBinFilterResults | async)!
     " -->
     <app-filters-result
-        [labelTK]="'GT_CLEAR_MEDIA_FILTERS'"
+        [labelTK]="'TE_CLEAR_ORDER_FILTERS'"
         [results]="mediaLibraryFilterResults | async"
         (clearResults)="clearFilters()"
         (removeFilter)="removeFilter($event)"

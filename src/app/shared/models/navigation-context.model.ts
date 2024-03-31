@@ -27,8 +27,8 @@ export interface Filters {
     type?: string[]
     missingLongDescription?: boolean
     missingAltText?: boolean
-    projectIds?: string[]
-    projects?: FilterOption[]
+    clientIds?: string[]
+    clients?: FilterOption[]
 }
 
 export enum SortDirection {

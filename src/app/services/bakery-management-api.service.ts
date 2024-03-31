@@ -6,7 +6,7 @@ import { UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/mod
 import { environment } from 'src/environments/environment'
 import { OrderResponse } from 'src/app/shared/models/order.model'
 import { NavigationContext } from 'src/app/shared/models/navigation-context.model'
-import { ProjectFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
+import { ClientFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
 
 @Injectable({
     providedIn: 'root',
@@ -129,9 +129,10 @@ export class BakeryManagementApiService {
         return this.httpClient.delete<any>(`${this.basePath}order-items/${id}`)
     }
 
-    getProjectFiltersForMedia(payload: any): Observable<any[]> {
-        return this.httpClient.post<ProjectFiltersResponse[]>(
-            `${this.basePath}/projects/search`,
+    getClientFiltersForOrder(payload: any): Observable<any[]> {
+        console.log(payload)
+        return this.httpClient.post<ClientFiltersResponse[]>(
+            `${this.basePath}users/clients/search`,
             payload
         )
     }

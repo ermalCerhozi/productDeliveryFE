@@ -29,10 +29,10 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
     defaultDate: FilterOption
     selectedDate: Observable<FilterOption>
 
-    mediaProjects: Observable<FilterOption[]>
-    selectedProjects: Observable<FilterOption[]>
-    projectsLoading: Observable<boolean>
-    hasMoreProjectsToLoad: Observable<boolean>
+    orderClients: Observable<FilterOption[]>
+    selectedClients: Observable<FilterOption[]>
+    clientsLoading: Observable<boolean>
+    hasMoreClientsToLoad: Observable<boolean>
 
     // selectedTypes: Observable<FilterOption[]>
     // mediaTypes: Observable<FilterOption[]>
@@ -75,10 +75,10 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
         this.defaultDate = this.searchService.defaultDateFilter
         this.selectedDate = this.searchService.getSelectedDate()
 
-        this.mediaProjects = this.searchService.getMediaProjects()
-        this.selectedProjects = this.searchService.getSelectedProjects()
-        this.projectsLoading = this.searchService.getProjectsLoading()
-        this.hasMoreProjectsToLoad = this.searchService.getHasMoreProjectsToLoad()
+        this.orderClients = this.searchService.getOrderClients()
+        this.selectedClients = this.searchService.getSelectedClients()
+        this.clientsLoading = this.searchService.getClientsLoading()
+        this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
 
         // this.mediaTypes = this.searchService.getMediaTypes()
         // this.selectedTypes = this.searchService.getSelectedTypes()
@@ -215,12 +215,12 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
         this.getOrdersList(false)
     }
 
-    projectSearchChange(data: string) {
-        this.searchService.projectSearchChange(data)
+    clientSearchChange(data: string) {
+        this.searchService.clientSearchChange(data)
     }
 
-    loadMoreProjects() {
-        this.searchService.loadMoreProjects()
+    loadMoreClients() {
+        this.searchService.loadMoreClients()
     }
 
     onFilterOpenChange(isOpen: boolean, filterType: string, loadingState: { value: boolean }) {
@@ -258,11 +258,10 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
             //     this.searchService.applyMissingDataFilters(data as FilterOption[])
             //     break
             case 'date':
-                console.log('data', data)
                 this.searchService.applyDateFilter(data as FilterOption)
                 break
-            case 'project':
-                this.searchService.applyProjectFilters(data as AdvancedSelection)
+            case 'client':
+                this.searchService.applyClientFilters(data as AdvancedSelection)
                 break
         }
     }

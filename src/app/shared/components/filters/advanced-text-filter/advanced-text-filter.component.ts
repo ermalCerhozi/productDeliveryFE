@@ -91,11 +91,11 @@ export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy
         })
 
         this.advancedTextFilterSelect?.optionSelectionChanges.subscribe((event) => {
-            const projectSelection: AdvancedSelection = {
+            const clientSelection: AdvancedSelection = {
                 value: event.source.value,
                 selected: event.source.selected,
             }
-            this.selectionSubject.next(projectSelection)
+            this.selectionSubject.next(clientSelection)
         })
     }
 

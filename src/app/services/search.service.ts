@@ -13,7 +13,7 @@ import {
     takeUntil,
 } from 'rxjs'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { ProjectFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
+import { ClientFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 // import { AnalyticsService } from '@app/core/analytics/analytics.service'
@@ -27,7 +27,7 @@ import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 })
 export class SearchService implements OnDestroy {
     private onDestroy = new Subject<void>()
-    private projectSelectSubject = new Subject<AdvancedSelection>() //TODO: To be changed to cliemt or seller or product
+    private clientSelectSubject = new Subject<AdvancedSelection>() //TODO: To be changed to cliemt or seller or product
     private debounceTimeout: ReturnType<typeof setTimeout> | undefined
 
     // private mediaTypes: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([  //TODO: to be renamed into brad, pastery, peta etc...
@@ -60,38 +60,38 @@ export class SearchService implements OnDestroy {
 
     public readonly defaultDateFilter: FilterOption = {
         value: 'any-time',
-        label: 'GT_MEDIA_DATE_ANY_TIME',
+        label: 'TE_ORDER_DATE_ANY_TIME',
         isTranslated: true,
     }
 
-    private mediaDates: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([
-        { value: 'any-time', label: 'GT_MEDIA_DATE_ANY_TIME', isTranslated: true },
-        { value: 'last-24h', label: 'GT_MEDIA_DATE_LAST_24_HOURS', isTranslated: true },
-        { value: 'last-48h', label: 'GT_MEDIA_DATE_LAST_48_HOURS', isTranslated: true },
-        { value: 'last-72h', label: 'GT_MEDIA_DATE_LAST_72_HOURS', isTranslated: true },
-        { value: 'last-7days', label: 'GT_MEDIA_DATE_LAST_7_DAYS', isTranslated: true },
-        { value: 'last-30days', label: 'GT_MEDIA_DATE_LAST_30_DAYS', isTranslated: true },
-        { value: 'last-12months', label: 'GT_MEDIA_DATE_LAST_12_MONTHS', isTranslated: true },
+    private orderDates: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([
+        { value: 'any-time', label: 'TE_ORDER_DATE_ANY_TIME', isTranslated: true },
+        { value: 'last-24h', label: 'TE_ORDER_DATE_LAST_24_HOURS', isTranslated: true },
+        { value: 'last-48h', label: 'TE_ORDER_DATE_LAST_48_HOURS', isTranslated: true },
+        { value: 'last-72h', label: 'TE_ORDER_DATE_LAST_72_HOURS', isTranslated: true },
+        { value: 'last-7days', label: 'TE_ORDER_DATE_LAST_7_DAYS', isTranslated: true },
+        { value: 'last-30days', label: 'TE_ORDER_DATE_LAST_30_DAYS', isTranslated: true },
+        { value: 'last-12months', label: 'TE_ORDER_DATE_LAST_12_MONTHS', isTranslated: true },
     ])
 
     private selectedDate: BehaviorSubject<FilterOption> = new BehaviorSubject<FilterOption>(
         this.defaultDateFilter
     )
 
-    private mediaProjects: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([])
+    private orderClient: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([])
 
-    private selectedProjects: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>(
+    private selectedClient: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>(
         []
     )
 
-    private projectsLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+    private clientsLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
 
-    private hasMoreProjectsToLoad: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+    private hasMoreClientsToLoad: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
 
-    public projectSearchQuery = ''
+    public clientSearchQuery = ''
 
     constructor(private bakeryManagementService: BakeryManagementService) {
-        this.subscribeToProjectSelectSubject()
+        this.subscribeToClientSelectSubject()
         this.subscribeToSynchronizeFilters()
         this.subscribeToSynchronizeCount()
     }
@@ -110,11 +110,11 @@ export class SearchService implements OnDestroy {
     // }
 
     getMediaDates() {
-        return this.mediaDates.asObservable()
+        return this.orderDates.asObservable()
     }
 
-    getMediaProjects() {
-        return this.mediaProjects.asObservable()
+    getOrderClients() {
+        return this.orderClient.asObservable()
     }
 
     // getSelectedTypes() {
@@ -129,16 +129,16 @@ export class SearchService implements OnDestroy {
         return this.selectedDate.asObservable()
     }
 
-    getSelectedProjects() {
-        return this.selectedProjects.asObservable()
+    getSelectedClients() {
+        return this.selectedClient.asObservable()
     }
 
-    getProjectsLoading() {
-        return this.projectsLoading.asObservable()
+    getClientsLoading() {
+        return this.clientsLoading.asObservable()
     }
 
-    getHasMoreProjectsToLoad() {
-        return this.hasMoreProjectsToLoad.asObservable()
+    getHasMoreClientsToLoad() {
+        return this.hasMoreClientsToLoad.asObservable()
     }
 
     // DATA STORED IN THE NAVIGATION CONTEXT
@@ -153,15 +153,15 @@ export class SearchService implements OnDestroy {
     }
 
     // FUCTIONS
-    loadMoreProjects() {
-        this.getPaginatedProjects()
+    loadMoreClients() {
+        this.getPaginatedClients()
     }
 
-    projectSearchChange(data: string) {
-        this.projectSearchQuery = data
-        this.mediaProjects.next([])
-        this.hasMoreProjectsToLoad.next(true)
-        this.getPaginatedProjects()
+    clientSearchChange(data: string) {
+        this.clientSearchQuery = data
+        this.orderClient.next([])
+        this.hasMoreClientsToLoad.next(true)
+        this.getPaginatedClients()
     }
 
     setSearchOptions(searchOptions: SearchOptions) {
@@ -194,19 +194,19 @@ export class SearchService implements OnDestroy {
     }
 
     /* istanbul ignore next */
-    applyProjectFilters(data: AdvancedSelection) {
-        this.projectSelectSubject.next(data)
+    applyClientFilters(data: AdvancedSelection) {
+        this.clientSelectSubject.next(data)
     }
 
     //????????????????????????????????????????????????????????
-    applyProjectFiltersImmediately(data: AdvancedSelection[]) {
-        this.applyAdvancedFilters(data, this.selectedProjects)
+    applyClientsFiltersImmediately(data: AdvancedSelection[]) {
+        this.applyAdvancedFilters(data, this.selectedClient)
     }
 
     clearFilters() {
         // this.selectedTypes.next([])
         // this.selectedMissingData.next([])
-        this.selectedProjects.next([])
+        this.selectedClient.next([])
         this.selectedDate.next(this.defaultDateFilter)
         this.bakeryManagementService.clearFilters()
     }
@@ -219,8 +219,8 @@ export class SearchService implements OnDestroy {
             // this.selectedMissingData.next(
             //     this.selectedMissingData.value.filter((f) => f.value !== data.value)
             // )
-            this.selectedProjects.next(
-                this.selectedProjects.value.filter((f) => f.value !== data.value)
+            this.selectedClient.next(
+                this.selectedClient.value.filter((f) => f.value !== data.value)
             )
         }
         this.applyFilters()
@@ -228,8 +228,8 @@ export class SearchService implements OnDestroy {
 
     getMediaLibraryFilterResults(): Observable<FilterOption[]> {
         return this.getBaseFilterResults().pipe(
-            combineLatestWith(this.selectedProjects),
-            map(([previous, projects]) => [...previous, ...projects]),
+            combineLatestWith(this.selectedClient),
+            map(([previous, clients]) => [...previous, ...clients]),
             distinctUntilChanged(
                 (previous, current) =>
                     previous.length === current.length &&
@@ -293,14 +293,12 @@ export class SearchService implements OnDestroy {
         //     })
         // )
 
-        if (this.bakeryManagementService.navigationContext.filters.projects) {
-            this.selectedProjects.next(
-                this.bakeryManagementService.navigationContext.filters.projects
-            )
+        if (this.bakeryManagementService.navigationContext.filters.clients) {
+            this.selectedClient.next(this.bakeryManagementService.navigationContext.filters.clients)
         }
 
         this.selectedDate.next(
-            this.mediaDates.value.find(
+            this.orderDates.value.find(
                 (f) => f.value === this.bakeryManagementService.navigationContext.filters.date
             ) || this.defaultDateFilter
         )
@@ -358,12 +356,12 @@ export class SearchService implements OnDestroy {
     }
 
     /* istanbul ignore next */
-    private subscribeToProjectSelectSubject() {
-        this.projectSelectSubject
+    private subscribeToClientSelectSubject() {
+        this.clientSelectSubject
             .pipe(bufferTime(800), takeUntil(this.onDestroy))
             .subscribe((data: AdvancedSelection[]) => {
                 if (data.length > 0) {
-                    this.applyProjectFiltersImmediately(data)
+                    this.applyClientsFiltersImmediately(data)
                 }
             })
     }
@@ -389,13 +387,13 @@ export class SearchService implements OnDestroy {
             if (
                 selectedFilter.selected &&
                 !temporarySelectedFilters.some(
-                    (project) => project.value === selectedFilter.value.value
+                    (client) => client.value === selectedFilter.value.value
                 )
             ) {
                 temporarySelectedFilters.push(selectedFilter.value)
             } else if (!selectedFilter.selected) {
                 temporarySelectedFilters = temporarySelectedFilters.filter(
-                    (temporaryProject) => temporaryProject.value !== selectedFilter.value.value
+                    (temporaryClient) => temporaryClient.value !== selectedFilter.value.value
                 )
             }
         })
@@ -449,10 +447,9 @@ export class SearchService implements OnDestroy {
         // } else {
         //     this.bakeryManagementService.navigationContext.filters.missingLongDescription = undefined
         // }
-        this.bakeryManagementService.navigationContext.filters.projectIds =
-            this.selectedProjects.value.map((f) => f.value)
-        this.bakeryManagementService.navigationContext.filters.projects =
-            this.selectedProjects.value
+        this.bakeryManagementService.navigationContext.filters.clientIds =
+            this.selectedClient.value.map((f) => f.value)
+        this.bakeryManagementService.navigationContext.filters.clients = this.selectedClient.value
         this.bakeryManagementService.navigationContext.filters.date = this.selectedDate.value.value
 
         this.onApplyFilters()
@@ -460,39 +457,40 @@ export class SearchService implements OnDestroy {
     }
 
     private onApplyFilters() {
-        this.bakeryManagementService.resetPaginationAndDisableCount()
+        console.log('onApplyFilters')
+        this.bakeryManagementService.resetPagination()
         this.bakeryManagementService.navigationContext.getCount = false
         // this.bakeryManagementService.updateMediaList(false)
-        this.bakeryManagementService.updateProductList(false) //TODO: to be be implemented alogside updateUserList using the active tab
+        this.bakeryManagementService.updateOrdersList(false).subscribe() //TODO: to be be implemented alogside updateUserList using the active tab
         this.bakeryManagementService.clearActiveMedia() //TODO: Same as above
     }
 
-    private getPaginatedProjects() {
-        this.projectsLoading.next(true)
+    private getPaginatedClients() {
+        this.clientsLoading.next(true)
         this.bakeryManagementService
-            .getProjectFiltersForMedia(this.mediaProjects.value.length, this.projectSearchQuery)
+            .getClientFiltersForOrder(this.orderClient.value.length, this.clientSearchQuery)
             .pipe(
                 take(1),
-                map((projectList: ProjectFiltersResponse[]) => {
-                    this.hasMoreProjectsToLoad.next(projectList.length !== 0)
-                    this.addProjectsToSelectionList(projectList)
-                    this.selectedProjects.next([...this.selectedProjects.value])
-                    this.projectsLoading.next(false)
+                map((clientList: ClientFiltersResponse[]) => {
+                    this.hasMoreClientsToLoad.next(clientList.length !== 0)
+                    this.addClientsToSelectionList(clientList)
+                    this.selectedClient.next([...this.selectedClient.value])
+                    this.clientsLoading.next(false)
                 })
             )
             .subscribe()
     }
 
-    private addProjectsToSelectionList(projectList: ProjectFiltersResponse[]) {
-        const newMediaProjects: FilterOption[] = []
-        projectList.forEach((project) =>
-            newMediaProjects.push({
-                value: project.id,
-                label: project.title,
-                count: project.mediaCount,
+    private addClientsToSelectionList(clientList: ClientFiltersResponse[]) {
+        const newOrderClients: FilterOption[] = []
+        clientList.forEach((client) =>
+            newOrderClients.push({
+                value: client.id,
+                label: client.first_name + ' ' + client.last_name,
+                count: client.mediaCount,
             })
         )
-        this.mediaProjects.next([...this.mediaProjects.value, ...newMediaProjects])
+        this.orderClient.next([...this.orderClient.value, ...newOrderClients])
     }
 
     // private trackSearchEvent() {

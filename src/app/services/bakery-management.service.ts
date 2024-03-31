@@ -5,7 +5,7 @@ import { ProductEntity, ProductResponse } from 'src/app/shared/models/product.mo
 import { UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { NavigationContext, SearchOptions } from 'src/app/shared/models/navigation-context.model'
-import { ProjectFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
+import { ClientFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
 import { LocalStorageService } from 'ngx-webstorage'
 import { cloneDeep } from 'lodash'
 
@@ -60,7 +60,7 @@ export class BakeryManagementService {
                 limit: 21,
             },
             filters: {
-                projects: [],
+                clients: [],
             },
             // sorts: {
             //     $created_at: SortDirection.DESC,
@@ -235,7 +235,7 @@ export class BakeryManagementService {
         this.synchronizeCountSubject.next()
     }
 
-    resetPaginationAndDisableCount(): void {
+    resetPagination(): void {
         this.navigationContext.pagination.offset = 0
         this.navigationContext.pagination.limit = 40
     }
@@ -244,12 +244,12 @@ export class BakeryManagementService {
         console.log('Clearing the selected item')
     }
 
-    getProjectFiltersForMedia(
+    getClientFiltersForOrder(
         offset: number,
-        projectSearchQuery: string
-    ): Observable<ProjectFiltersResponse[]> {
+        clientSearchQuery: string
+    ): Observable<ClientFiltersResponse[]> {
         // const workspaceId = this.localStorageService.retrieve('workspaceId') //TODO: When workspace is implemented
-        // const payload: MediaLibraryProjectFilterPayload = { //TODO When proper payload is implemented
+        // const payload: any = { //TODO When proper payload is implemented
         //     workspace_id: workspaceId,
         //     pagination: {
         //         offset,
@@ -263,21 +263,21 @@ export class BakeryManagementService {
                 limit: 20,
             },
         }
-        if (projectSearchQuery) {
-            payload.projectName = projectSearchQuery
+        if (clientSearchQuery) {
+            payload.clientName = clientSearchQuery
         }
-        return this.bakeryManagementApiService.getProjectFiltersForMedia(payload).pipe(
+        return this.bakeryManagementApiService.getClientFiltersForOrder(payload).pipe(
             take(1),
-            map((projectFilters: ProjectFiltersResponse[]) => projectFilters)
+            map((clientFilters: ClientFiltersResponse[]) => clientFilters)
         )
     }
 
     private getPayloadNavigationContext(): NavigationContext {
         const payloadNavigationContext = cloneDeep(this.navigationContext)
-        payloadNavigationContext.filters.projectIds = payloadNavigationContext.filters.active
-            ? this.navigationContext.filters.projectIds
+        payloadNavigationContext.filters.clientIds = payloadNavigationContext.filters.active
+            ? this.navigationContext.filters.clientIds
             : undefined
-        delete payloadNavigationContext.filters.projects
+        delete payloadNavigationContext.filters.clients
         return payloadNavigationContext
     }
 
