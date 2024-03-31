@@ -42,7 +42,7 @@
         </app-simple-text-filter> -->
 
         <app-simple-radio-select-filter
-            [labelTK]="'TE_ORDER_LIBRARY_UPLOAD_DATE'"
+            [labelTK]="'DATE'"
             [fields]="(mediaDates | async)!"
             [defaultEmptyValue]="defaultDate"
             [selection]="(selectedDate | async)!"
@@ -52,7 +52,7 @@
         ></app-simple-radio-select-filter>
 
         <app-advanced-text-filter
-            [labelTK]="'TE_ORDER_CLIENT'"
+            [labelTK]="'CLIENT'"
             [loadingPage]="(clientsLoading | async)!"
             [hasMoreItems]="(hasMoreClientsToLoad | async)!"
             [selection]="(selectedClients | async)!"
@@ -66,16 +66,33 @@
             (selectionChange)="applyFilters($event, 'client')"
         >
         </app-advanced-text-filter>
+
+        <app-advanced-text-filter
+            [labelTK]="'SELLER'"
+            [loadingPage]="(sellersLoading | async)!"
+            [hasMoreItems]="(hasMoreSellersToLoad | async)!"
+            [selection]="(selectedSellers | async)!"
+            [fields]="(orderSellers | async)!"
+            [searchForTK]="'TE_ORDER_SELLER_SEARCH'"
+            [noResultsTK]="'TE_ORDER_SELLER_NO_RESULTS'"
+            [panelClass]="'seller-categories-filter-panel'"
+            [customLabelWidth]="'131px'"
+            (searchChange)="sellerSearchChange($event)"
+            (loadMore)="loadMoreSellers()"
+            (selectionChange)="applyFilters($event, 'seller')"
+        >
+        </app-advanced-text-filter>
     </app-filters>
 
     <!-- [results]="
         activeTab === 'media-library'
-            ? (mediaLibraryFilterResults | async)!
+            ? (filterResults | async)!
             : (trashBinFilterResults | async)!
     " -->
     <app-filters-result
-        [labelTK]="'TE_CLEAR_ORDER_FILTERS'"
-        [results]="mediaLibraryFilterResults | async"
+        *ngIf="(filterResults | async)!.length > 0"
+        [labelTK]="'Clear Filters'"
+        [results]="filterResults | async"
         (clearResults)="clearFilters()"
         (removeFilter)="removeFilter($event)"
     >

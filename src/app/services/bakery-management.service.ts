@@ -59,9 +59,7 @@ export class BakeryManagementService {
                 offset: 0,
                 limit: 21,
             },
-            filters: {
-                clients: [],
-            },
+            filters: {},
             // sorts: {
             //     $created_at: SortDirection.DESC,
             // },
@@ -105,7 +103,6 @@ export class BakeryManagementService {
     }
 
     updateOrdersList(append: boolean): Observable<OrderResponse> {
-        console.log('Navigation context:', this.navigationContext)
         if (!append) {
             this.productsListSubject.next([])
             this.navigationContext.pagination.limit = 21
@@ -269,6 +266,34 @@ export class BakeryManagementService {
         return this.bakeryManagementApiService.getClientFiltersForOrder(payload).pipe(
             take(1),
             map((clientFilters: ClientFiltersResponse[]) => clientFilters)
+        )
+    }
+
+    getSellerFiltersForOrder(
+        offset: number,
+        sellerSearchQuery: string
+    ): Observable<ClientFiltersResponse[]> {
+        // const workspaceId = this.localStorageService.retrieve('workspaceId') //TODO: When workspace is implemented
+        // const payload: any = { //TODO When proper payload is implemented
+        //     workspace_id: workspaceId,
+        //     pagination: {
+        //         offset,
+        //         limit: 20,
+        //     },
+        // }
+
+        const payload: any = {
+            pagination: {
+                offset,
+                limit: 20,
+            },
+        }
+        if (sellerSearchQuery) {
+            payload.sellerName = sellerSearchQuery
+        }
+        return this.bakeryManagementApiService.getSellerFiltersForOrder(payload).pipe(
+            take(1),
+            map((sellerFilters: ClientFiltersResponse[]) => sellerFilters)
         )
     }
 

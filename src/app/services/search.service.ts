@@ -27,7 +27,9 @@ import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 })
 export class SearchService implements OnDestroy {
     private onDestroy = new Subject<void>()
-    private clientSelectSubject = new Subject<AdvancedSelection>() //TODO: To be changed to cliemt or seller or product
+    private clientSelectSubject = new Subject<AdvancedSelection>()
+    private sellerSelectSubject = new Subject<AdvancedSelection>()
+
     private debounceTimeout: ReturnType<typeof setTimeout> | undefined
 
     // private mediaTypes: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([  //TODO: to be renamed into brad, pastery, peta etc...
@@ -36,7 +38,6 @@ export class SearchService implements OnDestroy {
     //     { value: 'video', label: 'GT_MEDIA_TYPE_VIDEO', isTranslated: true, count: 0 },
     //     { value: 'widget', label: 'GT_MEDIA_TYPE_WIDGET', isTranslated: true, count: 0 },
     // ])
-
     // private selectedTypes: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([])
 
     // private missingData: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([ //TODO: Can be used to filter completed orders or not completed orders in the future
@@ -53,7 +54,6 @@ export class SearchService implements OnDestroy {
     //         count: 0,
     //     },
     // ])
-
     // private selectedMissingData: BehaviorSubject<FilterOption[]> = new BehaviorSubject<
     //     FilterOption[]
     // >([])
@@ -63,7 +63,6 @@ export class SearchService implements OnDestroy {
         label: 'TE_ORDER_DATE_ANY_TIME',
         isTranslated: true,
     }
-
     private orderDates: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([
         { value: 'any-time', label: 'TE_ORDER_DATE_ANY_TIME', isTranslated: true },
         { value: 'last-24h', label: 'TE_ORDER_DATE_LAST_24_HOURS', isTranslated: true },
@@ -73,25 +72,29 @@ export class SearchService implements OnDestroy {
         { value: 'last-30days', label: 'TE_ORDER_DATE_LAST_30_DAYS', isTranslated: true },
         { value: 'last-12months', label: 'TE_ORDER_DATE_LAST_12_MONTHS', isTranslated: true },
     ])
-
     private selectedDate: BehaviorSubject<FilterOption> = new BehaviorSubject<FilterOption>(
         this.defaultDateFilter
     )
 
     private orderClient: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([])
-
     private selectedClient: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>(
         []
     )
-
     private clientsLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
-
     private hasMoreClientsToLoad: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
-
     public clientSearchQuery = ''
+
+    private orderSeller: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([])
+    private selectedSeller: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>(
+        []
+    )
+    private sellersLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+    private hasMoreSellersToLoad: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+    public sellerSearchQuery = ''
 
     constructor(private bakeryManagementService: BakeryManagementService) {
         this.subscribeToClientSelectSubject()
+        this.subscribeToSellerSelectSubject()
         this.subscribeToSynchronizeFilters()
         this.subscribeToSynchronizeCount()
     }
@@ -101,44 +104,50 @@ export class SearchService implements OnDestroy {
         this.onDestroy.complete()
     }
 
+    // FILTERS GETTERS
     // getMediaTypes() {
     //     return this.mediaTypes.asObservable()
     // }
-
     // getMissingData() {
     //     return this.missingData.asObservable()
     // }
-
     getMediaDates() {
         return this.orderDates.asObservable()
     }
-
     getOrderClients() {
         return this.orderClient.asObservable()
     }
+    getOrderSellers() {
+        return this.orderSeller.asObservable()
+    }
 
+    // SELECTED FILTERS GETTERS
     // getSelectedTypes() {
     //     return this.selectedTypes.asObservable()
     // }
-
     // getSelectedMissingData() {
     //     return this.selectedMissingData.asObservable()
     // }
-
     getSelectedDate() {
         return this.selectedDate.asObservable()
     }
-
     getSelectedClients() {
         return this.selectedClient.asObservable()
     }
-
     getClientsLoading() {
         return this.clientsLoading.asObservable()
     }
-
     getHasMoreClientsToLoad() {
         return this.hasMoreClientsToLoad.asObservable()
+    }
+    getSelectedSellers() {
+        return this.selectedSeller.asObservable()
+    }
+    getSellersLoading() {
+        return this.sellersLoading.asObservable()
+    }
+    getHasMoreSellersToLoad() {
+        return this.hasMoreSellersToLoad.asObservable()
     }
 
     // DATA STORED IN THE NAVIGATION CONTEXT
@@ -157,11 +166,22 @@ export class SearchService implements OnDestroy {
         this.getPaginatedClients()
     }
 
+    loadMoreSellers() {
+        this.getPaginatedSellers()
+    }
+
     clientSearchChange(data: string) {
         this.clientSearchQuery = data
         this.orderClient.next([])
         this.hasMoreClientsToLoad.next(true)
         this.getPaginatedClients()
+    }
+
+    sellerSearchChange(data: string) {
+        this.sellerSearchQuery = data
+        this.orderSeller.next([])
+        this.hasMoreSellersToLoad.next(true)
+        this.getPaginatedSellers()
     }
 
     setSearchOptions(searchOptions: SearchOptions) {
@@ -198,17 +218,28 @@ export class SearchService implements OnDestroy {
         this.clientSelectSubject.next(data)
     }
 
+    applySellerFilters(data: AdvancedSelection) {
+        this.sellerSelectSubject.next(data)
+    }
+
     //????????????????????????????????????????????????????????
     applyClientsFiltersImmediately(data: AdvancedSelection[]) {
         this.applyAdvancedFilters(data, this.selectedClient)
+    }
+
+    //????????????????????????????????????????????????????????
+    applySellersFiltersImmediately(data: AdvancedSelection[]) {
+        this.applyAdvancedFilters(data, this.selectedSeller)
     }
 
     clearFilters() {
         // this.selectedTypes.next([])
         // this.selectedMissingData.next([])
         this.selectedClient.next([])
+        this.selectedSeller.next([])
         this.selectedDate.next(this.defaultDateFilter)
         this.bakeryManagementService.clearFilters()
+        this.applyFilters()
     }
 
     removeFilter(data: FilterOption) {
@@ -222,14 +253,17 @@ export class SearchService implements OnDestroy {
             this.selectedClient.next(
                 this.selectedClient.value.filter((f) => f.value !== data.value)
             )
+            this.selectedSeller.next(
+                this.selectedSeller.value.filter((f) => f.value !== data.value)
+            )
         }
         this.applyFilters()
     }
 
-    getMediaLibraryFilterResults(): Observable<FilterOption[]> {
+    getFilterResults(): Observable<FilterOption[]> {
         return this.getBaseFilterResults().pipe(
-            combineLatestWith(this.selectedClient),
-            map(([previous, clients]) => [...previous, ...clients]),
+            combineLatestWith(this.selectedSeller, this.selectedClient),
+            map(([previous, clients, sellers]) => [...previous, ...clients, ...sellers]),
             distinctUntilChanged(
                 (previous, current) =>
                     previous.length === current.length &&
@@ -261,7 +295,7 @@ export class SearchService implements OnDestroy {
         //     this.getMediaLibraryFilterResults(),
         //     this.getTrashBinFilterResults()
         // ).pipe(map((results) => results.length > 0))
-        return this.getMediaLibraryFilterResults().pipe(map((results) => results.length > 0))
+        return this.getFilterResults().pipe(map((results) => results.length > 0))
     }
 
     hasSearched(): boolean {
@@ -295,6 +329,10 @@ export class SearchService implements OnDestroy {
 
         if (this.bakeryManagementService.navigationContext.filters.clients) {
             this.selectedClient.next(this.bakeryManagementService.navigationContext.filters.clients)
+        }
+
+        if (this.bakeryManagementService.navigationContext.filters.sellers) {
+            this.selectedSeller.next(this.bakeryManagementService.navigationContext.filters.sellers)
         }
 
         this.selectedDate.next(
@@ -366,6 +404,16 @@ export class SearchService implements OnDestroy {
             })
     }
 
+    private subscribeToSellerSelectSubject() {
+        this.sellerSelectSubject
+            .pipe(bufferTime(800), takeUntil(this.onDestroy))
+            .subscribe((data: AdvancedSelection[]) => {
+                if (data.length > 0) {
+                    this.applySellersFiltersImmediately(data)
+                }
+            })
+    }
+
     /**
      * Applies newly selected advanced filters to the currently selected filters.
      *
@@ -386,14 +434,12 @@ export class SearchService implements OnDestroy {
         selectedFilters.forEach((selectedFilter: AdvancedSelection) => {
             if (
                 selectedFilter.selected &&
-                !temporarySelectedFilters.some(
-                    (client) => client.value === selectedFilter.value.value
-                )
+                !temporarySelectedFilters.some((f) => f.value === selectedFilter.value.value)
             ) {
                 temporarySelectedFilters.push(selectedFilter.value)
             } else if (!selectedFilter.selected) {
                 temporarySelectedFilters = temporarySelectedFilters.filter(
-                    (temporaryClient) => temporaryClient.value !== selectedFilter.value.value
+                    (tf) => tf.value !== selectedFilter.value.value
                 )
             }
         })
@@ -447,17 +493,19 @@ export class SearchService implements OnDestroy {
         // } else {
         //     this.bakeryManagementService.navigationContext.filters.missingLongDescription = undefined
         // }
+        this.bakeryManagementService.navigationContext.filters.date = this.selectedDate.value.value
         this.bakeryManagementService.navigationContext.filters.clientIds =
             this.selectedClient.value.map((f) => f.value)
         this.bakeryManagementService.navigationContext.filters.clients = this.selectedClient.value
-        this.bakeryManagementService.navigationContext.filters.date = this.selectedDate.value.value
+        this.bakeryManagementService.navigationContext.filters.sellerIds =
+            this.selectedSeller.value.map((f) => f.value)
+        this.bakeryManagementService.navigationContext.filters.sellers = this.selectedSeller.value
 
         this.onApplyFilters()
         // this.trackFilterEvent()
     }
 
     private onApplyFilters() {
-        console.log('onApplyFilters')
         this.bakeryManagementService.resetPagination()
         this.bakeryManagementService.navigationContext.getCount = false
         // this.bakeryManagementService.updateMediaList(false)
@@ -481,6 +529,22 @@ export class SearchService implements OnDestroy {
             .subscribe()
     }
 
+    private getPaginatedSellers() {
+        this.sellersLoading.next(true)
+        this.bakeryManagementService
+            .getSellerFiltersForOrder(this.orderSeller.value.length, this.sellerSearchQuery)
+            .pipe(
+                take(1),
+                map((sellerList: ClientFiltersResponse[]) => {
+                    this.hasMoreSellersToLoad.next(sellerList.length !== 0)
+                    this.addSellersToSelectionList(sellerList)
+                    this.selectedSeller.next([...this.selectedSeller.value])
+                    this.sellersLoading.next(false)
+                })
+            )
+            .subscribe()
+    }
+
     private addClientsToSelectionList(clientList: ClientFiltersResponse[]) {
         const newOrderClients: FilterOption[] = []
         clientList.forEach((client) =>
@@ -491,6 +555,18 @@ export class SearchService implements OnDestroy {
             })
         )
         this.orderClient.next([...this.orderClient.value, ...newOrderClients])
+    }
+
+    private addSellersToSelectionList(sellerList: ClientFiltersResponse[]) {
+        const newOrderSellers: FilterOption[] = []
+        sellerList.forEach((seller) =>
+            newOrderSellers.push({
+                value: seller.id,
+                label: seller.first_name + ' ' + seller.last_name,
+                count: seller.mediaCount,
+            })
+        )
+        this.orderSeller.next([...this.orderSeller.value, ...newOrderSellers])
     }
 
     // private trackSearchEvent() {

@@ -29,6 +29,8 @@ export interface Filters {
     missingAltText?: boolean
     clientIds?: string[]
     clients?: FilterOption[]
+    sellerIds?: string[]
+    sellers?: FilterOption[]
 }
 
 export enum SortDirection {

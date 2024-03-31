@@ -23,7 +23,7 @@ import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.mode
     styleUrls: ['./manage-orders.component.scss'],
 })
 export class ManageOrdersComponent implements OnInit, AfterViewInit {
-    mediaLibraryFilterResults: Observable<FilterOption[]>
+    filterResults: Observable<FilterOption[]>
 
     mediaDates: Observable<FilterOption[]>
     defaultDate: FilterOption
@@ -33,6 +33,11 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
     selectedClients: Observable<FilterOption[]>
     clientsLoading: Observable<boolean>
     hasMoreClientsToLoad: Observable<boolean>
+
+    orderSellers: Observable<FilterOption[]>
+    selectedSellers: Observable<FilterOption[]>
+    sellersLoading: Observable<boolean>
+    hasMoreSellersToLoad: Observable<boolean>
 
     // selectedTypes: Observable<FilterOption[]>
     // mediaTypes: Observable<FilterOption[]>
@@ -69,7 +74,7 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
         private bakeryManagementApiService: BakeryManagementApiService,
         public dialog: MatDialog
     ) {
-        this.mediaLibraryFilterResults = this.searchService.getMediaLibraryFilterResults()
+        this.filterResults = this.searchService.getFilterResults()
 
         this.mediaDates = this.searchService.getMediaDates()
         this.defaultDate = this.searchService.defaultDateFilter
@@ -79,6 +84,11 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
         this.selectedClients = this.searchService.getSelectedClients()
         this.clientsLoading = this.searchService.getClientsLoading()
         this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
+
+        this.orderSellers = this.searchService.getOrderSellers()
+        this.selectedSellers = this.searchService.getSelectedSellers()
+        this.sellersLoading = this.searchService.getSellersLoading()
+        this.hasMoreSellersToLoad = this.searchService.getHasMoreSellersToLoad()
 
         // this.mediaTypes = this.searchService.getMediaTypes()
         // this.selectedTypes = this.searchService.getSelectedTypes()
@@ -211,16 +221,21 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
     }
 
     clearFilters() {
-        this.bakeryManagementService.navigationContext.filters = {}
-        this.getOrdersList(false)
+        this.searchService.clearFilters()
     }
 
     clientSearchChange(data: string) {
         this.searchService.clientSearchChange(data)
     }
-
     loadMoreClients() {
         this.searchService.loadMoreClients()
+    }
+
+    sellerSearchChange(data: string) {
+        this.searchService.sellerSearchChange(data)
+    }
+    loadMoreSellers() {
+        this.searchService.loadMoreSellers()
     }
 
     onFilterOpenChange(isOpen: boolean, filterType: string, loadingState: { value: boolean }) {
@@ -262,6 +277,9 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
                 break
             case 'client':
                 this.searchService.applyClientFilters(data as AdvancedSelection)
+                break
+            case 'seller':
+                this.searchService.applySellerFilters(data as AdvancedSelection)
                 break
         }
     }

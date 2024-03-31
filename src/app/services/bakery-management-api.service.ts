@@ -119,6 +119,7 @@ export class BakeryManagementApiService {
     getFilteredOrders(requestPayload: {
         navigation_context: NavigationContext
     }): Observable<OrderResponse> {
+        console.log(requestPayload)
         return this.httpClient.post<OrderResponse>(
             `${this.basePath}orders/search`,
             requestPayload.navigation_context
@@ -130,9 +131,15 @@ export class BakeryManagementApiService {
     }
 
     getClientFiltersForOrder(payload: any): Observable<any[]> {
-        console.log(payload)
         return this.httpClient.post<ClientFiltersResponse[]>(
             `${this.basePath}users/clients/search`,
+            payload
+        )
+    }
+
+    getSellerFiltersForOrder(payload: any): Observable<any[]> {
+        return this.httpClient.post<ClientFiltersResponse[]>(
+            `${this.basePath}users/sellers/search`,
             payload
         )
     }
