@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
@@ -7,8 +7,7 @@ import { BakeryManagementService } from 'src/app/services/bakery-management.serv
 import { SelectionModel } from '@angular/cdk/collections'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
-import { Observable, forkJoin } from 'rxjs'
+import { Observable, Subject, forkJoin } from 'rxjs'
 import { CreateUpdateOrdersComponent } from 'src/app/track-ease/create-update-orders/create-update-orders.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { MatTableDataSource } from '@angular/material/table'
@@ -22,7 +21,8 @@ import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.mode
     templateUrl: './manage-orders.component.html',
     styleUrls: ['./manage-orders.component.scss'],
 })
-export class ManageOrdersComponent implements OnInit, AfterViewInit {
+export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
+    unsubscribe = new Subject<void>()
     filterResults: Observable<FilterOption[]>
 
     mediaDates: Observable<FilterOption[]>
@@ -44,8 +44,7 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
     // loadingTypeFilter = { value: true }
 
     displayedColumns: string[] = ['client', 'order', 'date', 'actions']
-    activeOrder!: OrderEntity
-    actionState!: string
+    activeOrder: OrderEntity | undefined
 
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('confirmationDialogContainer')
@@ -126,8 +125,11 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
         })
     }
 
-    onDropdownMenuClick(item: DropdownEvent, order: OrderEntity): void {
+    selectOrder(order: OrderEntity): void {
         this.activeOrder = order
+    }
+
+    onDropdownMenuClick(item: DropdownEvent): void {
         const { option } = item
         switch (option.label) {
             case DropdownActionOptions.EDIT:
@@ -183,43 +185,6 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
         })
     }
 
-    openFilterOrdersDialog(): void {
-        forkJoin({
-            sellers: this.bakeryManagementApiService.getSellerUsers(),
-            clients: this.bakeryManagementApiService.getClientUsers(),
-        }).subscribe(({ sellers, clients }) => {
-            // The selected filters
-            const sellerId = this.bakeryManagementService.navigationContext.filters?.sellerId
-            const clientId = this.bakeryManagementService.navigationContext.filters?.clientId
-            const startDate = this.bakeryManagementService.navigationContext.filters?.startDate
-            const endDate = this.bakeryManagementService.navigationContext.filters?.endDate
-
-            const dialogRef = this.dialog.open(FilterDialogComponent, {
-                data: { sellers, clients, startDate, endDate, sellerId, clientId },
-            })
-
-            dialogRef.afterClosed().subscribe({
-                next: (result) => {
-                    if (result) {
-                        this.bakeryManagementService.navigationContext.filters.startDate =
-                            result.startDate
-                        this.bakeryManagementService.navigationContext.filters.endDate =
-                            result.endDate
-                        this.bakeryManagementService.navigationContext.filters.clientId =
-                            result.client?.id
-                        this.bakeryManagementService.navigationContext.filters.sellerId =
-                            result.seller?.id
-
-                        this.bakeryManagementService.updateOrdersList(false).subscribe()
-                    }
-                },
-                error: (error) => {
-                    console.log('Error: ', error)
-                },
-            })
-        })
-    }
-
     clearFilters() {
         this.searchService.clearFilters()
     }
@@ -236,32 +201,6 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
     }
     loadMoreSellers() {
         this.searchService.loadMoreSellers()
-    }
-
-    onFilterOpenChange(isOpen: boolean, filterType: string, loadingState: { value: boolean }) {
-        if (isOpen) {
-            this.bakeryManagementService.setFilterOptionsCount(filterType).subscribe(() => {
-                loadingState.value = false
-            })
-        } else {
-            loadingState.value = true
-        }
-    }
-
-    hasFiltersSelected(): boolean {
-        // TODO: Implement
-        // const filters = this.bakeryManagementService.navigationContext.filters
-        // for (const key in filters) {
-        //     if (
-        //         Object.prototype.hasOwnProperty.call(filters, key) &&
-        //         key !== 'queryString' &&
-        //         key !== 'active' &&
-        //         filters[key] !== undefined
-        //     ) {
-        //         return true
-        //     }
-        // }
-        return false
     }
 
     applyFilters(data: FilterOption | FilterOption[] | AdvancedSelection, filterType: string) {
@@ -297,13 +236,23 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit {
 
     onDeleteOrder(): void {
         this.dialog.closeAll()
-        this.bakeryManagementApiService.deleteOrder(this.activeOrder.id).subscribe({
+        this.bakeryManagementApiService.deleteOrder(this.activeOrder!.id).subscribe({
             next: () => {
                 this.getOrdersList(false)
+                this.activeOrder = undefined
             },
             error: (error) => {
                 console.log('Error: ', error)
             },
         })
+    }
+
+    downloadOrdersPdf() {
+        this.bakeryManagementService.downloadOrdersPdf()
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe.next()
+        this.unsubscribe.complete()
     }
 }

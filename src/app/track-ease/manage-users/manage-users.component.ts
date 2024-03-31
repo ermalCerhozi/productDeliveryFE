@@ -6,7 +6,6 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { CreateUpdateDialogComponent } from 'src/app/shared/components/create-update-dialog/create-update-dialog.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
-import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
@@ -79,8 +78,11 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
         })
     }
 
-    onDropdownMenuClick(item: DropdownEvent, product: UserEntity): void {
-        this.activeUser = product
+    selectUser(user: UserEntity) {
+        this.activeUser = user
+    }
+
+    onDropdownMenuClick(item: DropdownEvent): void {
         const { option } = item
         switch (option.label) {
             case DropdownActionOptions.EDIT:
@@ -104,20 +106,6 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
         this.dialog.open(this.createUpdateContainer, {
             width: '100%',
             maxHeight: '80%',
-        })
-    }
-
-    openFilterUsersDialog(): void {
-        const dialogRef = this.dialog.open(FilterDialogComponent)
-        dialogRef.afterClosed().subscribe({
-            next: (result) => {
-                if (result) {
-                    // this.bakeryManagementService.getFilteredResults(result)
-                }
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
         })
     }
 

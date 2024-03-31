@@ -16,7 +16,6 @@ import { NotFoundComponent } from 'src/app/track-ease/not-found/not-found.compon
 import { FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms'
 import { LayoutComponent } from 'src/app/track-ease/layout-toolbar/layout.component'
-import { FilterDialogComponent } from 'src/app/modals/filter-dialog/filter-dialog.component'
 import { CreateUpdateOrdersComponent } from 'src/app/track-ease/create-update-orders/create-update-orders.component'
 import { UserProfileComponent } from 'src/app/track-ease/user-profile/user-profile.component'
 import { ChangePasswordComponent } from 'src/app/track-ease/change-password/change-password.component'
@@ -39,7 +38,6 @@ PlotlyModule.plotlyjs = PlotlyJS
         ManageUsersComponent,
         NotFoundComponent,
         LayoutComponent,
-        FilterDialogComponent,
         CreateUpdateOrdersComponent,
         UserProfileComponent,
         ChangePasswordComponent,
