@@ -13,9 +13,9 @@ import {
     takeUntil,
 } from 'rxjs'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { ClientFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
+import { ProductsFiltersResponse, UserFiltersResponse } from '../shared/models/mediaLibraryResponse.model'
 // import { AnalyticsService } from '@app/core/analytics/analytics.service'
 // import { AnalyticsEventPayload } from '@app/core/analytics/models/AnalyticsEventPayload'
 // import { AnalyticsEvent } from '@app/core/analytics/models/AnalyticsEvent'
@@ -29,6 +29,7 @@ export class SearchService implements OnDestroy {
     private onDestroy = new Subject<void>()
     private clientSelectSubject = new Subject<AdvancedSelection>()
     private sellerSelectSubject = new Subject<AdvancedSelection>()
+    private productSelectSubject = new Subject<AdvancedSelection>()
 
     private debounceTimeout: ReturnType<typeof setTimeout> | undefined
 
@@ -92,6 +93,14 @@ export class SearchService implements OnDestroy {
     private hasMoreSellersToLoad: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
     public sellerSearchQuery = ''
 
+    private orderProduct: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([])
+    private selectedProduct: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>(
+        []
+    )
+    private productsLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
+    private hasMoreProductsToLoad: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
+    public productSearchQuery = ''
+
     constructor(private bakeryManagementService: BakeryManagementService) {
         this.subscribeToClientSelectSubject()
         this.subscribeToSellerSelectSubject()
@@ -114,11 +123,14 @@ export class SearchService implements OnDestroy {
     getMediaDates() {
         return this.orderDates.asObservable()
     }
-    getOrderClients() {
+    getClients() {
         return this.orderClient.asObservable()
     }
-    getOrderSellers() {
+    getSellers() {
         return this.orderSeller.asObservable()
+    }
+    getProducts() {
+        return this.orderProduct.asObservable()
     }
 
     // SELECTED FILTERS GETTERS
@@ -149,6 +161,15 @@ export class SearchService implements OnDestroy {
     getHasMoreSellersToLoad() {
         return this.hasMoreSellersToLoad.asObservable()
     }
+    getSelectedProducts() {
+        return this.selectedProduct.asObservable()
+    }
+    getProductsLoading() {
+        return this.productsLoading.asObservable()
+    }
+    getHasMoreProductsToLoad() {
+        return this.hasMoreProductsToLoad.asObservable()
+    }
 
     // DATA STORED IN THE NAVIGATION CONTEXT
     getTotalMediaCount(): number {
@@ -170,6 +191,10 @@ export class SearchService implements OnDestroy {
         this.getPaginatedSellers()
     }
 
+    loadMoreProducts() {
+        this.getPaginatedProducts()
+    }
+
     clientSearchChange(data: string) {
         this.clientSearchQuery = data
         this.orderClient.next([])
@@ -182,6 +207,13 @@ export class SearchService implements OnDestroy {
         this.orderSeller.next([])
         this.hasMoreSellersToLoad.next(true)
         this.getPaginatedSellers()
+    }
+
+    productSearchChange(data: string) {
+        this.productSearchQuery = data
+        this.orderProduct.next([])
+        this.hasMoreProductsToLoad.next(true)
+        this.getPaginatedProducts()
     }
 
     setSearchOptions(searchOptions: SearchOptions) {
@@ -222,6 +254,10 @@ export class SearchService implements OnDestroy {
         this.sellerSelectSubject.next(data)
     }
 
+    applyProductFilters(data: AdvancedSelection) {
+        this.productSelectSubject.next(data)
+    }
+
     //????????????????????????????????????????????????????????
     applyClientsFiltersImmediately(data: AdvancedSelection[]) {
         this.applyAdvancedFilters(data, this.selectedClient)
@@ -232,11 +268,17 @@ export class SearchService implements OnDestroy {
         this.applyAdvancedFilters(data, this.selectedSeller)
     }
 
+    //????????????????????????????????????????????????????????
+    applyProductsFiltersImmediately(data: AdvancedSelection[]) {
+        this.applyAdvancedFilters(data, this.selectedProduct)
+    }
+
     clearFilters() {
         // this.selectedTypes.next([])
         // this.selectedMissingData.next([])
         this.selectedClient.next([])
         this.selectedSeller.next([])
+        this.selectedProduct.next([])
         this.selectedDate.next(this.defaultDateFilter)
         this.bakeryManagementService.getBaseNavigationContext()
         this.applyFilters()
@@ -256,14 +298,22 @@ export class SearchService implements OnDestroy {
             this.selectedSeller.next(
                 this.selectedSeller.value.filter((f) => f.value !== data.value)
             )
+            this.selectedProduct.next(
+                this.selectedProduct.value.filter((f) => f.value !== data.value)
+            )
         }
         this.applyFilters()
     }
 
     getFilterResults(): Observable<FilterOption[]> {
         return this.getBaseFilterResults().pipe(
-            combineLatestWith(this.selectedSeller, this.selectedClient),
-            map(([previous, clients, sellers]) => [...previous, ...clients, ...sellers]),
+            combineLatestWith(this.selectedSeller, this.selectedClient, this.selectedProduct),
+            map(([previous, clients, sellers, products]) => [
+                ...previous,
+                ...clients,
+                ...sellers,
+                ...products,
+            ]),
             distinctUntilChanged(
                 (previous, current) =>
                     previous.length === current.length &&
@@ -333,6 +383,12 @@ export class SearchService implements OnDestroy {
 
         if (this.bakeryManagementService.navigationContext.filters.sellers) {
             this.selectedSeller.next(this.bakeryManagementService.navigationContext.filters.sellers)
+        }
+
+        if (this.bakeryManagementService.navigationContext.filters.products) {
+            this.selectedProduct.next(
+                this.bakeryManagementService.navigationContext.filters.products
+            )
         }
 
         this.selectedDate.next(
@@ -410,6 +466,16 @@ export class SearchService implements OnDestroy {
             .subscribe((data: AdvancedSelection[]) => {
                 if (data.length > 0) {
                     this.applySellersFiltersImmediately(data)
+                }
+            })
+    }
+
+    private subscribeToProductSelectSubject() {
+        this.productSelectSubject
+            .pipe(bufferTime(800), takeUntil(this.onDestroy))
+            .subscribe((data: AdvancedSelection[]) => {
+                if (data.length > 0) {
+                    this.applyProductsFiltersImmediately(data)
                 }
             })
     }
@@ -500,6 +566,9 @@ export class SearchService implements OnDestroy {
         this.bakeryManagementService.navigationContext.filters.sellerIds =
             this.selectedSeller.value.map((f) => f.value)
         this.bakeryManagementService.navigationContext.filters.sellers = this.selectedSeller.value
+        this.bakeryManagementService.navigationContext.filters.productIds =
+            this.selectedProduct.value.map((f) => f.value)
+        this.bakeryManagementService.navigationContext.filters.products = this.selectedProduct.value
 
         this.onApplyFilters()
         // this.trackFilterEvent()
@@ -519,7 +588,7 @@ export class SearchService implements OnDestroy {
             .getClientFiltersForOrder(this.orderClient.value.length, this.clientSearchQuery)
             .pipe(
                 take(1),
-                map((clientList: ClientFiltersResponse[]) => {
+                map((clientList: UserFiltersResponse[]) => {
                     this.hasMoreClientsToLoad.next(clientList.length !== 0)
                     this.addClientsToSelectionList(clientList)
                     this.selectedClient.next([...this.selectedClient.value])
@@ -535,7 +604,7 @@ export class SearchService implements OnDestroy {
             .getSellerFiltersForOrder(this.orderSeller.value.length, this.sellerSearchQuery)
             .pipe(
                 take(1),
-                map((sellerList: ClientFiltersResponse[]) => {
+                map((sellerList: UserFiltersResponse[]) => {
                     this.hasMoreSellersToLoad.next(sellerList.length !== 0)
                     this.addSellersToSelectionList(sellerList)
                     this.selectedSeller.next([...this.selectedSeller.value])
@@ -545,28 +614,56 @@ export class SearchService implements OnDestroy {
             .subscribe()
     }
 
-    private addClientsToSelectionList(clientList: ClientFiltersResponse[]) {
-        const newOrderClients: FilterOption[] = []
+    private getPaginatedProducts() {
+        this.productsLoading.next(true)
+        this.bakeryManagementService
+            .getProductFiltersForOrder(this.orderProduct.value.length, this.productSearchQuery)
+            .pipe(
+                take(1),
+                map((productList: ProductsFiltersResponse[]) => {
+                    this.hasMoreProductsToLoad.next(productList.length !== 0)
+                    this.addProductsToSelectionList(productList)
+                    this.selectedProduct.next([...this.selectedProduct.value])
+                    this.productsLoading.next(false)
+                })
+            )
+            .subscribe()
+    }
+
+    private addClientsToSelectionList(clientList: UserFiltersResponse[]) {
+        const newClients: FilterOption[] = []
         clientList.forEach((client) =>
-            newOrderClients.push({
+            newClients.push({
                 value: client.id,
                 label: client.first_name + ' ' + client.last_name,
                 count: client.mediaCount,
             })
         )
-        this.orderClient.next([...this.orderClient.value, ...newOrderClients])
+        this.orderClient.next([...this.orderClient.value, ...newClients])
     }
 
-    private addSellersToSelectionList(sellerList: ClientFiltersResponse[]) {
-        const newOrderSellers: FilterOption[] = []
+    private addSellersToSelectionList(sellerList: UserFiltersResponse[]) {
+        const newSellers: FilterOption[] = []
         sellerList.forEach((seller) =>
-            newOrderSellers.push({
+            newSellers.push({
                 value: seller.id,
                 label: seller.first_name + ' ' + seller.last_name,
                 count: seller.mediaCount,
             })
         )
-        this.orderSeller.next([...this.orderSeller.value, ...newOrderSellers])
+        this.orderSeller.next([...this.orderSeller.value, ...newSellers])
+    }
+
+    private addProductsToSelectionList(productList: ProductsFiltersResponse[]) {
+        const newProducts: FilterOption[] = []
+        productList.forEach((product) =>
+            newProducts.push({
+                value: product.id,
+                label: product.product_name,
+                count: product.mediaCount,
+            })
+        )
+        this.orderProduct.next([...this.orderProduct.value, ...newProducts])
     }
 
     // private trackSearchEvent() {

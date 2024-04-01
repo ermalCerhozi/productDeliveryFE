@@ -1,10 +1,5 @@
 <div class="controls">
-    <button
-        class="add-order"
-        mat-raised-button
-        color="primary"
-        (click)="openCreateUpdateOrder('create')"
-    >
+    <button class="add-order" mat-raised-button color="primary" (click)="createOrder()">
         <mat-icon>add</mat-icon>
         <span> Create Order </span>
     </button>
@@ -35,7 +30,7 @@
         [loadingPage]="(clientsLoading | async)!"
         [hasMoreItems]="(hasMoreClientsToLoad | async)!"
         [selection]="(selectedClients | async)!"
-        [fields]="(orderClients | async)!"
+        [fields]="(clients | async)!"
         [searchForTK]="'TE_ORDER_CLIENT_SEARCH'"
         [noResultsTK]="'TE_ORDER_CLIENT_NO_RESULTS'"
         [panelClass]="'client-categories-filter-panel'"
@@ -51,7 +46,7 @@
         [loadingPage]="(sellersLoading | async)!"
         [hasMoreItems]="(hasMoreSellersToLoad | async)!"
         [selection]="(selectedSellers | async)!"
-        [fields]="(orderSellers | async)!"
+        [fields]="(sellers | async)!"
         [searchForTK]="'TE_ORDER_SELLER_SEARCH'"
         [noResultsTK]="'TE_ORDER_SELLER_NO_RESULTS'"
         [panelClass]="'seller-categories-filter-panel'"
@@ -152,6 +147,15 @@
         [title]="activeOrder!.id"
         (confirm)="onDeleteOrder()"
     ></app-confirmation-dialog>
+</ng-template>
+
+<ng-template #createUpdateOrdersContainer>
+    <app-create-update-orders
+        [action]="action"
+        [order]="activeOrder!"
+        (saveOrder)="saveOrder($event)"
+    >
+    </app-create-update-orders>
 </ng-template>
 
 <app-dropdown-menu-list

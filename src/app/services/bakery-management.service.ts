@@ -5,7 +5,10 @@ import { ProductEntity, ProductResponse } from 'src/app/shared/models/product.mo
 import { UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { NavigationContext } from 'src/app/shared/models/navigation-context.model'
-import { ClientFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
+import {
+    ProductsFiltersResponse,
+    UserFiltersResponse,
+} from 'src/app/shared/models/mediaLibraryResponse.model'
 
 @Injectable({
     providedIn: 'root',
@@ -170,12 +173,13 @@ export class BakeryManagementService {
         }
     }
 
+    getProductPriceById(id: number): Observable<number> {
+        return this.bakeryManagementApiService.getProductPriceById(id)
+    }
+
     // TODO: This is to be deleted after dropdown paginaiton is implemented
     getAllUsers(): Observable<UserEntity[]> {
         return this.bakeryManagementApiService.getUsers()
-    }
-    getAllProducts(): Observable<ProductEntity[]> {
-        return this.bakeryManagementApiService.getProducts()
     }
 
     // TODO: remove this when the interceptor is implemneted to send the logged in user
@@ -223,7 +227,7 @@ export class BakeryManagementService {
     getClientFiltersForOrder(
         offset: number,
         clientSearchQuery: string
-    ): Observable<ClientFiltersResponse[]> {
+    ): Observable<UserFiltersResponse[]> {
         // const workspaceId = this.localStorageService.retrieve('workspaceId') //TODO: When workspace is implemented
         // const payload: any = { //TODO When proper payload is implemented
         //     workspace_id: workspaceId,
@@ -244,14 +248,14 @@ export class BakeryManagementService {
         }
         return this.bakeryManagementApiService.getClientFiltersForOrder(payload).pipe(
             take(1),
-            map((clientFilters: ClientFiltersResponse[]) => clientFilters)
+            map((clientFilters: UserFiltersResponse[]) => clientFilters)
         )
     }
 
     getSellerFiltersForOrder(
         offset: number,
         sellerSearchQuery: string
-    ): Observable<ClientFiltersResponse[]> {
+    ): Observable<UserFiltersResponse[]> {
         // const workspaceId = this.localStorageService.retrieve('workspaceId') //TODO: When workspace is implemented
         // const payload: any = { //TODO When proper payload is implemented
         //     workspace_id: workspaceId,
@@ -272,7 +276,35 @@ export class BakeryManagementService {
         }
         return this.bakeryManagementApiService.getSellerFiltersForOrder(payload).pipe(
             take(1),
-            map((sellerFilters: ClientFiltersResponse[]) => sellerFilters)
+            map((sellerFilters: UserFiltersResponse[]) => sellerFilters)
+        )
+    }
+
+    getProductFiltersForOrder(
+        offset: number,
+        productSearchQuery: string
+    ): Observable<ProductsFiltersResponse[]> {
+        // const workspaceId = this.localStorageService.retrieve('workspaceId') //TODO: When workspace is implemented
+        // const payload: any = { //TODO When proper payload is implemented
+        //     workspace_id: workspaceId,
+        //     pagination: {
+        //         offset,
+        //         limit: 20,
+        //     },
+        // }
+
+        const payload: any = {
+            pagination: {
+                offset,
+                limit: 20,
+            },
+        }
+        if (productSearchQuery) {
+            payload.productName = productSearchQuery
+        }
+        return this.bakeryManagementApiService.getProductFiltersForOrder(payload).pipe(
+            take(1),
+            map((productFilters: ProductsFiltersResponse[]) => productFilters)
         )
     }
 

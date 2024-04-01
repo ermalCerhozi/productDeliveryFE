@@ -6,7 +6,10 @@ import { UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/mod
 import { environment } from 'src/environments/environment'
 import { OrderResponse } from 'src/app/shared/models/order.model'
 import { NavigationContext } from 'src/app/shared/models/navigation-context.model'
-import { ClientFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
+import {
+    UserFiltersResponse,
+    ProductsFiltersResponse,
+} from 'src/app/shared/models/mediaLibraryResponse.model'
 
 @Injectable({
     providedIn: 'root',
@@ -90,8 +93,8 @@ export class BakeryManagementApiService {
         return this.httpClient.get<ProductEntity>(`${this.basePath}products/${id}`)
     }
 
-    getProducts(): Observable<ProductEntity[]> {
-        return this.httpClient.get<ProductEntity[]>(`${this.basePath}products`)
+    getProductPriceById(id: number): Observable<number> {
+        return this.httpClient.get<number>(`${this.basePath}products/price/${id}`)
     }
 
     //CRUD for orders
@@ -131,15 +134,22 @@ export class BakeryManagementApiService {
     }
 
     getClientFiltersForOrder(payload: any): Observable<any[]> {
-        return this.httpClient.post<ClientFiltersResponse[]>(
+        return this.httpClient.post<UserFiltersResponse[]>(
             `${this.basePath}users/clients/search`,
             payload
         )
     }
 
     getSellerFiltersForOrder(payload: any): Observable<any[]> {
-        return this.httpClient.post<ClientFiltersResponse[]>(
+        return this.httpClient.post<UserFiltersResponse[]>(
             `${this.basePath}users/sellers/search`,
+            payload
+        )
+    }
+
+    getProductFiltersForOrder(payload: any): Observable<any[]> {
+        return this.httpClient.post<ProductsFiltersResponse[]>(
+            `${this.basePath}products/paginated/search`,
             payload
         )
     }

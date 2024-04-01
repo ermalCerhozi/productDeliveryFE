@@ -49,3 +49,19 @@ mat-form-field {
         margin: 0px 10px;
     }
 }
+
+.dialog-content-order-items {
+    mat-form-field {
+        flex: 1;
+        margin-right: 5px;
+    }
+
+    mat-label {
+        font-size: 12px;
+    }
+}
+
+.add-order-item-button {
+    display: flex;
+    justify-content: center;
+}

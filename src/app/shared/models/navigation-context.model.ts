@@ -31,6 +31,8 @@ export interface Filters {
     clients?: FilterOption[]
     sellerIds?: string[]
     sellers?: FilterOption[]
+    productIds?: string[]
+    products?: FilterOption[]
 }
 
 export enum SortDirection {

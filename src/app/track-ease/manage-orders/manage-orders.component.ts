@@ -6,7 +6,7 @@ import { OrderEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { Observable, Subject, forkJoin, switchMap, take } from 'rxjs'
+import { Observable, Subject, switchMap, take } from 'rxjs'
 import { CreateUpdateOrdersComponent } from 'src/app/track-ease/create-update-orders/create-update-orders.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { MatTableDataSource } from '@angular/material/table'
@@ -24,6 +24,8 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
+    @ViewChild('createUpdateOrdersContainer')
+    createUpdateOrdersContainer!: TemplateRef<CreateUpdateOrdersComponent>
 
     unsubscribe = new Subject<void>()
 
@@ -33,12 +35,12 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     defaultDate: FilterOption
     selectedDate: Observable<FilterOption>
 
-    orderClients: Observable<FilterOption[]>
+    clients: Observable<FilterOption[]>
     selectedClients: Observable<FilterOption[]>
     clientsLoading: Observable<boolean>
     hasMoreClientsToLoad: Observable<boolean>
 
-    orderSellers: Observable<FilterOption[]>
+    sellers: Observable<FilterOption[]>
     selectedSellers: Observable<FilterOption[]>
     sellersLoading: Observable<boolean>
     hasMoreSellersToLoad: Observable<boolean>
@@ -65,6 +67,8 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         },
     ]
 
+    action = 'create'
+
     constructor(
         public bakeryManagementService: BakeryManagementService,
         public searchService: SearchService,
@@ -77,12 +81,12 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.defaultDate = this.searchService.defaultDateFilter
         this.selectedDate = this.searchService.getSelectedDate()
 
-        this.orderClients = this.searchService.getOrderClients()
+        this.clients = this.searchService.getClients()
         this.selectedClients = this.searchService.getSelectedClients()
         this.clientsLoading = this.searchService.getClientsLoading()
         this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
 
-        this.orderSellers = this.searchService.getOrderSellers()
+        this.sellers = this.searchService.getSellers()
         this.selectedSellers = this.searchService.getSelectedSellers()
         this.sellersLoading = this.searchService.getSellersLoading()
         this.hasMoreSellersToLoad = this.searchService.getHasMoreSellersToLoad()
@@ -140,7 +144,7 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         const { option } = item
         switch (option.label) {
             case DropdownActionOptions.EDIT:
-                this.openCreateUpdateOrder('update', this.activeOrder)
+                this.updateOrder()
                 break
             case DropdownActionOptions.DELETE:
                 this.deleteOrder()
@@ -150,46 +154,47 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    // TODO: Improve
-    openCreateUpdateOrder(action: string, order?: OrderEntity): void {
-        const seller = this.loggedInUser
-
-        forkJoin({
-            products: this.bakeryManagementService.getAllProducts(),
-            clients: this.bakeryManagementApiService.getClientUsers(),
-        }).subscribe(({ products, clients }) => {
-            const dialogRef = this.dialog.open(CreateUpdateOrdersComponent, {
-                maxWidth: '100vw',
-                maxHeight: '100vh',
-                height: '100%',
-                width: '100%',
-                data: { action, order, seller, products, clients },
-            })
-
-            dialogRef.afterClosed().subscribe((result: OrderEntity) => {
-                if (result) {
-                    if (action === 'create') {
-                        this.bakeryManagementApiService.createOrder(result).subscribe({
-                            next: () => {
-                                this.getOrdersList(false)
-                            },
-                            error: (error) => {
-                                console.log('Error: ', error)
-                            },
-                        })
-                    } else if (action === 'update' && order) {
-                        this.bakeryManagementApiService.updateOrder(order.id, result).subscribe({
-                            next: () => {
-                                this.getOrdersList(false)
-                            },
-                            error: (error) => {
-                                console.log('Error: ', error)
-                            },
-                        })
-                    }
-                }
-            })
+    updateOrder(): void {
+        this.action = 'update'
+        this.dialog.open(this.createUpdateOrdersContainer, {
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            height: '100%',
+            width: '100%',
         })
+    }
+
+    createOrder(): void {
+        this.action = 'create'
+        this.dialog.open(this.createUpdateOrdersContainer, {
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            height: '100%',
+            width: '100%',
+        })
+    }
+
+    saveOrder(form: any): void {
+        this.dialog.closeAll()
+        if (this.action === 'create') {
+            this.bakeryManagementApiService.createOrder(form).subscribe({
+                next: () => {
+                    this.getOrdersList(false)
+                },
+                error: (error) => {
+                    console.log('Error: ', error)
+                },
+            })
+        } else {
+            this.bakeryManagementApiService.updateOrder(this.activeOrder!.id, form).subscribe({
+                next: () => {
+                    this.getOrdersList(false)
+                },
+                error: (error) => {
+                    console.log('Error: ', error)
+                },
+            })
+        }
     }
 
     clientSearchChange(data: string) {

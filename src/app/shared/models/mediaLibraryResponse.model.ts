@@ -26,9 +26,15 @@ export interface Count {
 //     filteredMediaCount: number
 // }
 
-export interface ClientFiltersResponse {
+export interface UserFiltersResponse {
     id: string
     first_name: string
     last_name: string
+    mediaCount: number
+}
+
+export interface ProductsFiltersResponse {
+    id: string
+    product_name: string
     mediaCount: number
 }

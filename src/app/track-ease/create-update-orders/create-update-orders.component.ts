@@ -1,19 +1,13 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { Form, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { Subject, takeUntil } from 'rxjs'
+import { Observable, Subject, Subscription, debounceTime, fromEvent } from 'rxjs'
 import { OrderEntity, OrderItemEntity } from 'src/app/shared/models/order.model'
-import { ProductEntity } from 'src/app/shared/models/product.model'
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { UserEntity } from 'src/app/shared/models/user.model'
-
-interface CreateUpdateOrderData {
-    action: string
-    order?: OrderEntity
-    seller: UserEntity
-    clients: UserEntity[]
-    products: ProductEntity[]
-}
+import { cloneDeep, isEqual } from 'lodash'
+import { FilterOption } from 'src/app/shared/models/filter-option.model'
+import { SearchService } from 'src/app/services/search.service'
+import { ViewChild } from '@angular/core'
+import { MatAutocomplete } from '@angular/material/autocomplete'
 
 @Component({
     selector: 'app-create-update-orders',
@@ -21,10 +15,23 @@ interface CreateUpdateOrderData {
     styleUrls: ['./create-update-orders.component.scss'],
 })
 export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
-    private unsubscribe$ = new Subject<void>()
-    form: FormGroup = new FormGroup({})
+    @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete
+    @ViewChild('autoCompleteClients') autoCompleteClients!: MatAutocomplete
+    private scrollSubscription!: Subscription
 
-    usedProducts: number[] = []
+    @Input() action!: string
+    @Input() order?: OrderEntity
+    @Output() saveOrder = new EventEmitter<void>()
+
+    private unsubscribe$ = new Subject<void>()
+
+    clients: Observable<FilterOption[]>
+    hasMoreClientsToLoad: Observable<boolean>
+
+    products: Observable<FilterOption[]>
+    hasMoreProductsToLoad: Observable<boolean>
+
+    form: FormGroup = new FormGroup({})
     orderItemsFormArray!: FormArray
     totalOrderPrice = 0
     initialFormValues!: Form
@@ -32,14 +39,27 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     constructor(
         private fb: FormBuilder,
         private bakeryManagementService: BakeryManagementService,
-        public dialogRef: MatDialogRef<CreateUpdateOrdersComponent>,
-        @Inject(MAT_DIALOG_DATA)
-        public data: CreateUpdateOrderData
-    ) {}
+        private searchService: SearchService
+    ) {
+        this.clients = this.searchService.getClients()
+        this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
+
+        this.products = this.searchService.getProducts()
+        this.hasMoreProductsToLoad = this.searchService.getHasMoreProductsToLoad()
+    }
 
     ngOnInit(): void {
         this.initializeForm()
-        this.initialFormValues = this.form.value
+        this.initialFormValues = cloneDeep(this.form.value)
+
+        this.orderItemsFormArray.valueChanges.pipe().subscribe((orderItems) => {
+            this.calculateTotalOrderPrice(orderItems)
+        })
+    }
+
+    ngOnDestroy(): void {
+        this.unsubscribe$.next()
+        this.unsubscribe$.complete()
     }
 
     initializeForm() {
@@ -48,150 +68,144 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         this.form = this.fb.group({
             client: [formData.client, Validators.required],
             seller: [formData.seller, Validators.required],
-            order_items: this.fb.array([]), //The order_items field is initialized as an empty FormArray because each item in order_items needs to be a FormGroup itself.
+            order_items: this.fb.array([]),
         })
 
         this.orderItemsFormArray = this.form.get('order_items') as FormArray
         this.populateOrderItems(formData.order_items)
-
-        this.orderItemsFormArray.valueChanges
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((orderItems: any) => {
-                this.calculateTotalOrderPrice(orderItems)
-            })
     }
 
-    getFormData() {
-        if (this.data.action === 'update' && this.data.order) {
-            this.usedProducts = this.data.order.order_items.map((item: any) => item.product.id)
+    getFormData(): any {
+        if (this.action === 'create') {
             return {
-                client: this.data.order.client.id,
-                seller: this.data.order.seller.id,
-                order_items: this.data.order.order_items.map((item: any) => ({
+                client: '',
+                seller: this.bakeryManagementService.getLoggedInUser().id,
+                order_items: [{ quantity: '', returned_quantity: 0, product: '' }],
+            }
+        } else if (this.action === 'update' && this.order) {
+            return {
+                client: this.order.client.id,
+                seller: this.order.seller.id,
+                order_items: this.order.order_items.map((item: any) => ({
                     id: item.id,
                     quantity: item.quantity,
                     returned_quantity: item.returned_quantity,
                     product: item.product.id,
                 })),
             }
-        } else {
-            this.usedProducts = []
-            return {
-                client: '',
-                seller: this.data.seller.id,
-                order_items: [],
-            }
         }
     }
 
     populateOrderItems(orderItems: OrderItemEntity[]) {
         orderItems.forEach((orderItem: OrderItemEntity) => {
-            if (orderItem.id === undefined) {
-                this.orderItemsFormArray.push(
-                    this.fb.group({
-                        quantity: [orderItem.quantity, Validators.required],
-                        returned_quantity: [orderItem.returned_quantity, Validators.required],
-                        product: [orderItem.product, Validators.required],
-                    })
-                )
-            } else {
-                this.orderItemsFormArray.push(
-                    this.fb.group({
-                        id: [orderItem.id],
-                        quantity: [orderItem.quantity, Validators.required],
-                        returned_quantity: [orderItem.returned_quantity, Validators.required],
-                        product: [orderItem.product, Validators.required],
-                    })
-                )
-            }
+            this.orderItemsFormArray.push(
+                this.fb.group({
+                    id: [orderItem.id],
+                    quantity: [orderItem.quantity, Validators.required],
+                    returned_quantity: [orderItem.returned_quantity, Validators.required],
+                    product: [orderItem.product, Validators.required],
+                })
+            )
         })
     }
 
     calculateTotalOrderPrice(orderItems: any) {
         this.totalOrderPrice = 0
+
+        if (orderItems.every((item: any) => item.quantity === '')) {
+            return
+        }
+
         for (const item of orderItems) {
-            const product = this.data.products.find((p: ProductEntity) => p.id === item.product)
-            if (product) {
-                const productPrice = parseFloat(product.price)
+            this.bakeryManagementService.getProductPriceById(item.product).subscribe((price) => {
+                const productPrice = price
                 this.totalOrderPrice += (item.quantity - item.returned_quantity) * productPrice
-            }
+            })
         }
     }
 
     addOrderItem(): void {
-        const orderItemsFormArray = this.form.get('order_items') as FormArray
-        orderItemsFormArray.push(
-            this.fb.group({
-                quantity: ['', Validators.required],
-                returned_quantity: [0, Validators.required],
-                product: ['', Validators.required],
-            })
-        )
+        const newOrderItem = this.fb.group({
+            quantity: ['', Validators.required],
+            returned_quantity: [0, Validators.required],
+            product: ['', Validators.required],
+        })
 
-        // Subscribe to product field changes
-        let previousProductId: number // Keep track of the previous product ID
-
-        orderItemsFormArray.controls[orderItemsFormArray.length - 1]
-            .get('product')!
-            .valueChanges.subscribe((productId) => {
-                this.handleProductChange(productId, previousProductId)
-                // Update previousProductId with the new value
-                previousProductId = productId
-            })
-    }
-
-    handleProductChange(newProductId: number, oldProductId?: number): void {
-        // If a previous product was selected, remove it from the usedProducts array
-        if (oldProductId) {
-            this.usedProducts = this.usedProducts.filter((id) => id !== oldProductId)
-        }
-
-        // Add the new product to the usedProducts array if it's not already included
-        if (!this.usedProducts.includes(newProductId)) {
-            this.usedProducts.push(newProductId)
-        }
+        this.orderItemsFormArray.push(newOrderItem)
     }
 
     removeOrderItem(index: number): void {
-        const orderItemsFormArray = this.form.get('order_items') as FormArray
-        const orderItemId = orderItemsFormArray.at(index).value.id
+        const orderItemId = this.orderItemsFormArray.at(index).value.id
         if (orderItemId) {
             this.bakeryManagementService.deleteOrderItem(orderItemId).subscribe({
                 next: () => {
-                    const removedProductId = orderItemsFormArray.at(index).value.product
-                    this.usedProducts = this.usedProducts.filter((id) => id !== removedProductId)
-                    orderItemsFormArray.removeAt(index)
+                    this.orderItemsFormArray.removeAt(index)
                 },
                 error: (error: any) => {
                     console.log('There was an error deleting the order item:', error)
                 },
             })
-        } else {
-            const removedProductId = orderItemsFormArray.at(index).value.product
-            this.usedProducts = this.usedProducts.filter((id) => id !== removedProductId)
-            orderItemsFormArray.removeAt(index)
         }
     }
 
-    getUnusedProducts() {
-        return this.data.products.filter(
-            (product: ProductEntity) => !this.usedProducts.includes(product.id)
-        )
+    clientSearchChange(event: any) {
+        const inputValue = (event.target as HTMLInputElement).value
+        this.searchService.clientSearchChange(inputValue)
+    }
+    loadMoreClients() {
+        this.searchService.loadMoreClients()
+    }
+
+    productSearchChange(event: any) {
+        const inputValue = (event.target as HTMLInputElement).value
+        this.searchService.productSearchChange(inputValue)
+    }
+    loadMoreProducts() {
+        this.searchService.loadMoreProducts()
     }
 
     formHasChanged(): boolean {
-        return JSON.stringify(this.initialFormValues) !== JSON.stringify(this.form.value)
+        return !isEqual(this.initialFormValues, this.form.value)
     }
 
-    inserItem(): void {
-        if (this.form.valid) {
-            this.dialogRef.close(this.form.value)
-            console.log('onSubmit', JSON.stringify(this.form.value, null, 4))
+    // This function is triggered when the autocomplete panel is opened.
+    // It creates a subscription to the scroll event of the autocomplete panel.
+    // The debounceTime(200) is used to limit the number of events triggered.
+    onOpened(autoComplete: MatAutocomplete) {
+        if (autoComplete && autoComplete.panel) {
+            this.scrollSubscription = fromEvent(autoComplete.panel.nativeElement, 'scroll')
+                .pipe(debounceTime(200))
+                .subscribe((e) => this.onScroll(e, autoComplete))
         }
     }
 
-    ngOnDestroy(): void {
-        this.unsubscribe$.next()
-        this.unsubscribe$.complete()
+    // This function is triggered when the autocomplete panel is closed.
+    // It checks if there is a subscription to the scroll event and if so, it unsubscribes from it.
+    // This is done to prevent memory leaks.
+    onClosed() {
+        if (this.scrollSubscription) {
+            this.scrollSubscription.unsubscribe()
+        }
+    }
+
+    // This function is triggered when the autocomplete panel is scrolled.
+    // It checks if the end of the panel is reached by comparing the scroll position with the total scroll height.
+    // If the end is reached and there are more clients to load (hasMoreClientsToLoad is true),
+    // it calls the loadMoreClients() function to load more clients.
+    onScroll(event: any, autoComplete: MatAutocomplete) {
+        if (event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight) {
+            if (autoComplete === this.autoCompleteProducts && this.hasMoreProductsToLoad) {
+                this.loadMoreProducts()
+            } else if (autoComplete === this.autoCompleteClients && this.hasMoreClientsToLoad) {
+                this.loadMoreClients()
+            }
+        }
+    }
+
+    save(): void {
+        if (this.form.valid) {
+            this.saveOrder.emit(this.form.value)
+            console.log('onSubmit', JSON.stringify(this.form.value, null, 4))
+        }
     }
 }
