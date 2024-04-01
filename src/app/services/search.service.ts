@@ -238,7 +238,7 @@ export class SearchService implements OnDestroy {
         this.selectedClient.next([])
         this.selectedSeller.next([])
         this.selectedDate.next(this.defaultDateFilter)
-        this.bakeryManagementService.clearFilters()
+        this.bakeryManagementService.getBaseNavigationContext()
         this.applyFilters()
     }
 

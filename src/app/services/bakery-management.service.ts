@@ -4,16 +4,12 @@ import { OrderEntity, OrderResponse } from 'src/app/shared/models/order.model'
 import { ProductEntity, ProductResponse } from 'src/app/shared/models/product.model'
 import { UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
-import { NavigationContext, SearchOptions } from 'src/app/shared/models/navigation-context.model'
+import { NavigationContext } from 'src/app/shared/models/navigation-context.model'
 import { ClientFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
-import { LocalStorageService } from 'ngx-webstorage'
-import { cloneDeep } from 'lodash'
 
 @Injectable({
     providedIn: 'root',
 })
-
-//TODO: OnDestroy
 export class BakeryManagementService {
     public activeTab!: string
     private ordersListSubject: BehaviorSubject<OrderEntity[]> = new BehaviorSubject<OrderEntity[]>(
@@ -46,10 +42,7 @@ export class BakeryManagementService {
     public usersCount!: number
     public navigationContext!: NavigationContext
 
-    constructor(
-        private bakeryManagementApiService: BakeryManagementApiService,
-        private localStorageService: LocalStorageService
-    ) {
+    constructor(private bakeryManagementApiService: BakeryManagementApiService) {
         this.getBaseNavigationContext()
     }
 
@@ -104,7 +97,7 @@ export class BakeryManagementService {
 
     updateOrdersList(append: boolean): Observable<OrderResponse> {
         if (!append) {
-            this.productsListSubject.next([])
+            this.ordersListSubject.next([])
             this.navigationContext.pagination.limit = 21
             this.navigationContext.pagination.offset = 0
         }
@@ -177,20 +170,15 @@ export class BakeryManagementService {
         }
     }
 
-    setSearchOptions(searchOptions: SearchOptions) {
-        this.navigationContext.searchOptions = searchOptions
-        this.navigationContext.getCount = true
-    }
-
-    getSearchOptions(): SearchOptions {
-        return this.navigationContext.searchOptions
-    }
-
     // TODO: This is to be deleted after dropdown paginaiton is implemented
     getAllUsers(): Observable<UserEntity[]> {
         return this.bakeryManagementApiService.getUsers()
     }
+    getAllProducts(): Observable<ProductEntity[]> {
+        return this.bakeryManagementApiService.getProducts()
+    }
 
+    // TODO: remove this when the interceptor is implemneted to send the logged in user
     getLoggedInUser() {
         return JSON.parse(localStorage.getItem('currentUser') || '')
     }
@@ -214,15 +202,6 @@ export class BakeryManagementService {
 
     deleteOrderItem(id: number): Observable<any> {
         return this.bakeryManagementApiService.deleteOrderItem(id)
-    }
-
-    clearFilters(): void {
-        this.getBaseNavigationContext()
-        // this.updateProductList(false).subscribe()
-    }
-
-    getAllProducts(): Observable<ProductEntity[]> {
-        return this.bakeryManagementApiService.getProducts()
     }
 
     synchronizeFilters() {
@@ -294,35 +273,6 @@ export class BakeryManagementService {
         return this.bakeryManagementApiService.getSellerFiltersForOrder(payload).pipe(
             take(1),
             map((sellerFilters: ClientFiltersResponse[]) => sellerFilters)
-        )
-    }
-
-    private getPayloadNavigationContext(): NavigationContext {
-        const payloadNavigationContext = cloneDeep(this.navigationContext)
-        payloadNavigationContext.filters.clientIds = payloadNavigationContext.filters.active
-            ? this.navigationContext.filters.clientIds
-            : undefined
-        delete payloadNavigationContext.filters.clients
-        return payloadNavigationContext
-    }
-
-    setFilterOptionsCount(filterType: string): Observable<any> {
-        const requestPayload: any = {
-            // workspace_id: this.localStorageService.retrieve('workspaceId'),
-            navigation_context: {
-                filters: this.getPayloadNavigationContext().filters,
-                searchOptions: this.navigationContext.searchOptions,
-            },
-            filterType,
-        }
-        return this.bakeryManagementApiService.countFilterOptions(requestPayload).pipe(
-            tap((response: any) => {
-                this.countData.countTypes = response.count.countTypes
-                this.countData.countFormats = response.count.countFormats
-                this.countData.countCategories = response.count.countCategories
-                this.countData.countMissingData = response.count.countMissingData
-                this.synchronizeCount()
-            })
         )
     }
 

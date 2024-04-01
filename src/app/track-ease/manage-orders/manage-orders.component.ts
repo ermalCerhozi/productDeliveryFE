@@ -4,10 +4,9 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { OrderEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { SelectionModel } from '@angular/cdk/collections'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { Observable, Subject, forkJoin } from 'rxjs'
+import { Observable, Subject, forkJoin, switchMap, take } from 'rxjs'
 import { CreateUpdateOrdersComponent } from 'src/app/track-ease/create-update-orders/create-update-orders.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { MatTableDataSource } from '@angular/material/table'
@@ -22,7 +21,12 @@ import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.mode
     styleUrls: ['./manage-orders.component.scss'],
 })
 export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
+    @ViewChild(MatPaginator) paginator!: MatPaginator
+    @ViewChild('confirmationDialogContainer')
+    confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
+
     unsubscribe = new Subject<void>()
+
     filterResults: Observable<FilterOption[]>
 
     mediaDates: Observable<FilterOption[]>
@@ -46,15 +50,9 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     displayedColumns: string[] = ['client', 'order', 'date', 'actions']
     activeOrder: OrderEntity | undefined
 
-    @ViewChild(MatPaginator) paginator!: MatPaginator
-    @ViewChild('confirmationDialogContainer')
-    confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
-
     dataSource: MatTableDataSource<OrderEntity> = new MatTableDataSource<OrderEntity>([])
     isLoading = false
     loggedInUser!: UserEntity
-
-    selection = new SelectionModel<any>(true, []) //to be removed
 
     actionDropdown: DropdownMenuListItem[] = [
         {
@@ -95,12 +93,17 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
+        this.loggedInUser = this.bakeryManagementService.getLoggedInUser() //TODO: make a interceptor for this.
         this.getOrdersList(false)
-        this.loggedInUser = this.bakeryManagementService.getLoggedInUser()
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe.next()
+        this.unsubscribe.complete()
     }
 
     ngAfterViewInit() {
-        // this.dataSource.paginator = this.paginator
+        this.dataSource.paginator = this.paginator
         this.paginator.page.subscribe((event) => {
             if (event.pageIndex > event.previousPageIndex!) {
                 this.getOrdersList(true)
@@ -110,19 +113,23 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     getOrdersList(append: boolean) {
         this.isLoading = true
-        this.bakeryManagementService.updateOrdersList(append).subscribe({
-            next: () => {
-                this.isLoading = false
-                this.bakeryManagementService.ordersList$.subscribe((orders) => {
-                    this.dataSource = new MatTableDataSource(orders) //TODO:
-                    this.dataSource.paginator = this.paginator
-                })
-            },
-            error: (error) => {
-                this.isLoading = false
-                console.log('Error: ', error)
-            },
-        })
+        this.bakeryManagementService
+            .updateOrdersList(append)
+            .pipe(
+                take(1),
+                switchMap(() => this.bakeryManagementService.ordersList$),
+                take(1)
+            )
+            .subscribe({
+                next: (orders) => {
+                    this.isLoading = false
+                    this.dataSource = new MatTableDataSource(orders)
+                },
+                error: (error) => {
+                    this.isLoading = false
+                    console.log('Error: ', error)
+                },
+            })
     }
 
     selectOrder(order: OrderEntity): void {
@@ -143,10 +150,10 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    // TODO: Improve
     openCreateUpdateOrder(action: string, order?: OrderEntity): void {
         const seller = this.loggedInUser
 
-        // TODO: Improve
         forkJoin({
             products: this.bakeryManagementService.getAllProducts(),
             clients: this.bakeryManagementApiService.getClientUsers(),
@@ -183,10 +190,6 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
             })
         })
-    }
-
-    clearFilters() {
-        this.searchService.clearFilters()
     }
 
     clientSearchChange(data: string) {
@@ -227,10 +230,14 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.searchService.removeFilter(data)
     }
 
+    clearFilters() {
+        this.searchService.clearFilters()
+    }
+
     deleteOrder(): void {
         this.dialog.open(this.confirmationDialogContainer, {
-            width: '80%',
-            height: '25%',
+            width: '70%',
+            height: '20%',
         })
     }
 
@@ -249,10 +256,5 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     downloadOrdersPdf() {
         this.bakeryManagementService.downloadOrdersPdf()
-    }
-
-    ngOnDestroy() {
-        this.unsubscribe.next()
-        this.unsubscribe.complete()
     }
 }

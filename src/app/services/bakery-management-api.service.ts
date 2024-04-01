@@ -154,8 +154,4 @@ export class BakeryManagementApiService {
             }
         )
     }
-
-    countFilterOptions(payload: any): Observable<any> {
-        return this.httpClient.post<any>(`${this.basePath}/filter/options/count`, payload)
-    }
 }

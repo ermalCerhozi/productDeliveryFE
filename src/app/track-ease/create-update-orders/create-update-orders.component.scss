@@ -1,19 +1,19 @@
-.dialog-container {
+:host {
     display: flex;
     flex-direction: column;
     height: 100%;
     width: 100%;
+}
 
-    .dialog-content{
-        margin: 0 auto;
-        width: 96%;
+.dialog-content{
+    margin: 0 auto;
+    width: 96%;
 
-        .dialog-content-order-items {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-        }
+    .dialog-content-order-items {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
     }
 }
 
@@ -32,7 +32,7 @@ mat-form-field {
     box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.05);
     z-index: 1;
 
-    .total-price {
+    .price {
         margin-left: 10px;
         margin-top: 14px;
         margin-right: auto;
@@ -40,16 +40,12 @@ mat-form-field {
         transition: transform 0.3s ease-in-out;
     }
     
-    .insert-panel-actions {
+    .action-button {
         font-size: 14px;
         font-weight: 500;
         letter-spacing: 1.25px;
         text-align: center;
         padding: 0px 20px;
         margin: 0px 10px;
-    }
-
-    .cancel {
-        color: var(--primary-mef-primary-p-700, #0288D1);
     }
 }

@@ -5,6 +5,7 @@ import {
     AfterViewInit,
     ViewChild,
     TemplateRef,
+    OnDestroy,
 } from '@angular/core'
 import { MatTableDataSource } from '@angular/material/table'
 import { ProductEntity } from 'src/app/shared/models/product.model'
@@ -15,10 +16,11 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator } from '@angular/material/paginator'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
-import { take, map } from 'rxjs/operators'
+import { take, map, switchMap } from 'rxjs/operators'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { Observable } from 'rxjs'
+import { Observable, Subject } from 'rxjs'
+import { SearchService } from 'src/app/services/search.service'
 
 @Component({
     selector: 'app-manage-products',
@@ -26,16 +28,18 @@ import { Observable } from 'rxjs'
     styleUrls: ['./manage-products.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ManageProductsComponent implements OnInit, AfterViewInit {
-    displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
-    activeProduct!: ProductEntity
-    actionState!: string | undefined
-
+export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('createUpdateContainer')
     createUpdateContainer!: TemplateRef<CreateUpdateDialogComponent>
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
+
+    unsubscribe = new Subject<void>()
+
+    displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
+    activeProduct!: ProductEntity
+    actionState!: string | undefined
 
     dataSource: MatTableDataSource<ProductEntity> = new MatTableDataSource<ProductEntity>([])
     isLoading = false
@@ -54,6 +58,7 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     constructor(
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
+        private searchService: SearchService,
         public dialog: MatDialog
     ) {}
 
@@ -61,6 +66,11 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
         this.bakeryManagementService.getBaseNavigationContext()
         this.getProductsList(false)
         this.bakeryManagementService.activeTab = 'products'
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe.next()
+        this.unsubscribe.complete()
     }
 
     ngAfterViewInit() {
@@ -74,18 +84,23 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
 
     getProductsList(append: boolean) {
         this.isLoading = true
-        this.bakeryManagementService.updateProductList(append).subscribe({
-            next: () => {
-                this.isLoading = false
-                this.bakeryManagementService.productsList$.subscribe((products) => {
+        this.bakeryManagementService
+            .updateProductList(append)
+            .pipe(
+                take(1),
+                switchMap(() => this.bakeryManagementService.productsList$),
+                take(1)
+            )
+            .subscribe({
+                next: (products) => {
+                    this.isLoading = false
                     this.dataSource.data = products
-                })
-            },
-            error: (error) => {
-                this.isLoading = false
-                console.log('Error: ', error)
-            },
-        })
+                },
+                error: (error) => {
+                    this.isLoading = false
+                    console.log('Error: ', error)
+                },
+            })
     }
 
     onDropdownMenuClick(item: DropdownEvent, product: ProductEntity): void {
@@ -194,7 +209,7 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     }
 
     getSearchOptions(): SearchOptions {
-        return this.bakeryManagementService.getSearchOptions()
+        return this.searchService.getSearchOptions()
     }
 
     getProducts(): Observable<ProductEntity[]> {
@@ -206,6 +221,6 @@ export class ManageProductsComponent implements OnInit, AfterViewInit {
     }
 
     setSearchOptions(searchOptions: SearchOptions) {
-        this.bakeryManagementService.setSearchOptions(searchOptions)
+        this.searchService.setSearchOptions(searchOptions)
     }
 }

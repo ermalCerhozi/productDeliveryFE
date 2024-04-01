@@ -11,6 +11,7 @@ import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
 import { map, take } from 'rxjs'
+import { SearchService } from 'src/app/services/search.service'
 
 @Component({
     selector: 'app-manage-users',
@@ -44,6 +45,7 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
     constructor(
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
+        private searchService: SearchService,
         public dialog: MatDialog
     ) {}
 
@@ -194,7 +196,7 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
     }
 
     getSearchOptions(): SearchOptions {
-        return this.bakeryManagementService.getSearchOptions()
+        return this.searchService.getSearchOptions()
     }
 
     setSearchQuery(data: string) {
@@ -206,6 +208,6 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
     }
 
     setSearchOptions(searchOptions: SearchOptions) {
-        this.bakeryManagementService.setSearchOptions(searchOptions)
+        this.searchService.setSearchOptions(searchOptions)
     }
 }

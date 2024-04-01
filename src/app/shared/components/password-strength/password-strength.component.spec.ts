@@ -6,7 +6,7 @@ import { MatSliderModule } from '@angular/material/slider'
 
 import { MockModule } from 'ng-mocks'
 
-import { PasswordStrengthComponent } from 'src/trackEase/shared/components/password-strength/password-strength.component'
+import { PasswordStrengthComponent } from 'src/app/shared/components/password-strength/password-strength.component'
 
 describe('[Integration] PasswordStrengthComponent', () => {
     // TODO: Get working using Spectator
