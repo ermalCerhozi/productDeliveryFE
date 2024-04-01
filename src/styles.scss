@@ -10,3 +10,15 @@ $custom-theme: mat-light-theme($custom-primary, $custom-accent, $custom-warn);
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Overwrite css for mat option label to be shown with ellipsis
+.mat-mdc-option .mdc-list-item__primary-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap !important;
+}
+
+// Remove hint div at the bottom of the form field that is added by default in Angular 15+
+.form-field-without-hint .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+}

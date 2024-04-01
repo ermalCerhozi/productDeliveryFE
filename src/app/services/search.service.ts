@@ -15,7 +15,10 @@ import {
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
-import { ProductsFiltersResponse, UserFiltersResponse } from '../shared/models/mediaLibraryResponse.model'
+import {
+    ProductsFiltersResponse,
+    UserFiltersResponse,
+} from 'src/app/shared/models/mediaLibraryResponse.model'
 // import { AnalyticsService } from '@app/core/analytics/analytics.service'
 // import { AnalyticsEventPayload } from '@app/core/analytics/models/AnalyticsEventPayload'
 // import { AnalyticsEvent } from '@app/core/analytics/models/AnalyticsEvent'
@@ -65,13 +68,13 @@ export class SearchService implements OnDestroy {
         isTranslated: true,
     }
     private orderDates: BehaviorSubject<FilterOption[]> = new BehaviorSubject<FilterOption[]>([
-        { value: 'any-time', label: 'TE_ORDER_DATE_ANY_TIME', isTranslated: true },
-        { value: 'last-24h', label: 'TE_ORDER_DATE_LAST_24_HOURS', isTranslated: true },
-        { value: 'last-48h', label: 'TE_ORDER_DATE_LAST_48_HOURS', isTranslated: true },
-        { value: 'last-72h', label: 'TE_ORDER_DATE_LAST_72_HOURS', isTranslated: true },
-        { value: 'last-7days', label: 'TE_ORDER_DATE_LAST_7_DAYS', isTranslated: true },
-        { value: 'last-30days', label: 'TE_ORDER_DATE_LAST_30_DAYS', isTranslated: true },
-        { value: 'last-12months', label: 'TE_ORDER_DATE_LAST_12_MONTHS', isTranslated: true },
+        { value: 'any-time', label: 'Any time', isTranslated: true },
+        { value: 'last-24h', label: 'Last 24h', isTranslated: true },
+        { value: 'last-48h', label: 'Last 48h', isTranslated: true },
+        { value: 'last-72h', label: 'Last 72h', isTranslated: true },
+        { value: 'last-7days', label: 'Last 7 days', isTranslated: true },
+        { value: 'last-30days', label: 'Last 30 days', isTranslated: true },
+        { value: 'last-12months', label: 'Last 12 months', isTranslated: true },
     ])
     private selectedDate: BehaviorSubject<FilterOption> = new BehaviorSubject<FilterOption>(
         this.defaultDateFilter

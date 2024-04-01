@@ -42,7 +42,7 @@
 .mef-simple-text-filter-overlay {
 
     .mat-mdc-select-panel {
-        min-width: 254px;
+        min-width: 230px;  //TODO: Increase to 254px  if there is free space
         max-height: 211px;
         flex-direction: row-reverse;
         padding: 0;

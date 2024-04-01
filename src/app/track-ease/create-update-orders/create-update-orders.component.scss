@@ -8,17 +8,32 @@
 .dialog-content{
     margin: 0 auto;
     width: 96%;
+}
 
-    .dialog-content-order-items {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
+.client-field {
+    width: 75%;
+}
+
+.order-items-fields {
+    display: flex;
+    gap: 5px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    .product-fileld {
+        width: 100%
+    }
+
+    button{
+        bottom: 10px;
     }
 }
 
-mat-form-field {
-    display: block;
+.add-button {
+    display: flex;
+    justify-content: center;
 }
 
 .insert-panel {
@@ -48,20 +63,4 @@ mat-form-field {
         padding: 0px 20px;
         margin: 0px 10px;
     }
-}
-
-.dialog-content-order-items {
-    mat-form-field {
-        flex: 1;
-        margin-right: 5px;
-    }
-
-    mat-label {
-        font-size: 12px;
-    }
-}
-
-.add-order-item-button {
-    display: flex;
-    justify-content: center;
 }

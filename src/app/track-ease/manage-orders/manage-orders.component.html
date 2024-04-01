@@ -1,62 +1,66 @@
-<div class="controls">
-    <button class="add-order" mat-raised-button color="primary" (click)="createOrder()">
-        <mat-icon>add</mat-icon>
-        <span> Create Order </span>
-    </button>
-    <button
-        class="download-pdf"
-        [disabled]="(filterResults | async)!.length === 0"
-        mat-stroked-button
-        (click)="downloadOrdersPdf()"
-    >
-        <mat-icon fontSet="material-icons-outlined">download</mat-icon>
-        <span>Download PDF</span>
-    </button>
+<div class="header">
+    <div class="controls">
+        <button class="add-order" mat-raised-button color="primary" (click)="createOrder()">
+            <mat-icon>add</mat-icon>
+            <span> Create Order </span>
+        </button>
+        <button
+            class="download-pdf"
+            [disabled]="(filterResults | async)!.length === 0"
+            mat-stroked-button
+            (click)="downloadOrdersPdf()"
+        >
+            <mat-icon fontSet="material-icons-outlined">download</mat-icon>
+            <span>Download PDF</span>
+        </button>
+    </div>
+
+    <app-filters>
+        <app-simple-radio-select-filter
+            [labelTK]="'Date'"
+            [fields]="(mediaDates | async)!"
+            [defaultEmptyValue]="defaultDate"
+            [selection]="(selectedDate | async)!"
+            [customLabelWidth]="'105px'"
+            [panelClass]="'date-filter-panel'"
+            (selectionChange)="applyFilters($event, 'date')"
+        ></app-simple-radio-select-filter>
+
+        <app-advanced-text-filter
+            [labelTK]="'Client'"
+            [loadingPage]="(clientsLoading | async)!"
+            [hasMoreItems]="(hasMoreClientsToLoad | async)!"
+            [selection]="(selectedClients | async)!"
+            [fields]="(clients | async)!"
+            [searchForTK]="'TE_ORDER_CLIENT_SEARCH'"
+            [noResultsTK]="'TE_ORDER_CLIENT_NO_RESULTS'"
+            [panelClass]="'client-categories-filter-panel'"
+            [customLabelWidth]="'110px'"
+            (searchChange)="clientSearchChange($event)"
+            (loadMore)="loadMoreClients()"
+            (selectionChange)="applyFilters($event, 'client')"
+        >
+        </app-advanced-text-filter>
+
+        <app-advanced-text-filter
+            [labelTK]="'Seller'"
+            [loadingPage]="(sellersLoading | async)!"
+            [hasMoreItems]="(hasMoreSellersToLoad | async)!"
+            [selection]="(selectedSellers | async)!"
+            [fields]="(sellers | async)!"
+            [searchForTK]="'TE_ORDER_SELLER_SEARCH'"
+            [noResultsTK]="'TE_ORDER_SELLER_NO_RESULTS'"
+            [panelClass]="'seller-categories-filter-panel'"
+            [customLabelWidth]="'110px'"
+            (searchChange)="sellerSearchChange($event)"
+            (loadMore)="loadMoreSellers()"
+            (selectionChange)="applyFilters($event, 'seller')"
+        >
+        </app-advanced-text-filter>
+    </app-filters>
 </div>
 
-<app-filters>
-    <app-simple-radio-select-filter
-        [labelTK]="'DATE'"
-        [fields]="(mediaDates | async)!"
-        [defaultEmptyValue]="defaultDate"
-        [selection]="(selectedDate | async)!"
-        [customLabelWidth]="'104px'"
-        [panelClass]="'date-filter-panel'"
-        (selectionChange)="applyFilters($event, 'date')"
-    ></app-simple-radio-select-filter>
-
-    <app-advanced-text-filter
-        [labelTK]="'CLIENT'"
-        [loadingPage]="(clientsLoading | async)!"
-        [hasMoreItems]="(hasMoreClientsToLoad | async)!"
-        [selection]="(selectedClients | async)!"
-        [fields]="(clients | async)!"
-        [searchForTK]="'TE_ORDER_CLIENT_SEARCH'"
-        [noResultsTK]="'TE_ORDER_CLIENT_NO_RESULTS'"
-        [panelClass]="'client-categories-filter-panel'"
-        [customLabelWidth]="'104px'"
-        (searchChange)="clientSearchChange($event)"
-        (loadMore)="loadMoreClients()"
-        (selectionChange)="applyFilters($event, 'client')"
-    >
-    </app-advanced-text-filter>
-
-    <app-advanced-text-filter
-        [labelTK]="'SELLER'"
-        [loadingPage]="(sellersLoading | async)!"
-        [hasMoreItems]="(hasMoreSellersToLoad | async)!"
-        [selection]="(selectedSellers | async)!"
-        [fields]="(sellers | async)!"
-        [searchForTK]="'TE_ORDER_SELLER_SEARCH'"
-        [noResultsTK]="'TE_ORDER_SELLER_NO_RESULTS'"
-        [panelClass]="'seller-categories-filter-panel'"
-        [customLabelWidth]="'104px'"
-        (searchChange)="sellerSearchChange($event)"
-        (loadMore)="loadMoreSellers()"
-        (selectionChange)="applyFilters($event, 'seller')"
-    >
-    </app-advanced-text-filter>
-</app-filters>
+<mat-divider></mat-divider>
 
 <app-filters-result
     *ngIf="(filterResults | async)!.length > 0"

@@ -22,11 +22,13 @@
     .mef-simple-radio-select-label {
         position: absolute;
         display: inline-flex;
+        top: 10px; //maybe to be deleted once upgraded ot angular 17
 
         .mef-simple-radio-select-label-icon {
             padding-right: 7px;
             margin-left: -7px;
             color: #00000099;
+            margin-top: -4px; //maybe to be deleted once upgraded ot angular 17
         }
     }
 
@@ -42,7 +44,7 @@
 .mef-simple-radio-select-filter-overlay {
 
     .mat-mdc-select-panel {
-        min-width: 254px;
+        min-width: 230px; //TODO: Increase to 254px  if there is free space
         max-height: 211px;
         flex-direction: row-reverse;
         padding: 0;

@@ -19,6 +19,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatChipsModule } from '@angular/material/chips'
 import { MAT_DATE_LOCALE } from '@angular/material/core'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { MatDividerModule } from '@angular/material/divider'
 
 const materialComponents = [
     MatCardModule,
@@ -40,6 +41,7 @@ const materialComponents = [
     MatAutocompleteModule,
     MatChipsModule,
     MatSlideToggleModule,
+    MatDividerModule,
 ]
 
 @NgModule({
