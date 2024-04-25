@@ -155,7 +155,7 @@
 
 <ng-template #createUpdateOrdersContainer>
     <app-create-update-orders
-        [action]="action"
+        [actionType]="action"
         [order]="activeOrder!"
         (saveOrder)="saveOrder($event)"
     >

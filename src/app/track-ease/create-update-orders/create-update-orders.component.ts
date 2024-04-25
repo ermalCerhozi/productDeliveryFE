@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
-import { Form, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Observable, Subject, Subscription, debounceTime, fromEvent } from 'rxjs'
 import { OrderEntity, OrderItemEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
@@ -19,7 +19,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     @ViewChild('autoCompleteClients') autoCompleteClients!: MatAutocomplete
     private scrollSubscription!: Subscription
 
-    @Input() action!: string
+    @Input() actionType!: string
     @Input() order?: OrderEntity
     @Output() saveOrder = new EventEmitter<void>()
 
@@ -31,13 +31,13 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     products: Observable<FilterOption[]>
     hasMoreProductsToLoad: Observable<boolean>
 
-    form: FormGroup = new FormGroup({})
+    orderForm: FormGroup = new FormGroup({})
     orderItemsFormArray!: FormArray
     totalOrderPrice = 0
-    initialFormValues!: Form
+    private currentQuestionData!: any
 
     constructor(
-        private fb: FormBuilder,
+        private formBuilder: FormBuilder,
         private bakeryManagementService: BakeryManagementService,
         private searchService: SearchService
     ) {
@@ -49,8 +49,9 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.initializeForm()
-        this.initialFormValues = cloneDeep(this.form.value)
+        this.addFormControls()
+        this.patchForm()
+        this.currentQuestionData = cloneDeep(this.orderForm.value)
 
         this.orderItemsFormArray.valueChanges.pipe().subscribe((orderItems) => {
             this.calculateTotalOrderPrice(orderItems)
@@ -62,27 +63,42 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         this.unsubscribe$.complete()
     }
 
-    initializeForm() {
+    addFormControls() {
+        const formControls = this.getFormControls()
+        Object.keys(formControls).forEach((key) => {
+            this.orderForm.addControl(key, formControls[key])
+        })
+    }
+
+    private getFormControls(): any {
+        return {
+            client: new FormControl('', Validators.required),
+            seller: new FormControl('', Validators.required),
+            order_items: new FormArray([]),
+        }
+    }
+
+    patchForm() {
         const formData = this.getFormData()
 
-        this.form = this.fb.group({
+        this.orderForm = this.formBuilder.group({
             client: [formData.client, Validators.required],
             seller: [formData.seller, Validators.required],
-            order_items: this.fb.array([]),
+            order_items: this.formBuilder.array([]),
         })
 
-        this.orderItemsFormArray = this.form.get('order_items') as FormArray
+        this.orderItemsFormArray = this.orderForm.get('order_items') as FormArray
         this.populateOrderItems(formData.order_items)
     }
 
     getFormData(): any {
-        if (this.action === 'create') {
+        if (this.actionType === 'create') {
             return {
                 client: '',
                 seller: this.bakeryManagementService.getLoggedInUser().id,
                 order_items: [{ quantity: '', returned_quantity: 0, product: '' }],
             }
-        } else if (this.action === 'update' && this.order) {
+        } else if (this.actionType === 'update' && this.order) {
             return {
                 client: this.order.client.id,
                 seller: this.order.seller.id,
@@ -99,7 +115,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     populateOrderItems(orderItems: OrderItemEntity[]) {
         orderItems.forEach((orderItem: OrderItemEntity) => {
             this.orderItemsFormArray.push(
-                this.fb.group({
+                this.formBuilder.group({
                     id: [orderItem.id],
                     quantity: [orderItem.quantity, Validators.required],
                     returned_quantity: [orderItem.returned_quantity, Validators.required],
@@ -124,8 +140,8 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         }
     }
 
-    addOrderItem(): void {
-        const newOrderItem = this.fb.group({
+    addNewOrderItem(): void {
+        const newOrderItem = this.formBuilder.group({
             quantity: ['', Validators.required],
             returned_quantity: [0, Validators.required],
             product: ['', Validators.required],
@@ -165,7 +181,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     formHasChanged(): boolean {
-        return !isEqual(this.initialFormValues, this.form.value)
+        return !isEqual(this.currentQuestionData, this.orderForm.value)
     }
 
     // This function is triggered when the autocomplete panel is opened.
@@ -203,9 +219,9 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     save(): void {
-        if (this.form.valid) {
-            this.saveOrder.emit(this.form.value)
-            console.log('onSubmit', JSON.stringify(this.form.value, null, 4))
+        if (this.orderForm.valid) {
+            this.saveOrder.emit(this.orderForm.value)
+            console.log('onSubmit', JSON.stringify(this.orderForm.value, null, 4))
         }
     }
 }

@@ -1,7 +1,7 @@
-<h2 mat-dialog-title>{{ action === 'create' ? 'Create' : 'Update' }} Order</h2>
+<h2 mat-dialog-title>{{ actionType === 'create' ? 'Create' : 'Update' }} Order</h2>
 
 <div class="dialog-content">
-    <form [formGroup]="form" (ngSubmit)="save()">
+    <form [formGroup]="orderForm" (ngSubmit)="save()">
         <mat-form-field class="client-field" appearance="outline">
             <mat-label>Client</mat-label>
             <input
@@ -22,7 +22,7 @@
                     {{ client.label }}
                 </mat-option>
             </mat-autocomplete>
-            <mat-error *ngIf="form.get('client')?.invalid && form.get('client')?.touched">
+            <mat-error *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched">
                 Client is required
             </mat-error>
         </mat-form-field>
@@ -55,7 +55,11 @@
                             {{ product.label }}
                         </mat-option>
                     </mat-autocomplete>
-                    <mat-error *ngIf="form.get('product')?.invalid && form.get('product')?.touched">
+                    <mat-error
+                        *ngIf="
+                            orderForm.get('product')?.invalid && orderForm.get('product')?.touched
+                        "
+                    >
                         Product is required
                     </mat-error>
                 </mat-form-field>
@@ -79,7 +83,7 @@
         </div>
 
         <div class="add-button">
-            <button mat-fab color="primary" (click)="addOrderItem()" type="button">
+            <button mat-fab color="primary" (click)="addNewOrderItem()" type="button">
                 <mat-icon>add</mat-icon>
             </button>
         </div>
@@ -94,10 +98,10 @@
         mat-stroked-button
         color="primary"
         type="submit"
-        [disabled]="form.invalid || !formHasChanged()"
+        [disabled]="orderForm.invalid || !formHasChanged()"
         autofocus
         (click)="save()"
     >
-        {{ action }}
+        {{ actionType }}
     </button>
 </mat-dialog-actions>
