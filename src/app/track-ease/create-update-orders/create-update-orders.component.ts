@@ -161,6 +161,10 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                     console.log('There was an error deleting the order item:', error)
                 },
             })
+        } else {
+            // If the order item doesn't have an ID, it means it hasn't been saved to the server yet.
+            // So we can just remove it from the form array.
+            this.orderItemsFormArray.removeAt(index)
         }
     }
 

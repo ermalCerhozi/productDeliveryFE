@@ -6,8 +6,12 @@
 }
 
 .dialog-content{
-    margin: 0 auto;
+    padding: 4px;
     width: 96%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 80vh;
+    margin: 0 auto;
 }
 
 .client-field {
@@ -32,6 +36,7 @@
 }
 
 .add-button {
+    padding-bottom: 24px;
     display: flex;
     justify-content: center;
 }
