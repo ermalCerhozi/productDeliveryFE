@@ -200,6 +200,7 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
                     )
                     .subscribe((products) => {
                         this.dataSource.data = products
+                        this.dialog.closeAll()
                     })
             },
             error: (error) => {

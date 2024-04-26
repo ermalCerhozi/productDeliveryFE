@@ -56,15 +56,13 @@
 </div>
 
 <!-- Button for media upload -->
-<div>
-    <button
-        class="top-bar-upload-button"
-        mat-flat-button
-        color="primary"
-        [disabled]="disableAddItem"
-        (click)="openUploadPanel()"
-    >
-        <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon
-        ><span>Add {{ title }}</span>
-    </button>
-</div>
+<button
+    class="top-bar-upload-button"
+    mat-flat-button
+    color="primary"
+    [disabled]="disableAddItem"
+    (click)="openUploadPanel()"
+>
+    <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
+    <span>Add {{ title }}</span>
+</button>

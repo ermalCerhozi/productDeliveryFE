@@ -5,7 +5,7 @@
         fixedInViewport
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
         [mode]="(isHandset$ | async) ? 'over' : 'side'"
-        [opened]="(isHandset$ | async) === false"
+        [opened]="opned"
     >
         <mat-toolbar>Menu</mat-toolbar>
         <mat-nav-list>
@@ -14,7 +14,7 @@
                     class="layout-sidenav-options"
                     [routerLink]="route.path"
                     [routerLinkActive]="['is-active']"
-                    (click)="drawer.toggle()"
+                    (click)="toggleSidenav()"
                 >
                     <div class="icon-text-wrapper">
                         <mat-icon fontSet="material-icons-outlined">{{ route.icon }}</mat-icon>
@@ -24,13 +24,14 @@
             </ng-container>
         </mat-nav-list>
     </mat-sidenav>
+
     <mat-sidenav-content>
         <mat-toolbar color="primary">
             <button
                 type="button"
                 aria-label="Toggle sidenav"
                 mat-icon-button
-                (click)="drawer.toggle()"
+                (click)="toggleSidenav()"
                 *ngIf="isHandset$ | async"
             >
                 <mat-icon aria-label="toggle icon">menu</mat-icon>

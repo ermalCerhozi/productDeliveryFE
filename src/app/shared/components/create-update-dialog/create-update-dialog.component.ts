@@ -52,21 +52,19 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                           phone_number: '',
                           role: '',
                           location: '',
-                          password: '',
                       }
 
             this.form = this.fb.group({
                 first_name: [formData.first_name, Validators.required],
                 last_name: [formData.last_name, Validators.required],
                 nickname: [formData.nickname, Validators.required],
-                email: [formData.nickname, Validators.required],
+                email: [formData.email, Validators.required],
                 phone_number: [
                     formData.phone_number,
                     [Validators.required, Validators.minLength(10)],
                 ],
                 role: [formData.role, Validators.required],
-                location: [formData.location, Validators.required],
-                password: [formData.password, Validators.required],
+                location: [formData.location],
             })
         } else if (this.type === 'product') {
             formData =
@@ -109,6 +107,17 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                     this.updateUser.emit(this.form.value)
                 }
             }
+        }
+    }
+
+    openInNewWindow(value: string) {
+        const newWindow = window.open(value, '_blank')
+        if (newWindow) {
+            newWindow.opener = null
+        } else {
+            console.error(
+                'Unable to open link in a new window. Please check your browser settings.'
+            )
         }
     }
 

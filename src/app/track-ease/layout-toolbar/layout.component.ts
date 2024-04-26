@@ -9,13 +9,8 @@ import { AuthService } from 'src/app/services/auth.service'
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
 })
-// TODO: hide drawer when option si selected
 export class LayoutComponent {
-    constructor(
-        private authService: AuthService,
-        private breakpointObserver: BreakpointObserver,
-        private router: Router
-    ) {}
+    opned = true
 
     routes = [
         { path: '/homePage', name: 'Home Page', icon: 'home' },
@@ -28,10 +23,24 @@ export class LayoutComponent {
         { path: '/settings', name: 'Settings', icon: 'settings' },
     ]
 
+    constructor(
+        private authService: AuthService,
+        private breakpointObserver: BreakpointObserver,
+        private router: Router
+    ) {}
+
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
         map((result) => result.matches),
         shareReplay()
     )
+
+    toggleSidenav(): void {
+        this.isHandset$.subscribe((isHandset) => {
+            if (isHandset) {
+                this.opned = !this.opned
+            }
+        })
+    }
 
     logOut(): void {
         this.authService.logOut().subscribe({
