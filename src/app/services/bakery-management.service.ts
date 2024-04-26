@@ -173,8 +173,8 @@ export class BakeryManagementService {
         }
     }
 
-    getProductPriceById(id: number): Observable<number> {
-        return this.bakeryManagementApiService.getProductPriceById(id)
+    getProductPricesByIds(ids: number[]): Observable<{ [key: string]: number }> {
+        return this.bakeryManagementApiService.getProductPricesByIds(ids)
     }
 
     // TODO: This is to be deleted after dropdown paginaiton is implemented

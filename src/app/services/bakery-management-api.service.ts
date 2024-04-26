@@ -93,8 +93,11 @@ export class BakeryManagementApiService {
         return this.httpClient.get<ProductEntity>(`${this.basePath}products/${id}`)
     }
 
-    getProductPriceById(id: number): Observable<number> {
-        return this.httpClient.get<number>(`${this.basePath}products/price/${id}`)
+    getProductPricesByIds(ids: number[]): Observable<{ [key: string]: number }> {
+        return this.httpClient.post<{ [key: string]: number }>(
+            `${this.basePath}products/price`,
+            ids
+        )
     }
 
     //CRUD for orders

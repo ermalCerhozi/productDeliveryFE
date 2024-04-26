@@ -15,10 +15,11 @@
             />
             <mat-autocomplete
                 #autoCompleteClients="matAutocomplete"
+                [displayWith]="displayFn"
                 (opened)="onOpened(autoCompleteClients)"
                 (closed)="onClosed()"
             >
-                <mat-option *ngFor="let client of clients | async" [value]="client.value">
+                <mat-option *ngFor="let client of clients | async" [value]="client">
                     {{ client.label }}
                 </mat-option>
             </mat-autocomplete>
@@ -45,13 +46,11 @@
                     />
                     <mat-autocomplete
                         #autoCompleteProducts="matAutocomplete"
+                        [displayWith]="displayFn"
                         (opened)="onOpened(autoCompleteProducts)"
                         (closed)="onClosed()"
                     >
-                        <mat-option
-                            *ngFor="let product of products | async"
-                            [value]="product.value"
-                        >
+                        <mat-option *ngFor="let product of products | async" [value]="product">
                             {{ product.label }}
                         </mat-option>
                     </mat-autocomplete>

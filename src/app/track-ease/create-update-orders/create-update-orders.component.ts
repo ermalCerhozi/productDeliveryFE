@@ -20,7 +20,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     private scrollSubscription!: Subscription
 
     @Input() actionType!: string
-    @Input() order?: OrderEntity
+    @Input() order!: OrderEntity
     @Output() saveOrder = new EventEmitter<void>()
 
     private unsubscribe$ = new Subject<void>()
@@ -53,9 +53,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         this.patchForm()
         this.currentQuestionData = cloneDeep(this.orderForm.value)
 
-        this.orderItemsFormArray.valueChanges.pipe().subscribe((orderItems) => {
-            this.calculateTotalOrderPrice(orderItems)
-        })
+        this.subscribeToFormChanges()
     }
 
     ngOnDestroy(): void {
@@ -70,6 +68,12 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         })
     }
 
+    private subscribeToFormChanges(): void {
+        this.orderItemsFormArray.valueChanges.pipe().subscribe((orderItems) => {
+            this.calculateTotalOrderPrice(orderItems)
+        })
+    }
+
     private getFormControls(): any {
         return {
             client: new FormControl('', Validators.required),
@@ -79,7 +83,13 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     patchForm() {
-        const formData = this.getFormData()
+        let formData: any
+        if (this.actionType === 'create') {
+            formData = this.getCreateOrderFormData()
+        } else if (this.actionType === 'update') {
+            formData = this.getUpdateOrderFormData()
+            this.calculateTotalOrderPrice(formData.order_items) // Calculate the total order price for the update form
+        }
 
         this.orderForm = this.formBuilder.group({
             client: [formData.client, Validators.required],
@@ -91,24 +101,34 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         this.populateOrderItems(formData.order_items)
     }
 
-    getFormData(): any {
-        if (this.actionType === 'create') {
-            return {
-                client: '',
-                seller: this.bakeryManagementService.getLoggedInUser().id,
-                order_items: [{ quantity: '', returned_quantity: 0, product: '' }],
-            }
-        } else if (this.actionType === 'update' && this.order) {
-            return {
-                client: this.order.client.id,
-                seller: this.order.seller.id,
-                order_items: this.order.order_items.map((item: any) => ({
+    getCreateOrderFormData(): any {
+        return {
+            client: '',
+            seller: this.bakeryManagementService.getLoggedInUser().id,
+            order_items: [{ quantity: '', returned_quantity: '', product: '' }],
+        }
+    }
+
+    getUpdateOrderFormData(): any {
+        const orderClient = {
+            value: this.order.client.id,
+            label: this.order.client.first_name + ' ' + this.order.client.last_name,
+        }
+        return {
+            client: orderClient,
+            seller: this.order.seller.id,
+            order_items: this.order.order_items.map((item: any) => {
+                const orderProduct = {
+                    value: item.product.id,
+                    label: item.product.product_name,
+                }
+                return {
                     id: item.id,
                     quantity: item.quantity,
                     returned_quantity: item.returned_quantity,
-                    product: item.product.id,
-                })),
-            }
+                    product: orderProduct,
+                }
+            }),
         }
     }
 
@@ -118,32 +138,32 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                 this.formBuilder.group({
                     id: [orderItem.id],
                     quantity: [orderItem.quantity, Validators.required],
-                    returned_quantity: [orderItem.returned_quantity, Validators.required],
+                    returned_quantity: [orderItem.returned_quantity],
                     product: [orderItem.product, Validators.required],
                 })
             )
         })
     }
 
-    calculateTotalOrderPrice(orderItems: any) {
-        this.totalOrderPrice = 0
-
-        if (orderItems.every((item: any) => item.quantity === '')) {
-            return
-        }
-
-        for (const item of orderItems) {
-            this.bakeryManagementService.getProductPriceById(item.product).subscribe((price) => {
-                const productPrice = price
-                this.totalOrderPrice += (item.quantity - item.returned_quantity) * productPrice
+    // TODO: Maybe store the most selled product in chache so they can be accessed quicker
+    calculateTotalOrderPrice(orderItems: any[]) {
+        const productNames = orderItems.map((item) => item.product.value)
+        this.bakeryManagementService.getProductPricesByIds(productNames).subscribe((prices) => {
+            this.totalOrderPrice = 0
+            orderItems.forEach((item) => {
+                console.log('Log the product name', item.product.label)
+                console.log('Log th quantitu', item.quantity)
+                const price = prices[item.product.label]
+                const quantity = item.quantity
+                this.totalOrderPrice += price * quantity
             })
-        }
+        })
     }
 
     addNewOrderItem(): void {
         const newOrderItem = this.formBuilder.group({
             quantity: ['', Validators.required],
-            returned_quantity: [0, Validators.required],
+            returned_quantity: [''],
             product: ['', Validators.required],
         })
 
@@ -157,7 +177,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                 next: () => {
                     this.orderItemsFormArray.removeAt(index)
                 },
-                error: (error: any) => {
+                error: (error: Error) => {
                     console.log('There was an error deleting the order item:', error)
                 },
             })
@@ -166,6 +186,10 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
             // So we can just remove it from the form array.
             this.orderItemsFormArray.removeAt(index)
         }
+    }
+
+    displayFn(option: any): string {
+        return option.label
     }
 
     clientSearchChange(event: any) {
@@ -224,8 +248,18 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
 
     save(): void {
         if (this.orderForm.valid) {
-            this.saveOrder.emit(this.orderForm.value)
-            console.log('onSubmit', JSON.stringify(this.orderForm.value, null, 4))
+            const formValue = this.orderForm.value
+            // Convert the client and product values to their respective IDs before saving the order.
+            const newValue = {
+                ...formValue,
+                client: formValue.client.value,
+                order_items: formValue.order_items.map((item: any) => ({
+                    ...item,
+                    product: item.product.value,
+                })),
+            }
+            this.saveOrder.emit(newValue)
+            console.log('onSubmit', JSON.stringify(newValue, null, 4))
         }
     }
 }
