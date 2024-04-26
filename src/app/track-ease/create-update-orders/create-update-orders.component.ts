@@ -20,7 +20,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     private scrollSubscription!: Subscription
 
     @Input() actionType!: string
-    @Input() order!: OrderEntity
+    @Input() order?: OrderEntity
     @Output() saveOrder = new EventEmitter<void>()
 
     private unsubscribe$ = new Subject<void>()
@@ -110,6 +110,9 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     getUpdateOrderFormData(): any {
+        if (!this.order) {
+            return
+        }
         const orderClient = {
             value: this.order.client.id,
             label: this.order.client.first_name + ' ' + this.order.client.last_name,

@@ -148,17 +148,13 @@
 
 <ng-template #confirmationDialogContainer>
     <app-confirmation-dialog
-        [title]="activeOrder!.id"
+        [title]="'Order'"
         (confirm)="onDeleteOrder()"
     ></app-confirmation-dialog>
 </ng-template>
 
 <ng-template #createUpdateOrdersContainer>
-    <app-create-update-orders
-        [actionType]="action"
-        [order]="activeOrder!"
-        (saveOrder)="saveOrder($event)"
-    >
+    <app-create-update-orders [actionType]="action" (saveOrder)="saveOrder($event)">
     </app-create-update-orders>
 </ng-template>
 
