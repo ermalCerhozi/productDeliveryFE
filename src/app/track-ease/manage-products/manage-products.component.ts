@@ -29,13 +29,12 @@ import { SearchService } from 'src/app/services/search.service'
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy {
+    unsubscribe = new Subject<void>()
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('createUpdateContainer')
     createUpdateContainer!: TemplateRef<CreateUpdateDialogComponent>
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
-
-    unsubscribe = new Subject<void>()
 
     displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
     activeProduct!: ProductEntity
@@ -84,23 +83,19 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
 
     getProductsList(append: boolean) {
         this.isLoading = true
-        this.bakeryManagementService
-            .updateProductList(append)
-            .pipe(
-                take(1),
-                switchMap(() => this.bakeryManagementService.productsList$),
-                take(1)
-            )
-            .subscribe({
-                next: (products) => {
-                    this.isLoading = false
-                    this.dataSource.data = products
-                },
-                error: (error) => {
-                    this.isLoading = false
-                    console.log('Error: ', error)
-                },
-            })
+        this.isLoading = true
+        this.bakeryManagementService.updateProductList(append).subscribe({
+            next: () => {
+                this.isLoading = false
+                this.bakeryManagementService.productsList$.subscribe((product) => {
+                    this.dataSource.data = product
+                })
+            },
+            error: (error: any) => {
+                this.isLoading = false
+                console.log('Error: ', error)
+            },
+        })
     }
 
     onDropdownMenuClick(item: DropdownEvent, product: ProductEntity): void {
@@ -128,13 +123,6 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
         this.dialog.open(this.createUpdateContainer, {
             width: '100%',
             maxHeight: '80%',
-        })
-    }
-
-    deleteProduct(): void {
-        this.dialog.open(this.confirmationDialogContainer, {
-            width: '80%',
-            maxHeight: '40%',
         })
     }
 
@@ -186,6 +174,13 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
         })
     }
 
+    deleteProduct(): void {
+        this.dialog.open(this.confirmationDialogContainer, {
+            width: '80%',
+            maxHeight: '40%',
+        })
+    }
+
     onDeleteProduct(): void {
         this.bakeryManagementApiService.deleteProduct(this.activeProduct.id).subscribe({
             next: () => {
@@ -211,10 +206,6 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
 
     getSearchOptions(): SearchOptions {
         return this.searchService.getSearchOptions()
-    }
-
-    getProducts(): Observable<ProductEntity[]> {
-        return this.bakeryManagementService.productsList$
     }
 
     setSearchQuery(data: string) {

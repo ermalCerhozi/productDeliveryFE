@@ -40,7 +40,7 @@ export class UserProfileComponent implements OnInit {
                 this.loggedInUser.phone_number,
                 [Validators.required, Validators.pattern(phoneRegex)],
             ],
-            location: [this.loggedInUser.location ?? '', Validators.required],
+            location: [this.loggedInUser.location ?? ''],
         })
     }
 

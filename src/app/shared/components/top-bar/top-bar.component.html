@@ -49,6 +49,7 @@
             <mat-icon
                 *ngIf="searchQuery.value?.length"
                 class="top-bar-search-container-form-suffix-cancel-icon"
+                (click)="clearSearchQuery()"
                 >cancel</mat-icon
             >
         </div>

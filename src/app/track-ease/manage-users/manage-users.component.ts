@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator } from '@angular/material/paginator'
 import { MatTableDataSource } from '@angular/material/table'
@@ -10,7 +10,7 @@ import { BakeryManagementService } from 'src/app/services/bakery-management.serv
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { map, take } from 'rxjs'
+import { Subject, map, take } from 'rxjs'
 import { SearchService } from 'src/app/services/search.service'
 
 @Component({
@@ -18,16 +18,18 @@ import { SearchService } from 'src/app/services/search.service'
     templateUrl: './manage-users.component.html',
     styleUrls: ['./manage-users.component.scss'],
 })
-export class ManageUsersComponent implements OnInit, AfterViewInit {
-    displayedColumns: string[] = ['first_name', 'role', 'phone_number', 'actions']
-    activeUser!: UserEntity
-    actionState!: string
-
+export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
+    unsubscribe = new Subject<void>()
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('createUpdateContainer')
     createUpdateContainer!: TemplateRef<CreateUpdateDialogComponent>
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
+
+    displayedColumns: string[] = ['first_name', 'role', 'phone_number', 'actions']
+    activeUser!: UserEntity
+    actionState!: string
+
     dataSource: MatTableDataSource<UserEntity> = new MatTableDataSource<UserEntity>([])
     isLoading = false
 
@@ -55,6 +57,11 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
         this.bakeryManagementService.activeTab = 'users'
     }
 
+    ngOnDestroy() {
+        this.unsubscribe.next()
+        this.unsubscribe.complete()
+    }
+
     ngAfterViewInit() {
         this.dataSource.paginator = this.paginator
         this.paginator.page.subscribe((event) => {
@@ -80,11 +87,8 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
         })
     }
 
-    selectUser(user: UserEntity) {
+    onDropdownMenuClick(item: DropdownEvent, user: UserEntity): void {
         this.activeUser = user
-    }
-
-    onDropdownMenuClick(item: DropdownEvent): void {
         const { option } = item
         switch (option.label) {
             case DropdownActionOptions.EDIT:
@@ -200,11 +204,7 @@ export class ManageUsersComponent implements OnInit, AfterViewInit {
     }
 
     setSearchQuery(data: string) {
-        if (data !== this.bakeryManagementService.navigationContext.filters.queryString) {
-            this.bakeryManagementService.navigationContext.filters.queryString = data
-            this.bakeryManagementService.navigationContext.getCount = true
-            this.bakeryManagementService.updateUsersList(false).subscribe()
-        }
+        this.bakeryManagementService.setSearchQuery(data)
     }
 
     setSearchOptions(searchOptions: SearchOptions) {

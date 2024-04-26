@@ -59,6 +59,7 @@
             <button
                 mat-icon-button
                 matSuffix
+                *ngIf="locationInput.value"
                 (click)="openInNewWindow(locationInput.value)"
                 type="button"
             >
