@@ -87,8 +87,7 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
         })
     }
 
-    onDropdownMenuClick(item: DropdownEvent, user: UserEntity): void {
-        this.activeUser = user
+    onDropdownMenuClick(item: DropdownEvent): void {
         const { option } = item
         switch (option.label) {
             case DropdownActionOptions.EDIT:
@@ -190,13 +189,8 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
         })
     }
 
-    applySearch(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value
-        this.dataSource.filter = filterValue.trim().toLowerCase()
-
-        if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage()
-        }
+    selectUser(user: UserEntity) {
+        this.activeUser = user
     }
 
     getSearchOptions(): SearchOptions {

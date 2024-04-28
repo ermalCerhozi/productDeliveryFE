@@ -16,10 +16,10 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator } from '@angular/material/paginator'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
-import { take, map, switchMap } from 'rxjs/operators'
+import { take, map } from 'rxjs/operators'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { Observable, Subject } from 'rxjs'
+import { Subject } from 'rxjs'
 import { SearchService } from 'src/app/services/search.service'
 
 @Component({
