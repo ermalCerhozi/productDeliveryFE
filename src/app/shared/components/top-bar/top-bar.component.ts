@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms'
 import { Subject, debounceTime, takeUntil } from 'rxjs'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 
+// TODO: add sorting options
 @Component({
     selector: 'app-top-bar',
     templateUrl: './top-bar.component.html',
