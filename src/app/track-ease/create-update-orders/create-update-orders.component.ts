@@ -1,6 +1,14 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
-import { Observable, Subject, Subscription, debounceTime, fromEvent } from 'rxjs'
+import {
+    Observable,
+    Subject,
+    Subscription,
+    combineLatest,
+    debounceTime,
+    fromEvent,
+    map,
+} from 'rxjs'
 import { OrderEntity, OrderItemEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { cloneDeep, isEqual } from 'lodash'
@@ -31,6 +39,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     products: Observable<FilterOption[]>
     hasMoreProductsToLoad: Observable<boolean>
 
+    selectedProducts: string[] = []
     orderForm: FormGroup = new FormGroup({})
     orderItemsFormArray!: FormArray
     totalOrderPrice = 0
@@ -68,9 +77,34 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         })
     }
 
+    /**
+     * This method subscribes to changes in the orderItemsFormArray.
+     * Whenever a change occurs, it performs the following actions:
+     * 1. Recalculates the total order price.
+     * 2. Updates the list of selected products.
+     * 3. Filters the products list to exclude the selected products.
+     */
     private subscribeToFormChanges(): void {
-        this.orderItemsFormArray.valueChanges.pipe().subscribe((orderItems) => {
+        this.orderItemsFormArray.valueChanges.pipe().subscribe((orderItems: any[]) => {
+            // Recalculate the total order price
             this.calculateTotalOrderPrice(orderItems)
+
+            // Update the list of selected products
+            this.selectedProducts = orderItems
+                .map((item) => item.product.label)
+                .filter(
+                    (value, index, self) => self.indexOf(value) === index && value !== undefined
+                )
+
+            // Filter the products list to exclude the selected products
+            this.products = combineLatest([this.products, this.selectedProducts]).pipe(
+                map(([products, selectedProducts]) => {
+                    const smth = products.filter(
+                        (product) => !selectedProducts.includes(product.label)
+                    )
+                    return smth
+                })
+            )
         })
     }
 
@@ -154,8 +188,6 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         this.bakeryManagementService.getProductPricesByIds(productNames).subscribe((prices) => {
             this.totalOrderPrice = 0
             orderItems.forEach((item) => {
-                console.log('Log the product name', item.product.label)
-                console.log('Log th quantitu', item.quantity)
                 const price = prices[item.product.label]
                 const quantity = item.quantity
                 this.totalOrderPrice += price * quantity

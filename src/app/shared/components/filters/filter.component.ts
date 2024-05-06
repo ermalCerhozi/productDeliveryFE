@@ -1,7 +1,7 @@
 import { TemplateRef } from '@angular/core'
 
 /**
- * @class Mef filter component class
+ * @class App filter component class
  * It can be used as a base class for any filter component such as `SimpleFilterComponent`, `AdvancedFilterComponent`, etc.
  * How to use:
  *   @Component({

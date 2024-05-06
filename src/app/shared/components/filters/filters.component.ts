@@ -4,14 +4,14 @@ import { AppFilter } from 'src/app/shared/components/filters/filter.component'
 /**
  * @description component to display a list of filters
  * @example
- * <mef-filters>
- *    <mef-simple-text-filter
+ * <app-filters>
+ *    <app-simple-text-filter
  *      [fields]="fields"
  *      [selection]="['image', 'audio']"
  *      [labelTK]="labelTK"
  *      (selectionChange)="onSelectionChange()"
  *   >
- * </mef-filter>
+ * </app-filter>
  */
 @Component({
     selector: 'app-filters',

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { UserEntity, LoginModel } from 'src/app/shared/models/user.model'
+import { environment } from 'src/environments/environment'
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
-    private readonly baseUrl = 'http://localhost:3000/users'
+    private readonly baseUrl = environment.baseUrl + '/users'
     private currentLoggedUser: BehaviorSubject<UserEntity | null>
 
     constructor(private http: HttpClient) {

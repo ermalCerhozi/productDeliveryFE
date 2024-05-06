@@ -1,11 +1,10 @@
 <h2 mat-dialog-title>{{ actionType === 'create' ? 'Create' : 'Update' }} Order</h2>
 
 <div class="dialog-content">
-    <form [formGroup]="orderForm" (ngSubmit)="save()">
+    <form [formGroup]="orderForm">
         <mat-form-field class="client-field" appearance="outline">
             <mat-label>Client</mat-label>
             <input
-                type="text"
                 matInput
                 formControlName="client"
                 [matAutocomplete]="autoCompleteClients"
@@ -98,7 +97,6 @@
         color="primary"
         type="submit"
         [disabled]="orderForm.invalid || !formHasChanged()"
-        autofocus
         (click)="save()"
     >
         {{ actionType }}
