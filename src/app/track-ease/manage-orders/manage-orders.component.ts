@@ -6,7 +6,7 @@ import { OrderEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { Observable, Subject, switchMap, take } from 'rxjs'
+import { Observable, Subject, switchMap, takeUntil } from 'rxjs'
 import { CreateUpdateOrdersComponent } from 'src/app/track-ease/create-update-orders/create-update-orders.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { MatTableDataSource } from '@angular/material/table'
@@ -27,7 +27,7 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('createUpdateOrdersContainer')
     createUpdateOrdersContainer!: TemplateRef<CreateUpdateOrdersComponent>
 
-    unsubscribe = new Subject<void>()
+    private destroy$ = new Subject<void>()
 
     filterResults: Observable<FilterOption[]>
 
@@ -102,8 +102,8 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.unsubscribe.next()
-        this.unsubscribe.complete()
+        this.destroy$.next()
+        this.destroy$.complete()
     }
 
     ngAfterViewInit() {
@@ -120,14 +120,13 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.bakeryManagementService
             .updateOrdersList(append)
             .pipe(
-                take(1),
                 switchMap(() => this.bakeryManagementService.ordersList$),
-                take(1)
+                takeUntil(this.destroy$)
             )
             .subscribe({
                 next: (orders) => {
                     this.isLoading = false
-                    this.dataSource = new MatTableDataSource(orders)
+                    this.dataSource.data = orders
                 },
                 error: (error) => {
                     this.isLoading = false
