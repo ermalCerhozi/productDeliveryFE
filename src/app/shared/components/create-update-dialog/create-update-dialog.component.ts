@@ -57,8 +57,8 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
             this.form = this.fb.group({
                 first_name: [formData.first_name, Validators.required],
                 last_name: [formData.last_name, Validators.required],
-                nickname: [formData.nickname, Validators.required],
-                email: [formData.email, Validators.required],
+                nickname: [formData.nickname],
+                email: [formData.email],
                 phone_number: [
                     formData.phone_number,
                     [Validators.required, Validators.minLength(10)],
@@ -92,15 +92,24 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
         return !isEqual(this.initialFormValues, this.form.value)
     }
 
-    inserItem(): void {
+    insertItem(): void {
         if (this.form.valid) {
             if (this.type === 'product') {
+                const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+                const productName = capitalize(this.form.value.product_name)
+                this.form.patchValue({ product_name: productName })
+
                 if (this.action === 'create') {
                     this.createProduct.emit(this.form.value)
                 } else if (this.action === 'update') {
                     this.updateProduct.emit(this.form.value)
                 }
             } else if (this.type === 'user') {
+                const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+                const firstName = capitalize(this.form.value.first_name)
+                const lastName = capitalize(this.form.value.last_name)
+                this.form.patchValue({ first_name: firstName, last_name: lastName })
+
                 if (this.action === 'create') {
                     this.createUser.emit(this.form.value)
                 } else if (this.action === 'update') {

@@ -190,7 +190,8 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
             orderItems.forEach((item) => {
                 const price = prices[item.product.label]
                 const quantity = item.quantity
-                this.totalOrderPrice += price * quantity
+                const returnedQuantity = item.returned_quantity
+                this.totalOrderPrice += price * (quantity - returnedQuantity)
             })
         })
     }

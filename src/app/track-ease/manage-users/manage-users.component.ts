@@ -170,7 +170,8 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onDeleteUser(): void {
-        this.bakeryManagementApiService.deleteProduct(this.activeUser.id).subscribe({
+        this.dialog.closeAll()
+        this.bakeryManagementApiService.deleteUser(this.activeUser.id).subscribe({
             next: () => {
                 this.bakeryManagementService.usersList$
                     .pipe(

@@ -14,7 +14,7 @@
     </div>
 
     <mat-dialog-content class="dialog-content">
-        <form [formGroup]="form" (ngSubmit)="inserItem()" class="dialog-content-form">
+        <form [formGroup]="form" (ngSubmit)="insertItem()" class="dialog-content-form">
             <ng-container [ngSwitch]="type">
                 <!-- User Form Fields -->
                 <ng-container *ngSwitchCase="'user'">
@@ -47,13 +47,7 @@
 
                     <mat-form-field>
                         <mat-label>Nickname</mat-label>
-                        <input
-                            matInput
-                            type="text"
-                            formControlName="nickname"
-                            required
-                            title="Nickname"
-                        />
+                        <input matInput type="text" formControlName="nickname" title="Nickname" />
                         <mat-error
                             *ngIf="form.get('nickname')?.invalid && form.get('nickname')?.touched"
                         >
@@ -63,13 +57,7 @@
 
                     <mat-form-field>
                         <mat-label>email</mat-label>
-                        <input
-                            matInput
-                            type="email"
-                            formControlName="email"
-                            required
-                            title="email"
-                        />
+                        <input matInput type="email" formControlName="email" title="email" />
                         <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
                             Email is required
                         </mat-error>
@@ -198,7 +186,7 @@
             type="submit"
             [disabled]="form.invalid || !formHasChanged()"
             autofocus
-            (click)="inserItem()"
+            (click)="insertItem()"
         >
             {{ action }}
         </button>

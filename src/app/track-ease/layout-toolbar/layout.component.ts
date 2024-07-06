@@ -1,8 +1,9 @@
-import { Component } from '@angular/core'
+import { Component, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
 import { Observable, map, shareReplay } from 'rxjs'
 import { AuthService } from 'src/app/services/auth.service'
+import { MatDrawer } from '@angular/material/sidenav'
 
 @Component({
     selector: 'app-layout',
@@ -10,7 +11,7 @@ import { AuthService } from 'src/app/services/auth.service'
     styleUrls: ['./layout.component.scss'],
 })
 export class LayoutComponent {
-    opned = true
+    @ViewChild('drawer') drawer!: MatDrawer
 
     routes = [
         { path: '/homePage', name: 'Home Page', icon: 'home' },
@@ -34,10 +35,10 @@ export class LayoutComponent {
         shareReplay()
     )
 
-    toggleSidenav(): void {
+    toggleDrawerOnHandset(): void {
         this.isHandset$.subscribe((isHandset) => {
             if (isHandset) {
-                this.opned = !this.opned
+                this.drawer.toggle()
             }
         })
     }
