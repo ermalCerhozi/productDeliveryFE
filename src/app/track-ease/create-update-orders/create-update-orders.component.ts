@@ -184,13 +184,24 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
 
     // TODO: Maybe store the most selled product in chache so they can be accessed quicker
     calculateTotalOrderPrice(orderItems: any[]) {
-        const productNames = orderItems.map((item) => item.product.value)
-        this.bakeryManagementService.getProductPricesByIds(productNames).subscribe((prices) => {
+        // Filter out order items without a product
+        const validOrderItems = orderItems.filter(
+            (item) => item.product && (item.quantity || item.returned_quantity)
+        )
+        if (validOrderItems.length === 0) {
+            return
+        }
+
+        //Get the product IDs of the valid order items and retrueve their prices
+        const productIds = validOrderItems.map((item) => item.product.value)
+        this.bakeryManagementService.getProductPricesByIds(productIds).subscribe((prices) => {
             this.totalOrderPrice = 0
-            orderItems.forEach((item) => {
+
+            // Calculate the total order price
+            validOrderItems.forEach((item) => {
                 const price = prices[item.product.label]
-                const quantity = item.quantity
-                const returnedQuantity = item.returned_quantity
+                const quantity = item.quantity ? item.quantity : 0
+                const returnedQuantity = item.returned_quantity ? item.returned_quantity : 0
                 this.totalOrderPrice += price * (quantity - returnedQuantity)
             })
         })
@@ -292,10 +303,10 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                 order_items: formValue.order_items.map((item: any) => ({
                     ...item,
                     product: item.product.value,
+                    quantity: item.quantity === '' ? 0 : item.quantity,
                 })),
             }
             this.saveOrder.emit(newValue)
-            console.log('onSubmit', JSON.stringify(newValue, null, 4))
         }
     }
 }
