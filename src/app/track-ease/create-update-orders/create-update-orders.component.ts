@@ -189,6 +189,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
             (item) => item.product && (item.quantity || item.returned_quantity)
         )
         if (validOrderItems.length === 0) {
+            this.totalOrderPrice = 0
             return
         }
 

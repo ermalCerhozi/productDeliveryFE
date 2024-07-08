@@ -241,7 +241,7 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     deleteOrder(): void {
         this.dialog.open(this.confirmationDialogContainer, {
             width: '70%',
-            height: '20%',
+            maxHeight: '40%',
         })
     }
 

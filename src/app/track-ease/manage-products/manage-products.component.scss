@@ -1,12 +1,5 @@
 table {
     width: 100%;
-    table-layout: fixed;
-
-    td {
-        white-space: nowrap; 
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
 }
 
 .spinner-container {
