@@ -305,6 +305,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                     ...item,
                     product: item.product.value,
                     quantity: item.quantity === '' ? 0 : item.quantity,
+                    returned_quantity: item.returned_quantity === '' ? 0 : item.returned_quantity,
                 })),
             }
             this.saveOrder.emit(newValue)
