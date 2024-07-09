@@ -14,6 +14,7 @@ import { MatPaginator } from '@angular/material/paginator'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
+import { SnackBarService } from 'src/app/services/snackbar.service'
 
 @Component({
     selector: 'app-manage-orders',
@@ -73,6 +74,7 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         public bakeryManagementService: BakeryManagementService,
         public searchService: SearchService,
         private bakeryManagementApiService: BakeryManagementApiService,
+        private snackBarService: SnackBarService,
         public dialog: MatDialog
     ) {
         this.filterResults = this.searchService.getFilterResults()
@@ -174,23 +176,30 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     saveOrder(form: any): void {
+        this.isLoading = true
         this.dialog.closeAll()
         if (this.action === 'create') {
             this.bakeryManagementApiService.createOrder(form).subscribe({
                 next: () => {
+                    this.snackBarService.showSuccess('Created successfully')
                     this.getOrdersList(false)
+                    this.isLoading = false
                 },
                 error: (error) => {
                     console.log('Error: ', error)
+                    this.isLoading = false
                 },
             })
         } else {
             this.bakeryManagementApiService.updateOrder(this.activeOrder!.id, form).subscribe({
                 next: () => {
+                    this.snackBarService.showSuccess('Updated successfully')
                     this.getOrdersList(false)
+                    this.isLoading = false
                 },
                 error: (error) => {
                     console.log('Error: ', error)
+                    this.isLoading = false
                 },
             })
         }

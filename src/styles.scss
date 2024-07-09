@@ -22,3 +22,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .form-field-without-hint .mat-mdc-form-field-subscript-wrapper {
     display: none;
 }
+
+.mat-mdc-snack-bar-container {
+    &.snack-bar-success {
+      --mdc-snackbar-container-color: #5cb85c;
+      --mat-mdc-snack-bar-button-color: #fff;
+      --mdc-snackbar-supporting-text-color: #fff;
+    }
+    &.snack-bar-error {
+        --mdc-snackbar-container-color: #cc0000;
+        --mat-mdc-snack-bar-button-color: #fff;
+        --mdc-snackbar-supporting-text-color: #fff;
+    }
+}

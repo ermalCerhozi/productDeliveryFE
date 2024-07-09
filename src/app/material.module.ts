@@ -20,6 +20,7 @@ import { MatChipsModule } from '@angular/material/chips'
 import { MAT_DATE_LOCALE } from '@angular/material/core'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatDividerModule } from '@angular/material/divider'
+import { MatSnackBarModule } from '@angular/material/snack-bar'
 
 const materialComponents = [
     MatCardModule,
@@ -42,6 +43,7 @@ const materialComponents = [
     MatChipsModule,
     MatSlideToggleModule,
     MatDividerModule,
+    MatSnackBarModule,
 ]
 
 @NgModule({

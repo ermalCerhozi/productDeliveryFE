@@ -25,6 +25,7 @@ import { PlotlyModule } from 'angular-plotly.js'
 import { LocalStorageService } from 'ngx-webstorage'
 import { AuthInterceptor } from 'src/app/interceptors/auth.interceptor'
 import { HapiErrorInterceptor } from 'src/app/interceptors/auth-error.interceptor'
+import { ApiInterceptor } from 'src/app/services/api.interceptor'
 
 PlotlyModule.plotlyjs = PlotlyJS
 
@@ -64,6 +65,11 @@ PlotlyModule.plotlyjs = PlotlyJS
         {
             provide: HTTP_INTERCEPTORS,
             useClass: HapiErrorInterceptor,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ApiInterceptor,
             multi: true,
         },
     ],
