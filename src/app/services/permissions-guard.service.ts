@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router'
+import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { AuthService } from 'src/app/services/auth.service'
@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/services/auth.service'
 @Injectable({
     providedIn: 'root',
 })
-export class PermissionsGuard implements CanActivate {
+export class PermissionsGuard  {
     currentUser!: UserEntity | null
 
     constructor(private authService: AuthService, private router: Router) {}
