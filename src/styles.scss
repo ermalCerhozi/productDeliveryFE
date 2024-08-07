@@ -1,17 +1,9 @@
-@import '@angular/material/theming';
-
-$custom-primary: mat-palette($mat-blue, 500);
-$custom-accent: mat-palette($mat-amber);
-$custom-warn: mat-palette($mat-red);
-
-$custom-theme: mat-light-theme($custom-primary, $custom-accent, $custom-warn);
-@include angular-material-theme($custom-theme);
-
+/* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-// Overwrite css for mat option label to be shown with ellipsis
+
 .mat-mdc-option .mdc-list-item__primary-text {
     overflow: hidden;
     text-overflow: ellipsis;
