@@ -1,67 +1,59 @@
-import { NgModule } from '@angular/core'
-import { RouterModule, Routes } from '@angular/router'
-import { HomePageComponent } from 'src/app/track-ease/home-page/home-page.component'
-import { ManageUsersComponent } from 'src/app/track-ease/manage-users/manage-users.component'
-import { ManageOrdersComponent } from 'src/app/track-ease/manage-orders/manage-orders.component'
-import { ManageProductsComponent } from 'src/app/track-ease/manage-products/manage-products.component'
-import { NotFoundComponent } from 'src/app/track-ease/not-found/not-found.component'
-import { SignInComponent } from 'src/app/track-ease/sign-in/sign-in.component'
-import { LayoutComponent } from 'src/app/track-ease/layout-toolbar/layout.component'
-import { AuthGuard } from 'src/app/services/auth-guard.service'
-import { PermissionsGuard } from 'src/app/services/permissions-guard.service'
-import { UserProfileComponent } from 'src/app/track-ease/user-profile/user-profile.component'
-import { SettingsComponent } from 'src/app/track-ease/settings/settings.component'
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { NotFoundComponent } from 'src/app/track-ease/not-found/not-found.component';
+import { SignInComponent } from 'src/app/track-ease/sign-in/sign-in.component';
+import { LayoutComponent } from 'src/app/track-ease/layout-toolbar/layout.component';
+import { AuthGuard } from './services/auth-guard.service';
+import { PermissionsGuard } from './services/permissions-guard.service';
 
 const routes: Routes = [
-    {
-        path: '',
-        component: SignInComponent,
-    },
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    { path: 'login', component: SignInComponent },
     {
         path: '',
         component: LayoutComponent,
-        // canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.
+        canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.
         children: [
             {
                 path: 'homePage',
-                component: HomePageComponent,
-                // canActivate: [PermissionsGuard],
-                // data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
+                loadComponent: () => import('src/app/track-ease/home-page/home-page.component').then(c => c.HomePageComponent),
+                canActivate: [PermissionsGuard],
+                data: { expectedRoles: ['admin', 'user'] }
             },
             {
                 path: 'manageOrders',
-                component: ManageOrdersComponent,
-                // canActivate: [PermissionsGuard],
-                // data: { expectedRoles: ['Admin', 'Manager'] },
+                loadComponent: () => import('src/app/track-ease/manage-orders/manage-orders.component').then(c => c.ManageOrdersComponent),
+                canActivate: [PermissionsGuard],
+                data: { expectedRoles: ['admin'] }
             },
             {
                 path: 'manageProducts',
-                component: ManageProductsComponent,
-                // canActivate: [PermissionsGuard],
-                // data: { expectedRoles: ['Admin'] },
+                loadComponent: () => import('src/app/track-ease/manage-products/manage-products.component').then(c => c.ManageProductsComponent),
+                canActivate: [PermissionsGuard],
+                data: { expectedRoles: ['admin'] }
             },
             {
                 path: 'manageUsers',
-                component: ManageUsersComponent,
-                // canActivate: [PermissionsGuard],
-                // data: { expectedRoles: ['Admin'] },
+                loadComponent: () => import('src/app/track-ease/manage-users/manage-users.component').then(c => c.ManageUsersComponent),
+                canActivate: [PermissionsGuard],
+                data: { expectedRoles: ['admin'] }
             },
             {
                 path: 'profile',
-                component: UserProfileComponent,
-                // canActivate: [PermissionsGuard],
-                // data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
+                loadComponent: () => import('src/app/track-ease/user-profile/user-profile.component').then(c => c.UserProfileComponent),
+                canActivate: [PermissionsGuard],
+                data: { expectedRoles: ['user'] }
             },
             {
                 path: 'settings',
-                component: SettingsComponent,
-                // canActivate: [PermissionsGuard],
-                // data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
+                loadComponent: () => import('src/app/track-ease/settings/settings.component').then(c => c.SettingsComponent),
+                canActivate: [PermissionsGuard],
+                data: { expectedRoles: ['admin', 'user'] }
             },
         ],
     },
     { path: '**', component: NotFoundComponent },
-]
+];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
