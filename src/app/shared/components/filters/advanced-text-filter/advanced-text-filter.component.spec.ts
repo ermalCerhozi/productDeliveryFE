@@ -8,8 +8,8 @@ describe('AdvancedTextFilterComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [AdvancedTextFilterComponent],
-        }).compileComponents()
+    imports: [AdvancedTextFilterComponent],
+}).compileComponents()
 
         fixture = TestBed.createComponent(AdvancedTextFilterComponent)
         component = fixture.componentInstance

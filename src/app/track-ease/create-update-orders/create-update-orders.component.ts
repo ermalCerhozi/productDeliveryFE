@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import {
     Observable,
     Subject,
@@ -15,12 +15,41 @@ import { cloneDeep, isEqual } from 'lodash'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
 import { ViewChild } from '@angular/core'
-import { MatAutocomplete } from '@angular/material/autocomplete'
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete'
+import { MatDialogTitle, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatOption } from '@angular/material/core';
+import { MatMiniFabButton, MatFabButton, MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-create-update-orders',
     templateUrl: './create-update-orders.component.html',
     styleUrls: ['./create-update-orders.component.scss'],
+    standalone: true,
+    imports: [
+        MatDialogTitle,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatAutocompleteTrigger,
+        MatAutocomplete,
+        NgFor,
+        MatOption,
+        NgIf,
+        MatError,
+        MatMiniFabButton,
+        MatIcon,
+        MatFabButton,
+        MatDialogActions,
+        MatButton,
+        MatDialogClose,
+        AsyncPipe,
+    ],
 })
 export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete

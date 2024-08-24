@@ -4,8 +4,8 @@ import { AppComponent } from 'src/trackEase/app.component'
 describe('AppComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [AppComponent],
-        }).compileComponents()
+    imports: [AppComponent],
+}).compileComponents()
     })
 
     it('should create the app', () => {

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator } from '@angular/material/paginator'
-import { MatTableDataSource } from '@angular/material/table'
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow } from '@angular/material/table'
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { CreateUpdateDialogComponent } from 'src/app/shared/components/create-update-dialog/create-update-dialog.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
@@ -12,11 +12,45 @@ import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/Dropd
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
 import { Subject, map, take } from 'rxjs'
 import { SearchService } from 'src/app/services/search.service'
+import { NgTemplateOutlet, NgIf } from '@angular/common';
+import { MatButton } from '@angular/material/button';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component';
+import { CreateUpdateDialogComponent as CreateUpdateDialogComponent_1 } from '../../shared/components/create-update-dialog/create-update-dialog.component';
+import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component';
 
 @Component({
     selector: 'app-manage-users',
     templateUrl: './manage-users.component.html',
     styleUrls: ['./manage-users.component.scss'],
+    standalone: true,
+    imports: [
+        NgTemplateOutlet,
+        MatTable,
+        MatColumnDef,
+        MatHeaderCellDef,
+        MatHeaderCell,
+        MatCellDef,
+        MatCell,
+        MatButton,
+        MatMenuTrigger,
+        MatIcon,
+        MatHeaderRowDef,
+        MatHeaderRow,
+        MatRowDef,
+        MatRow,
+        MatNoDataRow,
+        NgIf,
+        MatProgressSpinner,
+        MatPaginator,
+        TopBarComponent,
+        CreateUpdateDialogComponent_1,
+        ConfirmationDialogComponent_1,
+        DropdownMenuListComponent,
+    ],
 })
 export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
     unsubscribe = new Subject<void>()

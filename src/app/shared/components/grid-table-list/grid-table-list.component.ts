@@ -10,6 +10,10 @@ import {
     TemplateRef,
     ViewChild,
 } from '@angular/core'
+import { NgIf, NgTemplateOutlet, NgSwitch, NgSwitchCase, NgFor } from '@angular/common';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
+import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 
 export type GridListScrollType = 'default' | 'infinite' | 'virtual'
 
@@ -17,6 +21,20 @@ export type GridListScrollType = 'default' | 'infinite' | 'virtual'
     selector: 'app-grid-table-list',
     templateUrl: './grid-table-list.component.html',
     styleUrls: ['./grid-table-list.component.css'],
+    standalone: true,
+    imports: [
+        NgIf,
+        NgTemplateOutlet,
+        NgSwitch,
+        NgSwitchCase,
+        MatGridList,
+        NgFor,
+        MatGridTile,
+        InfiniteScrollDirective,
+        CdkVirtualScrollViewport,
+        CdkFixedSizeVirtualScroll,
+        CdkVirtualForOf,
+    ],
 })
 export class GridTableListComponent implements AfterViewChecked, OnChanges {
     @Input() minItemHeight = 100

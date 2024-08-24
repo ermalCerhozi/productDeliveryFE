@@ -1,7 +1,10 @@
 import { Component, ChangeDetectionStrategy, Input, OnInit, OnDestroy } from '@angular/core'
-import { AbstractControl, FormGroup } from '@angular/forms'
+import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { Subscription } from 'rxjs'
+import { NgStyle } from '@angular/common';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatSlider, MatSliderThumb } from '@angular/material/slider';
 
 interface Hint {
     message: string
@@ -23,6 +26,15 @@ const CONSTANTS: Constants = {
     templateUrl: './password-strength.component.html',
     styleUrls: ['./password-strength.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgStyle,
+        FormsModule,
+        ReactiveFormsModule,
+        MatCheckbox,
+        MatSlider,
+        MatSliderThumb,
+    ],
 })
 export class PasswordStrengthComponent implements OnInit, OnDestroy {
     @Input() public form: FormGroup = new FormGroup({})

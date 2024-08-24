@@ -15,14 +15,14 @@ describe('[Integration] PasswordStrengthComponent', () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations: [PasswordStrengthComponent],
-            imports: [
-                ReactiveFormsModule,
-                MockModule(MatFormFieldModule),
-                MockModule(MatCheckboxModule),
-                MockModule(MatSliderModule),
-            ],
-        }).compileComponents()
+    imports: [
+        ReactiveFormsModule,
+        MockModule(MatFormFieldModule),
+        MockModule(MatCheckboxModule),
+        MockModule(MatSliderModule),
+        PasswordStrengthComponent,
+    ],
+}).compileComponents()
     }))
 
     beforeEach(() => {

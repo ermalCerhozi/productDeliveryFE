@@ -1,13 +1,21 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
 import { phoneNumberRegex } from 'src/app/shared/common/constants'
 import { AuthService } from 'src/app/services/auth.service'
+import { NgIf, NgClass } from '@angular/common';
 
 @Component({
     selector: 'app-sign-in-forgot-password',
     templateUrl: './sign-in.component.html',
     styleUrls: ['./sign-in.component.css'],
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        NgClass,
+    ],
 })
 export class SignInComponent implements OnInit {
     @ViewChild('containerDiv') containerDiv!: ElementRef

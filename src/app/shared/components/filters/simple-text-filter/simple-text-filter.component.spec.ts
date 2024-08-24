@@ -8,8 +8,8 @@ describe('SimpleTextFilterComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [SimpleTextFilterComponent],
-        }).compileComponents()
+    imports: [SimpleTextFilterComponent],
+}).compileComponents()
 
         fixture = TestBed.createComponent(SimpleTextFilterComponent)
         component = fixture.componentInstance

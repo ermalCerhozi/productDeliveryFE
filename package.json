@@ -21,12 +21,9 @@
     "@angular/platform-browser": "^18.2.1",
     "@angular/platform-browser-dynamic": "^18.2.1",
     "@angular/router": "^18.2.1",
-    "@types/plotly.js-dist-min": "^2.3.4",
-    "angular-plotly.js": "^5.2.2",
     "font-awesome": "^4.7.0",
     "ngx-infinite-scroll": "^18.0.0",
     "ngx-webstorage": "^18.0.0",
-    "plotly.js-dist-min": "^2.34.0",
     "rxjs": "^7.5.7",
     "tslib": "^2.7.0",
     "zone.js": "^0.15.0"

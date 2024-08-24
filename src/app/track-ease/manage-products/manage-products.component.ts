@@ -7,7 +7,7 @@ import {
     TemplateRef,
     OnDestroy,
 } from '@angular/core'
-import { MatTableDataSource } from '@angular/material/table'
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow } from '@angular/material/table'
 import { ProductEntity } from 'src/app/shared/models/product.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
@@ -21,12 +21,47 @@ import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/Dropd
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
 import { Subject } from 'rxjs'
 import { SearchService } from 'src/app/services/search.service'
+import { NgTemplateOutlet, NgIf, DecimalPipe } from '@angular/common';
+import { MatButton } from '@angular/material/button';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component';
+import { CreateUpdateDialogComponent as CreateUpdateDialogComponent_1 } from '../../shared/components/create-update-dialog/create-update-dialog.component';
+import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-manage-products',
     templateUrl: './manage-products.component.html',
     styleUrls: ['./manage-products.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgTemplateOutlet,
+        MatTable,
+        MatColumnDef,
+        MatHeaderCellDef,
+        MatHeaderCell,
+        MatCellDef,
+        MatCell,
+        MatButton,
+        MatMenuTrigger,
+        MatIcon,
+        DropdownMenuListComponent,
+        MatHeaderRowDef,
+        MatHeaderRow,
+        MatRowDef,
+        MatRow,
+        MatNoDataRow,
+        NgIf,
+        MatProgressSpinner,
+        MatPaginator,
+        TopBarComponent,
+        CreateUpdateDialogComponent_1,
+        ConfirmationDialogComponent_1,
+        DecimalPipe,
+    ],
 })
 export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     unsubscribe = new Subject<void>()

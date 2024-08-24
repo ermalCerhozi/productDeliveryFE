@@ -8,6 +8,7 @@ import {
     QueryList,
 } from '@angular/core'
 import { AppFilterPanel } from 'src/app/shared/components/filters-panel/filter-panel.component'
+import { NgFor, NgTemplateOutlet } from '@angular/common';
 
 /**
  * @description component to display a list of filters
@@ -26,6 +27,8 @@ import { AppFilterPanel } from 'src/app/shared/components/filters-panel/filter-p
     selector: 'app-filters-panel',
     templateUrl: './filters-panel.component.html',
     styleUrls: ['./filters-panel.component.scss'],
+    standalone: true,
+    imports: [NgFor, NgTemplateOutlet],
 })
 export class FiltersPanelComponent implements AfterViewInit {
     private _filters!: Record<string, string[]>

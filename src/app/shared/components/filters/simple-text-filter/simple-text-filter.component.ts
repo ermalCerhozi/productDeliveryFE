@@ -10,11 +10,17 @@ import {
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core'
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
-import { MAT_SELECT_CONFIG } from '@angular/material/select'
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { MAT_SELECT_CONFIG, MatSelect } from '@angular/material/select'
 
 import { AppFilter } from 'src/app/shared/components/filters/filter.component'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
+import { MatFormField } from '@angular/material/form-field';
+import { NgStyle, NgIf, NgFor } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { MatOption } from '@angular/material/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatIconButton } from '@angular/material/button';
 @Component({
     selector: 'app-simple-text-filter',
     templateUrl: './simple-text-filter.component.html',
@@ -27,6 +33,20 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
         },
     ],
     encapsulation: ViewEncapsulation.None,
+    standalone: true,
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormField,
+        NgStyle,
+        NgIf,
+        MatIcon,
+        MatSelect,
+        MatOption,
+        MatProgressSpinner,
+        NgFor,
+        MatIconButton,
+    ],
 })
 export class SimpleTextFilterComponent implements OnInit, OnChanges {
     constructor(private fb: FormBuilder) {}
