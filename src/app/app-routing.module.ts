@@ -20,43 +20,43 @@ const routes: Routes = [
     {
         path: '',
         component: LayoutComponent,
-        canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.
+        // canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.
         children: [
             {
                 path: 'homePage',
                 component: HomePageComponent,
-                canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
+                // canActivate: [PermissionsGuard],
+                // data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
             },
             {
                 path: 'manageOrders',
                 component: ManageOrdersComponent,
-                canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin', 'Manager'] },
+                // canActivate: [PermissionsGuard],
+                // data: { expectedRoles: ['Admin', 'Manager'] },
             },
             {
                 path: 'manageProducts',
                 component: ManageProductsComponent,
-                canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin'] },
+                // canActivate: [PermissionsGuard],
+                // data: { expectedRoles: ['Admin'] },
             },
             {
                 path: 'manageUsers',
                 component: ManageUsersComponent,
-                canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin'] },
+                // canActivate: [PermissionsGuard],
+                // data: { expectedRoles: ['Admin'] },
             },
             {
                 path: 'profile',
                 component: UserProfileComponent,
-                canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
+                // canActivate: [PermissionsGuard],
+                // data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
             },
             {
                 path: 'settings',
                 component: SettingsComponent,
-                canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
+                // canActivate: [PermissionsGuard],
+                // data: { expectedRoles: ['Admin', 'Manager', 'Seller'] },
             },
         ],
     },
