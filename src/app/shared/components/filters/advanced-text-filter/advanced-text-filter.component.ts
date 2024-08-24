@@ -12,18 +12,24 @@ import {
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core'
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import {
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+} from '@angular/forms'
 import { Subject, debounceTime, takeUntil } from 'rxjs'
 import { AppFilter } from 'src/app/shared/components/filters/filter.component'
 import { MAT_SELECT_CONFIG, MatSelect } from '@angular/material/select'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
-import { MatFormField, MatPrefix, MatLabel, MatSuffix } from '@angular/material/form-field';
-import { NgStyle, NgIf, NgFor } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
-import { MatOption } from '@angular/material/core';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatInput } from '@angular/material/input';
+import { MatFormField, MatPrefix, MatLabel, MatSuffix } from '@angular/material/form-field'
+import { NgStyle, NgIf, NgFor } from '@angular/common'
+import { MatIcon } from '@angular/material/icon'
+import { MatOption } from '@angular/material/core'
+import { MatProgressSpinner } from '@angular/material/progress-spinner'
+import { MatInput } from '@angular/material/input'
 
 @Component({
     selector: 'app-advanced-text-filter',

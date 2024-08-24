@@ -11,9 +11,9 @@ import {
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
 
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
-import { MatChipListbox, MatChipOption, MatChipRemove } from '@angular/material/chips';
-import { NgFor, NgIf } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
+import { MatChipListbox, MatChipOption, MatChipRemove } from '@angular/material/chips'
+import { NgFor, NgIf } from '@angular/common'
+import { MatIcon } from '@angular/material/icon'
 
 @Component({
     selector: 'app-filters-result',
@@ -21,14 +21,7 @@ import { MatIcon } from '@angular/material/icon';
     styleUrls: ['./filters-result.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
-    imports: [
-        MatChipListbox,
-        NgFor,
-        MatChipOption,
-        NgIf,
-        MatChipRemove,
-        MatIcon,
-    ],
+    imports: [MatChipListbox, NgFor, MatChipOption, NgIf, MatChipRemove, MatIcon],
 })
 export class FiltersResultComponent implements OnInit, OnChanges {
     @Input() labelTK?: string

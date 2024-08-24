@@ -8,8 +8,8 @@ describe('SimpleRadioSelectFilterComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [SimpleRadioSelectFilterComponent],
-}).compileComponents()
+            imports: [SimpleRadioSelectFilterComponent],
+        }).compileComponents()
 
         fixture = TestBed.createComponent(SimpleRadioSelectFilterComponent)
         component = fixture.componentInstance

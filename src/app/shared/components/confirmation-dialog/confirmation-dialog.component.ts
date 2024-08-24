@@ -1,7 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { MatButton } from '@angular/material/button';
+import {
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+} from '@angular/material/dialog'
+import { CdkScrollable } from '@angular/cdk/scrolling'
+import { MatButton } from '@angular/material/button'
 
 @Component({
     selector: 'app-confirmation-dialog',

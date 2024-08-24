@@ -28,7 +28,7 @@
     <div class="profile-username">{{ loggedInUser.first_name }} {{ loggedInUser.last_name }}</div>
 
     <div class="profile-registered-since">
-        <span>Registered since: {{ loggedInUser.created_at | date : 'd/M/yy' }}</span>
+        <span>Registered since: {{ loggedInUser.created_at | date: 'd/M/yy' }}</span>
     </div>
 
     <form
@@ -40,7 +40,7 @@
         <mat-form-field appearance="fill">
             <mat-label>Email</mat-label>
             <input matInput type="email" formControlName="email" placeholder="Email" />
-        </mat-form-field>        
+        </mat-form-field>
 
         <mat-form-field appearance="fill">
             <mat-label>Phone Number</mat-label>

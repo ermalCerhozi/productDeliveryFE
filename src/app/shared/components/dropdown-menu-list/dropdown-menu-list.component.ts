@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core'
 import { MatMenu, MatMenuItem } from '@angular/material/menu'
 import { DropdownMenuListItem, DropdownEvent } from 'src/app/shared/models/DropdownMenuListItem'
-import { NgFor, NgStyle } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
+import { NgFor, NgStyle } from '@angular/common'
+import { MatIcon } from '@angular/material/icon'
 
 @Component({
     selector: 'app-dropdown-menu-list',
@@ -10,13 +10,7 @@ import { MatIcon } from '@angular/material/icon';
     styleUrls: ['./dropdown-menu-list.component.scss'],
     encapsulation: ViewEncapsulation.None,
     standalone: true,
-    imports: [
-        MatMenu,
-        NgFor,
-        MatMenuItem,
-        NgStyle,
-        MatIcon,
-    ],
+    imports: [MatMenu, NgFor, MatMenuItem, NgStyle, MatIcon],
 })
 export class DropdownMenuListComponent {
     @Input() width = '230px'

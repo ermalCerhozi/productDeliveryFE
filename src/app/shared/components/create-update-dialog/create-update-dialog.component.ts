@@ -1,19 +1,30 @@
 import { Component, Input, Output, EventEmitter, OnDestroy, OnInit } from '@angular/core'
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import {
+    FormBuilder,
+    FormGroup,
+    Validators,
+    FormsModule,
+    ReactiveFormsModule,
+} from '@angular/forms'
 import { ProductEntity } from 'src/app/shared/models/product.model'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { Subject } from 'rxjs'
 import { cloneDeep, isEqual } from 'lodash'
-import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
-import { NgSwitch, NgSwitchCase, NgIf } from '@angular/common';
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { MatFormField, MatLabel, MatError, MatSuffix } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatSelect } from '@angular/material/select';
-import { MatOption } from '@angular/material/core';
-import { MatIconButton, MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
+import {
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+} from '@angular/material/dialog'
+import { NgSwitch, NgSwitchCase, NgIf } from '@angular/common'
+import { CdkScrollable } from '@angular/cdk/scrolling'
+import { MatFormField, MatLabel, MatError, MatSuffix } from '@angular/material/form-field'
+import { MatInput } from '@angular/material/input'
+import { MatSelect } from '@angular/material/select'
+import { MatOption } from '@angular/material/core'
+import { MatIconButton, MatButton } from '@angular/material/button'
+import { MatIcon } from '@angular/material/icon'
 
 @Component({
     selector: 'app-create-update-dialog',
@@ -59,7 +70,10 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     @Output() createUser = new EventEmitter()
     @Output() updateUser = new EventEmitter<UserEntity>()
 
-    constructor(public bakeryManagementService: BakeryManagementService, private fb: FormBuilder) {}
+    constructor(
+        public bakeryManagementService: BakeryManagementService,
+        private fb: FormBuilder
+    ) {}
 
     ngOnInit(): void {
         this.initializeForm()

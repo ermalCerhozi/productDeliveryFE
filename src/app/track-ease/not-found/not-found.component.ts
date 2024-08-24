@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { MatButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button'
 
 @Component({
     selector: 'app-not-found',

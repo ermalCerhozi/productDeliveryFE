@@ -10,10 +10,14 @@ import {
     TemplateRef,
     ViewChild,
 } from '@angular/core'
-import { NgIf, NgTemplateOutlet, NgSwitch, NgSwitchCase, NgFor } from '@angular/common';
-import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
-import { CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
+import { NgIf, NgTemplateOutlet, NgSwitch, NgSwitchCase, NgFor } from '@angular/common'
+import { MatGridList, MatGridTile } from '@angular/material/grid-list'
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll'
+import {
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+} from '@angular/cdk/scrolling'
 
 export type GridListScrollType = 'default' | 'infinite' | 'virtual'
 

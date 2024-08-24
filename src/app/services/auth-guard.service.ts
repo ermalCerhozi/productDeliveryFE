@@ -6,8 +6,11 @@ import { AuthService } from 'src/app/services/auth.service'
 @Injectable({
     providedIn: 'root',
 })
-export class AuthGuard  {
-    constructor(private authService: AuthService, private router: Router) {}
+export class AuthGuard {
+    constructor(
+        private authService: AuthService,
+        private router: Router
+    ) {}
 
     canActivate(): Observable<boolean | UrlTree> {
         return this.checkLogin()

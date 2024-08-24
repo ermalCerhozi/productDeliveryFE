@@ -8,8 +8,8 @@ describe('FiltersPanelComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [FiltersPanelComponent],
-}).compileComponents()
+            imports: [FiltersPanelComponent],
+        }).compileComponents()
 
         fixture = TestBed.createComponent(FiltersPanelComponent)
         component = fixture.componentInstance

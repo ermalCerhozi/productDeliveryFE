@@ -1,16 +1,22 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import {
+    FormBuilder,
+    FormGroup,
+    Validators,
+    FormsModule,
+    ReactiveFormsModule,
+} from '@angular/forms'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { isEqual, cloneDeep } from 'lodash'
 import { MatDialog } from '@angular/material/dialog'
 import { ChangePasswordComponent } from 'src/app/track-ease/change-password/change-password.component'
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { NgIf, DatePipe } from '@angular/common';
-import { MatToolbar } from '@angular/material/toolbar';
+import { MatButton, MatIconButton } from '@angular/material/button'
+import { MatIcon } from '@angular/material/icon'
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
+import { MatInput } from '@angular/material/input'
+import { NgIf, DatePipe } from '@angular/common'
+import { MatToolbar } from '@angular/material/toolbar'
 
 @Component({
     selector: 'app-user-profile',

@@ -1,7 +1,7 @@
 import { Component, ContentChildren, QueryList } from '@angular/core'
 import { AppFilter } from 'src/app/shared/components/filters/filter.component'
-import { FormsModule } from '@angular/forms';
-import { NgFor, NgTemplateOutlet } from '@angular/common';
+import { FormsModule } from '@angular/forms'
+import { NgFor, NgTemplateOutlet } from '@angular/common'
 
 /**
  * @description component to display a list of filters
@@ -20,11 +20,7 @@ import { NgFor, NgTemplateOutlet } from '@angular/common';
     templateUrl: './filters.component.html',
     styleUrls: ['./filters.component.scss'],
     standalone: true,
-    imports: [
-        FormsModule,
-        NgFor,
-        NgTemplateOutlet,
-    ],
+    imports: [FormsModule, NgFor, NgTemplateOutlet],
 })
 export class FiltersComponent {
     /**

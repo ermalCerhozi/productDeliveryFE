@@ -9,8 +9,8 @@ describe('DropdownMenuListComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-    imports: [MatMenuModule, DropdownMenuListComponent],
-}).compileComponents()
+            imports: [MatMenuModule, DropdownMenuListComponent],
+        }).compileComponents()
 
         fixture = TestBed.createComponent(DropdownMenuListComponent)
         component = fixture.componentInstance

@@ -8,7 +8,7 @@ import {
     QueryList,
 } from '@angular/core'
 import { AppFilterPanel } from 'src/app/shared/components/filters-panel/filter-panel.component'
-import { NgFor, NgTemplateOutlet } from '@angular/common';
+import { NgFor, NgTemplateOutlet } from '@angular/common'
 
 /**
  * @description component to display a list of filters

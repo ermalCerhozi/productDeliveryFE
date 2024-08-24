@@ -9,25 +9,38 @@ import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
 import { Observable, Subject, switchMap, takeUntil } from 'rxjs'
 import { CreateUpdateOrdersComponent } from 'src/app/track-ease/create-update-orders/create-update-orders.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow } from '@angular/material/table'
+import {
+    MatTableDataSource,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderCell,
+    MatCellDef,
+    MatCell,
+    MatHeaderRowDef,
+    MatHeaderRow,
+    MatRowDef,
+    MatRow,
+    MatNoDataRow,
+} from '@angular/material/table'
 import { MatPaginator } from '@angular/material/paginator'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
 import { SnackBarService } from 'src/app/services/snackbar.service'
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { FiltersComponent } from '../../shared/components/filters/filters.component';
-import { SimpleRadioSelectFilterComponent } from '../../shared/components/filters/simple-radio-select-filter/simple-radio-select-filter.component';
-import { AdvancedTextFilterComponent } from '../../shared/components/filters/advanced-text-filter/advanced-text-filter.component';
-import { MatDivider } from '@angular/material/divider';
-import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common';
-import { FiltersResultComponent } from '../../shared/components/filters-panel/filters-result/filters-result.component';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { CreateUpdateOrdersComponent as CreateUpdateOrdersComponent_1 } from '../create-update-orders/create-update-orders.component';
-import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component';
+import { MatButton, MatIconButton } from '@angular/material/button'
+import { MatIcon } from '@angular/material/icon'
+import { FiltersComponent } from '../../shared/components/filters/filters.component'
+import { SimpleRadioSelectFilterComponent } from '../../shared/components/filters/simple-radio-select-filter/simple-radio-select-filter.component'
+import { AdvancedTextFilterComponent } from '../../shared/components/filters/advanced-text-filter/advanced-text-filter.component'
+import { MatDivider } from '@angular/material/divider'
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common'
+import { FiltersResultComponent } from '../../shared/components/filters-panel/filters-result/filters-result.component'
+import { MatMenuTrigger } from '@angular/material/menu'
+import { MatProgressSpinner } from '@angular/material/progress-spinner'
+import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'
+import { CreateUpdateOrdersComponent as CreateUpdateOrdersComponent_1 } from '../create-update-orders/create-update-orders.component'
+import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
 
 @Component({
     selector: 'app-manage-orders',
