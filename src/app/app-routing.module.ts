@@ -29,7 +29,7 @@ const routes: Routes = [
                     import('src/app/track-ease/manage-orders/manage-orders.component').then(
                         (c) => c.ManageOrdersComponent
                     ),
-                canActivate: [PermissionsGuard],
+                // canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin'] },
             },
             {
@@ -47,7 +47,7 @@ const routes: Routes = [
                     import('src/app/track-ease/manage-users/manage-users.component').then(
                         (c) => c.ManageUsersComponent
                     ),
-                canActivate: [PermissionsGuard],
+                // canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin'] },
             },
             {

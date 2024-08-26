@@ -206,6 +206,10 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         }
     }
 
+    getLastClientOrder() {
+        console.log('getLastClientOrder')
+    }
+
     populateOrderItems(orderItems: OrderItemEntity[]) {
         orderItems.forEach((orderItem: OrderItemEntity) => {
             this.orderItemsFormArray.push(

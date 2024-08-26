@@ -2,30 +2,37 @@
 
 <div class="dialog-content">
     <form [formGroup]="orderForm">
-        <mat-form-field class="client-field" appearance="outline">
-            <mat-label>Client</mat-label>
-            <input
-                matInput
-                formControlName="client"
-                [matAutocomplete]="autoCompleteClients"
-                (input)="clientSearchChange($event)"
-                (focus)="loadMoreClients()"
-                required
-            />
-            <mat-autocomplete
-                #autoCompleteClients="matAutocomplete"
-                [displayWith]="displayFn"
-                (opened)="onOpened(autoCompleteClients)"
-                (closed)="onClosed()"
-            >
-                <mat-option *ngFor="let client of clients | async" [value]="client">
-                    {{ client.label }}
-                </mat-option>
-            </mat-autocomplete>
-            <mat-error *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched">
-                Client is required
-            </mat-error>
-        </mat-form-field>
+        <div class="first-row">
+            <mat-form-field class="client-field" appearance="outline">
+                <mat-label>Client</mat-label>
+                <input
+                    matInput
+                    formControlName="client"
+                    [matAutocomplete]="autoCompleteClients"
+                    (input)="clientSearchChange($event)"
+                    (focus)="loadMoreClients()"
+                    required
+                />
+                <mat-autocomplete
+                    #autoCompleteClients="matAutocomplete"
+                    [displayWith]="displayFn"
+                    (opened)="onOpened(autoCompleteClients)"
+                    (closed)="onClosed()"
+                >
+                    <mat-option *ngFor="let client of clients | async" [value]="client">
+                        {{ client.label }}
+                    </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched">
+                    Client is required
+                </mat-error>
+            </mat-form-field>
+            @if(actionType === 'create'){
+                <button mat-mini-fab color="primary" type="button" (click)="getLastClientOrder()">
+                    <mat-icon>settings_backup_restore</mat-icon>
+                </button>
+            }
+        </div>
 
         <div
             formArrayName="order_items"
