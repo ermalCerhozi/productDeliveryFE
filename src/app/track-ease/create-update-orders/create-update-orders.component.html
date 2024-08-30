@@ -10,7 +10,6 @@
                     formControlName="client"
                     [matAutocomplete]="autoCompleteClients"
                     (input)="clientSearchChange($event)"
-                    (focus)="loadMoreClients()"
                     required
                 />
                 <mat-autocomplete
@@ -28,7 +27,7 @@
                 </mat-error>
             </mat-form-field>
             @if(actionType === 'create'){
-                <button mat-mini-fab color="primary" type="button" (click)="getLastClientOrder()">
+                <button [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched" mat-mini-fab color="primary" type="button" (click)="getLastClientOrder()">
                     <mat-icon>settings_backup_restore</mat-icon>
                 </button>
             }
@@ -39,15 +38,13 @@
             *ngFor="let item of orderItemsFormArray?.controls; let i = index"
         >
             <div [formGroupName]="i" class="order-items-fields">
-                <mat-form-field class="product-fileld" appearance="outline">
+                <mat-form-field class="product-fileld" appearance="outline" hideRequiredMarker>
                     <mat-label>Product</mat-label>
                     <input
-                        type="text"
                         matInput
                         formControlName="product"
                         [matAutocomplete]="autoCompleteProducts"
                         (input)="productSearchChange($event)"
-                        (focus)="loadMoreProducts()"
                         required
                     />
                     <mat-autocomplete

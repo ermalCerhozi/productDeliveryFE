@@ -4,7 +4,7 @@ import { Observable } from 'rxjs'
 import { ProductResponse, ProductEntity } from 'src/app/shared/models/product.model'
 import { UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/models/user.model'
 import { environment } from 'src/environments/environment'
-import { OrderResponse } from 'src/app/shared/models/order.model'
+import { OrderEntity, OrderResponse } from 'src/app/shared/models/order.model'
 import { NavigationContext } from 'src/app/shared/models/navigation-context.model'
 import {
     UserFiltersResponse,
@@ -105,8 +105,8 @@ export class BakeryManagementApiService {
         return this.httpClient.post<any>(`${this.basePath}/orders`, order)
     }
 
-    getOrders(): Observable<OrderResponse> {
-        return this.httpClient.get<any>(`${this.basePath}/orders`)
+    getLastOrderByClient(clientId: number): Observable<OrderEntity> {
+        return this.httpClient.get<OrderEntity>(`${this.basePath}/orders/last-order/${clientId}`)
     }
 
     updateOrder(orderId: number, result: Partial<any>): Observable<any> {

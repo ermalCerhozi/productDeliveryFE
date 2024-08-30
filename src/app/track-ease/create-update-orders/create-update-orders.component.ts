@@ -80,7 +80,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     orderForm: FormGroup = new FormGroup({})
     orderItemsFormArray!: FormArray
     totalOrderPrice = 0
-    private currentQuestionData!: any
+    private currentOrder!: any
 
     constructor(
         private formBuilder: FormBuilder,
@@ -95,9 +95,12 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.addFormControls()
+        // load the 20 first clients and products
+        this.loadMoreClients()
+        this.loadMoreProducts()
+        // patch the form with the initial values
         this.patchForm()
-        this.currentQuestionData = cloneDeep(this.orderForm.value)
+        this.currentOrder = cloneDeep(this.orderForm.value)
 
         this.subscribeToFormChanges()
     }
@@ -105,13 +108,6 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribe$.next()
         this.unsubscribe$.complete()
-    }
-
-    addFormControls() {
-        const formControls = this.getFormControls()
-        Object.keys(formControls).forEach((key) => {
-            this.orderForm.addControl(key, formControls[key])
-        })
     }
 
     /**
@@ -123,34 +119,28 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
      */
     private subscribeToFormChanges(): void {
         this.orderItemsFormArray.valueChanges.pipe().subscribe((orderItems: any[]) => {
-            // Recalculate the total order price
-            this.calculateTotalOrderPrice(orderItems)
-
-            // Update the list of selected products
-            this.selectedProducts = orderItems
-                .map((item) => item.product.label)
-                .filter(
-                    (value, index, self) => self.indexOf(value) === index && value !== undefined
-                )
-
-            // Filter the products list to exclude the selected products
-            this.products = combineLatest([this.products, this.selectedProducts]).pipe(
-                map(([products, selectedProducts]) => {
-                    const smth = products.filter(
-                        (product) => !selectedProducts.includes(product.label)
+            if (this.orderItemsFormArray.valid) {
+                // Recalculate the total order price
+                this.calculateTotalOrderPrice(orderItems)
+    
+                // Update the list of selected products
+                this.selectedProducts = orderItems
+                    .map((item) => item.product.label)
+                    .filter(
+                        (value, index, self) => self.indexOf(value) === index && value !== undefined
                     )
-                    return smth
-                })
-            )
+    
+                // Filter the products list to exclude the selected products
+                this.products = combineLatest([this.products, this.selectedProducts]).pipe(
+                    map(([products, selectedProducts]) => {
+                        const smth = products.filter(
+                            (product) => !selectedProducts.includes(product.label)
+                        )
+                        return smth
+                    })
+                )
+            }
         })
-    }
-
-    private getFormControls(): any {
-        return {
-            client: new FormControl('', Validators.required),
-            seller: new FormControl('', Validators.required),
-            order_items: new FormArray([]),
-        }
     }
 
     patchForm() {
@@ -158,7 +148,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         if (this.actionType === 'create') {
             formData = this.getCreateOrderFormData()
         } else if (this.actionType === 'update') {
-            formData = this.getUpdateOrderFormData()
+            formData = this.transformedOrder(this.order!)
             this.calculateTotalOrderPrice(formData.order_items) // Calculate the total order price for the update form
         }
 
@@ -180,34 +170,31 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         }
     }
 
-    getUpdateOrderFormData(): any {
-        if (!this.order) {
-            return
-        }
+    transformedOrder(order: OrderEntity): any {
         const orderClient = {
-            value: this.order.client.id,
-            label: this.order.client.first_name + ' ' + this.order.client.last_name,
+            value: order.client.id,
+            label: order.client.first_name + ' ' + order.client.last_name,
         }
         return {
             client: orderClient,
-            seller: this.order.seller.id,
-            order_items: this.order.order_items.map((item: any) => {
-                const orderProduct = {
-                    value: item.product.id,
-                    label: item.product.product_name,
-                }
-                return {
-                    id: item.id,
-                    quantity: item.quantity,
-                    returned_quantity: item.returned_quantity,
-                    product: orderProduct,
-                }
-            }),
+            seller: order.seller.id,
+            order_items: this.transformedOrderItems(order.order_items),
         }
     }
 
-    getLastClientOrder() {
-        console.log('getLastClientOrder')
+    transformedOrderItems(order_items: OrderItemEntity[]): any {
+        return order_items.map((item: any) => {
+            const orderProduct = {
+                value: item.product.id,
+                label: item.product.product_name,
+            }
+            return {
+                id: item.id,
+                quantity: item.quantity,
+                returned_quantity: item.returned_quantity,
+                product: orderProduct,
+            }
+        })
     }
 
     populateOrderItems(orderItems: OrderItemEntity[]) {
@@ -223,6 +210,21 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         })
     }
 
+    getLastClientOrder() {
+        const client = this.orderForm.get('client')!.value.value;
+        this.bakeryManagementService.getLastOrder(client).subscribe({
+            next: (res) => {
+                const transformedOrderItems = this.transformedOrderItems(res.order_items);
+                this.orderItemsFormArray.clear()
+                this.populateOrderItems(transformedOrderItems);
+            },
+            error: (error: Error) => {
+                console.log('There was an error getting the last order:', error)
+            },
+        })
+    }
+
+    // TODO: Needs refactoring
     // TODO: Maybe store the most selled product in chache so they can be accessed quicker
     calculateTotalOrderPrice(orderItems: any[]) {
         // Filter out order items without a product
@@ -298,7 +300,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     formHasChanged(): boolean {
-        return !isEqual(this.currentQuestionData, this.orderForm.value)
+        return !isEqual(this.currentOrder, this.orderForm.value)
     }
 
     // This function is triggered when the autocomplete panel is opened.

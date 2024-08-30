@@ -177,9 +177,8 @@ export class BakeryManagementService {
         return this.bakeryManagementApiService.getProductPricesByIds(ids)
     }
 
-    // TODO: This is to be deleted after dropdown paginaiton is implemented
-    getAllUsers(): Observable<UserEntity[]> {
-        return this.bakeryManagementApiService.getUsers()
+    getLastOrder(clientId: number): Observable<OrderEntity> {
+        return this.bakeryManagementApiService.getLastOrderByClient(clientId)
     }
 
     // TODO: remove this when the interceptor is implemneted to send the logged in user
