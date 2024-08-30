@@ -19,7 +19,6 @@ import {
 } from 'rxjs'
 import { OrderEntity, OrderItemEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { cloneDeep, isEqual } from 'lodash'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
 import { ViewChild } from '@angular/core'
@@ -31,6 +30,7 @@ import { NgFor, NgIf, AsyncPipe } from '@angular/common'
 import { MatOption } from '@angular/material/core'
 import { MatMiniFabButton, MatFabButton, MatButton } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
+import { cloneDeep, isEqual } from 'lodash-es'
 
 @Component({
     selector: 'app-create-update-orders',

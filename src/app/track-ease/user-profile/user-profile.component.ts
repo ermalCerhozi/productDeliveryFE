@@ -8,7 +8,7 @@ import {
 } from '@angular/forms'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { UserEntity } from 'src/app/shared/models/user.model'
-import { isEqual, cloneDeep } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash-es'
 import { MatDialog } from '@angular/material/dialog'
 import { ChangePasswordComponent } from 'src/app/track-ease/change-password/change-password.component'
 import { MatButton, MatIconButton } from '@angular/material/button'

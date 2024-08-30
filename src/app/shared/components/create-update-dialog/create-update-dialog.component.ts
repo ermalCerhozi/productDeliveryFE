@@ -10,7 +10,6 @@ import { ProductEntity } from 'src/app/shared/models/product.model'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { Subject } from 'rxjs'
-import { cloneDeep, isEqual } from 'lodash'
 import {
     MatDialogTitle,
     MatDialogContent,
@@ -25,6 +24,7 @@ import { MatSelect } from '@angular/material/select'
 import { MatOption } from '@angular/material/core'
 import { MatIconButton, MatButton } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
+import { cloneDeep, isEqual } from 'lodash-es'
 
 @Component({
     selector: 'app-create-update-dialog',
