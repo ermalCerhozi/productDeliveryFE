@@ -7,7 +7,6 @@ import { BakeryManagementService } from 'src/app/services/bakery-management.serv
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
 import { Observable, Subject, switchMap, takeUntil } from 'rxjs'
-import { CreateUpdateOrdersComponent } from 'src/app/track-ease/create-update-orders/create-update-orders.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import {
     MatTableDataSource,
@@ -27,20 +26,18 @@ import { MatPaginator } from '@angular/material/paginator'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
-import { SnackBarService } from 'src/app/services/snackbar.service'
 import { MatButton, MatIconButton } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
-import { FiltersComponent } from '../../shared/components/filters/filters.component'
-import { SimpleRadioSelectFilterComponent } from '../../shared/components/filters/simple-radio-select-filter/simple-radio-select-filter.component'
-import { AdvancedTextFilterComponent } from '../../shared/components/filters/advanced-text-filter/advanced-text-filter.component'
+import { FiltersComponent } from '../../../../shared/components/filters/filters.component'
+import { SimpleRadioSelectFilterComponent } from '../../../../shared/components/filters/simple-radio-select-filter/simple-radio-select-filter.component'
+import { AdvancedTextFilterComponent } from '../../../../shared/components/filters/advanced-text-filter/advanced-text-filter.component'
 import { MatDivider } from '@angular/material/divider'
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common'
-import { FiltersResultComponent } from '../../shared/components/filters-panel/filters-result/filters-result.component'
+import { FiltersResultComponent } from '../../../../shared/components/filters-panel/filters-result/filters-result.component'
 import { MatMenuTrigger } from '@angular/material/menu'
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
-import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'
-import { CreateUpdateOrdersComponent as CreateUpdateOrdersComponent_1 } from '../create-update-orders/create-update-orders.component'
-import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
+import { DropdownMenuListComponent } from '../../../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
+import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
     selector: 'app-manage-orders',
@@ -72,19 +69,16 @@ import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu
         MatNoDataRow,
         MatProgressSpinner,
         MatPaginator,
-        ConfirmationDialogComponent_1,
-        CreateUpdateOrdersComponent_1,
         DropdownMenuListComponent,
         AsyncPipe,
         DatePipe,
+        ConfirmationDialogComponent,
     ],
 })
 export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
-    @ViewChild('createUpdateOrdersContainer')
-    createUpdateOrdersContainer!: TemplateRef<CreateUpdateOrdersComponent>
 
     private destroy$ = new Subject<void>()
 
@@ -132,8 +126,9 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         public bakeryManagementService: BakeryManagementService,
         public searchService: SearchService,
         private bakeryManagementApiService: BakeryManagementApiService,
-        private snackBarService: SnackBarService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private router: Router,
+        private route: ActivatedRoute,
     ) {
         this.filterResults = this.searchService.getFilterResults()
 
@@ -214,53 +209,16 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     updateOrder(): void {
-        this.action = 'update'
-        this.dialog.open(this.createUpdateOrdersContainer, {
-            maxWidth: '100vw',
-            maxHeight: '100vh',
-            height: '100%',
-            width: '100%',
-        })
+        this.action = 'update';
+        this.router.navigate(['update'], { 
+            relativeTo: this.route,
+            queryParams: { id: this.activeOrder!.id }
+        });
     }
-
+    
     createOrder(): void {
         this.action = 'create'
-        this.dialog.open(this.createUpdateOrdersContainer, {
-            maxWidth: '100vw',
-            maxHeight: '100vh',
-            height: '100%',
-            width: '100%',
-        })
-    }
-
-    saveOrder(form: any): void {
-        this.isLoading = true
-        this.dialog.closeAll()
-        if (this.action === 'create') {
-            this.bakeryManagementApiService.createOrder(form).subscribe({
-                next: () => {
-                    this.snackBarService.showSuccess('Created successfully')
-                    this.getOrdersList(false)
-                    this.isLoading = false
-                },
-                error: (error) => {
-                    console.log('Error: ', error)
-                    this.isLoading = false
-                },
-            })
-        } else {
-            this.bakeryManagementApiService.updateOrder(this.activeOrder!.id, form).subscribe({
-                next: () => {
-                    this.snackBarService.showSuccess('Updated successfully')
-                    this.getOrdersList(false)
-                    this.isLoading = false
-                },
-                error: (error) => {
-                    console.log('Error: ', error)
-                    this.isLoading = false
-                },
-            })
-        }
+        this.router.navigate(['create'], { relativeTo: this.route });
     }
 
     clientSearchChange(data: string) {

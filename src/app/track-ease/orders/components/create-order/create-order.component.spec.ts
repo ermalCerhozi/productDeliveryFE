@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
+import { CreateUpdateOrdersComponent } from './create-order.component'
 
-import { CreateUpdateOrdersComponent } from 'src/trackEase/components/create-update-orders/create-update-orders.component'
 
 describe('CreateUpdateOrdersComponent', () => {
     let component: CreateUpdateOrdersComponent

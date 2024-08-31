@@ -16,6 +16,7 @@ import {
     debounceTime,
     fromEvent,
     map,
+    takeUntil,
 } from 'rxjs'
 import { OrderEntity, OrderItemEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
@@ -31,11 +32,14 @@ import { MatOption } from '@angular/material/core'
 import { MatMiniFabButton, MatFabButton, MatButton } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
 import { cloneDeep, isEqual } from 'lodash-es'
+import { ActivatedRoute, Router } from '@angular/router'
+import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
+import { SnackBarService } from 'src/app/services/snackbar.service'
 
 @Component({
-    selector: 'app-create-update-orders',
-    templateUrl: './create-update-orders.component.html',
-    styleUrls: ['./create-update-orders.component.scss'],
+    selector: 'app-update-order',
+    templateUrl: './update-order.component.html',
+    styleUrl: './update-order.component.css',
     standalone: true,
     imports: [
         MatDialogTitle,
@@ -59,16 +63,13 @@ import { cloneDeep, isEqual } from 'lodash-es'
         AsyncPipe,
     ],
 })
-export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
+export class UpdateOrderComponent implements OnInit, OnDestroy {
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete
     @ViewChild('autoCompleteClients') autoCompleteClients!: MatAutocomplete
     private scrollSubscription!: Subscription
-
-    @Input() actionType!: string
-    @Input() order?: OrderEntity
-    @Output() saveOrder = new EventEmitter<void>()
-
     private unsubscribe$ = new Subject<void>()
+
+    order!: OrderEntity
 
     clients: Observable<FilterOption[]>
     hasMoreClientsToLoad: Observable<boolean>
@@ -76,7 +77,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     products: Observable<FilterOption[]>
     hasMoreProductsToLoad: Observable<boolean>
 
-    selectedProducts: string[] = []
+    filteredProducts: FilterOption[] = []
     orderForm: FormGroup = new FormGroup({})
     orderItemsFormArray!: FormArray
     totalOrderPrice = 0
@@ -85,7 +86,11 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     constructor(
         private formBuilder: FormBuilder,
         private bakeryManagementService: BakeryManagementService,
-        private searchService: SearchService
+        private searchService: SearchService,
+        private route: ActivatedRoute,
+        private bakeryManagementApiService: BakeryManagementApiService,
+        private snackBarService: SnackBarService,
+        private router: Router
     ) {
         this.clients = this.searchService.getClients()
         this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
@@ -95,19 +100,45 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.initializeForm();
+
+        this.route.queryParams.subscribe(params => {
+            const orderId = params['id'];
+            if (orderId) {
+                this.getOrderById(orderId);
+            }
+        });
+
         // load the 20 first clients and products
         this.loadMoreClients()
         this.loadMoreProducts()
-        // patch the form with the initial values
-        this.patchForm()
-        this.currentOrder = cloneDeep(this.orderForm.value)
+        this.setInitialFilteredProducts()
+    }
 
-        this.subscribeToFormChanges()
+    initializeForm(): void {
+        this.orderForm = this.formBuilder.group({
+            client: ['', Validators.required],
+            seller: ['', Validators.required],
+            order_items: this.formBuilder.array([]),
+        });
     }
 
     ngOnDestroy(): void {
         this.unsubscribe$.next()
         this.unsubscribe$.complete()
+    }
+
+    getOrderById(orderId: number) {
+        this.bakeryManagementService.getOrderById(orderId).subscribe({
+            next: (order: OrderEntity) => {
+                this.order = order
+
+                this.patchForm()
+            },
+            error: (error: Error) => {
+                console.log('There was an error fetching the order:', error)
+            },
+        })
     }
 
     /**
@@ -118,39 +149,49 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
      * 3. Filters the products list to exclude the selected products.
      */
     private subscribeToFormChanges(): void {
-        this.orderItemsFormArray.valueChanges.pipe().subscribe((orderItems: any[]) => {
+        this.orderItemsFormArray.valueChanges.pipe(
+            debounceTime(100),
+            takeUntil(this.unsubscribe$)
+        ).subscribe((orderItems: any[]) => {
             if (this.orderItemsFormArray.valid) {
                 // Recalculate the total order price
-                this.calculateTotalOrderPrice(orderItems)
-    
-                // Update the list of selected products
-                this.selectedProducts = orderItems
-                    .map((item) => item.product.label)
-                    .filter(
-                        (value, index, self) => self.indexOf(value) === index && value !== undefined
-                    )
-    
-                // Filter the products list to exclude the selected products
-                this.products = combineLatest([this.products, this.selectedProducts]).pipe(
-                    map(([products, selectedProducts]) => {
-                        const smth = products.filter(
-                            (product) => !selectedProducts.includes(product.label)
-                        )
-                        return smth
-                    })
-                )
+                this.calculateTotalOrderPrice(orderItems);
+                // Process selected products
+                this.processSelectedProducts(orderItems);
             }
         })
     }
 
-    patchForm() {
-        let formData: any
-        if (this.actionType === 'create') {
-            formData = this.getCreateOrderFormData()
-        } else if (this.actionType === 'update') {
-            formData = this.transformedOrder(this.order!)
-            this.calculateTotalOrderPrice(formData.order_items) // Calculate the total order price for the update form
+    processSelectedProducts(orderItems: any[]): void {
+        const selectedProducts = Array.from(
+            new Set(orderItems.map(item => ({
+                label: item.product.label,
+                value: item.product.value
+            })).filter(item => item.label !== undefined))
+        );
+    
+        if (selectedProducts.length === 0) {
+            return;
         }
+    
+        this.products.pipe(
+            map(products => products.filter(product => 
+                !selectedProducts.some(selected => selected.value === product.value)
+            ))
+        ).subscribe(filteredProducts => {
+            this.filteredProducts = filteredProducts;
+        });
+    }
+    
+    setInitialFilteredProducts() {
+        this.products.subscribe(products => {
+            this.filteredProducts = products
+        })
+    }
+
+    patchForm() {
+        let formData = this.transformedOrder(this.order!)
+        this.calculateTotalOrderPrice(formData.order_items) // Calculate the total order price for the update form
 
         this.orderForm = this.formBuilder.group({
             client: [formData.client, Validators.required],
@@ -160,14 +201,10 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
 
         this.orderItemsFormArray = this.orderForm.get('order_items') as FormArray
         this.populateOrderItems(formData.order_items)
-    }
 
-    getCreateOrderFormData(): any {
-        return {
-            client: '',
-            seller: this.bakeryManagementService.getLoggedInUser().id,
-            order_items: [{ quantity: '', returned_quantity: '', product: '' }],
-        }
+        this.currentOrder = cloneDeep(this.orderForm.value)
+        this.processSelectedProducts(this.orderItemsFormArray.value);
+        this.subscribeToFormChanges()
     }
 
     transformedOrder(order: OrderEntity): any {
@@ -207,20 +244,6 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                     product: [orderItem.product, Validators.required],
                 })
             )
-        })
-    }
-
-    getLastClientOrder() {
-        const client = this.orderForm.get('client')!.value.value;
-        this.bakeryManagementService.getLastOrder(client).subscribe({
-            next: (res) => {
-                const transformedOrderItems = this.transformedOrderItems(res.order_items);
-                this.orderItemsFormArray.clear()
-                this.populateOrderItems(transformedOrderItems);
-            },
-            error: (error: Error) => {
-                console.log('There was an error getting the last order:', error)
-            },
         })
     }
 
@@ -351,7 +374,20 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                     returned_quantity: item.returned_quantity === '' ? 0 : item.returned_quantity,
                 })),
             }
-            this.saveOrder.emit(newValue)
+            this.bakeryManagementApiService.updateOrder(this.order.id, newValue).subscribe({
+                next: () => {
+                    this.snackBarService.showSuccess('Created successfully')
+                    this.goBack()
+                },
+                error: (error) => {
+                    console.log('Error: ', error)
+                    this.goBack()
+                },
+            })
         }
+    }
+
+    goBack(): void {
+        this.router.navigate(['/manageOrders'])
     }
 }

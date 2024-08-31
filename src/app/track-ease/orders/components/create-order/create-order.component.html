@@ -1,0 +1,106 @@
+<h2 mat-dialog-title>Create Order</h2>
+
+<div class="dialog-content">
+    <form [formGroup]="orderForm">
+        <div class="first-row">
+            <mat-form-field class="client-field" appearance="outline">
+                <mat-label>Client</mat-label>
+                <input
+                    matInput
+                    formControlName="client"
+                    [matAutocomplete]="autoCompleteClients"
+                    (input)="clientSearchChange($event)"
+                    required
+                />
+                <mat-autocomplete
+                    #autoCompleteClients="matAutocomplete"
+                    [displayWith]="displayFn"
+                    (opened)="onOpened(autoCompleteClients)"
+                    (closed)="onClosed()"
+                >
+                    <mat-option *ngFor="let client of clients | async" [value]="client">
+                        {{ client.label }}
+                    </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched">
+                    Client is required
+                </mat-error>
+            </mat-form-field>
+            <button [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched" mat-mini-fab color="primary" type="button" (click)="getLastClientOrder()">
+                <mat-icon>settings_backup_restore</mat-icon>
+            </button>
+        </div>
+
+        <div
+            formArrayName="order_items"
+            *ngFor="let item of orderItemsFormArray?.controls; let i = index"
+        >
+            <div [formGroupName]="i" class="order-items-fields">
+                <mat-form-field class="product-fileld" appearance="outline" hideRequiredMarker>
+                    <mat-label>Product</mat-label>
+                    <input
+                        matInput
+                        formControlName="product"
+                        [matAutocomplete]="autoCompleteProducts"
+                        (input)="productSearchChange($event)"
+                        required
+                    />
+                    <mat-autocomplete
+                        #autoCompleteProducts="matAutocomplete"
+                        [displayWith]="displayFn"
+                        (opened)="onOpened(autoCompleteProducts)"
+                        (closed)="onClosed()"
+                    >
+                        <mat-option *ngFor="let product of filteredProducts" [value]="product">
+                            {{ product.label }}
+                        </mat-option>
+                    </mat-autocomplete>
+                    <mat-error
+                        *ngIf="
+                            orderForm.get('product')?.invalid && orderForm.get('product')?.touched
+                        "
+                    >
+                        Product is required
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Quantity</mat-label>
+                    <input matInput formControlName="quantity" type="number" min="1" required />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Returns</mat-label>
+                    <input matInput formControlName="returned_quantity" type="number" min="0" />
+                </mat-form-field>
+
+                <div>
+                    <button mat-mini-fab color="warn" (click)="removeOrderItem(i)" type="button">
+                        <mat-icon class="material-icons-outlined">delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-button">
+            <button mat-fab color="primary" (click)="addNewOrderItem()" type="button">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+    </form>
+</div>
+
+<mat-dialog-actions [align]="'end'" class="insert-panel">
+    <h2 class="price">{{ totalOrderPrice.toLocaleString() }} Lekë</h2>
+    <button class="action-button" mat-stroked-button color="warn" (click)="goBack()">Cancel</button>
+    <button
+        class="action-button"
+        mat-stroked-button
+        color="primary"
+        type="submit"
+        [disabled]="orderForm.invalid || !formHasChanged()"
+        (click)="save()"
+    >
+        Create
+    </button>
+</mat-dialog-actions>

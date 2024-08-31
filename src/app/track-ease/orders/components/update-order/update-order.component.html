@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ actionType === 'create' ? 'Create' : 'Update' }} Order</h2>
+<h2 mat-dialog-title>Update Order</h2>
 
 <div class="dialog-content">
     <form [formGroup]="orderForm">
@@ -26,11 +26,6 @@
                     Client is required
                 </mat-error>
             </mat-form-field>
-            @if(actionType === 'create'){
-                <button [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched" mat-mini-fab color="primary" type="button" (click)="getLastClientOrder()">
-                    <mat-icon>settings_backup_restore</mat-icon>
-                </button>
-            }
         </div>
 
         <div
@@ -53,7 +48,7 @@
                         (opened)="onOpened(autoCompleteProducts)"
                         (closed)="onClosed()"
                     >
-                        <mat-option *ngFor="let product of products | async" [value]="product">
+                        <mat-option *ngFor="let product of filteredProducts" [value]="product">
                             {{ product.label }}
                         </mat-option>
                     </mat-autocomplete>
@@ -94,7 +89,7 @@
 
 <mat-dialog-actions [align]="'end'" class="insert-panel">
     <h2 class="price">{{ totalOrderPrice.toLocaleString() }} Lekë</h2>
-    <button class="action-button" mat-stroked-button color="warn" mat-dialog-close>Cancel</button>
+    <button class="action-button" mat-stroked-button color="warn" (click)="goBack()">Cancel</button>
     <button
         class="action-button"
         mat-stroked-button
@@ -103,6 +98,6 @@
         [disabled]="orderForm.invalid || !formHasChanged()"
         (click)="save()"
     >
-        {{ actionType }}
+        Update
     </button>
 </mat-dialog-actions>

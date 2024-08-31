@@ -105,6 +105,10 @@ export class BakeryManagementApiService {
         return this.httpClient.post<any>(`${this.basePath}/orders`, order)
     }
 
+    getOrderById(id: number): Observable<OrderEntity> {
+        return this.httpClient.get<OrderEntity>(`${this.basePath}/orders/${id}`)
+    }
+
     getLastOrderByClient(clientId: number): Observable<OrderEntity> {
         return this.httpClient.get<OrderEntity>(`${this.basePath}/orders/last-order/${clientId}`)
     }

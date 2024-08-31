@@ -1,0 +1,79 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.dialog-content{
+    padding: 4px;
+    width: 96%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 80vh;
+    margin: 0 auto;
+}
+
+.first-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    button {
+        margin: 8px 24px 0px 0px;
+    }
+}
+
+.client-field {
+    width: 75%;
+}
+
+.order-items-fields {
+    display: flex;
+    gap: 5px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    .product-fileld {
+        width: 100%
+    }
+
+    button{
+        bottom: 10px;
+    }
+}
+
+.add-button {
+    padding-bottom: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.insert-panel {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    width: 100% !important;
+    width: inherit;
+    background-color: rgb(255,255,255);
+    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.05);
+    z-index: 1;
+
+    .price {
+        margin-left: 10px;
+        margin-top: 14px;
+        margin-right: auto;
+        font-weight: bold;
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .action-button {
+        font-size: 22px;
+        letter-spacing: 1.25px;
+        text-align: center;
+        margin: 10px 10px;
+    }
+}

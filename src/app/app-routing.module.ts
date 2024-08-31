@@ -5,6 +5,7 @@ import { SignInComponent } from 'src/app/track-ease/sign-in/sign-in.component'
 import { LayoutComponent } from 'src/app/track-ease/layout-toolbar/layout.component'
 import { AuthGuard } from './services/auth-guard.service'
 import { PermissionsGuard } from './services/permissions-guard.service'
+import { ORDERS_ROUTES } from './track-ease/orders/orders.component.routing'
 
 const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -25,11 +26,9 @@ const routes: Routes = [
             },
             {
                 path: 'manageOrders',
-                loadComponent: () =>
-                    import('src/app/track-ease/manage-orders/manage-orders.component').then(
-                        (c) => c.ManageOrdersComponent
-                    ),
-                // canActivate: [PermissionsGuard],
+                loadComponent: () => import('src/app/track-ease/orders/orders.component').then((c) => c.OrdersComponent),
+                children: ORDERS_ROUTES,
+                canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin'] },
             },
             {

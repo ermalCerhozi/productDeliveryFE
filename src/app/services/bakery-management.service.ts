@@ -177,6 +177,10 @@ export class BakeryManagementService {
         return this.bakeryManagementApiService.getProductPricesByIds(ids)
     }
 
+    getOrderById(id: number): Observable<OrderEntity> {
+        return this.bakeryManagementApiService.getOrderById(id)
+    }
+
     getLastOrder(clientId: number): Observable<OrderEntity> {
         return this.bakeryManagementApiService.getLastOrderByClient(clientId)
     }
