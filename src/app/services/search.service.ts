@@ -660,7 +660,7 @@ export class SearchService implements OnDestroy {
             newProducts.push({
                 value: product.id,
                 label: product.product_name,
-                count: product.mediaCount,
+                price: product.price,
             })
         )
         this.orderProduct.next([...this.orderProduct.value, ...newProducts])

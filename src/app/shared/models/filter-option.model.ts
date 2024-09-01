@@ -3,4 +3,5 @@ export interface FilterOption {
     label: string
     isTranslated?: boolean
     count?: number
+    price?: number // This is a new field added for the product price
 }

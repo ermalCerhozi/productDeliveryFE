@@ -6,11 +6,11 @@
 }
 
 .dialog-content{
-    padding: 4px;
+    padding: 16px 8px 8px 8px;
     width: 96%;
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: 80vh;
+    max-height: calc(100vh - 120px);
     margin: 0 auto;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .add-button {
-    padding-bottom: 24px;
+    padding-bottom: 32px;
     display: flex;
     justify-content: center;
 }

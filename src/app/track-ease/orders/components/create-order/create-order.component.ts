@@ -122,7 +122,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
      */
     private subscribeToFormChanges(): void {
         this.orderItemsFormArray.valueChanges.pipe(
-            debounceTime(100),
+            debounceTime(80),
             takeUntil(this.unsubscribe$)
         ).subscribe((orderItems: any[]) => {
             if (this.orderItemsFormArray.valid) {
@@ -187,6 +187,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
             const orderProduct = {
                 value: item.product.id,
                 label: item.product.product_name,
+                price: item.product.price,
             }
             return {
                 quantity: item.quantity,
@@ -222,8 +223,6 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         })
     }
 
-    // TODO: Needs refactoring
-    // TODO: Maybe store the most selled product in chache so they can be accessed quicker
     calculateTotalOrderPrice(orderItems: any[]) {
         // Filter out order items without a product
         const validOrderItems = orderItems.filter(
@@ -234,18 +233,12 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
             return
         }
 
-        //Get the product IDs of the valid order items and retrueve their prices
-        const productIds = validOrderItems.map((item) => item.product.value)
-        this.bakeryManagementService.getProductPricesByIds(productIds).subscribe((prices) => {
-            this.totalOrderPrice = 0
-
-            // Calculate the total order price
-            validOrderItems.forEach((item) => {
-                const price = prices[item.product.label]
-                const quantity = item.quantity ? item.quantity : 0
-                const returnedQuantity = item.returned_quantity ? item.returned_quantity : 0
-                this.totalOrderPrice += price * (quantity - returnedQuantity)
-            })
+        // Calculate the total order price
+        validOrderItems.forEach((item) => {
+            const price = item.product.price
+            const quantity = item.quantity ? item.quantity : 0
+            const returnedQuantity = item.returned_quantity ? item.returned_quantity : 0
+            this.totalOrderPrice += price * (quantity - returnedQuantity)
         })
     }
 

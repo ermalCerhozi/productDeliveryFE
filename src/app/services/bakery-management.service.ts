@@ -173,10 +173,6 @@ export class BakeryManagementService {
         }
     }
 
-    getProductPricesByIds(ids: number[]): Observable<{ [key: string]: number }> {
-        return this.bakeryManagementApiService.getProductPricesByIds(ids)
-    }
-
     getOrderById(id: number): Observable<OrderEntity> {
         return this.bakeryManagementApiService.getOrderById(id)
     }

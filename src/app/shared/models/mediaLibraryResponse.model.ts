@@ -36,5 +36,5 @@ export interface UserFiltersResponse {
 export interface ProductsFiltersResponse {
     id: string
     product_name: string
-    mediaCount: number
+    price: number
 }

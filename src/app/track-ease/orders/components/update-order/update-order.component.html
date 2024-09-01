@@ -1,9 +1,7 @@
-<h2 mat-dialog-title>Update Order</h2>
-
 <div class="dialog-content">
     <form [formGroup]="orderForm">
         <div class="first-row">
-            <mat-form-field class="client-field" appearance="outline">
+            <mat-form-field class="client-field" appearance="outline" hideRequiredMarker>
                 <mat-label>Client</mat-label>
                 <input
                     matInput
@@ -61,7 +59,7 @@
                     </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="outline" hideRequiredMarker>
                     <mat-label>Quantity</mat-label>
                     <input matInput formControlName="quantity" type="number" min="1" required />
                 </mat-form-field>
@@ -88,7 +86,7 @@
 </div>
 
 <mat-dialog-actions [align]="'end'" class="insert-panel">
-    <h2 class="price">{{ totalOrderPrice.toLocaleString() }} Lekë</h2>
+    <h2 class="price">{{ totalOrderPrice.toLocaleString() }} L</h2>
     <button class="action-button" mat-stroked-button color="warn" (click)="goBack()">Cancel</button>
     <button
         class="action-button"
