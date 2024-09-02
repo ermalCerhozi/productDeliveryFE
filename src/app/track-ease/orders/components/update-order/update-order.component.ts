@@ -250,6 +250,7 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     }
 
     calculateTotalOrderPrice(orderItems: any[]) {
+        this.totalOrderPrice = 0
         // Filter out order items without a product
         const validOrderItems = orderItems.filter(
             (item) => item.product && (item.quantity || item.returned_quantity)
