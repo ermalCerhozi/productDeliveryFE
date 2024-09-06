@@ -26,7 +26,10 @@ const routes: Routes = [
             },
             {
                 path: 'manageOrders',
-                loadComponent: () => import('src/app/track-ease/orders/orders.component').then((c) => c.OrdersComponent),
+                loadComponent: () =>
+                    import('src/app/track-ease/orders/orders.component').then(
+                        (c) => c.OrdersComponent
+                    ),
                 children: ORDERS_ROUTES,
                 canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin'] },

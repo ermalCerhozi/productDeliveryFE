@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { CreateUpdateOrdersComponent } from './create-order.component'
 
-
 describe('CreateUpdateOrdersComponent', () => {
     let component: CreateUpdateOrdersComponent
     let fixture: ComponentFixture<CreateUpdateOrdersComponent>

@@ -20,11 +20,19 @@
                         {{ client.label }}
                     </mat-option>
                 </mat-autocomplete>
-                <mat-error *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched">
+                <mat-error
+                    *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched"
+                >
                     Client is required
                 </mat-error>
             </mat-form-field>
-            <button [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched" mat-mini-fab color="primary" type="button" (click)="getLastClientOrder()">
+            <button
+                [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched"
+                mat-mini-fab
+                color="primary"
+                type="button"
+                (click)="getLastClientOrder()"
+            >
                 <mat-icon>settings_backup_restore</mat-icon>
             </button>
         </div>

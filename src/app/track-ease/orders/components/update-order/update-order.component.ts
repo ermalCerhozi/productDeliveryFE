@@ -101,14 +101,14 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.initializeForm();
+        this.initializeForm()
 
-        this.route.queryParams.subscribe(params => {
-            const orderId = params['id'];
+        this.route.queryParams.subscribe((params) => {
+            const orderId = params['id']
             if (orderId) {
-                this.getOrderById(orderId);
+                this.getOrderById(orderId)
             }
-        });
+        })
 
         // load the 20 first clients and products
         this.loadMoreClients()
@@ -121,7 +121,7 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
             client: ['', Validators.required],
             seller: ['', Validators.required],
             order_items: this.formBuilder.array([]),
-        });
+        })
     }
 
     ngOnDestroy(): void {
@@ -150,48 +150,56 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
      * 3. Filters the products list to exclude the selected products.
      */
     private subscribeToFormChanges(): void {
-        this.orderItemsFormArray.valueChanges.pipe(
-            debounceTime(80),
-            takeUntil(this.unsubscribe$)
-        ).subscribe((orderItems: any[]) => {
-            if (this.orderItemsFormArray.valid) {
-                // Recalculate the total order price
-                this.calculateTotalOrderPrice(orderItems);
-                // Process selected products
-                this.processSelectedProducts(orderItems);
-            }
-        })
+        this.orderItemsFormArray.valueChanges
+            .pipe(debounceTime(80), takeUntil(this.unsubscribe$))
+            .subscribe((orderItems: any[]) => {
+                if (this.orderItemsFormArray.valid) {
+                    // Recalculate the total order price
+                    this.calculateTotalOrderPrice(orderItems)
+                    // Process selected products
+                    this.processSelectedProducts(orderItems)
+                }
+            })
     }
 
     processSelectedProducts(orderItems: any[]): void {
         const selectedProducts = Array.from(
-            new Set(orderItems.map(item => ({
-                label: item.product.label,
-                value: item.product.value
-            })).filter(item => item.label !== undefined))
-        );
-    
+            new Set(
+                orderItems
+                    .map((item) => ({
+                        label: item.product.label,
+                        value: item.product.value,
+                    }))
+                    .filter((item) => item.label !== undefined)
+            )
+        )
+
         if (selectedProducts.length === 0) {
-            return;
+            return
         }
-    
-        this.products.pipe(
-            map(products => products.filter(product => 
-                !selectedProducts.some(selected => selected.value === product.value)
-            ))
-        ).subscribe(filteredProducts => {
-            this.filteredProducts = filteredProducts;
-        });
+
+        this.products
+            .pipe(
+                map((products) =>
+                    products.filter(
+                        (product) =>
+                            !selectedProducts.some((selected) => selected.value === product.value)
+                    )
+                )
+            )
+            .subscribe((filteredProducts) => {
+                this.filteredProducts = filteredProducts
+            })
     }
-    
+
     setInitialFilteredProducts() {
-        this.products.subscribe(products => {
+        this.products.subscribe((products) => {
             this.filteredProducts = products
         })
     }
 
     patchForm() {
-        let formData = this.transformedOrder(this.order!)
+        const formData = this.transformedOrder(this.order!)
         this.calculateTotalOrderPrice(formData.order_items) // Calculate the total order price for the update form
 
         this.orderForm = this.formBuilder.group({
@@ -204,7 +212,7 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
         this.populateOrderItems(formData.order_items)
 
         this.currentOrder = cloneDeep(this.orderForm.value)
-        this.processSelectedProducts(this.orderItemsFormArray.value);
+        this.processSelectedProducts(this.orderItemsFormArray.value)
         this.subscribeToFormChanges()
     }
 

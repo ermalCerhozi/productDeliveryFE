@@ -20,7 +20,9 @@
                         {{ client.label }}
                     </mat-option>
                 </mat-autocomplete>
-                <mat-error *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched">
+                <mat-error
+                    *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched"
+                >
                     Client is required
                 </mat-error>
             </mat-form-field>

@@ -128,7 +128,7 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
         private bakeryManagementApiService: BakeryManagementApiService,
         public dialog: MatDialog,
         private router: Router,
-        private route: ActivatedRoute,
+        private route: ActivatedRoute
     ) {
         this.filterResults = this.searchService.getFilterResults()
 
@@ -209,16 +209,16 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     updateOrder(): void {
-        this.action = 'update';
-        this.router.navigate(['update'], { 
+        this.action = 'update'
+        this.router.navigate(['update'], {
             relativeTo: this.route,
-            queryParams: { id: this.activeOrder!.id }
-        });
+            queryParams: { id: this.activeOrder!.id },
+        })
     }
-    
+
     createOrder(): void {
         this.action = 'create'
-        this.router.navigate(['create'], { relativeTo: this.route });
+        this.router.navigate(['create'], { relativeTo: this.route })
     }
 
     clientSearchChange(data: string) {

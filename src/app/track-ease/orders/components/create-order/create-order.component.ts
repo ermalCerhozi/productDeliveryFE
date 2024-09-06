@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import {
     FormArray,
     FormBuilder,
@@ -11,7 +11,6 @@ import {
     Observable,
     Subject,
     Subscription,
-    combineLatest,
     debounceTime,
     fromEvent,
     map,
@@ -121,48 +120,56 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
      * 3. Filters the products list to exclude the selected products.
      */
     private subscribeToFormChanges(): void {
-        this.orderItemsFormArray.valueChanges.pipe(
-            debounceTime(80),
-            takeUntil(this.unsubscribe$)
-        ).subscribe((orderItems: any[]) => {
-            if (this.orderItemsFormArray.valid) {
-                // Recalculate the total order price
-                this.calculateTotalOrderPrice(orderItems);
-                // Process selected products
-                this.processSelectedProducts(orderItems);
-            }
-        })
+        this.orderItemsFormArray.valueChanges
+            .pipe(debounceTime(80), takeUntil(this.unsubscribe$))
+            .subscribe((orderItems: any[]) => {
+                if (this.orderItemsFormArray.valid) {
+                    // Recalculate the total order price
+                    this.calculateTotalOrderPrice(orderItems)
+                    // Process selected products
+                    this.processSelectedProducts(orderItems)
+                }
+            })
     }
 
     processSelectedProducts(orderItems: any[]): void {
         const selectedProducts = Array.from(
-            new Set(orderItems.map(item => ({
-                label: item.product.label,
-                value: item.product.value
-            })).filter(item => item.label !== undefined))
-        );
-    
+            new Set(
+                orderItems
+                    .map((item) => ({
+                        label: item.product.label,
+                        value: item.product.value,
+                    }))
+                    .filter((item) => item.label !== undefined)
+            )
+        )
+
         if (selectedProducts.length === 0) {
-            return;
+            return
         }
-    
-        this.products.pipe(
-            map(products => products.filter(product => 
-                !selectedProducts.some(selected => selected.value === product.value)
-            ))
-        ).subscribe(filteredProducts => {
-            this.filteredProducts = filteredProducts;
-        });
+
+        this.products
+            .pipe(
+                map((products) =>
+                    products.filter(
+                        (product) =>
+                            !selectedProducts.some((selected) => selected.value === product.value)
+                    )
+                )
+            )
+            .subscribe((filteredProducts) => {
+                this.filteredProducts = filteredProducts
+            })
     }
 
     setInitialFilteredProducts() {
-        this.products.subscribe(products => {
+        this.products.subscribe((products) => {
             this.filteredProducts = products
         })
     }
 
     patchForm() {
-        let formData = this.getCreateOrderFormData()
+        const formData = this.getCreateOrderFormData()
 
         this.orderForm = this.formBuilder.group({
             client: [formData.client, Validators.required],
@@ -210,12 +217,12 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     getLastClientOrder() {
-        const client = this.orderForm.get('client')!.value.value;
+        const client = this.orderForm.get('client')!.value.value
         this.bakeryManagementService.getLastOrder(client).subscribe({
             next: (res) => {
-                const transformedOrderItems = this.transformedOrderItems(res.order_items);
+                const transformedOrderItems = this.transformedOrderItems(res.order_items)
                 this.orderItemsFormArray.clear()
-                this.populateOrderItems(transformedOrderItems);
+                this.populateOrderItems(transformedOrderItems)
             },
             error: (error: Error) => {
                 console.log('There was an error getting the last order:', error)
@@ -300,16 +307,16 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     // The debounceTime(200) is used to limit the number of events triggered.
     onOpened(autoComplete: MatAutocomplete) {
         setTimeout(() => {
-        if (autoComplete && autoComplete.panel) {
+            if (autoComplete && autoComplete.panel) {
                 if (autoComplete.panel) {
                     this.scrollSubscription = fromEvent(autoComplete.panel.nativeElement, 'scroll')
                         .pipe(debounceTime(200))
-                        .subscribe((e) => this.onScroll(e, autoComplete));
+                        .subscribe((e) => this.onScroll(e, autoComplete))
                 } else {
-                    console.error('autoComplete.panel is still undefined');
+                    console.error('autoComplete.panel is still undefined')
                 }
             }
-        }, 0);
+        }, 0)
     }
 
     // This function is triggered when the autocomplete panel is closed.
