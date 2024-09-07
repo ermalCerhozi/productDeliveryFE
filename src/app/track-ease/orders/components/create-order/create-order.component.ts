@@ -7,15 +7,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import {
-    Observable,
-    Subject,
-    Subscription,
-    debounceTime,
-    fromEvent,
-    map,
-    takeUntil,
-} from 'rxjs'
+import { Observable, Subject, Subscription, debounceTime, fromEvent, map, takeUntil } from 'rxjs'
 import { OrderItemEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'

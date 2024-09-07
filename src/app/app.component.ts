@@ -1,5 +1,7 @@
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
+import { ThemeService } from './services/theme.service'
+import { FontService } from './services/font.service'
 
 @Component({
     selector: 'app-root',
@@ -9,5 +11,6 @@ import { RouterOutlet } from '@angular/router'
     imports: [RouterOutlet],
 })
 export class AppComponent {
-    showFiller = false
+    themeService = inject(ThemeService)
+    fontService = inject(FontService)
 }

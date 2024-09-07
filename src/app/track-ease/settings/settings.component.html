@@ -1,22 +1,20 @@
 <div class="settings-container">
-    <!-- <mat-card>
-        <mat-card-content class="notifications-toggle-card">
-            <div>
-                <h2>Notifications</h2>
-                <span>Receive e-mail notifications for the following events:</span>
-            </div>
-            <div class="notifications-settings-container">
+    <mat-card>
+        <mat-card-content class="toggle-card">
+            <h2>Notifications</h2>
+            <span>Send e-mail notifications for the following events:</span>
+            <div class="settings-container">
                 <div class="notifications-settings">
-                    <mat-slide-toggle [(ngModel)]="checked"> </mat-slide-toggle>
-                    <span>When a order is updated or deleted.</span>
+                    <mat-slide-toggle [(ngModel)]="sendCreatedNotification"> </mat-slide-toggle>
+                    <span>When a order is created.</span>
                 </div>
-                <div class="notifications-settings">
-                    <mat-slide-toggle [(ngModel)]="checked"> </mat-slide-toggle>
+                <div class="settings">
+                    <mat-slide-toggle [(ngModel)]="sendUpdatedNotification"> </mat-slide-toggle>
                     <span>When a order is updated or deleted.</span>
                 </div>
             </div>
         </mat-card-content>
-    </mat-card> -->
+    </mat-card>
 
     <mat-card>
         <mat-card-content class="theme-toggle-card">
@@ -26,6 +24,54 @@
                 <mat-slide-toggle [checked]="isDarkModeEnabled" (change)="toggleTheme()">
                 </mat-slide-toggle>
                 <mat-icon fontSet="material-icons-outlined">bedtime</mat-icon>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-content class="toggle-card">
+            <h2>Custom Font Size</h2>
+            <div>
+                <p>Dropdown Options Font Size:</p>
+                <mat-chip-listbox
+                    [(ngModel)]="selectedFontSize"
+                    [multiple]="false"
+                    (ngModelChange)="changeFontSize($event)"
+                >
+                    @for (size of fontSizes; track $index) {
+                        <mat-chip-option [value]="size" [selected]="size === selectedFontSize">
+                            {{ size }}px
+                        </mat-chip-option>
+                    }
+                </mat-chip-listbox>
+            </div>
+            <div>
+                <p>Table rows Font Size:</p>
+                <mat-chip-listbox
+                    [(ngModel)]="selectedFontSize"
+                    [multiple]="false"
+                    (ngModelChange)="changeFontSize($event)"
+                >
+                    @for (size of fontSizes; track $index) {
+                        <mat-chip-option [value]="size" [selected]="size === selectedFontSize">
+                            {{ size }}px
+                        </mat-chip-option>
+                    }
+                </mat-chip-listbox>
+            </div>
+            <div>
+                <p>Input Fields Font Size:</p>
+                <mat-chip-listbox
+                    [(ngModel)]="selectedFontSize"
+                    [multiple]="false"
+                    (ngModelChange)="changeFontSize($event)"
+                >
+                    @for (size of fontSizes; track $index) {
+                        <mat-chip-option [value]="size" [selected]="size === selectedFontSize">
+                            {{ size }}px
+                        </mat-chip-option>
+                    }
+                </mat-chip-listbox>
             </div>
         </mat-card-content>
     </mat-card>
