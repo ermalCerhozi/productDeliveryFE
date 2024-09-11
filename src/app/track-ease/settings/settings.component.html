@@ -34,12 +34,12 @@
             <div>
                 <p>Dropdown Options Font Size:</p>
                 <mat-chip-listbox
-                    [(ngModel)]="selectedFontSize"
+                    [(ngModel)]="optionFontSize"
                     [multiple]="false"
-                    (ngModelChange)="changeFontSize($event)"
+                    (ngModelChange)="changeFontSize('option', $event)"
                 >
-                    @for (size of fontSizes; track $index) {
-                        <mat-chip-option [value]="size" [selected]="size === selectedFontSize">
+                    @for (size of optionFontSizes; track $index) {
+                        <mat-chip-option [value]="size" [selected]="size === optionFontSize">
                             {{ size }}px
                         </mat-chip-option>
                     }
@@ -48,12 +48,12 @@
             <div>
                 <p>Table rows Font Size:</p>
                 <mat-chip-listbox
-                    [(ngModel)]="selectedFontSize"
+                    [(ngModel)]="tableFontSize"
                     [multiple]="false"
-                    (ngModelChange)="changeFontSize($event)"
+                    (ngModelChange)="changeFontSize('table', $event)"
                 >
-                    @for (size of fontSizes; track $index) {
-                        <mat-chip-option [value]="size" [selected]="size === selectedFontSize">
+                    @for (size of tableFontSizes; track $index) {
+                        <mat-chip-option [value]="size" [selected]="size === tableFontSize">
                             {{ size }}px
                         </mat-chip-option>
                     }
@@ -62,12 +62,12 @@
             <div>
                 <p>Input Fields Font Size:</p>
                 <mat-chip-listbox
-                    [(ngModel)]="selectedFontSize"
+                    [(ngModel)]="inputFontSize"
                     [multiple]="false"
-                    (ngModelChange)="changeFontSize($event)"
+                    (ngModelChange)="changeFontSize('input', $event)"
                 >
-                    @for (size of fontSizes; track $index) {
-                        <mat-chip-option [value]="size" [selected]="size === selectedFontSize">
+                    @for (size of inputFontSizes; track $index) {
+                        <mat-chip-option [value]="size" [selected]="size === inputFontSize">
                             {{ size }}px
                         </mat-chip-option>
                     }

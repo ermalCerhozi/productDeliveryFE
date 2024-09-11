@@ -28,9 +28,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 :root {
-  --user-font-size: 16px;
+  --option-font-size: 16px;
+  --table-font-size: 16px;
+  --input-font-size: 16px;
 }
 
 mat-option {
-  font-size: var(--user-font-size) !important;
+  font-size: var(--option-font-size) !important;
+}
+
+td {
+  font-size: var(--table-font-size) !important;
+}
+
+mat-form-field{
+  font-size: var(--input-font-size) !important;
 }

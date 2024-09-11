@@ -23,12 +23,21 @@ export class SettingsComponent implements OnInit {
 
     isDarkModeEnabled = false
 
-    selectedFontSize: number = 16
-    fontSizes: number[] = [16, 24, 28, 32]
+    optionFontSize: number = 16
+    optionFontSizes: number[] = [16, 20, 24, 28]
+
+    tableFontSize: number = 16
+    tableFontSizes: number[] = [14, 16, 18]
+
+    inputFontSize: number = 16
+    inputFontSizes: number[] = [14, 16, 20, 24,]
 
     ngOnInit(): void {
         this.isDarkModeEnabled = this.themeService.getTheme()
-        this.selectedFontSize = this.fontService.getFontSize()
+
+        this.optionFontSize = this.fontService.optionFontSize
+        this.tableFontSize = this.fontService.tableFontSize
+        this.inputFontSize = this.fontService.inputFontSize
     }
 
     toggleTheme(): void {
@@ -36,8 +45,22 @@ export class SettingsComponent implements OnInit {
         this.themeService.setTheme(this.isDarkModeEnabled)
     }
 
-    changeFontSize(newFontSize: number): void {
-        this.selectedFontSize = newFontSize
-        this.fontService.setFontSize(this.selectedFontSize)
+    changeFontSize(mode: 'option' | 'table' | 'input', size: number): void {
+        switch (mode) {
+            case 'option':
+                this.optionFontSize = size;
+                this.fontService.setFontSize('option', this.optionFontSize)
+                break;
+            case 'table':
+                this.tableFontSize = size;
+                this.fontService.setFontSize('table', this.tableFontSize)
+                break;
+            case 'input':
+                this.inputFontSize = size;
+                this.fontService.setFontSize('input', this.inputFontSize)
+                break;
+            default:
+                console.warn(`Unknown mode: ${mode}`);
+        }
     }
 }

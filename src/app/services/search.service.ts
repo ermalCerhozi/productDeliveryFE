@@ -72,9 +72,9 @@ export class SearchService implements OnDestroy {
         { value: 'today', label: 'Today', isTranslated: true },
         { value: 'last-24h', label: 'Last 24h', isTranslated: true },
         { value: 'last-48h', label: 'Last 48h', isTranslated: true },
-        { value: 'last-72h', label: 'Last 72h', isTranslated: true },
-        { value: 'last-7days', label: 'Last 7 days', isTranslated: true },
-        { value: 'last-30days', label: 'Last 30 days', isTranslated: true },
+        { value: 'this-week', label: 'This week', isTranslated: true },
+        { value: 'this-month', label: 'This month', isTranslated: true },
+        { value: 'last-month', label: 'Last month', isTranslated: true },
         { value: 'last-6months', label: 'Last 6 months', isTranslated: true },
         { value: 'last-12months', label: 'Last 12 months', isTranslated: true },
     ])
