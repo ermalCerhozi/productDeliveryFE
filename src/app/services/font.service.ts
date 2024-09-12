@@ -20,11 +20,16 @@ export class FontService {
 
     private getFontSize(key: string, defaultValue: number): number {
         const storedFontSize = localStorage.getItem(key)
-        const fontSize = storedFontSize ? parseInt(storedFontSize, 10) : defaultValue
-        this.updateGlobalFontSize(key, fontSize)
-        if (!storedFontSize) {
+        let fontSize: number
+
+        if (storedFontSize !== null) {
+            fontSize = parseInt(storedFontSize, 10)
+        } else {
+            fontSize = defaultValue
             localStorage.setItem(key, defaultValue.toString())
         }
+
+        this.updateGlobalFontSize(key, fontSize)
         return fontSize
     }
 

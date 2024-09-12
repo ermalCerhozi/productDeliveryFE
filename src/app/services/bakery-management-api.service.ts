@@ -94,8 +94,8 @@ export class BakeryManagementApiService {
     }
 
     //CRUD for orders
-    createOrder(order: any): Observable<any> {
-        return this.httpClient.post<any>(`${this.basePath}/orders`, order)
+    createOrder(order: any, notifications: any): Observable<any> {
+        return this.httpClient.post<any>(`${this.basePath}/orders`, { order, notifications });
     }
 
     getOrderById(id: number): Observable<OrderEntity> {
@@ -106,8 +106,8 @@ export class BakeryManagementApiService {
         return this.httpClient.get<OrderEntity>(`${this.basePath}/orders/last-order/${clientId}`)
     }
 
-    updateOrder(orderId: number, result: Partial<any>): Observable<any> {
-        return this.httpClient.put<any>(`${this.basePath}/orders/${orderId}`, result)
+    updateOrder(orderId: number, order: any, notifications: any): Observable<any> {
+        return this.httpClient.put<any>(`${this.basePath}/orders/${orderId}`, {order, notifications})
     }
 
     deleteOrder(id: number): Observable<any> {

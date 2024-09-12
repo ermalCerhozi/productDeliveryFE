@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core'
+import { Component, inject, OnDestroy, OnInit } from '@angular/core'
 import {
     FormArray,
     FormBuilder,
@@ -25,6 +25,7 @@ import { cloneDeep, isEqual } from 'lodash-es'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { SnackBarService } from 'src/app/services/snackbar.service'
 import { Router } from '@angular/router'
+import { NotificationService } from 'src/app/services/notification.service'
 
 @Component({
     selector: 'app-create-order',
@@ -54,6 +55,8 @@ import { Router } from '@angular/router'
     ],
 })
 export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
+    notificationService = inject(NotificationService)
+
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete
     @ViewChild('autoCompleteClients') autoCompleteClients!: MatAutocomplete
     private scrollSubscription!: Subscription
@@ -348,7 +351,11 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                     returned_quantity: item.returned_quantity === '' ? 0 : item.returned_quantity,
                 })),
             }
-            this.bakeryManagementApiService.createOrder(newValue).subscribe({
+            const params = {
+                sendCreatedNotification: this.notificationService.sendCreatedNotification,
+            }
+
+            this.bakeryManagementApiService.createOrder(newValue, params).subscribe({
                 next: () => {
                     this.snackBarService.showSuccess('Created successfully')
                     this.goBack()

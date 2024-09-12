@@ -1,24 +1,13 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, inject, OnDestroy, OnInit } from '@angular/core'
 import {
     FormArray,
     FormBuilder,
-    FormControl,
     FormGroup,
     Validators,
     FormsModule,
     ReactiveFormsModule,
-    PristineChangeEvent,
 } from '@angular/forms'
-import {
-    Observable,
-    Subject,
-    Subscription,
-    combineLatest,
-    debounceTime,
-    fromEvent,
-    map,
-    takeUntil,
-} from 'rxjs'
+import { Observable, Subject, Subscription, debounceTime, fromEvent, map, takeUntil } from 'rxjs'
 import { OrderEntity, OrderItemEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
@@ -36,6 +25,7 @@ import { cloneDeep, isEqual } from 'lodash-es'
 import { ActivatedRoute, Router } from '@angular/router'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { SnackBarService } from 'src/app/services/snackbar.service'
+import { NotificationService } from 'src/app/services/notification.service'
 
 @Component({
     selector: 'app-update-order',
@@ -65,6 +55,8 @@ import { SnackBarService } from 'src/app/services/snackbar.service'
     ],
 })
 export class UpdateOrderComponent implements OnInit, OnDestroy {
+    notificationService = inject(NotificationService)
+
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete
     @ViewChild('autoCompleteClients') autoCompleteClients!: MatAutocomplete
     private scrollSubscription!: Subscription
@@ -377,7 +369,11 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
                     returned_quantity: item.returned_quantity === '' ? 0 : item.returned_quantity,
                 })),
             }
-            this.bakeryManagementApiService.updateOrder(this.order.id, newValue).subscribe({
+            const params = {
+                sendUpdatedNotification: this.notificationService.sendUpdatedNotification,
+            }
+
+            this.bakeryManagementApiService.updateOrder(this.order.id, newValue, params).subscribe({
                 next: () => {
                     this.snackBarService.showSuccess('Created successfully')
                     this.goBack()

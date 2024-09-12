@@ -5,6 +5,7 @@ import { MatChipsModule } from '@angular/material/chips'
 import { MatIcon } from '@angular/material/icon'
 import { MatSlideToggle } from '@angular/material/slide-toggle'
 import { FontService } from 'src/app/services/font.service'
+import { NotificationService } from 'src/app/services/notification.service'
 import { ThemeService } from 'src/app/services/theme.service'
 
 @Component({
@@ -17,9 +18,11 @@ import { ThemeService } from 'src/app/services/theme.service'
 export class SettingsComponent implements OnInit {
     themeService = inject(ThemeService)
     fontService = inject(FontService)
+    notificationService = inject(NotificationService)
 
     sendCreatedNotification = false
     sendUpdatedNotification = false
+    sendDeletedNotification = false
 
     isDarkModeEnabled = false
 
@@ -38,6 +41,10 @@ export class SettingsComponent implements OnInit {
         this.optionFontSize = this.fontService.optionFontSize
         this.tableFontSize = this.fontService.tableFontSize
         this.inputFontSize = this.fontService.inputFontSize
+
+        this.sendCreatedNotification = this.notificationService.sendCreatedNotification
+        this.sendUpdatedNotification = this.notificationService.sendUpdatedNotification
+        this.sendDeletedNotification = this.notificationService.sendDeletedNotification
     }
 
     toggleTheme(): void {
@@ -61,6 +68,25 @@ export class SettingsComponent implements OnInit {
                 break
             default:
                 console.warn(`Unknown mode: ${mode}`)
+        }
+    }
+
+    toggleNotifications(event: any, type: string): void {
+        if (type === 'created') {
+            this.notificationService.setBooleanToLocalStorage(
+                'send-created-notification',
+                this.sendCreatedNotification
+            )
+        } else if (type === 'updated') {
+            this.notificationService.setBooleanToLocalStorage(
+                'send-updated-notification',
+                this.sendUpdatedNotification
+            )
+        } else if (type === 'deleted') {
+            this.notificationService.setBooleanToLocalStorage(
+                'send-deleted-notification',
+                this.sendDeletedNotification
+            )
         }
     }
 }

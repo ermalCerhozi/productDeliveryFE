@@ -5,12 +5,28 @@
             <span>Send e-mail notifications for the following events:</span>
             <div class="settings-container">
                 <div class="notifications-settings">
-                    <mat-slide-toggle [(ngModel)]="sendCreatedNotification"> </mat-slide-toggle>
+                    <mat-slide-toggle
+                        [(ngModel)]="sendCreatedNotification"
+                        (change)="toggleNotifications($event, 'created')"
+                    >
+                    </mat-slide-toggle>
                     <span>When a order is created.</span>
                 </div>
                 <div class="settings">
-                    <mat-slide-toggle [(ngModel)]="sendUpdatedNotification"> </mat-slide-toggle>
+                    <mat-slide-toggle
+                        [(ngModel)]="sendUpdatedNotification"
+                        (change)="toggleNotifications($event, 'updated')"
+                    >
+                    </mat-slide-toggle>
                     <span>When a order is updated or deleted.</span>
+                </div>
+                <div class="settings">
+                    <mat-slide-toggle
+                        [(ngModel)]="sendDeletedNotification"
+                        (change)="toggleNotifications($event, 'deleted')"
+                    >
+                    </mat-slide-toggle>
+                    <span>When an order is deleted.</span>
                 </div>
             </div>
         </mat-card-content>
