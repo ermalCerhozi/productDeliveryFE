@@ -4,12 +4,7 @@
             <mat-icon>add</mat-icon>
             <span> Create Order </span>
         </button>
-        <button
-            class="download-pdf"
-            [disabled]="(filterResults | async)!.length === 0"
-            mat-stroked-button
-            (click)="downloadOrdersPdf()"
-        >
+        <button class="download-pdf" mat-stroked-button (click)="downloadOrdersPdf()">
             <mat-icon fontSet="material-icons-outlined">download</mat-icon>
             <span>Download PDF</span>
         </button>
@@ -96,7 +91,9 @@
                 <div *ngFor="let item of row.order_items">
                     <div class="product-row">
                         {{ item.quantity }}
-                        <ng-container *ngIf="item.returned_quantity !== 0">- {{ item.returned_quantity }}</ng-container>
+                        <ng-container *ngIf="item.returned_quantity !== 0"
+                            >- {{ item.returned_quantity }}</ng-container
+                        >
                         {{ item.product.product_name }}
                     </div>
                 </div>

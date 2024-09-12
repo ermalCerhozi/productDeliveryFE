@@ -38,6 +38,7 @@ import { MatMenuTrigger } from '@angular/material/menu'
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { DropdownMenuListComponent } from '../../../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
 import { ActivatedRoute, Router } from '@angular/router'
+import { DownloadPdfComponent } from '../download-pdf/download-pdf.component'
 
 @Component({
     selector: 'app-manage-orders',
@@ -284,6 +285,6 @@ export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     downloadOrdersPdf() {
-        this.bakeryManagementService.downloadOrdersPdf()
+        this.dialog.open(DownloadPdfComponent)
     }
 }
