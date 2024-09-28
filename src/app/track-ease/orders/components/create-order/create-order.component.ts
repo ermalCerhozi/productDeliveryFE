@@ -73,6 +73,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     orderForm: FormGroup = new FormGroup({})
     orderItemsFormArray!: FormArray
     totalOrderPrice = 0
+    previousOrders: number = 0
     private currentOrder!: any
 
     constructor(
@@ -116,15 +117,37 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
      */
     private subscribeToFormChanges(): void {
         this.orderItemsFormArray.valueChanges
-            .pipe(debounceTime(80), takeUntil(this.unsubscribe$))
+            .pipe(debounceTime(60), takeUntil(this.unsubscribe$))
             .subscribe((orderItems: any[]) => {
-                if (this.orderItemsFormArray.valid) {
+                // Check if all order items have a valid product field
+                const allItemsValid = orderItems.every(item => item.product);
+                if (allItemsValid) {
                     // Recalculate the total order price
-                    this.calculateTotalOrderPrice(orderItems)
+                    this.calculateTotalOrderPrice(orderItems);
                     // Process selected products
-                    this.processSelectedProducts(orderItems)
+                    this.processSelectedProducts(orderItems);
                 }
-            })
+            });
+    }
+
+    calculateTotalOrderPrice(orderItems: any[]) {
+        this.totalOrderPrice = 0
+        // Filter out order items without a product or quantity or return_quantity
+        const validOrderItems = orderItems.filter(
+            (item) => item.product && (item.quantity || item.returned_quantity)
+        )
+        if (validOrderItems.length === 0) {
+            this.totalOrderPrice = 0
+            return
+        }
+
+        // Calculate the total order price
+        validOrderItems.forEach((item) => {
+            const price = item.product.price
+            const quantity = item.quantity ? item.quantity : 0
+            const returnedQuantity = item.returned_quantity ? item.returned_quantity : 0
+            this.totalOrderPrice += price * (quantity - returnedQuantity)
+        })
     }
 
     processSelectedProducts(orderItems: any[]): void {
@@ -211,37 +234,20 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         })
     }
 
-    getLastClientOrder() {
-        const client = this.orderForm.get('client')!.value.value
-        this.bakeryManagementService.getLastOrder(client).subscribe({
+    getPreviousClientOrders() {
+        this.previousOrders = this.previousOrders + 1
+
+        const clientId = this.orderForm.get('client')!.value.value
+        this.bakeryManagementService.getPreviousOrder(clientId, this.previousOrders).subscribe({
             next: (res) => {
                 const transformedOrderItems = this.transformedOrderItems(res.order_items)
                 this.orderItemsFormArray.clear()
                 this.populateOrderItems(transformedOrderItems)
             },
             error: (error: Error) => {
+                this.previousOrders = this.previousOrders - 1
                 console.log('There was an error getting the last order:', error)
             },
-        })
-    }
-
-    calculateTotalOrderPrice(orderItems: any[]) {
-        this.totalOrderPrice = 0
-        // Filter out order items without a product
-        const validOrderItems = orderItems.filter(
-            (item) => item.product && (item.quantity || item.returned_quantity)
-        )
-        if (validOrderItems.length === 0) {
-            this.totalOrderPrice = 0
-            return
-        }
-
-        // Calculate the total order price
-        validOrderItems.forEach((item) => {
-            const price = item.product.price
-            const quantity = item.quantity ? item.quantity : 0
-            const returnedQuantity = item.returned_quantity ? item.returned_quantity : 0
-            this.totalOrderPrice += price * (quantity - returnedQuantity)
         })
     }
 

@@ -177,8 +177,8 @@ export class BakeryManagementService {
         return this.bakeryManagementApiService.getOrderById(id)
     }
 
-    getLastOrder(clientId: number): Observable<OrderEntity> {
-        return this.bakeryManagementApiService.getLastOrderByClient(clientId)
+    getPreviousOrder(clientId: number, previousOrderNumber: number): Observable<OrderEntity> {
+        return this.bakeryManagementApiService.getPreviousOrderByClient(clientId, previousOrderNumber)
     }
 
     // TODO: remove this when the interceptor is implemneted to send the logged in user

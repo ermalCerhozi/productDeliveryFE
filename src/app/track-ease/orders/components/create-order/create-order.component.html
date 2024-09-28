@@ -31,9 +31,13 @@
                 mat-mini-fab
                 color="primary"
                 type="button"
-                (click)="getLastClientOrder()"
+                (click)="getPreviousClientOrders()"
+                class="button-with-badge"
             >
                 <mat-icon>settings_backup_restore</mat-icon>
+                @if(previousOrders > 0) {
+                    <span class="badge">{{previousOrders}}</span>
+                }
             </button>
         </div>
 

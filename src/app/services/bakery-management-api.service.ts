@@ -102,8 +102,9 @@ export class BakeryManagementApiService {
         return this.httpClient.get<OrderEntity>(`${this.basePath}/orders/${id}`)
     }
 
-    getLastOrderByClient(clientId: number): Observable<OrderEntity> {
-        return this.httpClient.get<OrderEntity>(`${this.basePath}/orders/last-order/${clientId}`)
+    getPreviousOrderByClient(clientId: number, previousOrderNumber: number): Observable<OrderEntity> {
+        const body = { clientId, previousOrderNumber }
+        return this.httpClient.post<OrderEntity>(`${this.basePath}/orders/last-order`, body)
     }
 
     updateOrder(orderId: number, order: any, notifications: any): Observable<any> {
