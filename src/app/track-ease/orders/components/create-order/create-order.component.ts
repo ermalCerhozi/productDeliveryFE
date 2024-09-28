@@ -120,14 +120,14 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
             .pipe(debounceTime(60), takeUntil(this.unsubscribe$))
             .subscribe((orderItems: any[]) => {
                 // Check if all order items have a valid product field
-                const allItemsValid = orderItems.every(item => item.product);
+                const allItemsValid = orderItems.every(item => item.product)
                 if (allItemsValid) {
                     // Recalculate the total order price
-                    this.calculateTotalOrderPrice(orderItems);
+                    this.calculateTotalOrderPrice(orderItems)
                     // Process selected products
-                    this.processSelectedProducts(orderItems);
+                    this.processSelectedProducts(orderItems)
                 }
-            });
+            })
     }
 
     calculateTotalOrderPrice(orderItems: any[]) {
