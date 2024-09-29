@@ -311,13 +311,12 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
             if (autoComplete && autoComplete.panel) {
                 if (autoComplete.panel) {
                     this.scrollSubscription = fromEvent(autoComplete.panel.nativeElement, 'scroll')
-                        .pipe(debounceTime(200))
                         .subscribe((e) => this.onScroll(e, autoComplete))
                 } else {
                     console.error('autoComplete.panel is still undefined')
                 }
             }
-        }, 0)
+        }, 10)
     }
 
     // This function is triggered when the autocomplete panel is closed.

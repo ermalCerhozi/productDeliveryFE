@@ -307,8 +307,11 @@ export class BakeryManagementService {
         )
     }
 
-    downloadOrdersPdf(form: any): void {
-        this.bakeryManagementApiService.downloadOrdersPdf(form).subscribe((data: any) => {
+    downloadOrdersPdf(): void {
+        const requestPayload: { navigation_context: NavigationContext } = {
+            navigation_context: this.navigationContext,
+        }
+        this.bakeryManagementApiService.downloadOrdersPdf(requestPayload).subscribe((data: any) => {
             const blob = new Blob([data], { type: 'application/pdf' })
             const url = window.URL.createObjectURL(blob)
             const link = document.createElement('a')
