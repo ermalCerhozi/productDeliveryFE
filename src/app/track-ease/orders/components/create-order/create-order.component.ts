@@ -14,7 +14,7 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
 import { ViewChild } from '@angular/core'
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete'
-import { MatDialogTitle, MatDialogActions, MatDialogClose } from '@angular/material/dialog'
+import { MatDialogActions } from '@angular/material/dialog'
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field'
 import { MatInput } from '@angular/material/input'
 import { NgFor, NgIf, AsyncPipe } from '@angular/common'
@@ -33,7 +33,6 @@ import { NotificationService } from 'src/app/services/notification.service'
     styleUrls: ['./create-order.component.scss'],
     standalone: true,
     imports: [
-        MatDialogTitle,
         FormsModule,
         ReactiveFormsModule,
         MatFormField,
@@ -50,18 +49,15 @@ import { NotificationService } from 'src/app/services/notification.service'
         MatFabButton,
         MatDialogActions,
         MatButton,
-        MatDialogClose,
         AsyncPipe,
     ],
 })
 export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
-    notificationService = inject(NotificationService)
-
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete
     @ViewChild('autoCompleteClients') autoCompleteClients!: MatAutocomplete
     private scrollSubscription!: Subscription
 
-    private unsubscribe$ = new Subject<void>()
+    private destroy$ = new Subject<boolean>();
 
     clients: Observable<FilterOption[]>
     hasMoreClientsToLoad: Observable<boolean>
@@ -82,7 +78,8 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         private searchService: SearchService,
         private bakeryManagementApiService: BakeryManagementApiService,
         private snackBarService: SnackBarService,
-        private router: Router
+        private router: Router,
+        private notificationService: NotificationService
     ) {
         this.clients = this.searchService.getClients()
         this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
@@ -104,8 +101,8 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.unsubscribe$.next()
-        this.unsubscribe$.complete()
+        this.destroy$.next(true);
+        this.destroy$.complete()
     }
 
     /**
@@ -117,11 +114,10 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
      */
     private subscribeToFormChanges(): void {
         this.orderItemsFormArray.valueChanges
-            .pipe(debounceTime(60), takeUntil(this.unsubscribe$))
+            .pipe(debounceTime(60), takeUntil(this.destroy$))
             .subscribe((orderItems: any[]) => {
                 // Check if all order items have a valid product field
-                const allItemsValid = orderItems.every(item => item.product)
-                if (allItemsValid) {
+                if (this.orderItemsFormArray.valid) {
                     // Recalculate the total order price
                     this.calculateTotalOrderPrice(orderItems)
                     // Process selected products
@@ -131,53 +127,42 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     calculateTotalOrderPrice(orderItems: any[]) {
-        this.totalOrderPrice = 0
-        // Filter out order items without a product or quantity or return_quantity
         const validOrderItems = orderItems.filter(
-            (item) => item.product && (item.quantity || item.returned_quantity)
-        )
-        if (validOrderItems.length === 0) {
-            this.totalOrderPrice = 0
-            return
-        }
-
-        // Calculate the total order price
-        validOrderItems.forEach((item) => {
-            const price = item.product.price
-            const quantity = item.quantity ? item.quantity : 0
-            const returnedQuantity = item.returned_quantity ? item.returned_quantity : 0
-            this.totalOrderPrice += price * (quantity - returnedQuantity)
-        })
+            item => item.product && (item.quantity || item.returned_quantity)
+        );
+        this.totalOrderPrice = validOrderItems.reduce((total, item) => {
+            const quantity = item.quantity ?? 0;
+            const returnedQuantity = item.returned_quantity ?? 0;
+            return total + item.product.price * (quantity - returnedQuantity);
+        }, 0);
     }
 
     processSelectedProducts(orderItems: any[]): void {
-        const selectedProducts = Array.from(
-            new Set(
-                orderItems
-                    .map((item) => ({
-                        label: item.product.label,
-                        value: item.product.value,
-                    }))
-                    .filter((item) => item.label !== undefined)
-            )
-        )
-
+        const selectedProductsMap = new Map();
+        orderItems.forEach(item => {
+            if (item.product && item.product.label) {
+                selectedProductsMap.set(item.product.value, {
+                    label: item.product.label,
+                    value: item.product.value,
+                });
+            }
+        });
+        const selectedProducts = Array.from(selectedProductsMap.values());
         if (selectedProducts.length === 0) {
-            return
+            return;
         }
 
         this.products
             .pipe(
-                map((products) =>
+                map(products =>
                     products.filter(
-                        (product) =>
-                            !selectedProducts.some((selected) => selected.value === product.value)
+                        product => !selectedProducts.some(selected => selected.value === product.value)
                     )
                 )
             )
-            .subscribe((filteredProducts) => {
-                this.filteredProducts = filteredProducts
-            })
+            .subscribe(filteredProducts => {
+                this.filteredProducts = filteredProducts;
+            });
     }
 
     setInitialFilteredProducts() {
@@ -249,6 +234,24 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                 console.log('There was an error getting the last order:', error)
             },
         })
+    }
+
+    getNextClientOrders() {
+        if(this.previousOrders > 0) {
+            this.previousOrders = this.previousOrders - 1
+            const clientId = this.orderForm.get('client')!.value.value
+            this.bakeryManagementService.getPreviousOrder(clientId, this.previousOrders).subscribe({
+                next: (res) => {
+                    const transformedOrderItems = this.transformedOrderItems(res.order_items)
+                    this.orderItemsFormArray.clear()
+                    this.populateOrderItems(transformedOrderItems)
+                },
+                error: (error: Error) => {
+                    this.previousOrders = this.previousOrders + 1
+                    console.error('There was an error getting the next order:', error)
+                },
+            })
+        }
     }
 
     addNewOrderItem(): void {

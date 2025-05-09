@@ -27,26 +27,37 @@
                 </mat-error>
             </mat-form-field>
             <button
-                [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched"
                 mat-mini-fab
                 color="primary"
                 type="button"
                 (click)="getPreviousClientOrders()"
                 class="button-with-badge"
+                [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched"
             >
                 <mat-icon>settings_backup_restore</mat-icon>
                 @if(previousOrders > 0) {
                     <span class="badge">{{previousOrders}}</span>
                 }
             </button>
+            <button
+                mat-mini-fab
+                color="primary"
+                type="button"
+                (click)="getNextClientOrders()"
+                class="button-with-badge"
+                [disabled]="previousOrders === 0"
+            >
+                <mat-icon style="transform: scaleX(-1);">settings_backup_restore</mat-icon>
+            </button>
         </div>
 
-        <div
-            formArrayName="order_items"
-            *ngFor="let item of orderItemsFormArray?.controls; let i = index"
-        >
-            <div [formGroupName]="i" class="order-items-fields">
-                <mat-form-field class="product-fileld" appearance="outline" hideRequiredMarker>
+        <div formArrayName="order_items">
+            <div
+                *ngFor="let item of orderItemsFormArray?.controls; let i = index"
+                [formGroupName]="i"
+                class="order-items-fields"
+            >
+                <mat-form-field class="product-field" appearance="outline" hideRequiredMarker>
                     <mat-label>Product</mat-label>
                     <input
                         matInput
@@ -66,9 +77,7 @@
                         </mat-option>
                     </mat-autocomplete>
                     <mat-error
-                        *ngIf="
-                            orderForm.get('product')?.invalid && orderForm.get('product')?.touched
-                        "
+                        *ngIf="item.get('product')?.invalid && item.get('product')?.touched"
                     >
                         Product is required
                     </mat-error>

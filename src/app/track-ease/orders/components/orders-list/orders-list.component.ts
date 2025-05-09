@@ -40,9 +40,9 @@ import { DropdownMenuListComponent } from '../../../../shared/components/dropdow
 import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
-    selector: 'app-manage-orders',
-    templateUrl: './manage-orders.component.html',
-    styleUrls: ['./manage-orders.component.scss'],
+    selector: 'app-orders-list',
+    templateUrl: './orders-list.component.html',
+    styleUrls: ['./orders-list.component.scss'],
     standalone: true,
     imports: [
         MatButton,
@@ -75,7 +75,7 @@ import { ActivatedRoute, Router } from '@angular/router'
         ConfirmationDialogComponent,
     ],
 })
-export class ManageOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
+export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>

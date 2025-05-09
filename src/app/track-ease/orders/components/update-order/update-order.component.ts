@@ -14,7 +14,7 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
 import { ViewChild } from '@angular/core'
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete'
-import { MatDialogTitle, MatDialogActions, MatDialogClose } from '@angular/material/dialog'
+import { MatDialogActions } from '@angular/material/dialog'
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field'
 import { MatInput } from '@angular/material/input'
 import { NgFor, NgIf, AsyncPipe } from '@angular/common'
@@ -22,18 +22,17 @@ import { MatOption } from '@angular/material/core'
 import { MatMiniFabButton, MatFabButton, MatButton } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
 import { cloneDeep, isEqual } from 'lodash-es'
-import { ActivatedRoute, Router } from '@angular/router'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { SnackBarService } from 'src/app/services/snackbar.service'
+import { ActivatedRoute, Router } from '@angular/router'
 import { NotificationService } from 'src/app/services/notification.service'
 
 @Component({
     selector: 'app-update-order',
     templateUrl: './update-order.component.html',
-    styleUrl: './update-order.component.css',
+    styleUrl: './update-order.component.scss',
     standalone: true,
     imports: [
-        MatDialogTitle,
         FormsModule,
         ReactiveFormsModule,
         MatFormField,
@@ -50,19 +49,15 @@ import { NotificationService } from 'src/app/services/notification.service'
         MatFabButton,
         MatDialogActions,
         MatButton,
-        MatDialogClose,
         AsyncPipe,
     ],
 })
 export class UpdateOrderComponent implements OnInit, OnDestroy {
-    notificationService = inject(NotificationService)
-
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete
     @ViewChild('autoCompleteClients') autoCompleteClients!: MatAutocomplete
     private scrollSubscription!: Subscription
-    private unsubscribe$ = new Subject<void>()
 
-    order!: OrderEntity
+    private destroy$ = new Subject<boolean>();
 
     clients: Observable<FilterOption[]>
     hasMoreClientsToLoad: Observable<boolean>
@@ -74,7 +69,9 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     orderForm: FormGroup = new FormGroup({})
     orderItemsFormArray!: FormArray
     totalOrderPrice = 0
+    previousOrders: number = 0
     private currentOrder!: any
+    private cuurrentOrderFormState: any
 
     constructor(
         private formBuilder: FormBuilder,
@@ -83,7 +80,8 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private bakeryManagementApiService: BakeryManagementApiService,
         private snackBarService: SnackBarService,
-        private router: Router
+        private router: Router,
+        private notificationService: NotificationService
     ) {
         this.clients = this.searchService.getClients()
         this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
@@ -93,19 +91,23 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        // load the 20 first clients and products
+        this.loadMoreClients()
+        this.loadMoreProducts()
+        this.setInitialFilteredProducts()
+        // initialize the form with the initial values
         this.initializeForm()
-
         this.route.queryParams.subscribe((params) => {
             const orderId = params['id']
             if (orderId) {
                 this.getOrderById(orderId)
             }
         })
+    }
 
-        // load the 20 first clients and products
-        this.loadMoreClients()
-        this.loadMoreProducts()
-        this.setInitialFilteredProducts()
+    ngOnDestroy(): void {
+        this.destroy$.next(true);
+        this.destroy$.complete()
     }
 
     initializeForm(): void {
@@ -116,15 +118,10 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
         })
     }
 
-    ngOnDestroy(): void {
-        this.unsubscribe$.next()
-        this.unsubscribe$.complete()
-    }
-
     getOrderById(orderId: number) {
         this.bakeryManagementService.getOrderById(orderId).subscribe({
             next: (order: OrderEntity) => {
-                this.order = order
+                this.currentOrder = order
 
                 this.patchForm()
             },
@@ -143,8 +140,9 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
      */
     private subscribeToFormChanges(): void {
         this.orderItemsFormArray.valueChanges
-            .pipe(debounceTime(80), takeUntil(this.unsubscribe$))
+            .pipe(debounceTime(60), takeUntil(this.destroy$))
             .subscribe((orderItems: any[]) => {
+                // Check if all order items have a valid product field
                 if (this.orderItemsFormArray.valid) {
                     // Recalculate the total order price
                     this.calculateTotalOrderPrice(orderItems)
@@ -154,34 +152,43 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
             })
     }
 
-    processSelectedProducts(orderItems: any[]): void {
-        const selectedProducts = Array.from(
-            new Set(
-                orderItems
-                    .map((item) => ({
-                        label: item.product.label,
-                        value: item.product.value,
-                    }))
-                    .filter((item) => item.label !== undefined)
-            )
-        )
+    calculateTotalOrderPrice(orderItems: any[]) {
+        const validOrderItems = orderItems.filter(
+            item => item.product && (item.quantity || item.returned_quantity)
+        );
+        this.totalOrderPrice = validOrderItems.reduce((total, item) => {
+            const quantity = item.quantity ?? 0;
+            const returnedQuantity = item.returned_quantity ?? 0;
+            return total + item.product.price * (quantity - returnedQuantity);
+        }, 0);
+    }
 
+    processSelectedProducts(orderItems: any[]): void {
+        const selectedProductsMap = new Map();
+        orderItems.forEach(item => {
+            if (item.product && item.product.label) {
+                selectedProductsMap.set(item.product.value, {
+                    label: item.product.label,
+                    value: item.product.value,
+                });
+            }
+        });
+        const selectedProducts = Array.from(selectedProductsMap.values());
         if (selectedProducts.length === 0) {
-            return
+            return;
         }
 
         this.products
             .pipe(
-                map((products) =>
+                map(products =>
                     products.filter(
-                        (product) =>
-                            !selectedProducts.some((selected) => selected.value === product.value)
+                        product => !selectedProducts.some(selected => selected.value === product.value)
                     )
                 )
             )
-            .subscribe((filteredProducts) => {
-                this.filteredProducts = filteredProducts
-            })
+            .subscribe(filteredProducts => {
+                this.filteredProducts = filteredProducts;
+            });
     }
 
     setInitialFilteredProducts() {
@@ -191,7 +198,7 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     }
 
     patchForm() {
-        const formData = this.transformedOrder(this.order!)
+        const formData = this.getUpdateOrderFormData(this.currentOrder!)
         this.calculateTotalOrderPrice(formData.order_items) // Calculate the total order price for the update form
 
         this.orderForm = this.formBuilder.group({
@@ -203,12 +210,12 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
         this.orderItemsFormArray = this.orderForm.get('order_items') as FormArray
         this.populateOrderItems(formData.order_items)
 
-        this.currentOrder = cloneDeep(this.orderForm.value)
+        this.cuurrentOrderFormState = cloneDeep(this.orderForm.value)
         this.processSelectedProducts(this.orderItemsFormArray.value)
         this.subscribeToFormChanges()
     }
 
-    transformedOrder(order: OrderEntity): any {
+    getUpdateOrderFormData(order: OrderEntity): any {
         const orderClient = {
             value: order.client.id,
             label: order.client.first_name + ' ' + order.client.last_name,
@@ -249,24 +256,39 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
         })
     }
 
-    calculateTotalOrderPrice(orderItems: any[]) {
-        this.totalOrderPrice = 0
-        // Filter out order items without a product
-        const validOrderItems = orderItems.filter(
-            (item) => item.product && (item.quantity || item.returned_quantity)
-        )
-        if (validOrderItems.length === 0) {
-            this.totalOrderPrice = 0
-            return
-        }
+    getPreviousClientOrders() {
+        this.previousOrders = this.previousOrders + 1
 
-        // Calculate the total order price
-        validOrderItems.forEach((item) => {
-            const price = item.product.price
-            const quantity = item.quantity ? item.quantity : 0
-            const returnedQuantity = item.returned_quantity ? item.returned_quantity : 0
-            this.totalOrderPrice += price * (quantity - returnedQuantity)
+        const clientId = this.orderForm.get('client')!.value.value
+        this.bakeryManagementService.getPreviousOrder(clientId, this.previousOrders).subscribe({
+            next: (res) => {
+                const transformedOrderItems = this.transformedOrderItems(res.order_items)
+                this.orderItemsFormArray.clear()
+                this.populateOrderItems(transformedOrderItems)
+            },
+            error: (error: Error) => {
+                this.previousOrders = this.previousOrders - 1
+                console.log('There was an error getting the last order:', error)
+            },
         })
+    }
+
+    getNextClientOrders() {
+        if(this.previousOrders > 0) {
+            this.previousOrders = this.previousOrders - 1
+            const clientId = this.orderForm.get('client')!.value.value
+            this.bakeryManagementService.getPreviousOrder(clientId, this.previousOrders).subscribe({
+                next: (res) => {
+                    const transformedOrderItems = this.transformedOrderItems(res.order_items)
+                    this.orderItemsFormArray.clear()
+                    this.populateOrderItems(transformedOrderItems)
+                },
+                error: (error: Error) => {
+                    this.previousOrders = this.previousOrders + 1
+                    console.error('There was an error getting the next order:', error)
+                },
+            })
+        }
     }
 
     addNewOrderItem(): void {
@@ -318,18 +340,23 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     }
 
     formHasChanged(): boolean {
-        return !isEqual(this.currentOrder, this.orderForm.value)
+        return !isEqual(this.cuurrentOrderFormState, this.orderForm.value)
     }
 
     // This function is triggered when the autocomplete panel is opened.
     // It creates a subscription to the scroll event of the autocomplete panel.
     // The debounceTime(200) is used to limit the number of events triggered.
     onOpened(autoComplete: MatAutocomplete) {
-        if (autoComplete && autoComplete.panel) {
-            this.scrollSubscription = fromEvent(autoComplete.panel.nativeElement, 'scroll')
-                .pipe(debounceTime(200))
-                .subscribe((e) => this.onScroll(e, autoComplete))
-        }
+        setTimeout(() => {
+            if (autoComplete && autoComplete.panel) {
+                if (autoComplete.panel) {
+                    this.scrollSubscription = fromEvent(autoComplete.panel.nativeElement, 'scroll')
+                        .subscribe((e) => this.onScroll(e, autoComplete))
+                } else {
+                    console.error('autoComplete.panel is still undefined')
+                }
+            }
+        }, 10)
     }
 
     // This function is triggered when the autocomplete panel is closed.
@@ -366,14 +393,14 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
                     ...item,
                     product: item.product.value,
                     quantity: item.quantity === '' ? 0 : item.quantity,
-                    returned_quantity: item.returned_quantity === '' ? 0 : item.returned_quantity,
+                    returned_quantity: item.returned_quantity === null || undefined || '' ? 0 : item.returned_quantity,
                 })),
             }
             const params = {
                 sendUpdatedNotification: this.notificationService.sendUpdatedNotification,
             }
 
-            this.bakeryManagementApiService.updateOrder(this.order.id, newValue, params).subscribe({
+            this.bakeryManagementApiService.updateOrder(this.currentOrder.id, newValue, params).subscribe({
                 next: () => {
                     this.snackBarService.showSuccess('Created successfully')
                     this.goBack()

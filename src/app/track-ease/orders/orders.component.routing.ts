@@ -4,8 +4,8 @@ export const ORDERS_ROUTES: Route[] = [
     {
         path: '',
         loadComponent: () =>
-            import('./components/manage-orders/manage-orders.component').then(
-                (c) => c.ManageOrdersComponent
+            import('./components/orders-list/orders-list.component').then(
+                (c) => c.OrdersListComponent
             ),
     },
     {
