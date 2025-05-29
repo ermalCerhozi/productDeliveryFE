@@ -22,7 +22,7 @@ import {
     MatRow,
     MatNoDataRow,
 } from '@angular/material/table'
-import { MatPaginator } from '@angular/material/paginator'
+import { MatPaginator, PageEvent } from '@angular/material/paginator'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
@@ -34,7 +34,7 @@ import { AdvancedTextFilterComponent } from '../../../../shared/components/filte
 import { MatDivider } from '@angular/material/divider'
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common'
 import { FiltersResultComponent } from '../../../../shared/components/filters-panel/filters-result/filters-result.component'
-import { MatMenuTrigger } from '@angular/material/menu'
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu'
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { DropdownMenuListComponent } from '../../../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -73,6 +73,7 @@ import { ActivatedRoute, Router } from '@angular/router'
         AsyncPipe,
         DatePipe,
         ConfirmationDialogComponent,
+        MatMenuModule
     ],
 })
 export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -153,7 +154,6 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
         this.loggedInUser = this.bakeryManagementService.getLoggedInUser() //TODO: make a interceptor for this.
-        this.getOrdersList(false)
     }
 
     ngOnDestroy() {
@@ -162,16 +162,30 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator
-        this.paginator.page.subscribe((event) => {
+        this.paginator.page.pipe(takeUntil(this.destroy$)).subscribe((event: PageEvent) => {
+            const pageSizeChanged = this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize;
+
+            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize;
+            this.bakeryManagementService.navigationContext.pagination.offset = event.pageIndex * event.pageSize;
             if (event.pageIndex > event.previousPageIndex!) {
-                this.getOrdersList(true)
+                this.getOrdersList(true);
             }
-        })
+            if (pageSizeChanged) {
+                this.getOrdersList(false);
+            }
+        });
+
+        this.getOrdersList(false);
     }
 
     getOrdersList(append: boolean) {
-        this.isLoading = true
+        const pageSize = this.paginator.pageSize;
+        const pageIndex = this.paginator.pageIndex;
+
+        this.bakeryManagementService.navigationContext.pagination.limit = pageSize;
+        this.bakeryManagementService.navigationContext.pagination.offset = pageIndex * pageSize;
+
+        this.isLoading = true;
         this.bakeryManagementService
             .updateOrdersList(append)
             .pipe(
@@ -180,14 +194,14 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe({
                 next: (orders) => {
-                    this.isLoading = false
-                    this.dataSource.data = orders
+                    this.isLoading = false;
+                    this.dataSource.data = orders;
                 },
                 error: (error) => {
-                    this.isLoading = false
-                    console.log('Error: ', error)
+                    this.isLoading = false;
+                    console.log('Error: ', error);
                 },
-            })
+            });
     }
 
     selectOrder(order: OrderEntity): void {

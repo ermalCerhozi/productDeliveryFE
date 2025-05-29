@@ -27,12 +27,12 @@ import { BakeryManagementService } from 'src/app/services/bakery-management.serv
 import { CreateUpdateDialogComponent } from 'src/app/shared/components/create-update-dialog/create-update-dialog.component'
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
-import { MatPaginator } from '@angular/material/paginator'
+import { MatPaginator, PageEvent } from '@angular/material/paginator'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 import { take, map } from 'rxjs/operators'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { Subject } from 'rxjs'
+import { Subject, takeUntil } from 'rxjs'
 import { SearchService } from 'src/app/services/search.service'
 import { NgTemplateOutlet, NgIf, DecimalPipe } from '@angular/common'
 import { MatButton } from '@angular/material/button'
@@ -77,12 +77,13 @@ import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '..
     ],
 })
 export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy {
-    unsubscribe = new Subject<void>()
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('createUpdateContainer')
     createUpdateContainer!: TemplateRef<CreateUpdateDialogComponent>
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
+    
+    private destroy$ = new Subject<void>()
 
     displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
     activeProduct!: ProductEntity
@@ -111,22 +112,29 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
-        this.getProductsList(false)
         this.bakeryManagementService.activeTab = 'products'
     }
 
     ngOnDestroy() {
-        this.unsubscribe.next()
-        this.unsubscribe.complete()
+        this.destroy$.next()
+        this.destroy$.complete()
     }
 
     ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator
-        this.paginator.page.subscribe((event) => {
+        this.paginator.page.pipe(takeUntil(this.destroy$)).subscribe((event: PageEvent) => {
+            const pageSizeChanged = this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize;
+
+            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize;
+            this.bakeryManagementService.navigationContext.pagination.offset = event.pageIndex * event.pageSize;
             if (event.pageIndex > event.previousPageIndex!) {
-                this.getProductsList(true)
+                this.getProductsList(true);
             }
-        })
+            if (pageSizeChanged) {
+                this.getProductsList(false);
+            }
+        });
+
+        this.getProductsList(false)
     }
 
     getProductsList(append: boolean) {

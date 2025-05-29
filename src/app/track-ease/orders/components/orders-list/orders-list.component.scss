@@ -7,15 +7,16 @@
 
 .header {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-between;
     gap: 12px;
-    padding: 5px 10px;
+    padding: 12px 16px;
 }
 
 .controls {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    gap: 12px;
 
     .add-order{
         color: white;
@@ -31,6 +32,16 @@
         align-items: center;
         justify-content: center;
     }
+}
+
+.filter-results {
+    padding-left: 16px;
+}
+
+.number-of-results {
+    background-color: white;
+    color: #646565;
+    padding: 16px 0px 0px 16px;
 }
 
 .manage-orders-table-container{

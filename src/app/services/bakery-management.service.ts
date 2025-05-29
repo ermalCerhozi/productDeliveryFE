@@ -53,7 +53,7 @@ export class BakeryManagementService {
         this.navigationContext = {
             pagination: {
                 offset: 0,
-                limit: 21,
+                limit: 10,
             },
             filters: {},
             // sorts: {
@@ -70,8 +70,6 @@ export class BakeryManagementService {
     updateProductList(append?: boolean): Observable<ProductResponse> {
         if (!append) {
             this.productsListSubject.next([])
-            this.navigationContext.pagination.limit = 21
-            this.navigationContext.pagination.offset = 0
         }
 
         const requestPayload: { navigation_context: NavigationContext } = {
@@ -90,7 +88,6 @@ export class BakeryManagementService {
                 }
                 this.productsListSubject.next(newProductsList)
 
-                this.navigationContext.pagination.offset += this.navigationContext.pagination.limit
                 if (this.navigationContext.getCount) {
                     this.productsCount = response.count
                 }
@@ -101,8 +98,6 @@ export class BakeryManagementService {
     updateOrdersList(append: boolean): Observable<OrderResponse> {
         if (!append) {
             this.ordersListSubject.next([])
-            this.navigationContext.pagination.limit = 21
-            this.navigationContext.pagination.offset = 0
         }
 
         const requestPayload: { navigation_context: NavigationContext } = {
@@ -121,10 +116,7 @@ export class BakeryManagementService {
                 }
                 this.ordersListSubject.next(newOrdersList)
 
-                this.navigationContext.pagination.offset += this.navigationContext.pagination.limit
-                if (this.navigationContext.getCount) {
-                    this.ordersCount = response.count
-                }
+                this.ordersCount = response.count
             })
         )
     }
@@ -132,8 +124,6 @@ export class BakeryManagementService {
     updateUsersList(append: boolean): Observable<UserResponse> {
         if (!append) {
             this.usersListSubject.next([])
-            this.navigationContext.pagination.limit = 21
-            this.navigationContext.pagination.offset = 0
         }
 
         const requestPayload: { navigation_context: NavigationContext } = {
@@ -153,7 +143,6 @@ export class BakeryManagementService {
                 this.usersListSubject.next(newUsersList)
                 this.usersListSubject.next(newUsersList)
 
-                this.navigationContext.pagination.offset += this.navigationContext.pagination.limit
                 if (this.navigationContext.getCount) {
                     this.usersCount = response.count
                 }

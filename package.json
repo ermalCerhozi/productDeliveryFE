@@ -26,7 +26,7 @@
     "ngx-infinite-scroll": "^18.0.0",
     "ngx-webstorage": "^18.0.0",
     "rxjs": "^7.5.7",
-    "tslib": "^2.7.0",
+    "tslib": "^2.8.1",
     "zone.js": "^0.15.0"
   },
   "devDependencies": {

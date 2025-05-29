@@ -33,9 +33,15 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="selectUser(row)"></tr>
+
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" *ngIf="!isLoading" colspan="4">No data matching the filter!</td>
+            <td class="mat-cell" *ngIf="!isLoading" colspan="4">
+                <div class="no-data-container">
+                    <img src="assets/images/no-data.svg" alt="No data found" class="small-image" />
+                    <p>No Data Found!</p>
+                </div>
+            </td>
         </tr>
     </table>
 </div>
@@ -50,7 +56,9 @@
 
 <mat-paginator
     [length]="bakeryManagementService.usersCount"
-    [pageSize]="20"
+    [pageSize]="10"
+    [pageSizeOptions]="[10, 20, 30, 50, 100]"
+    showFirstLastButtons
     aria-label="Select page of users"
 ></mat-paginator>
 
