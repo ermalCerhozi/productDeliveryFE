@@ -164,7 +164,7 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     openCreateUpdateUser(): void {
         this.dialog.open(this.createUpdateContainer, {
-            width: '100%',
+            width: '100vh',
             maxHeight: '80%',
         })
     }

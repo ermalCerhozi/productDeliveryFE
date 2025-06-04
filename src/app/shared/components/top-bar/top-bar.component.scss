@@ -1,15 +1,20 @@
 :host {
-    height: 88px;
-    width: 100%;
+    height: 70px;
+    padding: 0 16px;
+}
+
+.container {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 8px;
+    gap: 16px;
  
     .top-bar-title-container {
         display: flex;
         flex-shrink: 0;
         flex-direction: column;
-        margin: -12px 10px 0px 10px;
+        margin-top: -16px;
  
         .top-bar-title {
             font-size: 24px;
@@ -18,8 +23,12 @@
         .top-bar-subtitle {
             font-size: 12px;
         }
+
+        @media (max-width: 600px) {
+            display: none;
+        }
     }
- 
+
     .top-bar-search-container {
         flex: 1 1;
         min-width: 10%;
@@ -29,10 +38,6 @@
             width: 100%;
  
             .top-bar-search-container-form-search-icon {
-                cursor: pointer;
-                padding-right: 30px;
-                position: relative;
-                bottom: 2px;
                 opacity: 0.7;
             }
  
@@ -42,7 +47,7 @@
                 .top-bar-search-container-form-suffix-cancel-icon {
                     color: #00000099;
                     font-size: 24px !important;
-                    margin-right: 10px;
+                    margin-right: 8px;
                     cursor: pointer;
                 }
             }
@@ -53,27 +58,13 @@
     .top-bar-upload-button {
         flex-shrink: 0;
         align-items: center;
-        height: 36px !important;
-        margin: 0px 10px 0px 10px;
-        position: relative;
-        bottom: 10px;
- 
-        mat-icon {
-            padding-right: 10px;
-        }
+        margin-top: -24px;
  
         span {
             font-weight: 500;
             font-size: 14px;
             line-height: 16px;
             letter-spacing: 1.35px;
-            padding-right: 10px;
-        }
-    }
- 
-    @media screen and (max-width: 599.99px) {
-        .top-bar-search-container {
-            width: 100%;
         }
     }
 }
@@ -94,10 +85,4 @@
  
 .top-bar-hidden-mat-option {
     display: none !important;
-}
-
-@media (max-width: 599.99px) {
-    :host .top-bar-title-container {
-        display: none;
-    }
 }

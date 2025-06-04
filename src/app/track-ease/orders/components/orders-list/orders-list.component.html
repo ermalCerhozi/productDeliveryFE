@@ -1,91 +1,94 @@
 <div class="header">
-    <app-filters>
-        <!-- The datepicker -->
-        <!-- <mat-form-field>
-            <mat-label>Enter a date range</mat-label>
-            <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-                <input matStartDate formControlName="startDate" placeholder="Start date" />
-                <input matEndDate formControlName="endDate" placeholder="End date" />
-            </mat-date-range-input>
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
+    <div class="controls-row">
+        <div class="controls">
+            <button class="add-order" mat-raised-button color="primary" (click)="createOrder()">
+                <mat-icon>add</mat-icon>
+                <span> Create Order </span>
+            </button>
+            <button mat-stroked-button 
+                    [matMenuTriggerFor]="downloadMenu" 
+                    class="download-pdf" 
+                    [disabled]="(filterResults | async)!.length === 0">
+            <mat-icon fontSet="material-icons-outlined">download</mat-icon>
+            <span>Download</span>
+            </button>
 
-            @if (range.controls.startDate.hasError('matStartDateInvalid')) {
-                <mat-error>Invalid start date</mat-error>
-            }
-            @if (range.controls.endDate.hasError('matEndDateInvalid')) {
-                <mat-error>Invalid end date</mat-error>
-            }
-        </mat-form-field> -->
-
-        <app-simple-radio-select-filter
-            [labelTK]="'Date'"
-            [fields]="(mediaDates | async)!"
-            [defaultEmptyValue]="defaultDate"
-            [selection]="(selectedDate | async)!"
-            [customLabelWidth]="'105px'"
-            [panelClass]="'date-filter-panel'"
-            (selectionChange)="applyFilters($event, 'date')"
-        ></app-simple-radio-select-filter>
-
-        <app-advanced-text-filter
-            [labelTK]="'Client'"
-            [loadingPage]="(clientsLoading | async)!"
-            [hasMoreItems]="(hasMoreClientsToLoad | async)!"
-            [selection]="(selectedClients | async)!"
-            [fields]="(clients | async)!"
-            [searchForTK]="'TE_ORDER_CLIENT_SEARCH'"
-            [noResultsTK]="'TE_ORDER_CLIENT_NO_RESULTS'"
-            [panelClass]="'client-categories-filter-panel'"
-            [customLabelWidth]="'110px'"
-            (searchChange)="clientSearchChange($event)"
-            (loadMore)="loadMoreClients()"
-            (selectionChange)="applyFilters($event, 'client')"
-        >
-        </app-advanced-text-filter>
-
-        <app-advanced-text-filter
-            [labelTK]="'Seller'"
-            [loadingPage]="(sellersLoading | async)!"
-            [hasMoreItems]="(hasMoreSellersToLoad | async)!"
-            [selection]="(selectedSellers | async)!"
-            [fields]="(sellers | async)!"
-            [searchForTK]="'TE_ORDER_SELLER_SEARCH'"
-            [noResultsTK]="'TE_ORDER_SELLER_NO_RESULTS'"
-            [panelClass]="'seller-categories-filter-panel'"
-            [customLabelWidth]="'110px'"
-            (searchChange)="sellerSearchChange($event)"
-            (loadMore)="loadMoreSellers()"
-            (selectionChange)="applyFilters($event, 'seller')"
-        >
-        </app-advanced-text-filter>
-    </app-filters>
-
-    <div class="controls">
-        <button class="add-order" mat-raised-button color="primary" (click)="createOrder()">
-            <mat-icon>add</mat-icon>
-            <span> Create Order </span>
-        </button>
-        <button mat-stroked-button 
-                [matMenuTriggerFor]="downloadMenu" 
-                class="download-pdf" 
-                [disabled]="(filterResults | async)!.length === 0">
-        <mat-icon fontSet="material-icons-outlined">download</mat-icon>
-        <span>Download</span>
-        </button>
-
-        <mat-menu #downloadMenu="matMenu">
-        <button mat-menu-item (click)="downloadOrdersPdf()">
-            <mat-icon fontSet="material-icons-outlined">picture_as_pdf</mat-icon>
-            <span>PDF</span>
-        </button>
-        <button mat-menu-item (click)="downloadOrdersPdf()">
-            <mat-icon fontSet="material-icons-outlined">table_chart</mat-icon>
-            <span>CSV</span>
-        </button>
-        </mat-menu>
+            <mat-menu #downloadMenu="matMenu">
+            <button mat-menu-item (click)="downloadOrdersPdf()">
+                <mat-icon fontSet="material-icons-outlined">picture_as_pdf</mat-icon>
+                <span>PDF</span>
+            </button>
+            <button mat-menu-item (click)="downloadOrdersPdf()">
+                <mat-icon fontSet="material-icons-outlined">table_chart</mat-icon>
+                <span>CSV</span>
+            </button>
+            </mat-menu>
+        </div>
     </div>
 
+    <div class="filters-row">
+        <app-filters>
+            <!-- The datepicker -->
+            <!-- <mat-form-field>
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                    <input matStartDate formControlName="startDate" placeholder="Start date" />
+                    <input matEndDate formControlName="endDate" placeholder="End date" />
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+
+                @if (range.controls.startDate.hasError('matStartDateInvalid')) {
+                    <mat-error>Invalid start date</mat-error>
+                }
+                @if (range.controls.endDate.hasError('matEndDateInvalid')) {
+                    <mat-error>Invalid end date</mat-error>
+                }
+            </mat-form-field> -->
+
+            <app-simple-radio-select-filter
+                [labelTK]="'Date'"
+                [fields]="(mediaDates | async)!"
+                [defaultEmptyValue]="defaultDate"
+                [selection]="(selectedDate | async)!"
+                [customLabelWidth]="'105px'"
+                [panelClass]="'date-filter-panel'"
+                (selectionChange)="applyFilters($event, 'date')"
+            ></app-simple-radio-select-filter>
+
+            <app-advanced-text-filter
+                [labelTK]="'Client'"
+                [loadingPage]="(clientsLoading | async)!"
+                [hasMoreItems]="(hasMoreClientsToLoad | async)!"
+                [selection]="(selectedClients | async)!"
+                [fields]="(clients | async)!"
+                [searchForTK]="'TE_ORDER_CLIENT_SEARCH'"
+                [noResultsTK]="'TE_ORDER_CLIENT_NO_RESULTS'"
+                [panelClass]="'client-categories-filter-panel'"
+                [customLabelWidth]="'110px'"
+                (searchChange)="clientSearchChange($event)"
+                (loadMore)="loadMoreClients()"
+                (selectionChange)="applyFilters($event, 'client')"
+            >
+            </app-advanced-text-filter>
+
+            <app-advanced-text-filter
+                [labelTK]="'Seller'"
+                [loadingPage]="(sellersLoading | async)!"
+                [hasMoreItems]="(hasMoreSellersToLoad | async)!"
+                [selection]="(selectedSellers | async)!"
+                [fields]="(sellers | async)!"
+                [searchForTK]="'TE_ORDER_SELLER_SEARCH'"
+                [noResultsTK]="'TE_ORDER_SELLER_NO_RESULTS'"
+                [panelClass]="'seller-categories-filter-panel'"
+                [customLabelWidth]="'110px'"
+                (searchChange)="sellerSearchChange($event)"
+                (loadMore)="loadMoreSellers()"
+                (selectionChange)="applyFilters($event, 'seller')"
+            >
+            </app-advanced-text-filter>
+        </app-filters>
+    </div>
 </div>
 
 <mat-divider></mat-divider>
