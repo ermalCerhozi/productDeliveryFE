@@ -89,12 +89,15 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                     ? {
                           ...this.user,
                           role: this.user.role.toLowerCase(),
+                          phone_prefix: this.extractPhonePrefix(this.user.phone_number),
+                          phone_number: this.extractPhoneNumber(this.user.phone_number),
                       }
                     : {
                           first_name: '',
                           last_name: '',
                           nickname: '',
                           email: '',
+                          phone_prefix: '+355',
                           phone_number: '',
                           role: '',
                           location: '',
@@ -105,9 +108,10 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                 last_name: [formData.last_name, Validators.required],
                 nickname: [formData.nickname],
                 email: [formData.email],
+                phone_prefix: [formData.phone_prefix, Validators.required],
                 phone_number: [
                     formData.phone_number,
-                    [Validators.required, Validators.minLength(10)],
+                    [Validators.required, Validators.pattern('^[0-9]{7,12}$')],
                 ],
                 role: [formData.role, Validators.required],
                 location: [formData.location],
@@ -156,10 +160,17 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                 const lastName = capitalize(this.form.value.last_name)
                 this.form.patchValue({ first_name: firstName, last_name: lastName })
 
+                // Combine prefix and number for output, but do not send phone_prefix
+                const { phone_prefix, ...rest } = this.form.value;
+                const userValue = {
+                    ...rest,
+                    phone_number: `${this.form.value.phone_prefix}${this.form.value.phone_number}`,
+                }
+
                 if (this.action === 'create') {
-                    this.createUser.emit(this.form.value)
+                    this.createUser.emit(userValue)
                 } else if (this.action === 'update') {
-                    this.updateUser.emit(this.form.value)
+                    this.updateUser.emit(userValue)
                 }
             }
         }
@@ -179,5 +190,20 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribe$.next()
         this.unsubscribe$.complete()
+    }
+
+    private extractPhonePrefix(fullNumber?: string): string {
+        if (!fullNumber) return '+355';
+        if (fullNumber.startsWith('+39')) return '+39';
+        if (fullNumber.startsWith('+49')) return '+49';
+        if (fullNumber.startsWith('+33')) return '+33';
+        if (fullNumber.startsWith('+34')) return '+34';
+        if (fullNumber.startsWith('+44')) return '+44';
+        return '+355';
+    }
+
+    private extractPhoneNumber(fullNumber?: string): string {
+        if (!fullNumber) return '';
+        return fullNumber.replace(/^\+(355|39|49|33|34|44)/, '');
     }
 }

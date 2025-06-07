@@ -26,6 +26,7 @@ import { BakeryManagementApiService } from 'src/app/services/bakery-management-a
 import { SnackBarService } from 'src/app/services/snackbar.service'
 import { Router } from '@angular/router'
 import { NotificationService } from 'src/app/services/notification.service'
+import { WhatsAppInvoiceService } from 'src/app/whats-app-invoice.service'
 
 @Component({
     selector: 'app-create-order',
@@ -79,7 +80,8 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
         private bakeryManagementApiService: BakeryManagementApiService,
         private snackBarService: SnackBarService,
         private router: Router,
-        private notificationService: NotificationService
+        private notificationService: NotificationService,
+        private whatsAppInvoiceService: WhatsAppInvoiceService
     ) {
         this.clients = this.searchService.getClients()
         this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
@@ -360,12 +362,14 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                 })),
             }
             const params = {
+                newValue,
                 sendCreatedNotification: this.notificationService.sendCreatedNotification,
             }
 
-            this.bakeryManagementApiService.createOrder(newValue, params).subscribe({
-                next: () => {
+            this.bakeryManagementApiService.createOrder(params).subscribe({
+                next: (createdOrder) => {
                     this.snackBarService.showSuccess('Created successfully')
+                    this.whatsAppInvoiceService.sendInvoiceOnWhatsApp(createdOrder)
                     this.goBack()
                 },
                 error: (error) => {

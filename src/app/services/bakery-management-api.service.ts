@@ -94,8 +94,8 @@ export class BakeryManagementApiService {
     }
 
     //CRUD for orders
-    createOrder(order: any, notifications: any): Observable<any> {
-        return this.httpClient.post<any>(`${this.basePath}/orders`, { order, notifications });
+    createOrder(params: any): Observable<any> {
+        return this.httpClient.post<any>(`${this.basePath}/orders`, { order: params.newValue, notifications: params.sendCreatedNotification });
     }
 
     getOrderById(id: number): Observable<OrderEntity> {

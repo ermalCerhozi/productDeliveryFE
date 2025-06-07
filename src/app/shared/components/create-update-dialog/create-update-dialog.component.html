@@ -7,9 +7,6 @@
             <ng-container *ngSwitchCase="'user'"
                 >{{ action === 'create' ? 'Create' : 'Update' }} User</ng-container
             >
-            <ng-container *ngSwitchCase="'order'"
-                >{{ action === 'create' ? 'Create' : 'Update' }} Order</ng-container
-            >
         </ng-container>
     </div>
 
@@ -65,24 +62,35 @@
 
                     <mat-form-field>
                         <mat-label>Phone Number</mat-label>
-                        <input
-                            matInput
-                            type="tel"
-                            formControlName="phone_number"
-                            required
-                            title="Phone Number"
-                        />
+                        <div style="display: flex; align-items: center;">
+                            <mat-select formControlName="phone_prefix" style="width: 110px; margin-right: 8px;" required>
+                                <mat-option value="+355">🇦🇱 +355 (AL)</mat-option>
+                                <mat-option value="+39">🇮🇹 +39 (IT)</mat-option>
+                                <mat-option value="+49">🇩🇪 +49 (DE)</mat-option>
+                                <mat-option value="+33">🇫🇷 +33 (FR)</mat-option>
+                                <mat-option value="+34">🇪🇸 +34 (ES)</mat-option>
+                                <mat-option value="+44">🇬🇧 +44 (UK)</mat-option>
+                            </mat-select>
+                            <input
+                                matInput
+                                type="tel"
+                                formControlName="phone_number"
+                                required
+                                title="Phone Number"
+                                pattern="[0-9]{7,12}"
+                                maxlength="12"
+                                placeholder="Enter phone number"
+                                (click)="$event.stopPropagation()"
+                            />
+                        </div>
                         <mat-error
-                            *ngIf="
-                                form.get('phone_number')?.invalid &&
-                                form.get('phone_number')?.touched
-                            "
+                            *ngIf="form.get('phone_number')?.invalid && form.get('phone_number')?.touched"
                         >
                             <ng-container *ngIf="form.get('phone_number')?.errors?.['required']">
                                 Phone Number is required
                             </ng-container>
-                            <ng-container *ngIf="form.get('phone_number')?.errors?.['minlength']">
-                                Phone Number must be at least 10 digits long
+                            <ng-container *ngIf="form.get('phone_number')?.errors?.['pattern']">
+                                Phone Number must be numeric and between 7 and 12 digits
                             </ng-container>
                         </mat-error>
                     </mat-form-field>
