@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    baseUrl: 'https://productdeliverybe-production.up.railway.app',
+    baseUrl: 'http://localhost:3000',
 }

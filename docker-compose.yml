@@ -1,0 +1,22 @@
+services:
+  angular-frontend:
+    build:
+      context: . # Assumes Dockerfile is in the current directory (frontend/)
+      dockerfile: Dockerfile
+    container_name: angular_app
+    ports:
+      - "80:80" # Expose frontend on port 80 of the host
+    # expose: # 'expose' is for inter-container communication on the defined network, 'ports' is for host mapping
+    #   - 80
+    restart: unless-stopped
+    networks:
+      - app_network # <--- IMPORTANT: Connect to the same network as the backend
+
+# This frontend docker-compose.yml needs to be in the same directory as your frontend Dockerfile.
+# You will likely have a single, top-level docker-compose.yml that orchestrates both frontend and backend.
+# For now, let's assume they are run from separate directories, but we'll combine them later.
+
+networks: # Define the network here if this is a standalone docker-compose for frontend
+  app_network:
+    external: true # This means the network is defined elsewhere (e.g., by the backend's docker-compose)
+                   # Or, if this is your primary docker-compose, define it as driver: bridge

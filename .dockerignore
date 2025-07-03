@@ -1,0 +1,12 @@
+.dockerignore
+1 **/node_modules/
+2 **/.git
+3 **/README.md
+4 **/LICENSE
+5 **/.vscode
+6 **/npm-debug.log
+7 **/coverage
+8 **/.env
+9 **/.editorconfig
+10 **/.aws
+11 **/dist
