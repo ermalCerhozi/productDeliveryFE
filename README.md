@@ -46,6 +46,18 @@
 * Run `ng serve`.
 * Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
+### Run with Docker
+
+* Ensure the backend containers are running and reachable on `http://localhost:3000` (see the backend project for instructions).
+* From the `productDeliveryFE` directory build and start the frontend container:
+
+    ```powershell
+    docker compose up --build
+    ```
+
+* Open `http://localhost:4200` in your browser. Port `4200` on the host maps to port `80` inside the container, so the Angular build is served by Nginx and remains reachable outside Docker.
+* The production build bundled in the container calls the backend at `http://host.docker.internal:3000`. Adjust `src/environments/environment.prod.ts` if your backend runs elsewhere.
+
 ## :computer: Code Examples
 
 * Utilization of create-update component, emphasizing the ease of reusability through inputs and outputs.
