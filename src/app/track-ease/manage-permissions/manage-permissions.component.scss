@@ -19,10 +19,8 @@
     margin-bottom: 24px;
 }
 
-.card-title {
-    margin: 0 0 16px;
-    font-size: 1.25rem;
-    font-weight: 600;
+form {
+    padding: 16px;
 }
 
 .permission-form {
@@ -59,12 +57,21 @@
     margin-bottom: 16px;
 }
 
+.permissions-top-bar {
+    margin-bottom: 16px;
+    display: block;
+}
+
 .table-wrapper {
     overflow-x: auto;
 }
 
 table {
     width: 100%;
+}
+
+mat-paginator {
+    margin-top: 12px;
 }
 
 .permissions-matrix-table {

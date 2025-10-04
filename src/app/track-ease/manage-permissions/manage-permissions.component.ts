@@ -1,9 +1,11 @@
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     OnDestroy,
     OnInit,
+    ViewChild,
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
@@ -12,10 +14,11 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 import { MatButtonModule } from '@angular/material/button'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
-import { MatTableModule } from '@angular/material/table'
+import { MatTableDataSource, MatTableModule } from '@angular/material/table'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatTabsModule } from '@angular/material/tabs'
 import { MatCheckboxModule } from '@angular/material/checkbox'
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator'
 import { finalize, takeUntil } from 'rxjs/operators'
 import { Subject } from 'rxjs'
 import { PermissionsService } from 'src/app/services/permissions.service'
@@ -25,6 +28,8 @@ import {
     RoleName,
     RolePermissionsSummary,
 } from 'src/app/shared/models/permission.model'
+import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
+import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component'
 
 @Component({
     selector: 'app-manage-permissions',
@@ -44,9 +49,13 @@ import {
         MatProgressSpinnerModule,
         MatTabsModule,
         MatCheckboxModule,
+        MatPaginatorModule,
+        TopBarComponent,
     ],
 })
-export class ManagePermissionsComponent implements OnInit, OnDestroy {
+export class ManagePermissionsComponent
+    implements OnInit, AfterViewInit, OnDestroy
+{
     readonly permissions$ = this.permissionsService.permissions$
     readonly rolePermissions$ = this.permissionsService.rolePermissions$
     readonly displayedColumns = ['code', 'description', 'updated_at']
@@ -64,6 +73,13 @@ export class ManagePermissionsComponent implements OnInit, OnDestroy {
     isSubmitting = false
     errorMessage: string | null = null
     isRoleAssignmentsLoading = false
+
+    readonly dataSource = new MatTableDataSource<PermissionEntity>([])
+    totalPermissions = 0
+    searchQuery = ''
+    searchOptions: SearchOptions = { title: true, all: false }
+
+    @ViewChild(MatPaginator) paginator?: MatPaginator
 
     private readonly destroy$ = new Subject<void>()
     private roleIdByName = new Map<RoleName, number>()
@@ -86,11 +102,58 @@ export class ManagePermissionsComponent implements OnInit, OnDestroy {
         this.loadPermissions()
         this.loadRoleAssignments()
 
+        this.dataSource.filterPredicate = (
+            permission: PermissionEntity,
+            filterValue: string,
+        ) => {
+            if (!filterValue) {
+                return true
+            }
+
+            let criteria: { query: string; mode: 'title' | 'all' }
+            try {
+                criteria = JSON.parse(filterValue)
+            } catch {
+                criteria = { query: filterValue, mode: 'all' }
+            }
+
+            const normalizedFilter = (criteria.query ?? '').trim().toLowerCase()
+            if (!normalizedFilter) {
+                return true
+            }
+
+            if (criteria.mode === 'title') {
+                return permission.code.toLowerCase().includes(normalizedFilter)
+            }
+
+            const target = `${permission.code} ${permission.description ?? ''}`
+                .toLowerCase()
+                .trim()
+
+            return target.includes(normalizedFilter)
+        }
+
+        this.permissions$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((permissions: PermissionEntity[]) => {
+                this.totalPermissions = permissions.length
+                this.dataSource.data = permissions
+                this.applyFilter()
+                this.cdr.markForCheck()
+            })
+
         this.rolePermissions$
             .pipe(takeUntil(this.destroy$))
             .subscribe((roles: RolePermissionsSummary[]) => {
                 this.syncRoleAssignments(roles)
             })
+    }
+
+    ngAfterViewInit(): void {
+        if (this.paginator) {
+            this.dataSource.paginator = this.paginator
+            this.cdr.markForCheck()
+        }
     }
 
     ngOnDestroy(): void {
@@ -244,6 +307,30 @@ export class ManagePermissionsComponent implements OnInit, OnDestroy {
                     })
                 },
             })
+    }
+
+    setSearchQuery(query: string): void {
+        this.searchQuery = query ?? ''
+        this.applyFilter()
+    }
+
+    setSearchOptions(options: SearchOptions): void {
+        this.searchOptions = { ...options }
+        this.applyFilter()
+    }
+
+    getSearchOptions(): SearchOptions {
+        return this.searchOptions
+    }
+
+    private applyFilter(): void {
+        const normalizedValue = this.searchQuery.trim().toLowerCase()
+        const mode = this.searchOptions.title ? 'title' : 'all'
+        this.dataSource.filter = JSON.stringify({ query: normalizedValue, mode })
+        if (this.dataSource.paginator) {
+            this.dataSource.paginator.firstPage()
+        }
+        this.cdr.markForCheck()
     }
 
     private loadRoleAssignments(): void {

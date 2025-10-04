@@ -42,6 +42,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
     @Input() placeholder = ''
     @Input() searchOptions: SearchOptions = { title: true, all: true }
     @Input() disableAddItem = false
+    @Input() displayAddButton = true
     @Output() searchQueryChange = new EventEmitter<string>()
     @Output() searchOptionsChange = new EventEmitter<SearchOptions>()
     @Output() addItem = new EventEmitter<void>()
