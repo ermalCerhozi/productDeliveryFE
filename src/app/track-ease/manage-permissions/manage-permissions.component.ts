@@ -39,7 +39,6 @@ import { TopBarComponent } from '../../shared/components/top-bar/top-bar.compone
     templateUrl: './manage-permissions.component.html',
     styleUrls: ['./manage-permissions.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -54,7 +53,7 @@ import { TopBarComponent } from '../../shared/components/top-bar/top-bar.compone
         MatCheckboxModule,
         MatPaginatorModule,
         TopBarComponent,
-    ],
+    ]
 })
 export class ManagePermissionsComponent
     implements OnInit, AfterViewInit, OnDestroy

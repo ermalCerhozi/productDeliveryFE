@@ -15,8 +15,7 @@ import { AuthService } from 'src/app/services/auth.service'
     selector: 'app-sign-in-forgot-password',
     templateUrl: './sign-in.component.html',
     styleUrls: ['./sign-in.component.css'],
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, NgIf, NgClass],
+    imports: [FormsModule, ReactiveFormsModule, NgIf, NgClass]
 })
 export class SignInComponent implements OnInit {
     private formBuilder = inject(FormBuilder)

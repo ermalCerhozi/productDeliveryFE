@@ -20,8 +20,7 @@ import { AppFilter } from 'src/app/shared/components/filters/filter.component'
     selector: 'app-filters',
     templateUrl: './filters.component.html',
     styleUrls: ['./filters.component.scss'],
-    standalone: true,
-    imports: [FormsModule, NgFor, NgTemplateOutlet],
+    imports: [FormsModule, NgFor, NgTemplateOutlet]
 })
 export class FiltersComponent {
     /**

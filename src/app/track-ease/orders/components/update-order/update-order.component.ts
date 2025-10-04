@@ -32,7 +32,6 @@ import { NotificationService } from 'src/app/services/notification.service'
     selector: 'app-update-order',
     templateUrl: './update-order.component.html',
     styleUrl: './update-order.component.scss',
-    standalone: true,
     imports: [
         FormsModule,
         ReactiveFormsModule,
@@ -51,7 +50,7 @@ import { NotificationService } from 'src/app/services/notification.service'
         MatDialogActions,
         MatButton,
         AsyncPipe,
-    ],
+    ]
 })
 export class UpdateOrderComponent implements OnInit, OnDestroy {
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete

@@ -54,7 +54,6 @@ type UserFormValue = {
     selector: 'app-create-update-user-dialog',
     templateUrl: './create-update-user-dialog.component.html',
     styleUrls: ['./create-update-user-dialog.component.scss'],
-    standalone: true,
     imports: [
         MatDialogTitle,
         MatDialogContent,
@@ -74,7 +73,7 @@ type UserFormValue = {
         MatButton,
         MatDialogClose,
         MatProgressSpinner,
-    ],
+    ]
 })
 
 export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {

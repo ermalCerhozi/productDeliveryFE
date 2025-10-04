@@ -24,7 +24,6 @@ interface NavRouteConfig {
     selector: 'app-layout',
     templateUrl: './layout.component.html',
     styleUrls: ['./layout.component.scss'],
-    standalone: true,
     imports: [
         MatDrawerContainer,
         MatDrawer,
@@ -42,7 +41,7 @@ interface NavRouteConfig {
         MatMenuItem,
         RouterOutlet,
         AsyncPipe,
-    ],
+    ]
 })
 export class LayoutComponent {
     private authService = inject(AuthService)

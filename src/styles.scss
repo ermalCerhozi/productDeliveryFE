@@ -16,14 +16,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .mat-mdc-snack-bar-container {
     &.snack-bar-success {
-      --mdc-snackbar-container-color: #5cb85c;
+      --mat-snackbar-container-color: #5cb85c;
       --mat-mdc-snack-bar-button-color: #fff;
-      --mdc-snackbar-supporting-text-color: #fff;
+      --mat-snackbar-supporting-text-color: #fff;
     }
     &.snack-bar-error {
-        --mdc-snackbar-container-color: #cc0000;
+        --mat-snackbar-container-color: #cc0000;
         --mat-mdc-snack-bar-button-color: #fff;
-        --mdc-snackbar-supporting-text-color: #fff;
+        --mat-snackbar-supporting-text-color: #fff;
     }
 }
 

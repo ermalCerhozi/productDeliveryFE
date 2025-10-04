@@ -25,7 +25,6 @@ import { ProductEntity } from 'src/app/shared/models/product.model'
     selector: 'app-create-update-product-dialog',
     templateUrl: './create-update-product-dialog.component.html',
     styleUrls: ['./create-update-product-dialog.component.scss'],
-    standalone: true,
     imports: [
         MatDialogTitle,
         MatDialogContent,
@@ -39,7 +38,7 @@ import { ProductEntity } from 'src/app/shared/models/product.model'
         MatButton,
         MatDialogClose,
         NgIf,
-    ],
+    ]
 })
 export class CreateUpdateProductDialogComponent implements OnInit {
     action = input.required<'create' | 'update'>()

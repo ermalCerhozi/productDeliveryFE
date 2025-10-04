@@ -11,8 +11,7 @@ import { DropdownMenuListItem, DropdownEvent } from 'src/app/shared/models/Dropd
     templateUrl: './dropdown-menu-list.component.html',
     styleUrls: ['./dropdown-menu-list.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    standalone: true,
-    imports: [MatMenu, NgFor, MatMenuItem, NgStyle, MatIcon],
+    imports: [MatMenu, NgFor, MatMenuItem, NgStyle, MatIcon]
 })
 export class DropdownMenuListComponent {
     width = input('230px')

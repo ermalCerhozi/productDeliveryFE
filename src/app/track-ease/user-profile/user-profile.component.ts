@@ -27,7 +27,6 @@ import { ImageResponse } from 'src/app/shared/models/image.model'
     selector: 'app-user-profile',
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss'],
-    standalone: true,
     imports: [
         MatButton,
         MatIcon,
@@ -41,7 +40,7 @@ import { ImageResponse } from 'src/app/shared/models/image.model'
         MatSuffix,
         MatToolbar,
         DatePipe,
-    ],
+    ]
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
     private bakeryManagementService = inject(BakeryManagementService)

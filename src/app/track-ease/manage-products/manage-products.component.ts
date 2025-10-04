@@ -53,7 +53,6 @@ import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '..
     templateUrl: './manage-products.component.html',
     styleUrls: ['./manage-products.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
     imports: [
         NgTemplateOutlet,
         MatTable,
@@ -75,10 +74,10 @@ import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '..
         MatProgressSpinner,
         MatPaginator,
         TopBarComponent,
-    CreateUpdateProductDialogComponent_1,
+        CreateUpdateProductDialogComponent_1,
         ConfirmationDialogComponent_1,
         DecimalPipe,
-    ],
+    ]
 })
 export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     public bakeryManagementService = inject(BakeryManagementService)

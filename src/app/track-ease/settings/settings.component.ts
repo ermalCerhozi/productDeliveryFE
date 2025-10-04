@@ -14,8 +14,7 @@ import { ThemeService } from 'src/app/services/theme.service'
     selector: 'app-settings',
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
-    standalone: true,
-    imports: [MatCard, MatCardContent, MatIcon, MatSlideToggle, FormsModule, MatChipsModule],
+    imports: [MatCard, MatCardContent, MatIcon, MatSlideToggle, FormsModule, MatChipsModule]
 })
 export class SettingsComponent implements OnInit {
     themeService = inject(ThemeService)

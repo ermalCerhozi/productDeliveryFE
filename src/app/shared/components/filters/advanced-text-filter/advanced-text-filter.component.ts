@@ -48,7 +48,6 @@ import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.mode
         },
     ],
     encapsulation: ViewEncapsulation.None,
-    standalone: true,
     imports: [
         FormsModule,
         ReactiveFormsModule,
@@ -64,7 +63,7 @@ import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.mode
         MatInput,
         MatSuffix,
         NgFor,
-    ],
+    ]
 })
 export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     private fb = inject(FormBuilder)

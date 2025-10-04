@@ -21,8 +21,7 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
     templateUrl: './filters-result.component.html',
     styleUrls: ['./filters-result.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatChipListbox, NgFor, MatChipOption, NgIf, MatChipRemove, MatIcon],
+    imports: [MatChipListbox, NgFor, MatChipOption, NgIf, MatChipRemove, MatIcon]
 })
 export class FiltersResultComponent implements OnInit, OnChanges {
     labelTK = input<string>()

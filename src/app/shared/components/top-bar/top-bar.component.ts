@@ -18,7 +18,6 @@ import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
     selector: 'app-top-bar',
     templateUrl: './top-bar.component.html',
     styleUrls: ['./top-bar.component.scss'],
-    standalone: true,
     imports: [
         MatFormField,
         MatIcon,
@@ -34,7 +33,7 @@ import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
         MatSuffix,
         NgIf,
         MatButton,
-    ],
+    ]
 })
 export class TopBarComponent implements OnInit, OnDestroy {
     title = input<string>('')

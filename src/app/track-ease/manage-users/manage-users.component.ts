@@ -39,7 +39,6 @@ import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu
     selector: 'app-manage-users',
     templateUrl: './manage-users.component.html',
     styleUrls: ['./manage-users.component.scss'],
-    standalone: true,
     imports: [
         NgTemplateOutlet,
         MatTable,
@@ -60,10 +59,10 @@ import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu
         MatProgressSpinner,
         MatPaginator,
         TopBarComponent,
-        CreateUpdateUserDialogComponent,        
+        CreateUpdateUserDialogComponent,
         ConfirmationDialogComponent,
         DropdownMenuListComponent,
-    ],
+    ]
 })
 export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
     public bakeryManagementService = inject(BakeryManagementService)

@@ -33,7 +33,6 @@ import { WhatsAppInvoiceService } from 'src/app/whats-app-invoice.service'
     selector: 'app-create-order',
     templateUrl: './create-order.component.html',
     styleUrls: ['./create-order.component.scss'],
-    standalone: true,
     imports: [
         FormsModule,
         ReactiveFormsModule,
@@ -52,7 +51,7 @@ import { WhatsAppInvoiceService } from 'src/app/whats-app-invoice.service'
         MatDialogActions,
         MatButton,
         AsyncPipe,
-    ],
+    ]
 })
 export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete

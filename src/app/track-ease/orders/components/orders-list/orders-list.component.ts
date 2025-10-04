@@ -45,7 +45,6 @@ import { DropdownMenuListComponent } from '../../../../shared/components/dropdow
     selector: 'app-orders-list',
     templateUrl: './orders-list.component.html',
     styleUrls: ['./orders-list.component.scss'],
-    standalone: true,
     imports: [
         MatButton,
         MatIcon,
@@ -76,7 +75,7 @@ import { DropdownMenuListComponent } from '../../../../shared/components/dropdow
         DatePipe,
         ConfirmationDialogComponent,
         MatMenuModule
-    ],
+    ]
 })
 export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator

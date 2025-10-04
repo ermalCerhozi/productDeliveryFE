@@ -42,7 +42,6 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
         },
     ],
     encapsulation: ViewEncapsulation.None,
-    standalone: true,
     imports: [
         FormsModule,
         ReactiveFormsModule,
@@ -53,7 +52,7 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
         MatSelect,
         NgFor,
         MatOption,
-    ],
+    ]
 })
 export class SimpleRadioSelectFilterComponent implements OnInit, OnChanges {
     private fb = inject(FormBuilder)

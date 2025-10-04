@@ -39,7 +39,6 @@ const CONSTANTS: Constants = {
     selector: 'app-change-password',
     templateUrl: './change-password.component.html',
     styleUrls: ['./change-password.component.scss'],
-    standalone: true,
     imports: [
         MatDialogTitle,
         CdkScrollable,
@@ -58,7 +57,7 @@ const CONSTANTS: Constants = {
         MatDialogActions,
         MatButton,
         MatDialogClose,
-    ],
+    ]
 })
 export class ChangePasswordComponent implements OnInit {
     private fb = inject(FormBuilder)

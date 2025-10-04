@@ -13,7 +13,6 @@ import {
     selector: 'app-confirmation-dialog',
     templateUrl: './confirmation-dialog.component.html',
     styleUrls: ['./confirmation-dialog.component.scss'],
-    standalone: true,
     imports: [
         MatDialogTitle,
         CdkScrollable,
@@ -21,7 +20,7 @@ import {
         MatDialogActions,
         MatButton,
         MatDialogClose,
-    ],
+    ]
 })
 export class ConfirmationDialogComponent {
     title = input.required<string | number>()

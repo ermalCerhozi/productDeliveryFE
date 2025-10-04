@@ -26,8 +26,7 @@ const CONSTANTS: Constants = {
     templateUrl: './password-strength.component.html',
     styleUrls: ['./password-strength.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgStyle, FormsModule, ReactiveFormsModule, MatCheckbox, MatSlider, MatSliderThumb],
+    imports: [NgStyle, FormsModule, ReactiveFormsModule, MatCheckbox, MatSlider, MatSliderThumb]
 })
 export class PasswordStrengthComponent implements OnInit, OnDestroy {
     public form = input.required<FormGroup>()
