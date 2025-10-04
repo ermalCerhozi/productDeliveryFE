@@ -9,6 +9,7 @@ import {
     ProductsFiltersResponse,
     UserFiltersResponse,
 } from 'src/app/shared/models/mediaLibraryResponse.model'
+import { ImageUploadRequest, ImageResponse } from 'src/app/shared/models/image.model'
 
 @Injectable({
     providedIn: 'root',
@@ -175,6 +176,16 @@ export class BakeryManagementService {
         return JSON.parse(localStorage.getItem('currentUser') || '')
     }
 
+    fetchUserById(id: number, cacheResult = false): Observable<UserEntity> {
+        return this.bakeryManagementApiService.getUser(id).pipe(
+            tap((user) => {
+                if (cacheResult) {
+                    localStorage.setItem('currentUser', JSON.stringify(user))
+                }
+            })
+        )
+    }
+
     updateUser(user: UserEntity, activeUser = false): void {
         this.bakeryManagementApiService
             .updateUser(user, user)
@@ -308,5 +319,44 @@ export class BakeryManagementService {
             link.download = 'orders.pdf'
             link.click()
         })
+    }
+
+    uploadImage(payload: ImageUploadRequest): Observable<ImageResponse> {
+        return this.bakeryManagementApiService.uploadImage(payload).pipe(
+            tap((image) => {
+                if (!image) {
+                    console.warn('Image upload completed without a payload response')
+                    return
+                }
+
+                if (!payload.userId) {
+                    return
+                }
+
+                if (!image.contentType || !image.data) {
+                    console.error('Image upload response is missing binary payload metadata')
+                    return
+                }
+
+                const currentUserRaw = localStorage.getItem('currentUser')
+                if (!currentUserRaw) {
+                    return
+                }
+
+                try {
+                    const currentUser = JSON.parse(currentUserRaw) as UserEntity
+                    if (currentUser?.id === payload.userId) {
+                        const dataUri = `data:${image.contentType};base64,${image.data}`
+                        const updatedUser = {
+                            ...currentUser,
+                            profile_picture: dataUri,
+                        }
+                        localStorage.setItem('currentUser', JSON.stringify(updatedUser))
+                    }
+                } catch (error) {
+                    console.error('Failed to update cached user image', error)
+                }
+            })
+        )
     }
 }

@@ -10,6 +10,7 @@ import {
     UserFiltersResponse,
     ProductsFiltersResponse,
 } from 'src/app/shared/models/mediaLibraryResponse.model'
+import { ImageUploadRequest, ImageResponse } from '../shared/models/image.model'
 
 @Injectable({
     providedIn: 'root',
@@ -162,5 +163,9 @@ export class BakeryManagementApiService {
             requestPayload.navigation_context,
             { responseType: 'blob' }
         )
+    }
+
+    uploadImage(payload: ImageUploadRequest): Observable<ImageResponse> {
+        return this.httpClient.post<ImageResponse>(`${this.basePath}/images`, payload)
     }
 }

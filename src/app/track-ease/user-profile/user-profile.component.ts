@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import {
     FormBuilder,
     FormGroup,
@@ -17,6 +17,9 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
 import { MatInput } from '@angular/material/input'
 import { NgIf, DatePipe } from '@angular/common'
 import { MatToolbar } from '@angular/material/toolbar'
+import { Subscription } from 'rxjs'
+import { finalize } from 'rxjs/operators'
+import { ImageResponse } from 'src/app/shared/models/image.model'
 
 @Component({
     selector: 'app-user-profile',
@@ -38,12 +41,13 @@ import { MatToolbar } from '@angular/material/toolbar'
         DatePipe,
     ],
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy {
     @ViewChild('fileInput') fileInput!: ElementRef
     profileForm!: FormGroup
-    loggedInUser!: UserEntity
+    loggedInUser: UserEntity = {} as UserEntity
     initialFormValues!: any
     url = ''
+    private profileRefreshSub?: Subscription
 
     constructor(
         private bakeryManagementService: BakeryManagementService,
@@ -52,9 +56,57 @@ export class UserProfileComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.loggedInUser = this.bakeryManagementService.getLoggedInUser()
+    const cachedUser = this.bakeryManagementService.getLoggedInUser() as UserEntity | null
+
+        if (!cachedUser?.id) {
+            console.error('Unable to load user profile: missing cached user data.')
+            this.loggedInUser = {
+                id: 0,
+                created_at: '',
+                updated_at: '',
+                first_name: '',
+                last_name: '',
+                nickname: '',
+                phone_number: '',
+                role: '',
+                email: '',
+                location: '',
+                profile_picture: '',
+            }
+            this.initializeFormWithDefaultValues()
+            this.initialFormValues = cloneDeep(this.profileForm.value)
+            return
+        }
+
+        this.loggedInUser = cachedUser
+        this.url = cachedUser.profile_picture ?? ''
         this.initializeFormWithDefaultValues()
         this.initialFormValues = cloneDeep(this.profileForm.value)
+
+        this.profileRefreshSub = this.bakeryManagementService
+            .fetchUserById(cachedUser.id, true)
+            .subscribe({
+                next: (user) => {
+                    this.loggedInUser = user
+                    this.url = user.profile_picture ?? ''
+                    this.profileForm.patchValue({
+                        id: user.id,
+                        email: user.email,
+                        phone_number: user.phone_number,
+                        location: user.location ?? '',
+                    })
+                    this.initialFormValues = cloneDeep(this.profileForm.value)
+                    this.profileForm.markAsPristine()
+                    this.profileForm.markAsUntouched()
+                },
+                error: (error) => {
+                    console.error('Failed to refresh user profile from API', error)
+                },
+            })
+    }
+
+    ngOnDestroy(): void {
+        this.profileRefreshSub?.unsubscribe()
     }
 
     initializeFormWithDefaultValues() {
@@ -80,8 +132,48 @@ export class UserProfileComponent implements OnInit {
             const file = event.target.files[0]
             const reader = new FileReader()
             reader.onload = () => {
-                this.loggedInUser.profile_picture = reader.result as string
-                this.updateUser()
+                const result = reader.result as string
+                const base64 = result?.split(',')[1]
+
+                if (!base64) {
+                    console.error('Invalid image payload: unable to extract base64 data')
+                    return
+                }
+
+                this.bakeryManagementService
+                    .uploadImage({
+                        fileName: file.name,
+                        contentType: file.type || 'application/octet-stream',
+                        data: base64,
+                        userId: this.loggedInUser.id,
+                    })
+                    .pipe(
+                        finalize(() => {
+                            if (this.fileInput?.nativeElement) {
+                                this.fileInput.nativeElement.value = ''
+                            }
+                        })
+                    )
+                    .subscribe({
+                        next: (image: ImageResponse | null) => {
+                            if (!image) {
+                                console.warn('Image upload succeeded but no image payload was returned.')
+                                return
+                            }
+
+                            if (!image.contentType || !image.data) {
+                                console.error('Received malformed image payload from API')
+                                return
+                            }
+
+                            const dataUri = `data:${image.contentType};base64,${image.data}`
+                            this.loggedInUser.profile_picture = dataUri
+                            this.url = dataUri
+                        },
+                        error: (error) => {
+                            console.error('Failed to upload user image', error)
+                        },
+                    })
             }
             reader.readAsDataURL(file)
         }
