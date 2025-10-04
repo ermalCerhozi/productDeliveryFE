@@ -15,8 +15,6 @@ import {
     MatRow,
     MatNoDataRow,
 } from '@angular/material/table'
-import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
-import { CreateUpdateUserDialogComponent } from 'src/app/shared/components/create-update-user-dialog/create-update-user-dialog.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
@@ -31,8 +29,8 @@ import { MatMenuTrigger } from '@angular/material/menu'
 import { MatIcon } from '@angular/material/icon'
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component'
-import { CreateUpdateUserDialogComponent as CreateUpdateUserDialogComponent_1 } from '../../shared/components/create-update-user-dialog/create-update-user-dialog.component'
-import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'
+import { CreateUpdateUserDialogComponent } from '../../shared/components/create-update-user-dialog/create-update-user-dialog.component'
+import { ConfirmationDialogComponent } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'
 import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
 
 @Component({
@@ -60,8 +58,8 @@ import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu
         MatProgressSpinner,
         MatPaginator,
         TopBarComponent,
-    CreateUpdateUserDialogComponent_1,
-        ConfirmationDialogComponent_1,
+        CreateUpdateUserDialogComponent,        
+        ConfirmationDialogComponent,
         DropdownMenuListComponent,
     ],
 })
@@ -75,8 +73,8 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
     private destroy$ = new Subject<void>()
 
     displayedColumns: string[] = ['first_name', 'role', 'phone_number', 'actions']
-    activeUser!: UserEntity
-    actionState!: 'create' | 'update'
+    activeUser: UserEntity | null = null
+    actionState: 'create' | 'update' = 'create'
 
     dataSource: MatTableDataSource<UserEntity> = new MatTableDataSource<UserEntity>([])
     isLoading = false
@@ -159,6 +157,7 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     addUser(): void {
         this.actionState = 'create'
+        this.activeUser = null
         this.openCreateUpdateUser()
     }
 
@@ -169,55 +168,10 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
         })
     }
 
-    createUser(user: UserEntity) {
-        this.dialog.closeAll()
-        this.bakeryManagementApiService.createUser(user).subscribe({
-            next: (res) => {
-                this.bakeryManagementService.usersList$
-                    .pipe(
-                        take(1),
-                        map((users: UserEntity[]) => {
-                            users.unshift(res)
-                            return users
-                        })
-                    )
-                    .subscribe((users) => {
-                        this.dataSource.data = users
-                    })
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
-    }
-
-    updateUser(user: UserEntity) {
-        this.dialog.closeAll()
-        this.bakeryManagementApiService.updateUser(this.activeUser, user).subscribe({
-            next: (res) => {
-                this.bakeryManagementService.usersList$
-                    .pipe(
-                        take(1),
-                        map((users: UserEntity[]) => {
-                            const index = users.findIndex((p) => p.id === res.id)
-                            if (index > -1) {
-                                console.log('index: ', index)
-                                users[index] = res
-                            }
-                            return users
-                        })
-                    )
-                    .subscribe((users) => {
-                        this.dataSource.data = users
-                    })
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
-    }
-
     deleteUser(): void {
+        if (!this.activeUser) {
+            return
+        }
         this.dialog.open(this.confirmationDialogContainer, {
             width: '80%',
             maxHeight: '40%',
@@ -226,17 +180,24 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onDeleteUser(): void {
         this.dialog.closeAll()
-        this.bakeryManagementApiService.deleteUser(this.activeUser.id).subscribe({
+        if (!this.activeUser) {
+            return
+        }
+
+        const userId = this.activeUser.id
+
+        this.bakeryManagementApiService.deleteUser(userId).subscribe({
             next: () => {
                 this.bakeryManagementService.usersList$
                     .pipe(
                         take(1),
                         map((user: UserEntity[]) => {
-                            return user.filter((user) => user.id !== this.activeUser.id)
+                            return user.filter((user) => user.id !== userId)
                         })
                     )
                     .subscribe((users) => {
                         this.dataSource.data = users
+                        this.activeUser = null
                     })
             },
             error: (error) => {

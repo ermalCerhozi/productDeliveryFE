@@ -4,6 +4,37 @@
     </div>
 
     <mat-dialog-content class="dialog-content">
+        <div class="profile-container">
+            <input
+                type="file"
+                accept="image/*"
+                #fileInput
+                style="display: none"
+                (change)="onFileSelected($event)"
+            />
+            <div class="image-container">
+                <img
+                    [src]="previewImageUrl || defaultAvatar"
+                    alt="Profile image"
+                />
+            </div>
+            <mat-progress-spinner
+                *ngIf="isLoadingUserDetails"
+                mode="indeterminate"
+                diameter="32"
+                strokeWidth="4"
+            ></mat-progress-spinner>
+            <button
+                class="profile-picture-upload-button"
+                mat-flat-button
+                color="primary"
+                (click)="openUploadPanel()"
+                [disabled]="isLoadingUserDetails"
+            >
+                <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
+                <span>{{ imageButtonLabel }}</span>
+            </button>
+        </div>
         <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-content-form">
             <mat-form-field>
                 <mat-label>First Name</mat-label>
@@ -95,7 +126,7 @@
             mat-stroked-button
             color="primary"
             type="submit"
-            [disabled]="form.invalid || !formHasChanged()"
+            [disabled]="form.invalid || isSubmitting || !formHasChanged()"
             autofocus
             (click)="submit()"
         >

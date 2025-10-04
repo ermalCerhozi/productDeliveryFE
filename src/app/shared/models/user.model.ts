@@ -8,6 +8,11 @@ export interface UserResponse {
     count: number
 }
 
+export interface CreateUserResponse {
+    id: number
+    user: UserEntity
+}
+
 export interface UserEntity {
     id: number
     created_at: string
@@ -17,10 +22,17 @@ export interface UserEntity {
     nickname: string
     phone_number: string
     role: string
-    email: string
+    email?: string | null
     location: string
     profile_picture?: string
     password?: string
+    images?: Array<{
+        id: number
+        fileName: string
+        contentType: string
+        data: string
+        userId: number
+    }>
 }
 
 export interface changeUserPassword {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { ProductResponse, ProductEntity } from 'src/app/shared/models/product.model'
-import { UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/models/user.model'
+import { CreateUserResponse, UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/models/user.model'
 import { environment } from 'src/environments/environment'
 import { OrderEntity, OrderResponse } from 'src/app/shared/models/order.model'
 import { NavigationContext } from 'src/app/shared/models/navigation-context.model'
@@ -27,8 +27,8 @@ export class BakeryManagementApiService {
     constructor(private httpClient: HttpClient) {}
 
     //CRUD for users
-    createUser(user: UserEntity): Observable<UserEntity> {
-        return this.httpClient.post<UserEntity>(`${this.basePath}/users`, user)
+    createUser(user: Partial<UserEntity>): Observable<CreateUserResponse> {
+        return this.httpClient.post<CreateUserResponse>(`${this.basePath}/users`, user)
     }
 
     getUsers(): Observable<UserEntity[]> {

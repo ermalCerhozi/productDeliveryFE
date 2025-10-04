@@ -76,10 +76,7 @@
 
 <ng-template #createUpdateContainer>
     <app-create-update-user-dialog
-        [action]="actionState"
         [user]="activeUser"
-        (updateUser)="updateUser($event)"
-        (createUser)="createUser($event)"
     ></app-create-update-user-dialog>
 </ng-template>
 
