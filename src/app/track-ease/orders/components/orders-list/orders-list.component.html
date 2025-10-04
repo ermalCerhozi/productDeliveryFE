@@ -1,29 +1,27 @@
 <div class="header">
     <div class="controls-row">
-        <div class="controls">
-            <button class="add-order" mat-raised-button color="primary" (click)="createOrder()">
-                <mat-icon>add</mat-icon>
-                <span> Create Order </span>
-            </button>
-            <button mat-stroked-button 
-                    [matMenuTriggerFor]="downloadMenu" 
-                    class="download-pdf" 
-                    [disabled]="(filterResults | async)!.length === 0">
-            <mat-icon fontSet="material-icons-outlined">download</mat-icon>
-            <span>Download</span>
-            </button>
+        <button class="add-order" mat-raised-button color="primary" (click)="createOrder()">
+            <mat-icon>add</mat-icon>
+            <span> Create Order </span>
+        </button>
+        <button mat-stroked-button 
+                [matMenuTriggerFor]="downloadMenu" 
+                class="download-pdf" 
+                [disabled]="(filterResults | async)!.length === 0">
+        <mat-icon fontSet="material-icons-outlined">download</mat-icon>
+        <span>Download</span>
+        </button>
 
-            <mat-menu #downloadMenu="matMenu">
-            <button mat-menu-item (click)="downloadOrdersPdf()">
-                <mat-icon fontSet="material-icons-outlined">picture_as_pdf</mat-icon>
-                <span>PDF</span>
-            </button>
-            <button mat-menu-item (click)="downloadOrdersPdf()">
-                <mat-icon fontSet="material-icons-outlined">table_chart</mat-icon>
-                <span>CSV</span>
-            </button>
-            </mat-menu>
-        </div>
+        <mat-menu #downloadMenu="matMenu">
+        <button mat-menu-item (click)="downloadOrdersPdf()">
+            <mat-icon fontSet="material-icons-outlined">picture_as_pdf</mat-icon>
+            <span>PDF</span>
+        </button>
+        <button mat-menu-item (click)="downloadOrdersPdf()">
+            <mat-icon fontSet="material-icons-outlined">table_chart</mat-icon>
+            <span>CSV</span>
+        </button>
+        </mat-menu>
     </div>
 
     <div class="filters-row">
@@ -103,7 +101,7 @@
 >
 </app-filters-result>
 
-<div class="number-of-results">
+<div class="results-summary">
     {{bakeryManagementService.ordersCount}} Results
 </div>
 
