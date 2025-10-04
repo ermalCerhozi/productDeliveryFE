@@ -6,6 +6,7 @@ import {
     ViewChild,
     TemplateRef,
     OnDestroy,
+    ChangeDetectorRef,
 } from '@angular/core'
 import {
     MatTableDataSource,
@@ -29,10 +30,10 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator, PageEvent } from '@angular/material/paginator'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
-import { take, map } from 'rxjs/operators'
+import { take, map, takeUntil, finalize } from 'rxjs/operators'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { Subject, takeUntil } from 'rxjs'
+import { Subject } from 'rxjs'
 import { SearchService } from 'src/app/services/search.service'
 import { NgTemplateOutlet, NgIf, DecimalPipe } from '@angular/common'
 import { MatButton } from '@angular/material/button'
@@ -107,12 +108,20 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
         public bakeryManagementService: BakeryManagementService,
         private bakeryManagementApiService: BakeryManagementApiService,
         private searchService: SearchService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private cdr: ChangeDetectorRef
     ) {}
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
         this.bakeryManagementService.activeTab = 'products'
+
+        this.bakeryManagementService.productsList$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((products) => {
+                this.dataSource.data = products
+                this.cdr.markForCheck()
+            })
     }
 
     ngOnDestroy() {
@@ -139,19 +148,21 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
 
     getProductsList(append: boolean) {
         this.isLoading = true
-        this.isLoading = true
-        this.bakeryManagementService.updateProductList(append).subscribe({
-            next: () => {
-                this.isLoading = false
-                this.bakeryManagementService.productsList$.subscribe((product) => {
-                    this.dataSource.data = product
+
+        this.bakeryManagementService
+            .updateProductList(append)
+            .pipe(
+                takeUntil(this.destroy$),
+                finalize(() => {
+                    this.isLoading = false
+                    this.cdr.markForCheck()
                 })
-            },
-            error: (error: any) => {
-                this.isLoading = false
-                console.log('Error: ', error)
-            },
-        })
+            )
+            .subscribe({
+                error: (error: any) => {
+                    console.log('Error: ', error)
+                },
+            })
     }
 
     onDropdownMenuClick(item: DropdownEvent, product: ProductEntity): void {

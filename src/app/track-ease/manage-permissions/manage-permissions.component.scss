@@ -1,0 +1,64 @@
+:host {
+    display: block;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.permissions-form-card,
+.permissions-list-card {
+    margin-bottom: 24px;
+}
+
+.card-title {
+    margin: 0 0 16px;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.permission-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-field {
+    flex: 1;
+    min-width: 250px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.form-error {
+    margin-top: 8px;
+    color: #d32f2f;
+}
+
+.list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+}
+
+.empty-state {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.6);
+    font-style: italic;
+}

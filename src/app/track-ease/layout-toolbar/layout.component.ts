@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core'
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router'
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
-import { Observable, map, shareReplay } from 'rxjs'
+import { Observable, map, shareReplay, take } from 'rxjs'
 import { AuthService } from 'src/app/services/auth.service'
 import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav'
 import { MatToolbar } from '@angular/material/toolbar'
@@ -10,6 +10,13 @@ import { NgFor, NgIf, AsyncPipe } from '@angular/common'
 import { MatIcon } from '@angular/material/icon'
 import { MatIconButton } from '@angular/material/button'
 import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu'
+
+interface NavRouteConfig {
+    path: string
+    name: string
+    icon: string
+    roles?: string[]
+}
 
 @Component({
     selector: 'app-layout',
@@ -38,15 +45,16 @@ import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu'
 export class LayoutComponent {
     @ViewChild('drawer') drawer!: MatDrawer
 
-    routes = [
-        { path: '/homePage', name: 'Home Page', icon: 'home' },
-        { path: '/manageUsers', name: 'Manage users', icon: 'people' },
-        { path: '/manageOrders', name: 'Manage orders', icon: 'assignment' },
-        { path: '/manageProducts', name: 'Manage products', icon: 'store' },
-        { path: '/profile', name: 'Profile', icon: 'account_circle' },
+    private readonly routes: NavRouteConfig[] = [
+        { path: '/homePage', name: 'Home Page', icon: 'home', roles: ['Admin', 'Client'] },
+        { path: '/manageUsers', name: 'Manage users', icon: 'people', roles: ['Admin'] },
+        { path: '/manageOrders', name: 'Manage orders', icon: 'assignment', roles: ['Admin'] },
+        { path: '/manageProducts', name: 'Manage products', icon: 'store', roles: ['Admin'] },
+        { path: '/managePermissions', name: 'Manage permissions', icon: 'lock', roles: ['Admin'] },
+        { path: '/profile', name: 'Profile', icon: 'account_circle', roles: ['Admin', 'Client'] },
         // { path: '/earnings', name: 'Earnings', icon: 'show_chart' },
         // { path: '/trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
-        { path: '/settings', name: 'Settings', icon: 'settings' },
+        { path: '/settings', name: 'Settings', icon: 'settings', roles: ['Admin'] },
     ]
 
     constructor(
@@ -60,8 +68,18 @@ export class LayoutComponent {
         shareReplay()
     )
 
+    get visibleRoutes(): NavRouteConfig[] {
+        const user = this.authService.getAuthenticatedUser
+        if (!user) {
+            return []
+        }
+        return this.routes.filter((route) => {
+            return !route.roles || route.roles.includes(user.role)
+        })
+    }
+
     toggleDrawerOnHandset(): void {
-        this.isHandset$.subscribe((isHandset) => {
+        this.isHandset$.pipe(take(1)).subscribe((isHandset) => {
             if (isHandset) {
                 this.drawer.toggle()
             }

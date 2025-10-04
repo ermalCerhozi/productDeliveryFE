@@ -11,6 +11,10 @@ import {
     ProductsFiltersResponse,
 } from 'src/app/shared/models/mediaLibraryResponse.model'
 import { ImageUploadRequest, ImageResponse } from '../shared/models/image.model'
+import {
+    PermissionEntity,
+    CreatePermissionRequest,
+} from '../shared/models/permission.model'
 
 @Injectable({
     providedIn: 'root',
@@ -167,5 +171,18 @@ export class BakeryManagementApiService {
 
     uploadImage(payload: ImageUploadRequest): Observable<ImageResponse> {
         return this.httpClient.post<ImageResponse>(`${this.basePath}/images`, payload)
+    }
+
+    getPermissions(): Observable<PermissionEntity[]> {
+        return this.httpClient.get<PermissionEntity[]>(`${this.basePath}/permissions`)
+    }
+
+    createPermission(
+        payload: CreatePermissionRequest,
+    ): Observable<PermissionEntity> {
+        return this.httpClient.post<PermissionEntity>(
+            `${this.basePath}/permissions`,
+            payload,
+        )
     }
 }

@@ -15,7 +15,11 @@ export class ApiInterceptor implements HttpInterceptor {
     constructor(private snackBarService: SnackBarService) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        return next.handle(req).pipe(
+        const request = req.withCredentials
+            ? req
+            : req.clone({ withCredentials: true })
+
+        return next.handle(request).pipe(
             catchError((err: HttpErrorResponse) => {
                 this.snackBarService.showError(err.error.message || err.message || err.error)
                 return throwError(() => err)

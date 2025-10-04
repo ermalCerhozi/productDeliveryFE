@@ -7,7 +7,6 @@ import {
     ReactiveFormsModule,
 } from '@angular/forms'
 import { Router } from '@angular/router'
-import { phoneNumberRegex } from 'src/app/shared/common/constants'
 import { AuthService } from 'src/app/services/auth.service'
 import { NgIf, NgClass } from '@angular/common'
 
@@ -37,7 +36,7 @@ export class SignInComponent implements OnInit {
 
     initializeForms() {
         this.loginForm = this.formBuilder.group({
-            phoneNumber: ['', [Validators.required, Validators.pattern(phoneNumberRegex)]],
+            phoneNumber: ['', [Validators.required]],
             password: ['', [Validators.required]],
         })
 

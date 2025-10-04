@@ -8,7 +8,7 @@
     >
         <mat-toolbar>Menu</mat-toolbar>
         <mat-nav-list>
-            <ng-container *ngFor="let route of routes">
+            <ng-container *ngFor="let route of visibleRoutes">
                 <mat-list-item
                     class="layout-sidenav-options"
                     [routerLink]="route.path"
