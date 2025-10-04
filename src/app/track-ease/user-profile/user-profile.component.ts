@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core'
 import {
     FormBuilder,
     FormGroup,
@@ -44,18 +44,16 @@ import { ImageResponse } from 'src/app/shared/models/image.model'
     ],
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
+    private bakeryManagementService = inject(BakeryManagementService)
+    private formBuilder = inject(FormBuilder)
+    private dialog = inject(MatDialog)
+
     @ViewChild('fileInput') fileInput!: ElementRef
     profileForm!: FormGroup
     loggedInUser: UserEntity = {} as UserEntity
     initialFormValues!: any
     url = ''
     private profileRefreshSub?: Subscription
-
-    constructor(
-        private bakeryManagementService: BakeryManagementService,
-        private formBuilder: FormBuilder,
-        private dialog: MatDialog
-    ) {}
 
     ngOnInit(): void {
     const cachedUser = this.bakeryManagementService.getLoggedInUser() as UserEntity | null

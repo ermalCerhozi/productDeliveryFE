@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core'
 import {
     FormBuilder,
     FormGroup,
@@ -19,17 +19,15 @@ import { AuthService } from 'src/app/services/auth.service'
     imports: [FormsModule, ReactiveFormsModule, NgIf, NgClass],
 })
 export class SignInComponent implements OnInit {
+    private formBuilder = inject(FormBuilder)
+    private authService = inject(AuthService)
+    private router = inject(Router)
+
     @ViewChild('containerDiv') containerDiv!: ElementRef
     loginForm: FormGroup = new FormGroup({})
     forgotPasswordForm: FormGroup = new FormGroup({})
     errorMessage = false
     hide = true
-
-    constructor(
-        private formBuilder: FormBuilder,
-        private authService: AuthService,
-        private router: Router
-    ) {}
 
     ngOnInit(): void {
         this.initializeForms()

@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core'
+import { Component, ViewChild, inject } from '@angular/core'
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router'
 import { NgFor, NgIf, AsyncPipe } from '@angular/common'
 
@@ -45,6 +45,10 @@ interface NavRouteConfig {
     ],
 })
 export class LayoutComponent {
+    private authService = inject(AuthService)
+    private breakpointObserver = inject(BreakpointObserver)
+    private router = inject(Router)
+
     @ViewChild('drawer') drawer!: MatDrawer
 
     private readonly routes: NavRouteConfig[] = [
@@ -58,12 +62,6 @@ export class LayoutComponent {
         // { path: '/trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
         { path: '/settings', name: 'Settings', icon: 'settings', roles: ['Admin'] },
     ]
-
-    constructor(
-        private authService: AuthService,
-        private breakpointObserver: BreakpointObserver,
-        private router: Router
-    ) {}
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
         map((result) => result.matches),

@@ -1,10 +1,10 @@
 import {
     Component,
-    EventEmitter,
-    Input,
+    inject,
+    input,
     OnChanges,
     OnInit,
-    Output,
+    output,
     SimpleChanges,
     TemplateRef,
     ViewChild,
@@ -56,15 +56,15 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
     ],
 })
 export class SimpleRadioSelectFilterComponent implements OnInit, OnChanges {
-    constructor(private fb: FormBuilder) {}
+    private fb = inject(FormBuilder)
 
-    @Input() labelTK = ''
-    @Input() fields?: FilterOption[]
-    @Input() defaultEmptyValue?: FilterOption
-    @Input() selection!: FilterOption
-    @Input() customLabelWidth?: string
-    @Input() panelClass = ''
-    @Output() selectionChange = new EventEmitter<FilterOption>()
+    labelTK = input('')
+    fields = input<FilterOption[]>()
+    defaultEmptyValue = input<FilterOption>()
+    selection = input.required<FilterOption>()
+    customLabelWidth = input<string>()
+    panelClass = input('')
+    selectionChange = output<FilterOption>()
     @ViewChild(TemplateRef, { static: true }) templateRef!: TemplateRef<unknown>
     form!: FormGroup
 
@@ -72,7 +72,7 @@ export class SimpleRadioSelectFilterComponent implements OnInit, OnChanges {
         this.form = this.fb.group({
             fields: new FormControl([]),
         })
-        this.form.setValue({ fields: this.selection })
+        this.form.setValue({ fields: this.selection() })
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -83,7 +83,6 @@ export class SimpleRadioSelectFilterComponent implements OnInit, OnChanges {
     }
 
     onSelectionChange(event: { value: FilterOption }) {
-        this.selection = event.value
         this.selectionChange.emit(event.value)
     }
 

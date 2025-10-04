@@ -74,16 +74,16 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     private currentOrder!: any
     private cuurrentOrderFormState: any
 
-    constructor(
-        private formBuilder: FormBuilder,
-        private bakeryManagementService: BakeryManagementService,
-        private searchService: SearchService,
-        private route: ActivatedRoute,
-        private bakeryManagementApiService: BakeryManagementApiService,
-        private snackBarService: SnackBarService,
-        private router: Router,
-        private notificationService: NotificationService
-    ) {
+    private formBuilder = inject(FormBuilder)
+    private bakeryManagementService = inject(BakeryManagementService)
+    private searchService = inject(SearchService)
+    private route = inject(ActivatedRoute)
+    private bakeryManagementApiService = inject(BakeryManagementApiService)
+    private snackBarService = inject(SnackBarService)
+    private router = inject(Router)
+    private notificationService = inject(NotificationService)
+
+    constructor() {
         this.clients = this.searchService.getClients()
         this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
 

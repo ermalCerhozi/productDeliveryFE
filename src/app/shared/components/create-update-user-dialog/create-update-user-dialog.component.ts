@@ -1,7 +1,8 @@
 import {
     Component,
     ElementRef,
-    Input,
+    inject,
+    input,
     OnChanges,
     OnInit,
     SimpleChanges,
@@ -78,7 +79,7 @@ type UserFormValue = {
 
 export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>
-    @Input() user?: UserEntity | null
+    user = input<UserEntity | null>()
 
     action: 'create' | 'update' = 'create'
     readonly defaultAvatar = '/assets/images/avatar.png'
@@ -87,6 +88,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     isSubmitting = false
     isLoadingUserDetails = false
 
+    private currentUser: UserEntity | null = null
     private initialFormValues: UserFormValue | null = null
     private selectedImagePayload?: {
         fileName: string
@@ -95,21 +97,21 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     }
     private loadedUserId?: number
 
-    constructor(
-        private fb: FormBuilder,
-        private bakeryManagementApiService: BakeryManagementApiService,
-        private bakeryManagementService: BakeryManagementService,
-        private dialog: MatDialog,
-    ) {}
+    private fb = inject(FormBuilder)
+    private bakeryManagementApiService = inject(BakeryManagementApiService)
+    private bakeryManagementService = inject(BakeryManagementService)
+    private dialog = inject(MatDialog)
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['user']) {
+            this.currentUser = this.user() || null
             this.loadedUserId = undefined
             this.rebuildFormStateFromCurrentContext()
         }
     }
 
     ngOnInit(): void {
+        this.currentUser = this.user() || null
         this.rebuildFormStateFromCurrentContext()
     }
 
@@ -117,7 +119,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
         this.syncActionState()
 
         if (!options?.skipFetch && this.shouldFetchUserDetails()) {
-            this.fetchUserDetails(this.user!.id)
+            this.fetchUserDetails(this.currentUser!.id)
             return
         }
 
@@ -127,11 +129,11 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     }
 
     private syncActionState(): void {
-        this.action = this.user ? 'update' : 'create'
+        this.action = this.currentUser ? 'update' : 'create'
     }
 
     private shouldFetchUserDetails(): boolean {
-        return !!this.user?.id && !this.isCreateMode && this.user.id !== this.loadedUserId
+        return !!this.currentUser?.id && !this.isCreateMode && this.currentUser.id !== this.loadedUserId
     }
 
     private fetchUserDetails(userId: number): void {
@@ -150,7 +152,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
             )
             .subscribe({
                 next: (user) => {
-                    this.user = user
+                    this.currentUser = user
                     this.loadedUserId = user.id
                     this.clearSelectedImage()
                     this.rebuildFormStateFromCurrentContext({ skipFetch: true })
@@ -168,7 +170,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     }
 
     initializeForm(): void {
-        const formData = this.createFormValueFromContext(this.user)
+        const formData = this.createFormValueFromContext(this.currentUser)
 
         this.form = this.fb.group({
             first_name: [formData.first_name, Validators.required],
@@ -428,11 +430,11 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
             )
         }
 
-        if (!this.user) {
+        if (!this.currentUser) {
             return throwError(() => new Error('Cannot update user because no user context is available.'))
         }
 
-        return this.bakeryManagementApiService.updateUser(this.user, userValue).pipe(
+        return this.bakeryManagementApiService.updateUser(this.currentUser, userValue).pipe(
             switchMap((updatedUser) => this.attachImageIfNeeded(updatedUser.id, updatedUser)),
         )
     }
@@ -461,7 +463,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
 
     private onSuccessfulSubmission(user: UserEntity): void {
         if (user) {
-            this.user = user
+            this.currentUser = user
             this.loadedUserId = user.id
         }
 
@@ -477,11 +479,11 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
             return selectedImageDataUri
         }
 
-        if (this.user?.profile_picture) {
-            return this.user.profile_picture
+        if (this.currentUser?.profile_picture) {
+            return this.currentUser.profile_picture
         }
 
-        const fallbackImage = this.user?.images?.[0]
+        const fallbackImage = this.currentUser?.images?.[0]
         if (fallbackImage?.contentType && fallbackImage?.data) {
             return `data:${fallbackImage.contentType};base64,${fallbackImage.data}`
         }

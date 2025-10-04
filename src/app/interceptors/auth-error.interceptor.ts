@@ -1,3 +1,5 @@
+import { inject, Injectable } from '@angular/core'
+
 import {
     HttpErrorResponse,
     HttpEvent,
@@ -5,14 +7,14 @@ import {
     HttpInterceptor,
     HttpRequest,
 } from '@angular/common/http'
-import { Injectable } from '@angular/core'
 import { catchError, Observable, throwError } from 'rxjs'
+
 import { AuthService } from 'src/app/services/auth.service'
 @Injectable({
     providedIn: 'root',
 })
-export class HapiErrorInterceptor implements HttpInterceptor {
-    constructor(private authService: AuthService) {}
+export class ErrorInterceptor implements HttpInterceptor {
+    private authService= inject(AuthService)
 
     intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         return next.handle(req).pipe(

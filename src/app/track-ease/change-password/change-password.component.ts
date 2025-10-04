@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import {
     AbstractControl,
     FormBuilder,
@@ -61,16 +61,14 @@ const CONSTANTS: Constants = {
     ],
 })
 export class ChangePasswordComponent implements OnInit {
+    private fb = inject(FormBuilder)
+    public dialogRef = inject(MatDialogRef<ChangePasswordComponent>)
+
     showActualPassword = false
     showNewPassword = false
     showConfirmPassword = false
 
     public form: FormGroup = new FormGroup({})
-
-    constructor(
-        private fb: FormBuilder,
-        public dialogRef: MatDialogRef<ChangePasswordComponent>
-    ) {}
 
     ngOnInit(): void {
         this.form = this.createForm()

@@ -1,10 +1,10 @@
 import {
     Component,
-    EventEmitter,
-    Input,
+    inject,
+    input,
     OnChanges,
     OnInit,
-    Output,
+    output,
     SimpleChanges,
     TemplateRef,
     ViewChild,
@@ -56,23 +56,23 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
     ],
 })
 export class SimpleTextFilterComponent implements OnInit, OnChanges {
-    constructor(private fb: FormBuilder) {}
+    private fb = inject(FormBuilder)
 
-    @Input() labelTK = ''
-    @Input() fields?: FilterOption[] = []
-    @Input() field = ''
-    @Input() selection!: FilterOption[] | FilterOption
-    @Input() customLabelWidth?: string
-    @Input() loading = false
-    @Input() multiple = false
-    @Input() panelClass = ''
-    @Input() enableAllOption = false
-    @Input() enableOnlyButton = false
-    @Input() allowEmptySelection = true
-    @Input() disabled = false
-    @Input() showCheck: boolean | undefined
-    @Output() selectionChange = new EventEmitter<FilterOption[] | FilterOption>()
-    @Output() openedChange = new EventEmitter<boolean>()
+    labelTK = input('')
+    fields = input<FilterOption[]>([])
+    field = input('')
+    selection = input.required<FilterOption[] | FilterOption>()
+    customLabelWidth = input<string>()
+    loading = input(false)
+    multiple = input(false)
+    panelClass = input('')
+    enableAllOption = input(false)
+    enableOnlyButton = input(false)
+    allowEmptySelection = input(true)
+    disabled = input(false)
+    showCheck = input<boolean | undefined>(undefined)
+    selectionChange = output<FilterOption[] | FilterOption>()
+    openedChange = output<boolean>()
     @ViewChild(TemplateRef, { static: true }) templateRef!: TemplateRef<unknown>
     form!: FormGroup
 
@@ -90,14 +90,14 @@ export class SimpleTextFilterComponent implements OnInit, OnChanges {
             fields: new FormControl(),
         })
 
-        if (this.fields && this.multiple) {
-            this.hasAllOption = this.enableAllOption
-            this.hasOnlyButton = this.enableOnlyButton
+        if (this.fields() && this.multiple()) {
+            this.hasAllOption = this.enableAllOption()
+            this.hasOnlyButton = this.enableOnlyButton()
         }
 
         if (this.hasAllOption) {
             /* istanbul ignore next */
-            const allOption = this.fields?.find((field) => field.value === 'all')
+            const allOption = this.fields()?.find((field) => field.value === 'all')
 
             /* istanbul ignore next: guard for filters init with 'all' option */
             if (!allOption) {
@@ -107,9 +107,9 @@ export class SimpleTextFilterComponent implements OnInit, OnChanges {
             this.allOption = allOption
         }
         /* istanbul ignore next */
-        this.optionsWithoutAll = this.fields?.filter((field) => field.value !== 'all') || []
+        this.optionsWithoutAll = this.fields()?.filter((field) => field.value !== 'all') || []
 
-        this.setFormValue(this.selection)
+        this.setFormValue(this.selection())
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -215,7 +215,7 @@ export class SimpleTextFilterComponent implements OnInit, OnChanges {
     /* istanbul ignore next */
     private getEmptyFormValue(): FilterOption[] | FilterOption {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return this.multiple ? [] : this.fields![0]
+        return this.multiple() ? [] : this.fields()![0]
     }
 
     /*
@@ -241,7 +241,7 @@ export class SimpleTextFilterComponent implements OnInit, OnChanges {
     private selectionToFormValue(
         options: FilterOption[] | FilterOption
     ): FilterOption[] | FilterOption {
-        if (this.multiple) {
+        if (this.multiple()) {
             /* istanbul ignore next: guard for selection initialization */
             if (!Array.isArray(options)) {
                 throw new Error('Multiple selection must be an array')

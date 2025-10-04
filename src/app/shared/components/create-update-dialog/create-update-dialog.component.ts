@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnDestroy, OnInit } from '@angular/core'
+import { Component, input, output, OnDestroy, OnInit, inject } from '@angular/core'
 import {
     FormBuilder,
     FormGroup,
@@ -61,21 +61,19 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     form: FormGroup = new FormGroup({})
     initialFormValues: any //Any because the form can be a UserEntity or ProductEntity
 
-    // @Input
-    @Input() type!: string //UserEntity | ProductEntity
-    @Input() action!: string //Create | Update
-    @Input() product?: ProductEntity //Product to be updated
-    @Input() user?: UserEntity //User to be updated
-    // @Output
-    @Output() updateProduct = new EventEmitter<ProductEntity>()
-    @Output() createProduct = new EventEmitter()
-    @Output() createUser = new EventEmitter()
-    @Output() updateUser = new EventEmitter<UserEntity>()
+    // Inputs
+    type = input.required<string>() //UserEntity | ProductEntity
+    action = input.required<string>() //Create | Update
+    product = input<ProductEntity>() //Product to be updated
+    user = input<UserEntity>() //User to be updated
+    // Outputs
+    updateProduct = output<ProductEntity>()
+    createProduct = output()
+    createUser = output()
+    updateUser = output<UserEntity>()
 
-    constructor(
-        public bakeryManagementService: BakeryManagementService,
-        private fb: FormBuilder
-    ) {}
+    public bakeryManagementService = inject(BakeryManagementService)
+    private fb = inject(FormBuilder)
 
     ngOnInit(): void {
         this.initializeForm()
@@ -85,14 +83,14 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     initializeForm(): void {
         let formData
 
-        if (this.type === 'user') {
+        if (this.type() === 'user') {
             formData =
-                this.action === 'update' && this.user
+                this.action() === 'update' && this.user()
                     ? {
-                          ...this.user,
-                          role: this.user.role.toLowerCase(),
-                          phone_prefix: this.extractPhonePrefix(this.user.phone_number),
-                          phone_number: this.extractPhoneNumber(this.user.phone_number),
+                          ...this.user(),
+                          role: this.user()!.role.toLowerCase(),
+                          phone_prefix: this.extractPhonePrefix(this.user()!.phone_number),
+                          phone_number: this.extractPhoneNumber(this.user()!.phone_number),
                       }
                     : {
                           first_name: '',
@@ -118,10 +116,10 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                 role: [formData.role, Validators.required],
                 location: [formData.location],
             })
-        } else if (this.type === 'product') {
+        } else if (this.type() === 'product') {
             formData =
-                this.action === 'update' && this.product
-                    ? this.product
+                this.action() === 'update' && this.product()
+                    ? this.product()!
                     : {
                           product_name: '',
                           price: '',
@@ -146,17 +144,17 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
 
     insertItem(): void {
         if (this.form.valid) {
-            if (this.type === 'product') {
+            if (this.type() === 'product') {
                 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
                 const productName = capitalize(this.form.value.product_name)
                 this.form.patchValue({ product_name: productName })
 
-                if (this.action === 'create') {
+                if (this.action() === 'create') {
                     this.createProduct.emit(this.form.value)
-                } else if (this.action === 'update') {
+                } else if (this.action() === 'update') {
                     this.updateProduct.emit(this.form.value)
                 }
-            } else if (this.type === 'user') {
+            } else if (this.type() === 'user') {
                 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
                 const firstName = capitalize(this.form.value.first_name)
                 const lastName = capitalize(this.form.value.last_name)
@@ -169,9 +167,9 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                     phone_number: `${this.form.value.phone_prefix}${this.form.value.phone_number}`,
                 }
 
-                if (this.action === 'create') {
+                if (this.action() === 'create') {
                     this.createUser.emit(userValue)
-                } else if (this.action === 'update') {
+                } else if (this.action() === 'update') {
                     this.updateUser.emit(userValue)
                 }
             }

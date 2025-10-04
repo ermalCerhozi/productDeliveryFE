@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList } from '@angular/core'
+import { Component, ContentChildren, QueryList, contentChildren } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { NgFor, NgTemplateOutlet } from '@angular/common'
 
@@ -27,5 +27,5 @@ export class FiltersComponent {
     /**
      * @description list of the filters to use
      */
-    @ContentChildren(AppFilter) filters?: QueryList<AppFilter>
+    filters = contentChildren(AppFilter)
 }

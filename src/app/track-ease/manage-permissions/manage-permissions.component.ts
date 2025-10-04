@@ -6,6 +6,7 @@ import {
     OnDestroy,
     OnInit,
     ViewChild,
+    inject,
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
@@ -58,6 +59,11 @@ import { TopBarComponent } from '../../shared/components/top-bar/top-bar.compone
 export class ManagePermissionsComponent
     implements OnInit, AfterViewInit, OnDestroy
 {
+    private readonly fb = inject(FormBuilder)
+    private readonly permissionsService = inject(PermissionsService)
+    private readonly snackBar = inject(MatSnackBar)
+    private readonly cdr = inject(ChangeDetectorRef)
+
     readonly permissions$ = this.permissionsService.permissions$
     readonly rolePermissions$ = this.permissionsService.rolePermissions$
     readonly displayedColumns = ['code', 'description', 'updated_at']
@@ -92,13 +98,6 @@ export class ManagePermissionsComponent
         code: ['', [Validators.required, Validators.maxLength(50)]],
         description: ['', [Validators.maxLength(255)]],
     })
-
-    constructor(
-        private readonly fb: FormBuilder,
-        private readonly permissionsService: PermissionsService,
-        private readonly snackBar: MatSnackBar,
-        private readonly cdr: ChangeDetectorRef,
-    ) {}
 
     ngOnInit(): void {
         this.loadPermissions()

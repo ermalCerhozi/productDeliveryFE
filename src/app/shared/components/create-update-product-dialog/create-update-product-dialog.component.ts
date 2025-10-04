@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { Component, inject, input, OnInit, output } from '@angular/core'
 import {
     FormBuilder,
     FormGroup,
@@ -42,16 +42,16 @@ import { ProductEntity } from 'src/app/shared/models/product.model'
     ],
 })
 export class CreateUpdateProductDialogComponent implements OnInit {
-    @Input() action!: 'create' | 'update'
-    @Input() product?: ProductEntity
+    action = input.required<'create' | 'update'>()
+    product = input<ProductEntity>()
 
-    @Output() createProduct = new EventEmitter<ProductEntity>()
-    @Output() updateProduct = new EventEmitter<ProductEntity>()
+    createProduct = output<ProductEntity>()
+    updateProduct = output<ProductEntity>()
 
     form: FormGroup = new FormGroup({})
     private initialFormValues: unknown
 
-    constructor(private fb: FormBuilder) {}
+    private fb = inject(FormBuilder)
 
     ngOnInit(): void {
         this.initializeForm()
@@ -60,8 +60,8 @@ export class CreateUpdateProductDialogComponent implements OnInit {
 
     initializeForm(): void {
         const formData =
-            this.action === 'update' && this.product
-                ? this.product
+            this.action() === 'update' && this.product()
+                ? this.product()!
                 : {
                       product_name: '',
                       price: '',
@@ -94,7 +94,7 @@ export class CreateUpdateProductDialogComponent implements OnInit {
         const productName = capitalize(this.form.value.product_name)
         this.form.patchValue({ product_name: productName })
 
-        if (this.action === 'create') {
+        if (this.action() === 'create') {
             this.createProduct.emit(this.form.value)
         } else {
             this.updateProduct.emit(this.form.value)

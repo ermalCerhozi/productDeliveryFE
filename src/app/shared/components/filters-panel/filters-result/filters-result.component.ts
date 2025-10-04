@@ -1,11 +1,11 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    EventEmitter,
-    Input,
+    inject,
+    input,
     OnChanges,
     OnInit,
-    Output,
+    output,
     SimpleChanges,
 } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
@@ -25,13 +25,13 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
     imports: [MatChipListbox, NgFor, MatChipOption, NgIf, MatChipRemove, MatIcon],
 })
 export class FiltersResultComponent implements OnInit, OnChanges {
-    @Input() labelTK?: string
-    @Input() results!: FilterOption[] | null
+    labelTK = input<string>()
+    results = input<FilterOption[] | null>(null)
 
-    @Output() clearResults = new EventEmitter()
-    @Output() removeFilter = new EventEmitter<FilterOption>()
+    clearResults = output()
+    removeFilter = output<FilterOption>()
 
-    constructor(private fb: FormBuilder) {}
+    private fb = inject(FormBuilder)
 
     form!: FormGroup
 
@@ -39,7 +39,7 @@ export class FiltersResultComponent implements OnInit, OnChanges {
         this.form = this.fb.group({
             results: new FormControl([]),
         })
-        this.form.patchValue({ results: this.results })
+        this.form.patchValue({ results: this.results() })
     }
 
     ngOnChanges(changes: SimpleChanges): void {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, input, OnDestroy, OnInit, output } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { NgIf } from '@angular/common'
 
@@ -37,17 +37,19 @@ import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
     ],
 })
 export class TopBarComponent implements OnInit, OnDestroy {
+    title = input<string>('')
+    mediaCount = input<number>(0)
+    placeholder = input<string>('')
+    searchOptions = input<SearchOptions>({ title: true, all: true })
+    disableAddItem = input<boolean>(false)
+    displayAddButton = input<boolean>(true)
+    
+    searchQueryChange = output<string>()
+    searchOptionsChange = output<SearchOptions>()
+    addItem = output<void>()
+
     searchQuery = new FormControl('')
     onDestroy = new Subject<void>()
-    @Input() title = ''
-    @Input() mediaCount = 0
-    @Input() placeholder = ''
-    @Input() searchOptions: SearchOptions = { title: true, all: true }
-    @Input() disableAddItem = false
-    @Input() displayAddButton = true
-    @Output() searchQueryChange = new EventEmitter<string>()
-    @Output() searchOptionsChange = new EventEmitter<SearchOptions>()
-    @Output() addItem = new EventEmitter<void>()
 
     ngOnInit(): void {
         this.searchQuery.valueChanges
@@ -70,17 +72,18 @@ export class TopBarComponent implements OnInit, OnDestroy {
     }
 
     changeSearchOptions(item: string) {
+        const newOptions: SearchOptions = { ...this.searchOptions() }
         switch (item) {
             case 'title':
-                this.searchOptions.title = true
-                this.searchOptions.all = false
+                newOptions.title = true
+                newOptions.all = false
                 break
             case 'all':
-                this.searchOptions.all = true
-                this.searchOptions.title = false
+                newOptions.all = true
+                newOptions.title = false
                 break
         }
-        this.searchOptionsChange.emit(this.searchOptions)
+        this.searchOptionsChange.emit(newOptions)
     }
 
     openUploadPanel() {

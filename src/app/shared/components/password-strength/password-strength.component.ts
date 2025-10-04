@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, OnInit, OnDestroy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, input, OnInit, OnDestroy } from '@angular/core'
 import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { Subscription } from 'rxjs'
@@ -30,7 +30,7 @@ const CONSTANTS: Constants = {
     imports: [NgStyle, FormsModule, ReactiveFormsModule, MatCheckbox, MatSlider, MatSliderThumb],
 })
 export class PasswordStrengthComponent implements OnInit, OnDestroy {
-    @Input() public form: FormGroup = new FormGroup({})
+    public form = input.required<FormGroup>()
 
     private subscriptions: Subscription[] = []
     public strengthHint: Hint = {
@@ -106,15 +106,15 @@ export class PasswordStrengthComponent implements OnInit, OnDestroy {
     }
 
     private get newPassword(): AbstractControl {
-        return this.form.get('newPassword') as AbstractControl
+        return this.form().get('newPassword') as AbstractControl
     }
     private get passwordMin(): AbstractControl {
-        return this.form.get('passwordMin') as AbstractControl
+        return this.form().get('passwordMin') as AbstractControl
     }
     private get passwordDigit(): AbstractControl {
-        return this.form.get('passwordDigit') as AbstractControl
+        return this.form().get('passwordDigit') as AbstractControl
     }
     private get passwordSpecial(): AbstractControl {
-        return this.form.get('passwordSpecial') as AbstractControl
+        return this.form().get('passwordSpecial') as AbstractControl
     }
 }

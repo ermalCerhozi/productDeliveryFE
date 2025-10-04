@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common'
 
@@ -125,14 +125,14 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     action = 'create'
 
-    constructor(
-        public bakeryManagementService: BakeryManagementService,
-        public searchService: SearchService,
-        private bakeryManagementApiService: BakeryManagementApiService,
-        public dialog: MatDialog,
-        private router: Router,
-        private route: ActivatedRoute
-    ) {
+    public bakeryManagementService = inject(BakeryManagementService)
+    public searchService = inject(SearchService)
+    private bakeryManagementApiService = inject(BakeryManagementApiService)
+    public dialog = inject(MatDialog)
+    private router = inject(Router)
+    private route = inject(ActivatedRoute)
+
+    constructor() {
         this.filterResults = this.searchService.getFilterResults()
 
         this.mediaDates = this.searchService.getMediaDates()

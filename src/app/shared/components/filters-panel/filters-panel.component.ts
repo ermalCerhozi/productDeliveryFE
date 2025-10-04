@@ -2,9 +2,9 @@ import {
     AfterViewInit,
     Component,
     ContentChildren,
-    EventEmitter,
-    Input,
-    Output,
+    effect,
+    input,
+    output,
     QueryList,
 } from '@angular/core'
 import { NgFor, NgTemplateOutlet } from '@angular/common'
@@ -34,29 +34,31 @@ import { AppFilterPanel } from 'src/app/shared/components/filters-panel/filter-p
 export class FiltersPanelComponent implements AfterViewInit {
     private _filters!: Record<string, string[]>
 
-    @Input() set filters(filters: Record<string, string[]>) {
-        this._filters = filters
-        this.filterChildren?.forEach((filter) => {
-            filter.selection = filters[filter.field]
-        })
-    }
-    get filters() {
-        return this._filters
-    }
+    filters = input<Record<string, string[]>>({})
 
-    @Output() filtersChange = new EventEmitter<Record<string, string[]>>()
+    filtersChange = output<Record<string, string[]>>()
 
     /**
      * @description list of the filters to use
      */
     @ContentChildren(AppFilterPanel) filterChildren!: QueryList<AppFilterPanel>
 
+    constructor() {
+        effect(() => {
+            const filters = this.filters()
+            this._filters = filters
+            this.filterChildren?.forEach((filter) => {
+                filter.selection = filters[filter.field]
+            })
+        })
+    }
+
     ngAfterViewInit() {
         this.filterChildren.forEach((filter) => {
-            filter.selection = this.filters[filter.field]
+            filter.selection = this._filters[filter.field]
             filter.selectionChange.subscribe((selection) => {
-                this.filters[filter.field] = selection
-                this.filtersChange.emit(this.filters)
+                this._filters[filter.field] = selection
+                this.filtersChange.emit(this._filters)
             })
         })
     }

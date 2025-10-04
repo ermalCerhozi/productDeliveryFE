@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { Component, input, output } from '@angular/core'
 
 import { CdkScrollable } from '@angular/cdk/scrolling'
 import { MatButton } from '@angular/material/button'
@@ -24,8 +24,8 @@ import {
     ],
 })
 export class ConfirmationDialogComponent {
-    @Input() title!: string | number
-    @Output() confirm = new EventEmitter()
+    title = input.required<string | number>()
+    confirm = output<void>()
 
     onConfirm(): void {
         this.confirm.emit()

@@ -74,16 +74,16 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     previousOrders: number = 0
     private currentOrder!: any
 
-    constructor(
-        private formBuilder: FormBuilder,
-        private bakeryManagementService: BakeryManagementService,
-        private searchService: SearchService,
-        private bakeryManagementApiService: BakeryManagementApiService,
-        private snackBarService: SnackBarService,
-        private router: Router,
-        private notificationService: NotificationService,
-        private whatsAppInvoiceService: WhatsAppInvoiceService
-    ) {
+    private formBuilder = inject(FormBuilder)
+    private bakeryManagementService = inject(BakeryManagementService)
+    private searchService = inject(SearchService)
+    private bakeryManagementApiService = inject(BakeryManagementApiService)
+    private snackBarService = inject(SnackBarService)
+    private router = inject(Router)
+    private notificationService = inject(NotificationService)
+    private whatsAppInvoiceService = inject(WhatsAppInvoiceService)
+
+    constructor() {
         this.clients = this.searchService.getClients()
         this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
 

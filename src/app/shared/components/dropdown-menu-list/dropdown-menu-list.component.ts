@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core'
+import { Component, input, output, ViewChild, ViewEncapsulation } from '@angular/core'
 import { NgFor, NgStyle } from '@angular/common'
 
 import { MatIcon } from '@angular/material/icon'
@@ -15,10 +15,10 @@ import { DropdownMenuListItem, DropdownEvent } from 'src/app/shared/models/Dropd
     imports: [MatMenu, NgFor, MatMenuItem, NgStyle, MatIcon],
 })
 export class DropdownMenuListComponent {
-    @Input() width = '230px'
+    width = input('230px')
     @ViewChild('menu') menu: MatMenu | null = null
-    @Input() options: DropdownMenuListItem[] = []
-    @Output() menuClick = new EventEmitter<DropdownEvent>()
+    options = input<DropdownMenuListItem[]>([])
+    menuClick = output<DropdownEvent>()
 
     onDropdownMenuClick(option: DropdownMenuListItem, event: MouseEvent) {
         this.menuClick.emit({ option, event })

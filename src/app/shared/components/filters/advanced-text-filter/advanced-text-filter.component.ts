@@ -1,12 +1,12 @@
 import {
     AfterViewInit,
     Component,
-    EventEmitter,
-    Input,
+    inject,
+    input,
     OnChanges,
     OnDestroy,
     OnInit,
-    Output,
+    output,
     SimpleChanges,
     TemplateRef,
     ViewChild,
@@ -67,22 +67,22 @@ import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.mode
     ],
 })
 export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
-    constructor(private fb: FormBuilder) {}
+    private fb = inject(FormBuilder)
 
-    @Input() labelTK = ''
-    @Input() searchForTK?: string
-    @Input() noResultsTK?: string
-    @Input() fields!: FilterOption[]
-    @Input() selection!: FilterOption[]
-    @Input() customLabelWidth?: string
-    @Input() loading = false
-    @Input() loadingPage?: boolean
-    @Input() hasMoreItems?: boolean
-    @Input() panelClass = ''
-    @Output() selectionChange = new EventEmitter<AdvancedSelection>()
-    @Output() searchChange = new EventEmitter<string>()
-    @Output() loadMore = new EventEmitter()
-    @Output() openedChange = new EventEmitter<boolean>()
+    labelTK = input('')
+    searchForTK = input<string>()
+    noResultsTK = input<string>()
+    fields = input.required<FilterOption[]>()
+    selection = input.required<FilterOption[]>()
+    customLabelWidth = input<string>()
+    loading = input(false)
+    loadingPage = input<boolean>()
+    hasMoreItems = input<boolean>()
+    panelClass = input('')
+    selectionChange = output<AdvancedSelection>()
+    searchChange = output<string>()
+    loadMore = output()
+    openedChange = output<boolean>()
     @ViewChild(TemplateRef, { static: true }) templateRef!: TemplateRef<unknown>
     @ViewChild('advancedTextFilterSelect') advancedTextFilterSelect!: MatSelect
 
@@ -98,7 +98,7 @@ export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy
         this.form = this.fb.group({
             fields: new FormControl([]),
         })
-        this.form.patchValue({ fields: this.selection })
+        this.form.patchValue({ fields: this.selection() })
         /* istanbul ignore next: not possible to test due to <ng-template> not rendering on testing */
         this.selectionSubject.pipe(takeUntil(this.onDestroy)).subscribe((selection) => {
             this.selectionChange.emit(selection)
@@ -115,7 +115,7 @@ export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy
         this.advancedTextFilterSelect?.openedChange.subscribe((isOpen) => {
             if (isOpen) {
                 this.subscribeScrollEvent()
-                if (!this.fields.length && this.hasMoreItems) {
+                if (!this.fields().length && this.hasMoreItems()) {
                     this.loadMore.emit()
                 }
             }
@@ -132,7 +132,7 @@ export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy
 
     ngOnChanges(changes: SimpleChanges) {
         if (this.form && (changes['selection'] || changes['fields'])) {
-            this.form.patchValue({ fields: this.selection })
+            this.form.patchValue({ fields: this.selection() })
         }
     }
 
@@ -151,8 +151,8 @@ export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy
             if (
                 event.target &&
                 this.hasScrolledToBottom(event.target as Element) &&
-                this.hasMoreItems &&
-                !this.loadingPage
+                this.hasMoreItems() &&
+                !this.loadingPage()
             ) {
                 this.loadMore.emit()
             }

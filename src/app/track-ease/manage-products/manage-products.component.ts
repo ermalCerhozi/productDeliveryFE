@@ -7,6 +7,7 @@ import {
     TemplateRef,
     OnDestroy,
     ChangeDetectorRef,
+    inject,
 } from '@angular/core'
 import { NgTemplateOutlet, NgIf, DecimalPipe } from '@angular/common'
 
@@ -80,6 +81,12 @@ import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '..
     ],
 })
 export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy {
+    public bakeryManagementService = inject(BakeryManagementService)
+    private bakeryManagementApiService = inject(BakeryManagementApiService)
+    private searchService = inject(SearchService)
+    public dialog = inject(MatDialog)
+    private cdr = inject(ChangeDetectorRef)
+
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('createUpdateContainer')
     createUpdateContainer!: TemplateRef<CreateUpdateProductDialogComponent>
@@ -105,14 +112,6 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
             icon: 'delete',
         },
     ]
-
-    constructor(
-        public bakeryManagementService: BakeryManagementService,
-        private bakeryManagementApiService: BakeryManagementApiService,
-        private searchService: SearchService,
-        public dialog: MatDialog,
-        private cdr: ChangeDetectorRef
-    ) {}
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()

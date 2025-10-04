@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, inject } from '@angular/core'
 import { NgTemplateOutlet, NgIf } from '@angular/common'
 
 import { Subject, map, take, takeUntil } from 'rxjs'
@@ -66,6 +66,11 @@ import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu
     ],
 })
 export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
+    public bakeryManagementService = inject(BakeryManagementService)
+    private bakeryManagementApiService = inject(BakeryManagementApiService)
+    private searchService = inject(SearchService)
+    public dialog = inject(MatDialog)
+
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('createUpdateContainer')
     createUpdateContainer!: TemplateRef<CreateUpdateUserDialogComponent>
@@ -91,13 +96,6 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
             icon: 'delete',
         },
     ]
-
-    constructor(
-        public bakeryManagementService: BakeryManagementService,
-        private bakeryManagementApiService: BakeryManagementApiService,
-        private searchService: SearchService,
-        public dialog: MatDialog
-    ) {}
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
