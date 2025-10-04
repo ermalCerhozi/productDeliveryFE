@@ -17,16 +17,17 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
+import { NgStyle, NgIf, NgFor } from '@angular/common'
+
+import { MatIconButton } from '@angular/material/button'
+import { MatOption } from '@angular/material/core'
+import { MatFormField } from '@angular/material/form-field'
+import { MatIcon } from '@angular/material/icon'
+import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { MAT_SELECT_CONFIG, MatSelect } from '@angular/material/select'
 
 import { AppFilter } from 'src/app/shared/components/filters/filter.component'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
-import { MatFormField } from '@angular/material/form-field'
-import { NgStyle, NgIf, NgFor } from '@angular/common'
-import { MatIcon } from '@angular/material/icon'
-import { MatOption } from '@angular/material/core'
-import { MatProgressSpinner } from '@angular/material/progress-spinner'
-import { MatIconButton } from '@angular/material/button'
 @Component({
     selector: 'app-simple-text-filter',
     templateUrl: './simple-text-filter.component.html',

@@ -9,11 +9,12 @@ import {
     SimpleChanges,
 } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
+import { NgFor, NgIf } from '@angular/common'
+
+import { MatChipListbox, MatChipOption, MatChipRemove } from '@angular/material/chips'
+import { MatIcon } from '@angular/material/icon'
 
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
-import { MatChipListbox, MatChipOption, MatChipRemove } from '@angular/material/chips'
-import { NgFor, NgIf } from '@angular/common'
-import { MatIcon } from '@angular/material/icon'
 
 @Component({
     selector: 'app-filters-result',

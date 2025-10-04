@@ -14,7 +14,12 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms'
-import { CreateUserResponse, UserEntity } from 'src/app/shared/models/user.model'
+import { NgIf } from '@angular/common'
+
+import { finalize, map, of, switchMap, take, throwError } from 'rxjs'
+import { cloneDeep, isEqual } from 'lodash-es'
+import { MatIconButton, MatButton } from '@angular/material/button'
+import { MatOption } from '@angular/material/core'
 import {
     MatDialog,
     MatDialogTitle,
@@ -22,19 +27,27 @@ import {
     MatDialogActions,
     MatDialogClose,
 } from '@angular/material/dialog'
-import { NgIf } from '@angular/common'
 import { MatFormField, MatLabel, MatError, MatSuffix } from '@angular/material/form-field'
-import { MatInput } from '@angular/material/input'
-import { MatSelect } from '@angular/material/select'
-import { MatOption } from '@angular/material/core'
-import { MatIconButton, MatButton } from '@angular/material/button'
 import { MatIcon } from '@angular/material/icon'
+import { MatInput } from '@angular/material/input'
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
-import { cloneDeep, isEqual } from 'lodash-es'
+import { MatSelect } from '@angular/material/select'
+
+import { CreateUserResponse, UserEntity } from 'src/app/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
-import { finalize, forkJoin, map, of, switchMap, take } from 'rxjs'
 import { ImageResponse } from '../../models/image.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
+
+type UserFormValue = {
+    first_name: string
+    last_name: string
+    nickname: string
+    email: string
+    phone_prefix: string
+    phone_number: string
+    role: string
+    location: string
+}
 
 @Component({
     selector: 'app-create-update-user-dialog',
@@ -62,6 +75,7 @@ import { BakeryManagementService } from 'src/app/services/bakery-management.serv
         MatProgressSpinner,
     ],
 })
+
 export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>
     @Input() user?: UserEntity | null
@@ -73,7 +87,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     isSubmitting = false
     isLoadingUserDetails = false
 
-    private initialFormValues: unknown
+    private initialFormValues: UserFormValue | null = null
     private selectedImagePayload?: {
         fileName: string
         contentType: string
@@ -107,9 +121,9 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
             return
         }
 
-        this.initializeForm()
-        this.initialFormValues = cloneDeep(this.form.value)
-        this.updatePreviewImage()
+    this.initializeForm()
+    this.captureInitialFormValues()
+    this.updatePreviewImage()
     }
 
     private syncActionState(): void {
@@ -154,28 +168,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     }
 
     initializeForm(): void {
-        const isUpdate = !this.isCreateMode && !!this.user
-        const formData = isUpdate && this.user
-            ? {
-                  first_name: this.user.first_name ?? '',
-                  last_name: this.user.last_name ?? '',
-                  nickname: this.user.nickname ?? '',
-                  email: this.user.email ?? '',
-                  phone_prefix: this.extractPhonePrefix(this.user.phone_number),
-                  phone_number: this.extractPhoneNumber(this.user.phone_number),
-                  role: this.normalizeRoleInput(this.user.role),
-                  location: this.user.location ?? '',
-              }
-            : {
-                  first_name: '',
-                  last_name: '',
-                  nickname: '',
-                  email: '',
-                  phone_prefix: '+355',
-                  phone_number: '',
-                  role: '',
-                  location: '',
-              }
+        const formData = this.createFormValueFromContext(this.user)
 
         this.form = this.fb.group({
             first_name: [formData.first_name, Validators.required],
@@ -210,6 +203,10 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     }
 
     formHasChanged(): boolean {
+        if (!this.initialFormValues) {
+            return !!this.selectedImagePayload
+        }
+
         return !isEqual(this.initialFormValues, this.form.value) || !!this.selectedImagePayload
     }
 
@@ -225,27 +222,36 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
             return
         }
 
-        const capitalize = (value: string) =>
-            value ? value.charAt(0).toUpperCase() + value.slice(1) : value
-        const firstName = capitalize(this.form.value.first_name)
-        const lastName = capitalize(this.form.value.last_name)
+        const formValue = this.form.getRawValue() as UserFormValue
+        const formattedFormValue = this.withCapitalizedNames(formValue)
 
         this.form.patchValue(
-            { first_name: firstName, last_name: lastName },
+            {
+                first_name: formattedFormValue.first_name,
+                last_name: formattedFormValue.last_name,
+            },
             { emitEvent: false },
         )
 
-        const { phone_prefix, ...rest } = this.form.value
-        const userValue: Partial<UserEntity> = {
-            ...rest,
-            phone_number: `${phone_prefix}${this.form.value.phone_number}`,
-        }
+        const userValue = this.buildUserPayload(formattedFormValue)
 
-        if (this.isCreateMode) {
-            this.handleCreate(userValue)
-        } else {
-            this.handleUpdate(userValue)
-        }
+        this.isSubmitting = true
+
+        this.performUserMutation(userValue)
+            .pipe(
+                finalize(() => {
+                    this.isSubmitting = false
+                }),
+            )
+            .subscribe({
+                next: (user) => this.onSuccessfulSubmission(user),
+                error: (error) => {
+                    console.error(
+                        this.isCreateMode ? 'Failed to create user' : 'Failed to update user',
+                        error,
+                    )
+                },
+            })
     }
 
     openInNewWindow(value?: string): void {
@@ -272,103 +278,6 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     private extractPhoneNumber(fullNumber?: string): string {
         if (!fullNumber) return ''
         return fullNumber.replace(/^\+(355|39|49|33|34|44)/, '')
-    }
-
-    private handleCreate(userValue: Partial<UserEntity>): void {
-        this.isSubmitting = true
-
-        this.bakeryManagementApiService
-            .createUser(userValue)
-            .pipe(
-                switchMap((response: CreateUserResponse) => {
-                    const createdUser = response.user
-                    const createdUserId = response.id
-
-                    if (!createdUserId) {
-                        throw new Error('The create user response did not include the new user id.')
-                    }
-
-                    if (this.selectedImagePayload) {
-                        return this.bakeryManagementService
-                            .uploadImage({
-                                ...this.selectedImagePayload,
-                                userId: createdUserId,
-                            })
-                            .pipe(map((image) => ({ user: createdUser, image })))
-                    }
-
-                    return of({
-                        user: createdUser,
-                        image: null as ImageResponse | null,
-                    })
-                }),
-                finalize(() => {
-                    this.isSubmitting = false
-                }),
-            )
-            .subscribe({
-                next: ({ user, image }) => {
-                    if (user && image) {
-                        const dataUri = this.buildDataUri(image)
-                        if (dataUri) {
-                            user.profile_picture = dataUri
-                        }
-                    }
-
-                    if (user) {
-                        this.loadedUserId = user.id
-                        this.user = user
-                    }
-
-                    this.clearSelectedImage()
-                    this.refreshUsersListAndCloseDialog()
-                },
-                error: (error) => {
-                    console.error('Failed to create user', error)
-                },
-            })
-    }
-
-    private handleUpdate(userValue: Partial<UserEntity>): void {
-        if (!this.user) {
-            console.error('Cannot update user because no user context is available.')
-            return
-        }
-
-        this.isSubmitting = true
-
-        const update$ = this.bakeryManagementApiService.updateUser(this.user, userValue)
-        const image$ = this.selectedImagePayload
-            ? this.bakeryManagementService.uploadImage({
-                  ...this.selectedImagePayload,
-                  userId: this.user.id,
-              })
-            : of(null as ImageResponse | null)
-
-        forkJoin([update$, image$])
-            .pipe(
-                finalize(() => {
-                    this.isSubmitting = false
-                }),
-            )
-            .subscribe({
-                next: ([updatedUser, image]) => {
-                    if (image) {
-                        const dataUri = this.buildDataUri(image)
-                        if (dataUri) {
-                            updatedUser.profile_picture = dataUri
-                        }
-                    }
-
-                    this.loadedUserId = updatedUser.id
-                    this.user = updatedUser
-                    this.clearSelectedImage()
-                    this.refreshUsersListAndCloseDialog()
-                },
-                error: (error) => {
-                    console.error('Failed to update user', error)
-                },
-            })
     }
 
     private clearSelectedImage(): void {
@@ -420,24 +329,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     }
 
     private updatePreviewImage(): void {
-        const selectedImageDataUri = this.buildSelectedImageDataUri()
-        if (selectedImageDataUri) {
-            this.previewImageUrl = selectedImageDataUri
-            return
-        }
-
-        if (this.user?.profile_picture) {
-            this.previewImageUrl = this.user.profile_picture
-            return
-        }
-
-        const fallbackImage = this.user?.images?.[0]
-        if (fallbackImage?.contentType && fallbackImage?.data) {
-            this.previewImageUrl = `data:${fallbackImage.contentType};base64,${fallbackImage.data}`
-            return
-        }
-
-        this.previewImageUrl = null
+        this.previewImageUrl = this.derivePreviewImage()
     }
 
     private buildSelectedImageDataUri(): string | null {
@@ -467,5 +359,133 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
                     this.dialog.closeAll()
                 },
             })
+    }
+
+    private captureInitialFormValues(): void {
+        this.initialFormValues = cloneDeep(this.form.getRawValue()) as UserFormValue
+    }
+
+    private createFormValueFromContext(user?: UserEntity | null): UserFormValue {
+        if (!user || this.isCreateMode) {
+            return {
+                first_name: '',
+                last_name: '',
+                nickname: '',
+                email: '',
+                phone_prefix: '+355',
+                phone_number: '',
+                role: '',
+                location: '',
+            }
+        }
+
+        return {
+            first_name: user.first_name ?? '',
+            last_name: user.last_name ?? '',
+            nickname: user.nickname ?? '',
+            email: user.email ?? '',
+            phone_prefix: this.extractPhonePrefix(user.phone_number),
+            phone_number: this.extractPhoneNumber(user.phone_number),
+            role: this.normalizeRoleInput(user.role),
+            location: user.location ?? '',
+        }
+    }
+
+    private withCapitalizedNames(formValue: UserFormValue): UserFormValue {
+        const capitalize = (value: string) =>
+            value ? value.charAt(0).toUpperCase() + value.slice(1) : value
+
+        return {
+            ...formValue,
+            first_name: capitalize(formValue.first_name),
+            last_name: capitalize(formValue.last_name),
+        }
+    }
+
+    private buildUserPayload(formValue: UserFormValue): Partial<UserEntity> {
+        const { phone_prefix, phone_number, ...rest } = formValue
+
+        return {
+            ...rest,
+            phone_number: `${phone_prefix}${phone_number}`,
+        }
+    }
+
+    private performUserMutation(userValue: Partial<UserEntity>) {
+        if (this.isCreateMode) {
+            return this.bakeryManagementApiService.createUser(userValue).pipe(
+                switchMap((response: CreateUserResponse) => {
+                    if (!response?.id) {
+                        throw new Error('The create user response did not include the new user id.')
+                    }
+
+                    if (!response?.user) {
+                        throw new Error('The create user response did not include the new user entity.')
+                    }
+
+                    return this.attachImageIfNeeded(response.id, response.user)
+                }),
+            )
+        }
+
+        if (!this.user) {
+            return throwError(() => new Error('Cannot update user because no user context is available.'))
+        }
+
+        return this.bakeryManagementApiService.updateUser(this.user, userValue).pipe(
+            switchMap((updatedUser) => this.attachImageIfNeeded(updatedUser.id, updatedUser)),
+        )
+    }
+
+    private attachImageIfNeeded(userId: number, baseUser: UserEntity) {
+        if (!this.selectedImagePayload) {
+            return of(baseUser)
+        }
+
+        return this.bakeryManagementService
+            .uploadImage({
+                ...this.selectedImagePayload,
+                userId,
+            })
+            .pipe(
+                map((image) => {
+                    const dataUri = this.buildDataUri(image)
+                    if (dataUri) {
+                        baseUser.profile_picture = dataUri
+                    }
+
+                    return baseUser
+                }),
+            )
+    }
+
+    private onSuccessfulSubmission(user: UserEntity): void {
+        if (user) {
+            this.user = user
+            this.loadedUserId = user.id
+        }
+
+        this.clearSelectedImage()
+        this.updatePreviewImage()
+        this.captureInitialFormValues()
+        this.refreshUsersListAndCloseDialog()
+    }
+
+    private derivePreviewImage(): string | null {
+        const selectedImageDataUri = this.buildSelectedImageDataUri()
+        if (selectedImageDataUri) {
+            return selectedImageDataUri
+        }
+
+        if (this.user?.profile_picture) {
+            return this.user.profile_picture
+        }
+
+        const fallbackImage = this.user?.images?.[0]
+        if (fallbackImage?.contentType && fallbackImage?.data) {
+            return `data:${fallbackImage.contentType};base64,${fallbackImage.data}`
+        }
+
+        return null
     }
 }

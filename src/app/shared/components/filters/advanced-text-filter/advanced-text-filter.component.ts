@@ -19,17 +19,19 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
+import { NgStyle, NgIf, NgFor } from '@angular/common'
+
 import { Subject, debounceTime, takeUntil } from 'rxjs'
-import { AppFilter } from 'src/app/shared/components/filters/filter.component'
+import { MatOption } from '@angular/material/core'
+import { MatFormField, MatPrefix, MatLabel, MatSuffix } from '@angular/material/form-field'
+import { MatIcon } from '@angular/material/icon'
+import { MatInput } from '@angular/material/input'
+import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { MAT_SELECT_CONFIG, MatSelect } from '@angular/material/select'
+
+import { AppFilter } from 'src/app/shared/components/filters/filter.component'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
-import { MatFormField, MatPrefix, MatLabel, MatSuffix } from '@angular/material/form-field'
-import { NgStyle, NgIf, NgFor } from '@angular/common'
-import { MatIcon } from '@angular/material/icon'
-import { MatOption } from '@angular/material/core'
-import { MatProgressSpinner } from '@angular/material/progress-spinner'
-import { MatInput } from '@angular/material/input'
 
 @Component({
     selector: 'app-advanced-text-filter',

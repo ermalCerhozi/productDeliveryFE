@@ -1,7 +1,8 @@
 import { Component, ContentChildren, QueryList } from '@angular/core'
-import { AppFilter } from 'src/app/shared/components/filters/filter.component'
 import { FormsModule } from '@angular/forms'
 import { NgFor, NgTemplateOutlet } from '@angular/common'
+
+import { AppFilter } from 'src/app/shared/components/filters/filter.component'
 
 /**
  * @description component to display a list of filters

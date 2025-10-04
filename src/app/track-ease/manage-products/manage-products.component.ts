@@ -8,6 +8,16 @@ import {
     OnDestroy,
     ChangeDetectorRef,
 } from '@angular/core'
+import { NgTemplateOutlet, NgIf, DecimalPipe } from '@angular/common'
+
+import { Subject } from 'rxjs'
+import { take, map, takeUntil, finalize } from 'rxjs/operators'
+import { MatButton } from '@angular/material/button'
+import { MatDialog } from '@angular/material/dialog'
+import { MatIcon } from '@angular/material/icon'
+import { MatMenuTrigger } from '@angular/material/menu'
+import { MatPaginator, PageEvent } from '@angular/material/paginator'
+import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import {
     MatTableDataSource,
     MatTable,
@@ -22,25 +32,17 @@ import {
     MatRow,
     MatNoDataRow,
 } from '@angular/material/table'
+
 import { ProductEntity } from 'src/app/shared/models/product.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { CreateUpdateProductDialogComponent } from 'src/app/shared/components/create-update-product-dialog/create-update-product-dialog.component'
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
-import { MatDialog } from '@angular/material/dialog'
-import { MatPaginator, PageEvent } from '@angular/material/paginator'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
-import { take, map, takeUntil, finalize } from 'rxjs/operators'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { Subject } from 'rxjs'
 import { SearchService } from 'src/app/services/search.service'
-import { NgTemplateOutlet, NgIf, DecimalPipe } from '@angular/common'
-import { MatButton } from '@angular/material/button'
-import { MatMenuTrigger } from '@angular/material/menu'
-import { MatIcon } from '@angular/material/icon'
 import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
-import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component'
 import { CreateUpdateProductDialogComponent as CreateUpdateProductDialogComponent_1 } from '../../shared/components/create-update-product-dialog/create-update-product-dialog.component'
 import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'

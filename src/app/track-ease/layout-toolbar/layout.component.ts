@@ -1,15 +1,17 @@
 import { Component, ViewChild } from '@angular/core'
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router'
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
+import { NgFor, NgIf, AsyncPipe } from '@angular/common'
+
 import { Observable, map, shareReplay, take } from 'rxjs'
-import { AuthService } from 'src/app/services/auth.service'
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
+import { MatIconButton } from '@angular/material/button'
+import { MatIcon } from '@angular/material/icon'
+import { MatNavList, MatListItem } from '@angular/material/list'
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu'
 import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav'
 import { MatToolbar } from '@angular/material/toolbar'
-import { MatNavList, MatListItem } from '@angular/material/list'
-import { NgFor, NgIf, AsyncPipe } from '@angular/common'
-import { MatIcon } from '@angular/material/icon'
-import { MatIconButton } from '@angular/material/button'
-import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu'
+
+import { AuthService } from 'src/app/services/auth.service'
 
 interface NavRouteConfig {
     path: string

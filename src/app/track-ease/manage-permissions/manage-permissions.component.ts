@@ -9,18 +9,20 @@ import {
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+
+import { Subject } from 'rxjs'
+import { finalize, takeUntil } from 'rxjs/operators'
+import { MatButtonModule } from '@angular/material/button'
 import { MatCardModule } from '@angular/material/card'
+import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
-import { MatButtonModule } from '@angular/material/button'
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatTableDataSource, MatTableModule } from '@angular/material/table'
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatTabsModule } from '@angular/material/tabs'
-import { MatCheckboxModule } from '@angular/material/checkbox'
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator'
-import { finalize, takeUntil } from 'rxjs/operators'
-import { Subject } from 'rxjs'
+
 import { PermissionsService } from 'src/app/services/permissions.service'
 import {
     CreatePermissionRequest,

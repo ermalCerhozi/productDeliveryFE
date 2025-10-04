@@ -1,15 +1,17 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { NgIf } from '@angular/common'
+
 import { Subject, debounceTime, takeUntil } from 'rxjs'
-import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
+import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete'
+import { MatButton } from '@angular/material/button'
+import { MatCheckbox } from '@angular/material/checkbox'
+import { MatOption } from '@angular/material/core'
 import { MatFormField, MatPrefix, MatLabel, MatSuffix } from '@angular/material/form-field'
 import { MatIcon } from '@angular/material/icon'
 import { MatInput } from '@angular/material/input'
-import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete'
-import { MatCheckbox } from '@angular/material/checkbox'
-import { MatOption } from '@angular/material/core'
-import { NgIf } from '@angular/common'
-import { MatButton } from '@angular/material/button'
+
+import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 
 // TODO: add sorting options
 @Component({

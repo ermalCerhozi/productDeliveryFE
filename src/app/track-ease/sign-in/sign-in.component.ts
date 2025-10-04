@@ -7,8 +7,9 @@ import {
     ReactiveFormsModule,
 } from '@angular/forms'
 import { Router } from '@angular/router'
-import { AuthService } from 'src/app/services/auth.service'
 import { NgIf, NgClass } from '@angular/common'
+
+import { AuthService } from 'src/app/services/auth.service'
 
 @Component({
     selector: 'app-sign-in-forgot-password',

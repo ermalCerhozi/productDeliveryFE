@@ -1,13 +1,15 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
-import { MatDialog } from '@angular/material/dialog'
-import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
-import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
-import { OrderEntity } from 'src/app/shared/models/order.model'
-import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
-import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
+import { ActivatedRoute, Router } from '@angular/router'
+import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common'
+
 import { Observable, Subject, switchMap, takeUntil } from 'rxjs'
-import { UserEntity } from 'src/app/shared/models/user.model'
+import { MatButton, MatIconButton } from '@angular/material/button'
+import { MatDialog } from '@angular/material/dialog'
+import { MatDivider } from '@angular/material/divider'
+import { MatIcon } from '@angular/material/icon'
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu'
+import { MatPaginator, PageEvent } from '@angular/material/paginator'
+import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import {
     MatTableDataSource,
     MatTable,
@@ -22,22 +24,22 @@ import {
     MatRow,
     MatNoDataRow,
 } from '@angular/material/table'
-import { MatPaginator, PageEvent } from '@angular/material/paginator'
+
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
+import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
+import { OrderEntity } from 'src/app/shared/models/order.model'
+import { BakeryManagementService } from 'src/app/services/bakery-management.service'
+import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
+import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
+import { UserEntity } from 'src/app/shared/models/user.model'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
-import { MatButton, MatIconButton } from '@angular/material/button'
-import { MatIcon } from '@angular/material/icon'
 import { FiltersComponent } from '../../../../shared/components/filters/filters.component'
 import { SimpleRadioSelectFilterComponent } from '../../../../shared/components/filters/simple-radio-select-filter/simple-radio-select-filter.component'
 import { AdvancedTextFilterComponent } from '../../../../shared/components/filters/advanced-text-filter/advanced-text-filter.component'
-import { MatDivider } from '@angular/material/divider'
-import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common'
 import { FiltersResultComponent } from '../../../../shared/components/filters-panel/filters-result/filters-result.component'
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu'
-import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { DropdownMenuListComponent } from '../../../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
-import { ActivatedRoute, Router } from '@angular/router'
 
 @Component({
     selector: 'app-orders-list',

@@ -11,8 +11,9 @@ import {
     ViewChild,
 } from '@angular/core'
 import { NgIf, NgTemplateOutlet, NgSwitch, NgSwitchCase, NgFor } from '@angular/common'
-import { MatGridList, MatGridTile } from '@angular/material/grid-list'
+
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll'
+import { MatGridList, MatGridTile } from '@angular/material/grid-list'
 import {
     CdkVirtualScrollViewport,
     CdkFixedSizeVirtualScroll,

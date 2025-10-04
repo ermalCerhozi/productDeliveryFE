@@ -1,8 +1,10 @@
 import { Component, Input, Output, EventEmitter, ViewChild, ViewEncapsulation } from '@angular/core'
-import { MatMenu, MatMenuItem } from '@angular/material/menu'
-import { DropdownMenuListItem, DropdownEvent } from 'src/app/shared/models/DropdownMenuListItem'
 import { NgFor, NgStyle } from '@angular/common'
+
 import { MatIcon } from '@angular/material/icon'
+import { MatMenu, MatMenuItem } from '@angular/material/menu'
+
+import { DropdownMenuListItem, DropdownEvent } from 'src/app/shared/models/DropdownMenuListItem'
 
 @Component({
     selector: 'app-dropdown-menu-list',

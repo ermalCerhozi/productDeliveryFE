@@ -1,6 +1,13 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { NgTemplateOutlet, NgIf } from '@angular/common'
+
+import { Subject, map, take, takeUntil } from 'rxjs'
+import { MatButton } from '@angular/material/button'
 import { MatDialog } from '@angular/material/dialog'
+import { MatIcon } from '@angular/material/icon'
+import { MatMenuTrigger } from '@angular/material/menu'
 import { MatPaginator, PageEvent } from '@angular/material/paginator'
+import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import {
     MatTableDataSource,
     MatTable,
@@ -15,19 +22,14 @@ import {
     MatRow,
     MatNoDataRow,
 } from '@angular/material/table'
+
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
 import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { Subject, map, take, takeUntil } from 'rxjs'
 import { SearchService } from 'src/app/services/search.service'
-import { NgTemplateOutlet, NgIf } from '@angular/common'
-import { MatButton } from '@angular/material/button'
-import { MatMenuTrigger } from '@angular/material/menu'
-import { MatIcon } from '@angular/material/icon'
-import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component'
 import { CreateUpdateUserDialogComponent } from '../../shared/components/create-update-user-dialog/create-update-user-dialog.component'
 import { ConfirmationDialogComponent } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'

@@ -6,19 +6,21 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { UserEntity } from 'src/app/shared/models/user.model'
-import { cloneDeep, isEqual } from 'lodash-es'
-import { MatDialog } from '@angular/material/dialog'
-import { ChangePasswordComponent } from 'src/app/track-ease/change-password/change-password.component'
-import { MatButton, MatIconButton } from '@angular/material/button'
-import { MatIcon } from '@angular/material/icon'
-import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
-import { MatInput } from '@angular/material/input'
 import { NgIf, DatePipe } from '@angular/common'
-import { MatToolbar } from '@angular/material/toolbar'
+
 import { Subscription } from 'rxjs'
 import { finalize } from 'rxjs/operators'
+import { cloneDeep, isEqual } from 'lodash-es'
+import { MatButton, MatIconButton } from '@angular/material/button'
+import { MatDialog } from '@angular/material/dialog'
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
+import { MatIcon } from '@angular/material/icon'
+import { MatInput } from '@angular/material/input'
+import { MatToolbar } from '@angular/material/toolbar'
+
+import { BakeryManagementService } from 'src/app/services/bakery-management.service'
+import { UserEntity } from 'src/app/shared/models/user.model'
+import { ChangePasswordComponent } from 'src/app/track-ease/change-password/change-password.component'
 import { ImageResponse } from 'src/app/shared/models/image.model'
 
 @Component({
