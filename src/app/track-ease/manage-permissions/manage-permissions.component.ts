@@ -2,6 +2,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    OnDestroy,
     OnInit,
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
@@ -13,11 +14,16 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatTableModule } from '@angular/material/table'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { finalize } from 'rxjs/operators'
+import { MatTabsModule } from '@angular/material/tabs'
+import { MatCheckboxModule } from '@angular/material/checkbox'
+import { finalize, takeUntil } from 'rxjs/operators'
+import { Subject } from 'rxjs'
 import { PermissionsService } from 'src/app/services/permissions.service'
 import {
     CreatePermissionRequest,
     PermissionEntity,
+    RoleName,
+    RolePermissionsSummary,
 } from 'src/app/shared/models/permission.model'
 
 @Component({
@@ -36,15 +42,33 @@ import {
         MatSnackBarModule,
         MatTableModule,
         MatProgressSpinnerModule,
+        MatTabsModule,
+        MatCheckboxModule,
     ],
 })
-export class ManagePermissionsComponent implements OnInit {
+export class ManagePermissionsComponent implements OnInit, OnDestroy {
     readonly permissions$ = this.permissionsService.permissions$
+    readonly rolePermissions$ = this.permissionsService.rolePermissions$
     readonly displayedColumns = ['code', 'description', 'updated_at']
+    readonly assignmentColumns = ['code', 'Admin', 'Seller', 'Client']
+    readonly roleColumns: ReadonlyArray<{
+        label: string
+        columnKey: RoleName
+    }> = [
+        { label: 'Admin', columnKey: 'Admin' },
+        { label: 'Seller', columnKey: 'Seller' },
+        { label: 'Client', columnKey: 'Client' },
+    ]
 
     isLoading = false
     isSubmitting = false
     errorMessage: string | null = null
+    isRoleAssignmentsLoading = false
+
+    private readonly destroy$ = new Subject<void>()
+    private roleIdByName = new Map<RoleName, number>()
+    private roleSelectionByRoleId = new Map<number, Set<string>>()
+    private assigningRoleIds = new Set<number>()
 
     readonly form = this.fb.group({
         code: ['', [Validators.required, Validators.maxLength(50)]],
@@ -60,6 +84,18 @@ export class ManagePermissionsComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadPermissions()
+        this.loadRoleAssignments()
+
+        this.rolePermissions$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((roles: RolePermissionsSummary[]) => {
+                this.syncRoleAssignments(roles)
+            })
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next()
+        this.destroy$.complete()
     }
 
     onSubmit(): void {
@@ -111,6 +147,83 @@ export class ManagePermissionsComponent implements OnInit {
         return permission.id
     }
 
+    isPermissionAssigned(roleName: RoleName, permissionCode: string): boolean {
+        const roleId = this.roleIdByName.get(roleName)
+        if (roleId === undefined) {
+            return false
+        }
+
+        return this.roleSelectionByRoleId.get(roleId)?.has(permissionCode) ?? false
+    }
+
+    hasRole(roleName: RoleName): boolean {
+        return this.roleIdByName.has(roleName)
+    }
+
+    isRoleAssigning(roleName: RoleName): boolean {
+        const roleId = this.roleIdByName.get(roleName)
+        if (roleId === undefined) {
+            return false
+        }
+
+        return this.assigningRoleIds.has(roleId)
+    }
+
+    onPermissionToggle(
+        roleName: RoleName,
+        permissionCode: string,
+        checked: boolean,
+    ): void {
+        const roleId = this.roleIdByName.get(roleName)
+        if (roleId === undefined) {
+            this.snackBar.open('Selected role is not available', 'Dismiss', {
+                duration: 3000,
+            })
+            return
+        }
+
+        const previousSelection = new Set(this.roleSelectionByRoleId.get(roleId) ?? [])
+        const nextSelection = new Set(previousSelection)
+
+        if (checked) {
+            nextSelection.add(permissionCode)
+        } else {
+            nextSelection.delete(permissionCode)
+        }
+
+        this.roleSelectionByRoleId.set(roleId, nextSelection)
+        this.assigningRoleIds.add(roleId)
+        this.cdr.markForCheck()
+
+        this.permissionsService
+            .assignPermissionsToRole(roleId, Array.from(nextSelection))
+            .pipe(
+                finalize(() => {
+                    this.assigningRoleIds.delete(roleId)
+                    this.cdr.markForCheck()
+                }),
+            )
+            .subscribe({
+                next: () => {
+                    this.snackBar.open('Permissions updated', 'Dismiss', {
+                        duration: 2000,
+                    })
+                },
+                error: (error: unknown) => {
+                    this.roleSelectionByRoleId.set(roleId, previousSelection)
+                    this.cdr.markForCheck()
+
+                    const apiError = error as { error?: { message?: string } }
+                    const message =
+                        apiError?.error?.message ??
+                        'Failed to update permissions. Please try again.'
+                    this.snackBar.open(message, 'Dismiss', {
+                        duration: 4000,
+                    })
+                },
+            })
+    }
+
     private loadPermissions(): void {
         this.isLoading = true
         this.permissionsService
@@ -131,5 +244,43 @@ export class ManagePermissionsComponent implements OnInit {
                     })
                 },
             })
+    }
+
+    private loadRoleAssignments(): void {
+        this.isRoleAssignmentsLoading = true
+        this.permissionsService
+            .loadRolePermissions()
+            .pipe(
+                finalize(() => {
+                    this.isRoleAssignmentsLoading = false
+                    this.cdr.markForCheck()
+                }),
+            )
+            .subscribe({
+                error: (error: unknown) => {
+                    const apiError = error as { error?: { message?: string } }
+                    const message =
+                        apiError?.error?.message ??
+                        'Failed to load role permissions. Please refresh.'
+                    this.snackBar.open(message, 'Dismiss', {
+                        duration: 4000,
+                    })
+                },
+            })
+    }
+
+    private syncRoleAssignments(roles: RolePermissionsSummary[]): void {
+        this.roleIdByName = new Map<RoleName, number>()
+        this.roleSelectionByRoleId = new Map<number, Set<string>>()
+
+        roles.forEach((role) => {
+            this.roleIdByName.set(role.name, role.id)
+            this.roleSelectionByRoleId.set(
+                role.id,
+                new Set(role.permissionCodes ?? []),
+            )
+        })
+
+        this.cdr.markForCheck()
     }
 }

@@ -1,109 +1,192 @@
-<mat-card class="permissions-form-card">
-    <h2 class="card-title">Add permission</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="permission-form">
-        <div class="form-row">
-            <mat-form-field appearance="outline" class="form-field">
-                <mat-label>Code</mat-label>
-                <input
-                    matInput
-                    formControlName="code"
-                    placeholder="e.g. orders.create"
-                    autocomplete="off"
-                />
-                <mat-error *ngIf="form.get('code')?.hasError('required')">
-                    Code is required
-                </mat-error>
-                <mat-error *ngIf="form.get('code')?.hasError('maxlength')">
-                    Code must be at most 50 characters
-                </mat-error>
-            </mat-form-field>
+<mat-tab-group class="permissions-tab-group" animationDuration="0ms">
+    <mat-tab label="Manage permissions">
+        <div class="tab-content">
+            <mat-card class="permissions-form-card">
+                <h2 class="card-title">Add permission</h2>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="permission-form">
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Code</mat-label>
+                            <input
+                                matInput
+                                formControlName="code"
+                                placeholder="e.g. orders.create"
+                                autocomplete="off"
+                            />
+                            <mat-error *ngIf="form.get('code')?.hasError('required')">
+                                Code is required
+                            </mat-error>
+                            <mat-error *ngIf="form.get('code')?.hasError('maxlength')">
+                                Code must be at most 50 characters
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="form-field">
+                            <mat-label>Description</mat-label>
+                            <textarea
+                                matInput
+                                formControlName="description"
+                                rows="3"
+                                placeholder="Optional description"
+                            ></textarea>
+                            <mat-hint align="end">
+                                {{ form.get('description')?.value?.length || 0 }}/255
+                            </mat-hint>
+                            <mat-error *ngIf="form.get('description')?.hasError('maxlength')">
+                                Description must be at most 255 characters
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="actions">
+                        <button
+                            mat-raised-button
+                            color="primary"
+                            type="submit"
+                            [disabled]="form.invalid || isSubmitting"
+                        >
+                            {{ isSubmitting ? 'Saving…' : 'Add permission' }}
+                        </button>
+                    </div>
+
+                    <div *ngIf="errorMessage" class="form-error">
+                        {{ errorMessage }}
+                    </div>
+                </form>
+            </mat-card>
+
+            <mat-card class="permissions-list-card">
+                <div class="list-header">
+                    <h2 class="card-title">Existing permissions</h2>
+                    <mat-progress-spinner
+                        *ngIf="isLoading"
+                        diameter="32"
+                        mode="indeterminate"
+                    ></mat-progress-spinner>
+                </div>
+
+                <div class="table-wrapper" *ngIf="!isLoading">
+                    <ng-container *ngIf="permissions$ | async as permissions">
+                        <table
+                            mat-table
+                            [dataSource]="permissions"
+                            class="mat-elevation-z1"
+                            *ngIf="permissions.length; else emptyState"
+                        >
+                            <ng-container matColumnDef="code">
+                                <th mat-header-cell *matHeaderCellDef>Code</th>
+                                <td mat-cell *matCellDef="let permission">
+                                    {{ permission.code }}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="description">
+                                <th mat-header-cell *matHeaderCellDef>Description</th>
+                                <td mat-cell *matCellDef="let permission">
+                                    {{ permission.description || '—' }}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="updated_at">
+                                <th mat-header-cell *matHeaderCellDef>Last updated</th>
+                                <td mat-cell *matCellDef="let permission">
+                                    {{ permission.updated_at | date: 'medium' }}
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr
+                                mat-row
+                                *matRowDef="let row; columns: displayedColumns; trackBy: trackByPermissionId"
+                                [attr.data-permission-id]="row.id"
+                            ></tr>
+                        </table>
+                    </ng-container>
+                </div>
+
+                <ng-template #emptyState>
+                    <p class="empty-state">No permissions have been created yet.</p>
+                </ng-template>
+            </mat-card>
         </div>
+    </mat-tab>
 
-        <div class="form-row">
-            <mat-form-field appearance="outline" class="form-field">
-                <mat-label>Description</mat-label>
-                <textarea
-                    matInput
-                    formControlName="description"
-                    rows="3"
-                    placeholder="Optional description"
-                ></textarea>
-                <mat-hint align="end">
-                    {{ form.get('description')?.value?.length || 0 }}/255
-                </mat-hint>
-                <mat-error *ngIf="form.get('description')?.hasError('maxlength')">
-                    Description must be at most 255 characters
-                </mat-error>
-            </mat-form-field>
+    <mat-tab label="Assign permissions">
+        <div class="tab-content">
+            <mat-card class="permissions-assign-card">
+                <div class="list-header">
+                    <h2 class="card-title">Assign permissions</h2>
+                    <mat-progress-spinner
+                        *ngIf="isRoleAssignmentsLoading"
+                        diameter="32"
+                        mode="indeterminate"
+                    ></mat-progress-spinner>
+                </div>
+
+                <div class="table-wrapper" *ngIf="!isRoleAssignmentsLoading; else roleLoadingState">
+                    <ng-container *ngIf="permissions$ | async as permissions">
+                        <table
+                            mat-table
+                            [dataSource]="permissions"
+                            class="mat-elevation-z1 permissions-matrix-table"
+                            *ngIf="permissions.length; else assignEmptyState"
+                        >
+                            <ng-container matColumnDef="code">
+                                <th mat-header-cell *matHeaderCellDef>Permission</th>
+                                <td mat-cell *matCellDef="let permission">
+                                    <div class="permission-code">{{ permission.code }}</div>
+                                    <div
+                                        class="permission-description"
+                                        *ngIf="permission.description"
+                                    >
+                                        {{ permission.description }}
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container *ngFor="let column of roleColumns" [matColumnDef]="column.columnKey">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ column.label }}
+                                </th>
+                                <td mat-cell *matCellDef="let permission">
+                                    <mat-checkbox
+                                        color="primary"
+                                        [checked]="isPermissionAssigned(column.columnKey, permission.code)"
+                                        [disabled]="
+                                            !hasRole(column.columnKey) ||
+                                            isRoleAssigning(column.columnKey) ||
+                                            isRoleAssignmentsLoading
+                                        "
+                                        (change)="
+                                            onPermissionToggle(
+                                                column.columnKey,
+                                                permission.code,
+                                                $event.checked
+                                            )
+                                        "
+                                    ></mat-checkbox>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="assignmentColumns"></tr>
+                            <tr
+                                mat-row
+                                *matRowDef="let row; columns: assignmentColumns; trackBy: trackByPermissionId"
+                            ></tr>
+                        </table>
+                    </ng-container>
+                </div>
+
+                <ng-template #assignEmptyState>
+                    <p class="empty-state">No permissions available to assign yet.</p>
+                </ng-template>
+
+                <ng-template #roleLoadingState>
+                    <div class="loading-state">Preparing role assignments…</div>
+                </ng-template>
+            </mat-card>
         </div>
-
-        <div class="actions">
-            <button
-                mat-raised-button
-                color="primary"
-                type="submit"
-                [disabled]="form.invalid || isSubmitting"
-            >
-                {{ isSubmitting ? 'Saving…' : 'Add permission' }}
-            </button>
-        </div>
-
-        <div *ngIf="errorMessage" class="form-error">
-            {{ errorMessage }}
-        </div>
-    </form>
-</mat-card>
-
-<mat-card class="permissions-list-card">
-    <div class="list-header">
-        <h2 class="card-title">Existing permissions</h2>
-        <mat-progress-spinner
-            *ngIf="isLoading"
-            diameter="32"
-            mode="indeterminate"
-        ></mat-progress-spinner>
-    </div>
-
-    <div class="table-wrapper" *ngIf="!isLoading">
-        <ng-container *ngIf="permissions$ | async as permissions">
-            <table
-                mat-table
-                [dataSource]="permissions"
-                class="mat-elevation-z1"
-                *ngIf="permissions.length; else emptyState"
-            >
-            <ng-container matColumnDef="code">
-                <th mat-header-cell *matHeaderCellDef>Code</th>
-                <td mat-cell *matCellDef="let permission">
-                    {{ permission.code }}
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef>Description</th>
-                <td mat-cell *matCellDef="let permission">
-                    {{ permission.description || '—' }}
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="updated_at">
-                <th mat-header-cell *matHeaderCellDef>Last updated</th>
-                <td mat-cell *matCellDef="let permission">
-                    {{ permission.updated_at | date: 'medium' }}
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr
-                mat-row
-                *matRowDef="let row; columns: displayedColumns; trackBy: trackByPermissionId"
-                [attr.data-permission-id]="row.id"
-            ></tr>
-            </table>
-        </ng-container>
-    </div>
-
-    <ng-template #emptyState>
-        <p class="empty-state">No permissions have been created yet.</p>
-    </ng-template>
-</mat-card>
+    </mat-tab>
+</mat-tab-group>

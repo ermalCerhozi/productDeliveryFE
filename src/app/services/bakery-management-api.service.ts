@@ -14,6 +14,8 @@ import { ImageUploadRequest, ImageResponse } from '../shared/models/image.model'
 import {
     PermissionEntity,
     CreatePermissionRequest,
+    AssignPermissionsRequest,
+    RolePermissionsSummary,
 } from '../shared/models/permission.model'
 
 @Injectable({
@@ -178,11 +180,27 @@ export class BakeryManagementApiService {
     }
 
     createPermission(
-        payload: CreatePermissionRequest,
-    ): Observable<PermissionEntity> {
-        return this.httpClient.post<PermissionEntity>(
+        payload: CreatePermissionRequest | CreatePermissionRequest[],
+    ): Observable<PermissionEntity | PermissionEntity[]> {
+        return this.httpClient.post<PermissionEntity | PermissionEntity[]>(
             `${this.basePath}/permissions`,
             payload,
+        )
+    }
+
+    assignPermissionsToRole(
+        roleId: number,
+        payload: AssignPermissionsRequest,
+    ): Observable<PermissionEntity[]> {
+        return this.httpClient.put<PermissionEntity[]>(
+            `${this.basePath}/permissions/roles/${roleId}`,
+            payload,
+        )
+    }
+
+    getRolePermissions(): Observable<RolePermissionsSummary[]> {
+        return this.httpClient.get<RolePermissionsSummary[]>(
+            `${this.basePath}/permissions/roles`,
         )
     }
 }
