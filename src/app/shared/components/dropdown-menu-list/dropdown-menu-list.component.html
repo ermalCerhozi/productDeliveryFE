@@ -1,5 +1,5 @@
 <mat-menu #menu="matMenu" class="mef-dropdown">
-    <div *ngFor="let option of options">
+    <div *ngFor="let option of options()">
         <button
             mat-menu-item
             (click)="onDropdownMenuClick(option, $event)"

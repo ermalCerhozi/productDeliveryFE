@@ -1,6 +1,6 @@
 <div class="dialog-container">
     <div mat-dialog-title>
-        {{ action === 'create' ? 'Create' : 'Update' }} Product
+        {{ action() === 'create' ? 'Create' : 'Update' }} Product
     </div>
 
     <mat-dialog-content class="dialog-content">
@@ -51,7 +51,7 @@
             autofocus
             (click)="submit()"
         >
-            {{ action }}
+            {{ action() }}
         </button>
     </mat-dialog-actions>
 </div>

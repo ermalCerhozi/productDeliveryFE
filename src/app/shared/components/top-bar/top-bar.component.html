@@ -1,21 +1,21 @@
 <div class="container">
     <!-- Title -->
     <div class="top-bar-title-container">
-        <span class="top-bar-title"> {{ title }} Library</span>
-        <span class="top-bar-subtitle"> Total number of results {{ mediaCount }} </span>
+        <span class="top-bar-title"> {{ title() }} Library</span>
+        <span class="top-bar-subtitle"> Total number of results {{ mediaCount() }} </span>
     </div>
 
     <!-- Search bar -->
     <div class="top-bar-search-container">
         <mat-form-field appearance="outline" class="top-bar-search-container-form">
             <mat-icon matPrefix class="top-bar-search-container-form-search-icon">search</mat-icon>
-            <mat-label>{{ placeholder }}</mat-label>
+            <mat-label>{{ placeholder() }}</mat-label>
             <input
                 [formControl]="searchQuery"
                 matInput
                 [matAutocomplete]="topBarSearchAutocomplete"
                 #matAutocomplete
-                placeholder="{{ placeholder }}"
+                placeholder="{{ placeholder() }}"
             />
             <mat-autocomplete #topBarSearchAutocomplete="matAutocomplete">
                 <div class="top-bar-search-container-form-options-menu">
@@ -24,7 +24,7 @@
                         <mat-checkbox
                             color="primary"
                             name="title"
-                            [(ngModel)]="searchOptions.title"
+                            [(ngModel)]="searchOptions().title"
                             [ngModelOptions]="{ standalone: true }"
                             (ngModelChange)="changeSearchOptions('title')"
                         >
@@ -33,7 +33,7 @@
                         <mat-checkbox
                             color="primary"
                             name="meta"
-                            [(ngModel)]="searchOptions.all"
+                            [(ngModel)]="searchOptions().all"
                             [ngModelOptions]="{ standalone: true }"
                             (ngModelChange)="changeSearchOptions('all')"
                         >
@@ -60,15 +60,15 @@
     </div>
 
     <!-- Button for media upload -->
-    <div class="top-bar-upload-button" *ngIf="displayAddButton">
+    <div class="top-bar-upload-button" *ngIf="displayAddButton()">
         <button
             mat-flat-button
             color="primary"
-            [disabled]="disableAddItem"
+            [disabled]="disableAddItem()"
             (click)="openUploadPanel()"
         >
         <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
-            <span>Add {{ title }}</span>
+            <span>Add {{ title() }}</span>
         </button>
     </div>
 </div>

@@ -5,17 +5,17 @@
             class="form-field-without-hint"
             [ngStyle]="{
                 backgroundColor:
-                    defaultEmptyValue?.value !== selection.value ? '#dcdcdc' : '#eeeeee',
-                width: customLabelWidth ? customLabelWidth : null,
+                    defaultEmptyValue()!.value !== selection().value ? '#dcdcdc' : '#eeeeee',
+                width: customLabelWidth() ? customLabelWidth : null,
             }"
         >
             <span class="mef-simple-radio-select-label">
                 <mat-icon
-                    *ngIf="defaultEmptyValue?.value !== selection.value"
+                    *ngIf="defaultEmptyValue()?.value !== selection().value"
                     class="mef-simple-radio-select-label-icon"
                     >check</mat-icon
                 >
-                <span>{{ labelTK }}</span></span
+                <span>{{ labelTK() }}</span></span
             >
             <mat-select
                 formControlName="fields"
@@ -25,7 +25,7 @@
                 [compareWith]="compareValues"
                 [disableOptionCentering]="true"
             >
-                <mat-option *ngFor="let field of fields" [value]="field">
+                <mat-option *ngFor="let field of fields()" [value]="field">
                     <div class="mef-simple-radio-select-filter-content">
                         <div
                             class="mef-simple-radio-select-filter-option-label"
@@ -50,12 +50,12 @@
                                 <mat-icon
                                     class="mef-simple-radio-select-filter-suffix"
                                     color="primary"
-                                    *ngIf="field.value === selection.value"
+                                    *ngIf="field.value === selection().value"
                                     >radio_button_checked</mat-icon
                                 >
                                 <mat-icon
                                     class="mef-simple-radio-select-filter-suffix"
-                                    *ngIf="field.value !== selection.value"
+                                    *ngIf="field.value !== selection().value"
                                     >radio_button_unchecked</mat-icon
                                 >
                             </div>

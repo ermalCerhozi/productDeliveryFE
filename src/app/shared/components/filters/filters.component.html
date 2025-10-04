@@ -1,7 +1,7 @@
 <!-- using form to inherit style -->
 <form class="app-filters-form">
     <!-- display each filter in order -->
-    <div *ngFor="let filter of filters">
+    <div *ngFor="let filter of filters()">
         <ng-container *ngTemplateOutlet="filter.templateRef"></ng-container>
     </div>
 </form>
