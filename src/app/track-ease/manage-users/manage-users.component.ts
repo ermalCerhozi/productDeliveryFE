@@ -16,7 +16,7 @@ import {
     MatNoDataRow,
 } from '@angular/material/table'
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
-import { CreateUpdateDialogComponent } from 'src/app/shared/components/create-update-dialog/create-update-dialog.component'
+import { CreateUpdateUserDialogComponent } from 'src/app/shared/components/create-update-user-dialog/create-update-user-dialog.component'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
@@ -31,7 +31,7 @@ import { MatMenuTrigger } from '@angular/material/menu'
 import { MatIcon } from '@angular/material/icon'
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component'
-import { CreateUpdateDialogComponent as CreateUpdateDialogComponent_1 } from '../../shared/components/create-update-dialog/create-update-dialog.component'
+import { CreateUpdateUserDialogComponent as CreateUpdateUserDialogComponent_1 } from '../../shared/components/create-update-user-dialog/create-update-user-dialog.component'
 import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'
 import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
 
@@ -60,7 +60,7 @@ import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu
         MatProgressSpinner,
         MatPaginator,
         TopBarComponent,
-        CreateUpdateDialogComponent_1,
+    CreateUpdateUserDialogComponent_1,
         ConfirmationDialogComponent_1,
         DropdownMenuListComponent,
     ],
@@ -68,7 +68,7 @@ import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu
 export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('createUpdateContainer')
-    createUpdateContainer!: TemplateRef<CreateUpdateDialogComponent>
+    createUpdateContainer!: TemplateRef<CreateUpdateUserDialogComponent>
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
 
@@ -76,7 +76,7 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     displayedColumns: string[] = ['first_name', 'role', 'phone_number', 'actions']
     activeUser!: UserEntity
-    actionState!: string
+    actionState!: 'create' | 'update'
 
     dataSource: MatTableDataSource<UserEntity> = new MatTableDataSource<UserEntity>([])
     isLoading = false

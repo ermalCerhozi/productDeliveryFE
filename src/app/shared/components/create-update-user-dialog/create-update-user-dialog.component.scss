@@ -1,0 +1,47 @@
+.dialog-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+
+    .dialog-content {
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+        flex-grow: 1;
+
+        .dialog-content-form {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100%;
+        }
+    }
+}
+
+form {
+    width: 95%;
+    margin: auto;
+}
+
+.dialog-actions {
+    flex-shrink: 0;
+    background-color: #eeeeee;
+    color: #000000;
+}
+
+mat-form-field {
+    display: block;
+}
+
+.button {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1.25px;
+    text-align: center;
+    padding: 0 20px;
+    margin: 0 10px;
+
+    &.cancel {
+        color: #0288d1;
+    }
+}

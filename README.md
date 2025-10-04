@@ -60,19 +60,28 @@
 
 ## :computer: Code Examples
 
-* Utilization of create-update component, emphasizing the ease of reusability through inputs and outputs.
+* Dedicated dialogs for managing products and users, each exposing focused inputs and outputs for create/update flows.
 
 ```typescript
-@ViewChild('createUpdateContainer')createUpdateContainer!: TemplateRef<CreateUpdateDialogComponent>
+@ViewChild('createProductDialog')
+private createProductDialog!: TemplateRef<CreateUpdateProductDialogComponent>
 
-<ng-template #createUpdateContainer>
-    <app-create-update-dialog
-        [type]="'product'"
+<ng-template #createProductDialog>
+    <app-create-update-product-dialog
         [action]="actionState!"
         [product]="activeProduct!"
         (updateProduct)="updateProduct($event)"
         (createProduct)="createProduct($event)"
-    ></app-create-update-dialog>
+    ></app-create-update-product-dialog>
+</ng-template>
+
+<ng-template #createUserDialog>
+    <app-create-update-user-dialog
+        [action]="actionState"
+        [user]="activeUser"
+        (updateUser)="updateUser($event)"
+        (createUser)="createUser($event)"
+    ></app-create-update-user-dialog>
 </ng-template>
 ```
 

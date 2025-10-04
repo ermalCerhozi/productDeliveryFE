@@ -70,13 +70,12 @@
 ></mat-paginator>
 
 <ng-template #createUpdateContainer>
-    <app-create-update-dialog
-        [type]="'product'"
-        [action]="actionState!"
-        [product]="activeProduct!"
+    <app-create-update-product-dialog
+        [action]="actionState"
+        [product]="activeProduct"
         (updateProduct)="updateProduct($event)"
         (createProduct)="createProduct($event)"
-    ></app-create-update-dialog>
+    ></app-create-update-product-dialog>
 </ng-template>
 
 <ng-template #topBarContainer>

@@ -75,13 +75,12 @@
 </ng-template>
 
 <ng-template #createUpdateContainer>
-    <app-create-update-dialog
-        [type]="'user'"
+    <app-create-update-user-dialog
         [action]="actionState"
         [user]="activeUser"
         (updateUser)="updateUser($event)"
         (createUser)="createUser($event)"
-    ></app-create-update-dialog>
+    ></app-create-update-user-dialog>
 </ng-template>
 
 <ng-template #confirmationDialogContainer>

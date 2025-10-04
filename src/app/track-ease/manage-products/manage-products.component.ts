@@ -25,7 +25,7 @@ import {
 import { ProductEntity } from 'src/app/shared/models/product.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { CreateUpdateDialogComponent } from 'src/app/shared/components/create-update-dialog/create-update-dialog.component'
+import { CreateUpdateProductDialogComponent } from 'src/app/shared/components/create-update-product-dialog/create-update-product-dialog.component'
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator, PageEvent } from '@angular/material/paginator'
@@ -42,7 +42,7 @@ import { MatIcon } from '@angular/material/icon'
 import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
 import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component'
-import { CreateUpdateDialogComponent as CreateUpdateDialogComponent_1 } from '../../shared/components/create-update-dialog/create-update-dialog.component'
+import { CreateUpdateProductDialogComponent as CreateUpdateProductDialogComponent_1 } from '../../shared/components/create-update-product-dialog/create-update-product-dialog.component'
 import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'
 
 @Component({
@@ -72,7 +72,7 @@ import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '..
         MatProgressSpinner,
         MatPaginator,
         TopBarComponent,
-        CreateUpdateDialogComponent_1,
+    CreateUpdateProductDialogComponent_1,
         ConfirmationDialogComponent_1,
         DecimalPipe,
     ],
@@ -80,7 +80,7 @@ import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '..
 export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator
     @ViewChild('createUpdateContainer')
-    createUpdateContainer!: TemplateRef<CreateUpdateDialogComponent>
+    createUpdateContainer!: TemplateRef<CreateUpdateProductDialogComponent>
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
     
@@ -88,7 +88,7 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
 
     displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
     activeProduct!: ProductEntity
-    actionState!: string | undefined
+    actionState!: 'create' | 'update'
 
     dataSource: MatTableDataSource<ProductEntity> = new MatTableDataSource<ProductEntity>([])
     isLoading = false

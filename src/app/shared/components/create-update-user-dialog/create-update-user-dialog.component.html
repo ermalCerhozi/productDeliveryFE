@@ -1,0 +1,105 @@
+<div class="dialog-container">
+    <div mat-dialog-title>
+        {{ action === 'create' ? 'Create' : 'Update' }} User
+    </div>
+
+    <mat-dialog-content class="dialog-content">
+        <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-content-form">
+            <mat-form-field>
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="first_name" required title="First Name" />
+                <mat-error *ngIf="form.get('first_name')?.invalid && form.get('first_name')?.touched">
+                    First Name is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Last Name</mat-label>
+                <input matInput type="text" formControlName="last_name" required title="Last Name" />
+                <mat-error *ngIf="form.get('last_name')?.invalid && form.get('last_name')?.touched">
+                    Last Name is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Nickname</mat-label>
+                <input matInput type="text" formControlName="nickname" title="Nickname" />
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="email" title="email" />
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Phone Number</mat-label>
+                <div style="display: flex; align-items: center;">
+                    <mat-select formControlName="phone_prefix" style="width: 110px; margin-right: 8px;" required>
+                        <mat-option value="+355">🇦🇱 +355 (AL)</mat-option>
+                        <mat-option value="+39">🇮🇹 +39 (IT)</mat-option>
+                        <mat-option value="+49">🇩🇪 +49 (DE)</mat-option>
+                        <mat-option value="+33">🇫🇷 +33 (FR)</mat-option>
+                        <mat-option value="+34">🇪🇸 +34 (ES)</mat-option>
+                        <mat-option value="+44">🇬🇧 +44 (UK)</mat-option>
+                    </mat-select>
+                    <input
+                        matInput
+                        type="tel"
+                        formControlName="phone_number"
+                        required
+                        title="Phone Number"
+                        pattern="[0-9]{7,12}"
+                        maxlength="12"
+                        placeholder="Enter phone number"
+                        (click)="$event.stopPropagation()"
+                    />
+                </div>
+                <mat-error *ngIf="form.get('phone_number')?.invalid && form.get('phone_number')?.touched">
+                    <ng-container *ngIf="form.get('phone_number')?.errors?.['required']">
+                        Phone Number is required
+                    </ng-container>
+                    <ng-container *ngIf="form.get('phone_number')?.errors?.['pattern']">
+                        Phone Number must be numeric and between 7 and 12 digits
+                    </ng-container>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Role</mat-label>
+                <mat-select formControlName="role" required>
+                    <mat-option value="client">Client</mat-option>
+                    <mat-option value="admin">Admin</mat-option>
+                    <mat-option value="seller">Seller</mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
+                    Role is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Location</mat-label>
+                <input matInput type="text" formControlName="location" title="Location" />
+                <button mat-icon-button matSuffix (click)="openInNewWindow(form.get('location')?.value)" type="button">
+                    <mat-icon>open_in_new</mat-icon>
+                </button>
+            </mat-form-field>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button class="button cancel" mat-stroked-button color="warn" mat-dialog-close>
+            Cancel
+        </button>
+        <button
+            class="button"
+            mat-stroked-button
+            color="primary"
+            type="submit"
+            [disabled]="form.invalid || !formHasChanged()"
+            autofocus
+            (click)="submit()"
+        >
+            {{ action }}
+        </button>
+    </mat-dialog-actions>
+</div>
