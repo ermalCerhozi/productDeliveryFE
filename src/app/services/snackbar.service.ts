@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import {
     MatSnackBar,
     MatSnackBarHorizontalPosition,
@@ -13,7 +13,9 @@ export class SnackBarService {
     private verticalPosition: MatSnackBarVerticalPosition = 'top'
     private duration = 3000
 
-    constructor(private _snackBar: MatSnackBar) {}
+    private _snackBar=  inject(MatSnackBar)
+    
+    constructor() {}
 
     public showSuccess(message: string) {
         this._snackBar.open(message, 'Close', {

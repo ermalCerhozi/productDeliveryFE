@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import { OrderEntity } from './shared/models/order.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WhatsAppInvoiceService {
-
-  constructor() { }
 
   sendInvoiceOnWhatsApp(order: any) {
     const phone = order.client.phone_number.replace('+', ''); // make sure it’s in international format

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { Router, UrlTree } from '@angular/router'
 import { Observable, of } from 'rxjs'
 import { AuthService } from 'src/app/services/auth.service'
@@ -7,10 +7,8 @@ import { AuthService } from 'src/app/services/auth.service'
     providedIn: 'root',
 })
 export class AuthGuard {
-    constructor(
-        private authService: AuthService,
-        private router: Router
-    ) {}
+    private authService=  inject(AuthService)
+    private router=  inject(Router)
 
     canActivate(): Observable<boolean | UrlTree> {
         return this.checkLogin()

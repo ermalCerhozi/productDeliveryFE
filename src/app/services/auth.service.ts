@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { UserEntity, LoginModel } from 'src/app/shared/models/user.model'
@@ -10,8 +10,8 @@ import { environment } from 'src/environments/environment'
 export class AuthService {
     private readonly baseUrl = environment.baseUrl + '/users'
     private currentLoggedUser: BehaviorSubject<UserEntity | null>
-
-    constructor(private http: HttpClient) {
+    private http=  inject(HttpClient)
+    constructor() {
         const storedUser = localStorage.getItem('currentUser')
         const initialUser = storedUser ? JSON.parse(storedUser) : null
         this.currentLoggedUser = new BehaviorSubject<UserEntity | null>(initialUser)

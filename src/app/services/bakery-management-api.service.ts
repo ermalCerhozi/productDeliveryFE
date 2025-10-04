@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { ProductResponse, ProductEntity } from 'src/app/shared/models/product.model'
@@ -24,7 +24,7 @@ import {
 export class BakeryManagementApiService {
     private basePath = environment.baseUrl
 
-    constructor(private httpClient: HttpClient) {}
+    private httpClient=  inject(HttpClient)
 
     //CRUD for users
     createUser(user: Partial<UserEntity>): Observable<CreateUserResponse> {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { inject, Injectable } from '@angular/core'
 import { Observable, tap, BehaviorSubject, Subject, take, map } from 'rxjs'
 import { OrderEntity, OrderResponse } from 'src/app/shared/models/order.model'
 import { ProductEntity, ProductResponse } from 'src/app/shared/models/product.model'
@@ -45,8 +45,10 @@ export class BakeryManagementService {
     public ordersCount!: number
     public usersCount!: number
     public navigationContext!: NavigationContext
+    
+    private bakeryManagementApiService=  inject(BakeryManagementApiService)
 
-    constructor(private bakeryManagementApiService: BakeryManagementApiService) {
+    constructor() {
         this.getBaseNavigationContext()
     }
 

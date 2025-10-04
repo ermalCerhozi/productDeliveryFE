@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core'
+import { inject, Injectable, OnDestroy } from '@angular/core'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import {
     BehaviorSubject,
@@ -105,8 +105,10 @@ export class SearchService implements OnDestroy {
     private productsLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
     private hasMoreProductsToLoad: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
     public productSearchQuery = ''
+    
+    private bakeryManagementService=  inject(BakeryManagementService)
 
-    constructor(private bakeryManagementService: BakeryManagementService) {
+    constructor() {
         this.subscribeToClientSelectSubject()
         this.subscribeToSellerSelectSubject()
         this.subscribeToSynchronizeFilters()
