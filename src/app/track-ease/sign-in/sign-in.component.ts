@@ -64,7 +64,7 @@ export class SignInComponent implements OnInit {
             next: (res) => {
                 this.errorMessage = false
                 this.authService.setAuthenticatedUser(res)
-                this.router.navigate(['/homePage'])
+                this.router.navigate(['/users'])
             },
             error: () => {
                 this.errorMessage = true

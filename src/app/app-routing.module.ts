@@ -25,7 +25,7 @@ const routes: Routes = [
                 data: { expectedRoles: ['Admin', 'Client'] },
             },
             {
-                path: 'manageOrders',
+                path: 'orders',
                 loadComponent: () =>
                     import('src/app/track-ease/orders/orders.component').then(
                         (c) => c.OrdersComponent
@@ -35,7 +35,7 @@ const routes: Routes = [
                 data: { expectedRoles: ['Admin'] },
             },
             {
-                path: 'manageProducts',
+                path: 'products',
                 loadComponent: () =>
                     import('src/app/track-ease/manage-products/manage-products.component').then(
                         (c) => c.ManageProductsComponent
@@ -44,7 +44,7 @@ const routes: Routes = [
                 data: { expectedRoles: ['Admin'] },
             },
             {
-                path: 'managePermissions',
+                path: 'permissions',
                 loadComponent: () =>
                     import('src/app/track-ease/manage-permissions/manage-permissions.component').then(
                         (c) => c.ManagePermissionsComponent
@@ -53,7 +53,7 @@ const routes: Routes = [
                 data: { expectedRoles: ['Admin'] },
             },
             {
-                path: 'manageUsers',
+                path: 'users',
                 loadComponent: () =>
                     import('src/app/track-ease/manage-users/manage-users.component').then(
                         (c) => c.ManageUsersComponent

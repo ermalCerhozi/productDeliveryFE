@@ -414,6 +414,6 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     }
 
     goBack(): void {
-        this.router.navigate(['/manageOrders'])
+        this.router.navigate(['/orders'])
     }
 }

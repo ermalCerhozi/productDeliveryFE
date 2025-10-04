@@ -46,11 +46,11 @@ export class LayoutComponent {
     @ViewChild('drawer') drawer!: MatDrawer
 
     private readonly routes: NavRouteConfig[] = [
-        { path: '/homePage', name: 'Home Page', icon: 'home', roles: ['Admin', 'Client'] },
-        { path: '/manageUsers', name: 'Manage users', icon: 'people', roles: ['Admin'] },
-        { path: '/manageOrders', name: 'Manage orders', icon: 'assignment', roles: ['Admin'] },
-        { path: '/manageProducts', name: 'Manage products', icon: 'store', roles: ['Admin'] },
-        { path: '/managePermissions', name: 'Manage permissions', icon: 'lock', roles: ['Admin'] },
+        // { path: '/homePage', name: 'Home Page', icon: 'home', roles: ['Admin', 'Client'] },
+        { path: '/users', name: 'Users', icon: 'people', roles: ['Admin'] },
+        { path: '/orders', name: 'Orders', icon: 'assignment', roles: ['Admin'] },
+        { path: '/products', name: 'Products', icon: 'store', roles: ['Admin'] },
+        { path: '/permissions', name: 'Permissions', icon: 'lock', roles: ['Admin'] },
         { path: '/profile', name: 'Profile', icon: 'account_circle', roles: ['Admin', 'Client'] },
         // { path: '/earnings', name: 'Earnings', icon: 'show_chart' },
         // { path: '/trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
