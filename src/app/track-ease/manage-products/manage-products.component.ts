@@ -47,6 +47,7 @@ import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu
 import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component'
 import { CreateUpdateProductDialogComponent as CreateUpdateProductDialogComponent_1 } from '../../shared/components/create-update-product-dialog/create-update-product-dialog.component'
 import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-manage-products',
@@ -77,6 +78,7 @@ import { ConfirmationDialogComponent as ConfirmationDialogComponent_1 } from '..
         CreateUpdateProductDialogComponent_1,
         ConfirmationDialogComponent_1,
         DecimalPipe,
+        TranslocoDirective
     ]
 })
 export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy {

@@ -12,6 +12,7 @@ import { MatIcon } from '@angular/material/icon'
 import { MatInput } from '@angular/material/input'
 
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 // TODO: add sorting options
 @Component({
@@ -33,6 +34,7 @@ import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
         MatSuffix,
         NgIf,
         MatButton,
+        TranslocoDirective
     ]
 })
 export class TopBarComponent implements OnInit, OnDestroy {

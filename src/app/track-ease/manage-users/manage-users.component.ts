@@ -34,6 +34,7 @@ import { TopBarComponent } from '../../shared/components/top-bar/top-bar.compone
 import { CreateUpdateUserDialogComponent } from '../../shared/components/create-update-user-dialog/create-update-user-dialog.component'
 import { ConfirmationDialogComponent } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'
 import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-manage-users',
@@ -62,6 +63,7 @@ import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu
         CreateUpdateUserDialogComponent,
         ConfirmationDialogComponent,
         DropdownMenuListComponent,
+        TranslocoDirective
     ]
 })
 export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {

@@ -28,6 +28,7 @@ import { BakeryManagementApiService } from 'src/app/services/bakery-management-a
 import { SnackBarService } from 'src/app/services/snackbar.service'
 import { NotificationService } from 'src/app/services/notification.service'
 import { WhatsAppInvoiceService } from 'src/app/whats-app-invoice.service'
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-create-order',
@@ -51,6 +52,7 @@ import { WhatsAppInvoiceService } from 'src/app/whats-app-invoice.service'
         MatDialogActions,
         MatButton,
         AsyncPipe,
+        TranslocoDirective
     ]
 })
 export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
@@ -81,6 +83,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     private router = inject(Router)
     private notificationService = inject(NotificationService)
     private whatsAppInvoiceService = inject(WhatsAppInvoiceService)
+    private translocoService = inject(TranslocoService)
 
     constructor() {
         this.clients = this.searchService.getClients()
@@ -368,7 +371,9 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
 
             this.bakeryManagementApiService.createOrder(params).subscribe({
                 next: (createdOrder) => {
-                    this.snackBarService.showSuccess('Created successfully')
+                    this.snackBarService.showSuccess(
+                        this.translocoService.translate('createOrder.createdSuccessfully') as string
+                    )
                     this.whatsAppInvoiceService.sendInvoiceOnWhatsApp(createdOrder)
                     this.goBack()
                 },

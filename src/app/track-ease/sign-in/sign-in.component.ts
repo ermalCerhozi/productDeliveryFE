@@ -10,12 +10,13 @@ import { Router } from '@angular/router'
 import { NgIf, NgClass } from '@angular/common'
 
 import { AuthService } from 'src/app/services/auth.service'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-sign-in-forgot-password',
     templateUrl: './sign-in.component.html',
     styleUrls: ['./sign-in.component.css'],
-    imports: [FormsModule, ReactiveFormsModule, NgIf, NgClass]
+    imports: [FormsModule, ReactiveFormsModule, NgIf, NgClass, TranslocoDirective]
 })
 export class SignInComponent implements OnInit {
     private formBuilder = inject(FormBuilder)

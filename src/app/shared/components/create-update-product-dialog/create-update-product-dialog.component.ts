@@ -20,6 +20,7 @@ import { MatFormField, MatLabel, MatError } from '@angular/material/form-field'
 import { MatInput } from '@angular/material/input'
 
 import { ProductEntity } from 'src/app/shared/models/product.model'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-create-update-product-dialog',
@@ -38,6 +39,7 @@ import { ProductEntity } from 'src/app/shared/models/product.model'
         MatButton,
         MatDialogClose,
         NgIf,
+        TranslocoDirective
     ]
 })
 export class CreateUpdateProductDialogComponent implements OnInit {

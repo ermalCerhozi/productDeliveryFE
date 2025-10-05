@@ -8,6 +8,7 @@ import {
     MatDialogActions,
     MatDialogClose,
 } from '@angular/material/dialog'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-confirmation-dialog',
@@ -20,6 +21,7 @@ import {
         MatDialogActions,
         MatButton,
         MatDialogClose,
+        TranslocoDirective
     ]
 })
 export class ConfirmationDialogComponent {

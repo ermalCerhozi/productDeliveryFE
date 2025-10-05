@@ -1,85 +1,87 @@
-<div class="profile-container">
-    <input
-        type="file"
-        accept="image/*"
-        #fileInput
-        style="display: none"
-        (change)="onFileSelected($event)"
-    />
-    <div class="image-container">
-        <img
-            [src]="
-                loggedInUser.profile_picture
-                    ? loggedInUser.profile_picture
-                    : '/assets/images/avatar.png'
-            "
-            alt="Profile image"
+<ng-container *transloco="let t">
+    <div class="profile-container">
+        <input
+            type="file"
+            accept="image/*"
+            #fileInput
+            style="display: none"
+            (change)="onFileSelected($event)"
         />
-    </div>
-    <button
-        class="profile-picture-upload-button"
-        mat-flat-button
-        color="primary"
-        (click)="openUploadPanel()"
-    >
-        <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
-        <span>Change Image</span>
-    </button>
-    <div class="profile-username">{{ loggedInUser.first_name }} {{ loggedInUser.last_name }}</div>
-
-    <div class="profile-registered-since">
-        <span>Registered since: {{ loggedInUser.created_at | date: 'd/M/yy' }}</span>
-    </div>
-
-    <form
-        class="profile-edit-form"
-        [formGroup]="profileForm"
-        (ngSubmit)="updateUser()"
-        #profileFormRef="ngForm"
-    >
-        <mat-form-field appearance="fill">
-            <mat-label>Email</mat-label>
-            <input matInput type="email" formControlName="email" placeholder="Email" />
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Phone Number</mat-label>
-            <input matInput type="tel" formControlName="phone_number" placeholder="Phone Number" />
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Location</mat-label>
-            <input
-                matInput
-                type="text"
-                formControlName="location"
-                placeholder="Location"
-                #locationInput
+        <div class="image-container">
+            <img
+                [src]="
+                    loggedInUser.profile_picture
+                        ? loggedInUser.profile_picture
+                        : '/assets/images/avatar.png'
+                "
+                alt="Profile image"
             />
-            <button
-                mat-icon-button
-                matSuffix
-                *ngIf="locationInput.value"
-                (click)="openInNewWindow(locationInput.value)"
-                type="button"
-            >
-                <mat-icon>open_in_new</mat-icon>
-            </button>
-        </mat-form-field>
-    </form>
-    <span class="change-password-link" (click)="openChangePasswordDialog()">Change Password?</span>
-
-    <mat-toolbar class="insert-panel" *ngIf="isFormChanged() && profileForm.valid" color="primary">
-        <button class="insert-panel-actions" mat-flat-button (click)="cancelEdition()">
-            Cancel
-        </button>
+        </div>
         <button
-            class="insert-panel-actions"
-            mat-raised-button
+            class="profile-picture-upload-button"
+            mat-flat-button
             color="primary"
-            (click)="profileFormRef.ngSubmit.emit()"
+            (click)="openUploadPanel()"
         >
-            Save
+            <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
+            <span>{{ t('userProfile.changeImage') }}</span>
         </button>
-    </mat-toolbar>
-</div>
+        <div class="profile-username">{{ loggedInUser.first_name }} {{ loggedInUser.last_name }}</div>
+
+        <div class="profile-registered-since">
+            <span>{{ t('userProfile.registeredSince') }} {{ loggedInUser.created_at | date: 'd/M/yy' }}</span>
+        </div>
+
+        <form
+            class="profile-edit-form"
+            [formGroup]="profileForm"
+            (ngSubmit)="updateUser()"
+            #profileFormRef="ngForm"
+        >
+            <mat-form-field appearance="fill">
+                <mat-label>{{ t('userProfile.email') }}</mat-label>
+                <input matInput type="email" formControlName="email" [placeholder]="t('userProfile.email')" />
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>{{ t('userProfile.phoneNumber') }}</mat-label>
+                <input matInput type="tel" formControlName="phone_number" [placeholder]="t('userProfile.phoneNumber')" />
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>{{ t('userProfile.location') }}</mat-label>
+                <input
+                    matInput
+                    type="text"
+                    formControlName="location"
+                    [placeholder]="t('userProfile.location')"
+                    #locationInput
+                />
+                <button
+                    mat-icon-button
+                    matSuffix
+                    *ngIf="locationInput.value"
+                    (click)="openInNewWindow(locationInput.value)"
+                    type="button"
+                >
+                    <mat-icon>open_in_new</mat-icon>
+                </button>
+            </mat-form-field>
+        </form>
+        <span class="change-password-link" (click)="openChangePasswordDialog()">{{ t('userProfile.changePassword') }}</span>
+
+        <mat-toolbar class="insert-panel" *ngIf="isFormChanged() && profileForm.valid" color="primary">
+            <button class="insert-panel-actions" mat-flat-button (click)="cancelEdition()">
+                {{ t('userProfile.cancel') }}
+            </button>
+            <button
+                class="insert-panel-actions"
+                mat-raised-button
+                color="primary"
+                (click)="profileFormRef.ngSubmit.emit()"
+            >
+                {{ t('userProfile.save') }}
+            </button>
+        </mat-toolbar>
+    </div>
+</ng-container>

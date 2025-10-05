@@ -5,6 +5,7 @@ import { MatCard, MatCardContent } from '@angular/material/card'
 import { MatChipsModule } from '@angular/material/chips'
 import { MatIcon } from '@angular/material/icon'
 import { MatSlideToggle } from '@angular/material/slide-toggle'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 import { FontService } from 'src/app/services/font.service'
 import { NotificationService } from 'src/app/services/notification.service'
@@ -14,7 +15,7 @@ import { ThemeService } from 'src/app/services/theme.service'
     selector: 'app-settings',
     templateUrl: './settings.component.html',
     styleUrls: ['./settings.component.scss'],
-    imports: [MatCard, MatCardContent, MatIcon, MatSlideToggle, FormsModule, MatChipsModule]
+    imports: [MatCard, MatCardContent, MatIcon, MatSlideToggle, FormsModule, MatChipsModule, TranslocoDirective]
 })
 export class SettingsComponent implements OnInit {
     themeService = inject(ThemeService)

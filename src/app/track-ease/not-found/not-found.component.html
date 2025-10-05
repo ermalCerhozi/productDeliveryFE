@@ -1,12 +1,14 @@
-<div class="page-not-found">
-    <h1 class="title">Oops! Something went wrong…</h1>
-    <span class="sub-title">
-        The page you are trying to access does not exist. We apologize for any inconvenience caused.
-    </span>
+<ng-container *transloco="let t">
+    <div class="page-not-found">
+        <h1 class="title">{{ t('notFound.title') }}</h1>
+        <span class="sub-title">
+            {{ t('notFound.description') }}
+        </span>
 
-    <img src="assets/images/page-not-found.png" class="container" alt="Page not found" />
+        <img src="assets/images/page-not-found.png" class="container" alt="Page not found" />
 
-    <button mat-raised-button color="primary" (click)="goBack()" class="back-button">
-        Go Back
-    </button>
-</div>
+        <button mat-raised-button color="primary" (click)="goBack()" class="back-button">
+            {{ t('notFound.goBack') }}
+        </button>
+    </div>
+</ng-container>

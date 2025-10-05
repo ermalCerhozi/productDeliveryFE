@@ -1,74 +1,76 @@
-<div class="container">
-    <!-- Title -->
-    <div class="top-bar-title-container">
-        <span class="top-bar-title"> {{ title() }} Library</span>
-        <span class="top-bar-subtitle"> Total number of results {{ mediaCount() }} </span>
-    </div>
+<ng-container *transloco="let t">
+    <div class="container">
+        <!-- Title -->
+        <div class="top-bar-title-container">
+            <span class="top-bar-title"> {{ title() }} {{ t('topBar.library') }}</span>
+            <span class="top-bar-subtitle"> {{ t('topBar.totalResults') }} {{ mediaCount() }} </span>
+        </div>
 
-    <!-- Search bar -->
-    <div class="top-bar-search-container">
-        <mat-form-field appearance="outline" class="top-bar-search-container-form">
-            <mat-icon matPrefix class="top-bar-search-container-form-search-icon">search</mat-icon>
-            <mat-label>{{ placeholder() }}</mat-label>
-            <input
-                [formControl]="searchQuery"
-                matInput
-                [matAutocomplete]="topBarSearchAutocomplete"
-                #matAutocomplete
-                placeholder="{{ placeholder() }}"
-            />
-            <mat-autocomplete #topBarSearchAutocomplete="matAutocomplete">
-                <div class="top-bar-search-container-form-options-menu">
-                    <span>Search By: </span>
-                    <div class="top-bar-search-container-form-options-menu-checkbox">
-                        <mat-checkbox
-                            color="primary"
-                            name="title"
-                            [(ngModel)]="searchOptions().title"
-                            [ngModelOptions]="{ standalone: true }"
-                            (ngModelChange)="changeSearchOptions('title')"
-                        >
-                            Title</mat-checkbox
-                        >
-                        <mat-checkbox
-                            color="primary"
-                            name="meta"
-                            [(ngModel)]="searchOptions().all"
-                            [ngModelOptions]="{ standalone: true }"
-                            (ngModelChange)="changeSearchOptions('all')"
-                        >
-                            All</mat-checkbox
-                        >
+        <!-- Search bar -->
+        <div class="top-bar-search-container">
+            <mat-form-field appearance="outline" class="top-bar-search-container-form">
+                <mat-icon matPrefix class="top-bar-search-container-form-search-icon">search</mat-icon>
+                <mat-label>{{ placeholder() }}</mat-label>
+                <input
+                    [formControl]="searchQuery"
+                    matInput
+                    [matAutocomplete]="topBarSearchAutocomplete"
+                    #matAutocomplete
+                    placeholder="{{ placeholder() }}"
+                />
+                <mat-autocomplete #topBarSearchAutocomplete="matAutocomplete">
+                    <div class="top-bar-search-container-form-options-menu">
+                        <span>{{ t('topBar.searchBy') }} </span>
+                        <div class="top-bar-search-container-form-options-menu-checkbox">
+                            <mat-checkbox
+                                color="primary"
+                                name="title"
+                                [(ngModel)]="searchOptions().title"
+                                [ngModelOptions]="{ standalone: true }"
+                                (ngModelChange)="changeSearchOptions('title')"
+                            >
+                                {{ t('topBar.title') }}</mat-checkbox
+                            >
+                            <mat-checkbox
+                                color="primary"
+                                name="meta"
+                                [(ngModel)]="searchOptions().all"
+                                [ngModelOptions]="{ standalone: true }"
+                                (ngModelChange)="changeSearchOptions('all')"
+                            >
+                                {{ t('topBar.all') }}</mat-checkbox
+                            >
+                        </div>
+                        </div>
+                    <!-- do no remove this element unless newer angular changes change element behavior, the element is hidden, but it allows for the mat-autocomplete dropdown to render in order to show the checkboxes above.
+                        In case of adding new features like search history, add other mat options below this one
+                        -->
+                    <div class="top-bar-hidden-mat-option">
+                        <mat-option disabled="true"></mat-option>
                     </div>
+                </mat-autocomplete>
+                <div class="top-bar-search-container-form-suffix" matSuffix>
+                    <mat-icon
+                        *ngIf="searchQuery.value?.length"
+                        class="top-bar-search-container-form-suffix-cancel-icon"
+                        (click)="clearSearchQuery()"
+                        >cancel</mat-icon
+                    >
                 </div>
-                <!-- do no remove this element unless newer angular changes change element behavior, the element is hidden, but it allows for the mat-autocomplete dropdown to render in order to show the checkboxes above.
-                    In case of adding new features like search history, add other mat options below this one
-                    -->
-                <div class="top-bar-hidden-mat-option">
-                    <mat-option disabled="true"></mat-option>
-                </div>
-            </mat-autocomplete>
-            <div class="top-bar-search-container-form-suffix" matSuffix>
-                <mat-icon
-                    *ngIf="searchQuery.value?.length"
-                    class="top-bar-search-container-form-suffix-cancel-icon"
-                    (click)="clearSearchQuery()"
-                    >cancel</mat-icon
-                >
-            </div>
-        </mat-form-field>
-    </div>
+            </mat-form-field>
+        </div>
 
-    <!-- Button for media upload -->
-    <div class="top-bar-upload-button" *ngIf="displayAddButton()">
-        <button
-            mat-flat-button
-            color="primary"
-            [disabled]="disableAddItem()"
-            (click)="openUploadPanel()"
-        >
-        <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
-            <span>Add {{ title() }}</span>
-        </button>
+        <!-- Button for media upload -->
+        <div class="top-bar-upload-button" *ngIf="displayAddButton()">
+            <button
+                mat-flat-button
+                color="primary"
+                [disabled]="disableAddItem()"
+                (click)="openUploadPanel()"
+            >
+            <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
+                <span>{{ t('topBar.add') }} {{ title() }}</span>
+            </button>
+        </div>
     </div>
-</div>
+</ng-container>

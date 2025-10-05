@@ -40,6 +40,7 @@ import { SimpleRadioSelectFilterComponent } from '../../../../shared/components/
 import { AdvancedTextFilterComponent } from '../../../../shared/components/filters/advanced-text-filter/advanced-text-filter.component'
 import { FiltersResultComponent } from '../../../../shared/components/filters-panel/filters-result/filters-result.component'
 import { DropdownMenuListComponent } from '../../../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-orders-list',
@@ -74,7 +75,8 @@ import { DropdownMenuListComponent } from '../../../../shared/components/dropdow
         AsyncPipe,
         DatePipe,
         ConfirmationDialogComponent,
-        MatMenuModule
+        MatMenuModule,
+        TranslocoDirective
     ]
 })
 export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {

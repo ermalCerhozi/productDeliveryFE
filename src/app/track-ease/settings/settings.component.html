@@ -1,8 +1,9 @@
+<ng-container *transloco="let t">
 <div class="settings-container">
     <mat-card>
         <mat-card-content class="toggle-card">
-            <h2>Notifications</h2>
-            <span>Send e-mail notifications for the following events:</span>
+            <h2>{{ t('settings.notificationsTitle') }}</h2>
+            <span>{{ t('settings.notificationsDescription') }}</span>
             <div class="settings-container">
                 <div class="notifications-settings">
                     <mat-slide-toggle
@@ -10,7 +11,7 @@
                         (change)="toggleNotifications($event, 'created')"
                     >
                     </mat-slide-toggle>
-                    <span>When a order is created.</span>
+                    <span>{{ t('settings.orderCreated') }}</span>
                 </div>
                 <div class="settings">
                     <mat-slide-toggle
@@ -18,7 +19,7 @@
                         (change)="toggleNotifications($event, 'updated')"
                     >
                     </mat-slide-toggle>
-                    <span>When a order is updated or deleted.</span>
+                    <span>{{ t('settings.orderUpdated') }}</span>
                 </div>
                 <div class="settings">
                     <mat-slide-toggle
@@ -26,7 +27,7 @@
                         (change)="toggleNotifications($event, 'deleted')"
                     >
                     </mat-slide-toggle>
-                    <span>When an order is deleted.</span>
+                    <span>{{ t('settings.orderDeleted') }}</span>
                 </div>
             </div>
         </mat-card-content>
@@ -34,7 +35,7 @@
 
     <mat-card>
         <mat-card-content class="theme-toggle-card">
-            <h2>Dark Mode</h2>
+            <h2>{{ t('settings.darkModeTitle') }}</h2>
             <div class="theme-toggle">
                 <mat-icon class="mr-8" fontSet="material-icons-outlined">brightness_5</mat-icon>
                 <mat-slide-toggle [checked]="isDarkModeEnabled" (change)="toggleTheme()">
@@ -46,7 +47,7 @@
 
     <mat-card>
         <mat-card-content class="toggle-card">
-            <h2>Custom Font Size</h2>
+            <h2>{{ t('settings.customFontSizeTitle') }}</h2>
             <div>
                 <p>Dropdown Options Font Size:</p>
                 <mat-chip-listbox
@@ -92,3 +93,4 @@
         </mat-card-content>
     </mat-card>
 </div>
+</ng-container>

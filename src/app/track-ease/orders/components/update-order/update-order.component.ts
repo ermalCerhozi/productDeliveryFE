@@ -27,6 +27,7 @@ import { SearchService } from 'src/app/services/search.service'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { SnackBarService } from 'src/app/services/snackbar.service'
 import { NotificationService } from 'src/app/services/notification.service'
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-update-order',
@@ -50,6 +51,7 @@ import { NotificationService } from 'src/app/services/notification.service'
         MatDialogActions,
         MatButton,
         AsyncPipe,
+        TranslocoDirective
     ]
 })
 export class UpdateOrderComponent implements OnInit, OnDestroy {
@@ -81,6 +83,7 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     private snackBarService = inject(SnackBarService)
     private router = inject(Router)
     private notificationService = inject(NotificationService)
+    private translocoService = inject(TranslocoService)
 
     constructor() {
         this.clients = this.searchService.getClients()
@@ -402,7 +405,9 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
 
             this.bakeryManagementApiService.updateOrder(this.currentOrder.id, newValue, params).subscribe({
                 next: () => {
-                    this.snackBarService.showSuccess('Created successfully')
+                    this.snackBarService.showSuccess(
+                        this.translocoService.translate('updateOrder.updatedSuccessfully') as string
+                    )
                     this.goBack()
                 },
                 error: (error) => {

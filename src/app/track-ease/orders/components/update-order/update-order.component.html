@@ -1,125 +1,127 @@
-<div class="dialog-content">
-    <form [formGroup]="orderForm">
-        <div class="first-row">
-            <mat-form-field class="client-field" appearance="outline" hideRequiredMarker>
-                <mat-label>Client</mat-label>
-                <input
-                    matInput
-                    formControlName="client"
-                    [matAutocomplete]="autoCompleteClients"
-                    (input)="clientSearchChange($event)"
-                    required
-                />
-                <mat-autocomplete
-                    #autoCompleteClients="matAutocomplete"
-                    [displayWith]="displayFn"
-                    (opened)="onOpened(autoCompleteClients)"
-                    (closed)="onClosed()"
-                >
-                    <mat-option *ngFor="let client of clients | async" [value]="client">
-                        {{ client.label }}
-                    </mat-option>
-                </mat-autocomplete>
-                <mat-error
-                    *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched"
-                >
-                    Client is required
-                </mat-error>
-            </mat-form-field>
-            <button
-                mat-mini-fab
-                color="primary"
-                type="button"
-                (click)="getPreviousClientOrders()"
-                class="button-with-badge"
-                [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched"
-            >
-                <mat-icon>settings_backup_restore</mat-icon>
-                @if(previousOrders > 0) {
-                    <span class="badge">{{previousOrders}}</span>
-                }
-            </button>
-            <button
-                mat-mini-fab
-                color="primary"
-                type="button"
-                (click)="getNextClientOrders()"
-                class="button-with-badge"
-                [disabled]="previousOrders === 0"
-            >
-                <mat-icon style="transform: scaleX(-1);">settings_backup_restore</mat-icon>
-            </button>
-        </div>
-
-        <div formArrayName="order_items">
-            <div
-                *ngFor="let item of orderItemsFormArray?.controls; let i = index"
-                [formGroupName]="i"
-                class="order-items-fields"
-            >
-                <mat-form-field class="product-field" appearance="outline" hideRequiredMarker>
-                    <mat-label>Product</mat-label>
+<ng-container *transloco="let t">
+    <div class="dialog-content">
+        <form [formGroup]="orderForm">
+            <div class="first-row">
+                <mat-form-field class="client-field" appearance="outline" hideRequiredMarker>
+                    <mat-label>{{ t('updateOrder.client') }}</mat-label>
                     <input
                         matInput
-                        formControlName="product"
-                        [matAutocomplete]="autoCompleteProducts"
-                        (input)="productSearchChange($event)"
+                        formControlName="client"
+                        [matAutocomplete]="autoCompleteClients"
+                        (input)="clientSearchChange($event)"
                         required
                     />
                     <mat-autocomplete
-                        #autoCompleteProducts="matAutocomplete"
+                        #autoCompleteClients="matAutocomplete"
                         [displayWith]="displayFn"
-                        (opened)="onOpened(autoCompleteProducts)"
+                        (opened)="onOpened(autoCompleteClients)"
                         (closed)="onClosed()"
                     >
-                        <mat-option *ngFor="let product of filteredProducts" [value]="product">
-                            {{ product.label }}
+                        <mat-option *ngFor="let client of clients | async" [value]="client">
+                            {{ client.label }}
                         </mat-option>
                     </mat-autocomplete>
                     <mat-error
-                        *ngIf="item.get('product')?.invalid && item.get('product')?.touched"
+                        *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched"
                     >
-                        Product is required
+                        {{ t('updateOrder.clientRequired') }}
                     </mat-error>
                 </mat-form-field>
+                <button
+                    mat-mini-fab
+                    color="primary"
+                    type="button"
+                    (click)="getPreviousClientOrders()"
+                    class="button-with-badge"
+                    [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched"
+                >
+                    <mat-icon>settings_backup_restore</mat-icon>
+                    @if(previousOrders > 0) {
+                        <span class="badge">{{previousOrders}}</span>
+                    }
+                </button>
+                <button
+                    mat-mini-fab
+                    color="primary"
+                    type="button"
+                    (click)="getNextClientOrders()"
+                    class="button-with-badge"
+                    [disabled]="previousOrders === 0"
+                >
+                    <mat-icon style="transform: scaleX(-1);">settings_backup_restore</mat-icon>
+                </button>
+            </div>
 
-                <mat-form-field appearance="outline" hideRequiredMarker>
-                    <mat-label>Quantity</mat-label>
-                    <input matInput formControlName="quantity" type="number" min="1" required />
-                </mat-form-field>
+            <div formArrayName="order_items">
+                <div
+                    *ngFor="let item of orderItemsFormArray?.controls; let i = index"
+                    [formGroupName]="i"
+                    class="order-items-fields"
+                >
+                    <mat-form-field class="product-field" appearance="outline" hideRequiredMarker>
+                        <mat-label>{{ t('updateOrder.product') }}</mat-label>
+                        <input
+                            matInput
+                            formControlName="product"
+                            [matAutocomplete]="autoCompleteProducts"
+                            (input)="productSearchChange($event)"
+                            required
+                        />
+                        <mat-autocomplete
+                            #autoCompleteProducts="matAutocomplete"
+                            [displayWith]="displayFn"
+                            (opened)="onOpened(autoCompleteProducts)"
+                            (closed)="onClosed()"
+                        >
+                            <mat-option *ngFor="let product of filteredProducts" [value]="product">
+                                {{ product.label }}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-error
+                            *ngIf="item.get('product')?.invalid && item.get('product')?.touched"
+                        >
+                            {{ t('updateOrder.productRequired') }}
+                        </mat-error>
+                    </mat-form-field>
 
-                <mat-form-field appearance="outline">
-                    <mat-label>Returns</mat-label>
-                    <input matInput formControlName="returned_quantity" type="number" min="0" />
-                </mat-form-field>
+                    <mat-form-field appearance="outline" hideRequiredMarker>
+                        <mat-label>{{ t('updateOrder.quantity') }}</mat-label>
+                        <input matInput formControlName="quantity" type="number" min="1" required />
+                    </mat-form-field>
 
-                <div>
-                    <button mat-mini-fab color="warn" (click)="removeOrderItem(i)" type="button">
-                        <mat-icon class="material-icons-outlined">delete</mat-icon>
-                    </button>
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ t('updateOrder.returns') }}</mat-label>
+                        <input matInput formControlName="returned_quantity" type="number" min="0" />
+                    </mat-form-field>
+
+                    <div>
+                        <button mat-mini-fab color="warn" (click)="removeOrderItem(i)" type="button">
+                            <mat-icon class="material-icons-outlined">delete</mat-icon>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="add-button">
-            <button mat-fab color="primary" (click)="addNewOrderItem()" type="button">
-                <mat-icon>add</mat-icon>
-            </button>
-        </div>
-    </form>
-</div>
+            <div class="add-button">
+                <button mat-fab color="primary" (click)="addNewOrderItem()" type="button">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </div>
+        </form>
+    </div>
 
-<mat-dialog-actions [align]="'end'" class="insert-panel">
-    <h2 class="price">{{ totalOrderPrice.toLocaleString() }} L</h2>
-    <button class="action-button" mat-stroked-button color="warn" (click)="goBack()">Cancel</button>
-    <button
-        class="action-button"
-        mat-stroked-button
-        color="primary"
-        type="submit"
-        [disabled]="orderForm.invalid || !formHasChanged()"
-        (click)="save()"
-    >
-        Update
-    </button>
-</mat-dialog-actions>
+    <mat-dialog-actions [align]="'end'" class="insert-panel">
+        <h2 class="price">{{ totalOrderPrice.toLocaleString() }} {{ t('updateOrder.price') }}</h2>
+        <button class="action-button" mat-stroked-button color="warn" (click)="goBack()">{{ t('updateOrder.cancel') }}</button>
+        <button
+            class="action-button"
+            mat-stroked-button
+            color="primary"
+            type="submit"
+            [disabled]="orderForm.invalid || !formHasChanged()"
+            (click)="save()"
+        >
+            {{ t('updateOrder.update') }}
+        </button>
+    </mat-dialog-actions>
+</ng-container>

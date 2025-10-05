@@ -1,57 +1,59 @@
-<div class="dialog-container">
-    <div mat-dialog-title>
-        {{ action() === 'create' ? 'Create' : 'Update' }} Product
+<ng-container *transloco="let t">
+    <div class="dialog-container">
+        <div mat-dialog-title>
+            {{ action() === 'create' ? t('createUpdateProductDialog.create') : t('createUpdateProductDialog.update') }} {{ t('createUpdateProductDialog.product') }}
+        </div>
+
+        <mat-dialog-content class="dialog-content">
+            <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-content-form">
+                <mat-form-field>
+                    <mat-label>{{ t('createUpdateProductDialog.productName') }}</mat-label>
+                    <input matInput formControlName="product_name" required [title]="t('createUpdateProductDialog.productName')" />
+                    <mat-error *ngIf="form.get('product_name')?.invalid && form.get('product_name')?.touched">
+                        {{ t('createUpdateProductDialog.productNameRequired') }}
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>{{ t('createUpdateProductDialog.price') }}</mat-label>
+                    <input matInput type="number" min="0" formControlName="price" required [title]="t('createUpdateProductDialog.price')" />
+                    <mat-error *ngIf="form.get('price')?.invalid && form.get('price')?.touched">
+                        {{ t('createUpdateProductDialog.priceRequired') }}
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>{{ t('createUpdateProductDialog.imageUrl') }}</mat-label>
+                    <input matInput formControlName="image" [title]="t('createUpdateProductDialog.imageUrl')" />
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>{{ t('createUpdateProductDialog.description') }}</mat-label>
+                    <textarea matInput formControlName="description" [title]="t('createUpdateProductDialog.description')"></textarea>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>{{ t('createUpdateProductDialog.ingredients') }}</mat-label>
+                    <textarea matInput formControlName="ingredients" [title]="t('createUpdateProductDialog.ingredients')"></textarea>
+                </mat-form-field>
+            </form>
+        </mat-dialog-content>
+
+        <mat-dialog-actions align="end">
+            <button class="button cancel" mat-stroked-button color="warn" mat-dialog-close>
+                {{ t('createUpdateProductDialog.cancel') }}
+            </button>
+            <button
+                class="button"
+                mat-stroked-button
+                color="primary"
+                type="submit"
+                [disabled]="form.invalid || !formHasChanged()"
+                autofocus
+                (click)="submit()"
+            >
+                {{ action() }}
+            </button>
+        </mat-dialog-actions>
     </div>
-
-    <mat-dialog-content class="dialog-content">
-        <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-content-form">
-            <mat-form-field>
-                <mat-label>Product Name</mat-label>
-                <input matInput formControlName="product_name" required title="Product Name" />
-                <mat-error *ngIf="form.get('product_name')?.invalid && form.get('product_name')?.touched">
-                    Product Name is required
-                </mat-error>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Price</mat-label>
-                <input matInput type="number" min="0" formControlName="price" required title="Price" />
-                <mat-error *ngIf="form.get('price')?.invalid && form.get('price')?.touched">
-                    Price is required
-                </mat-error>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Image URL</mat-label>
-                <input matInput formControlName="image" title="Image URL" />
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Description</mat-label>
-                <textarea matInput formControlName="description" title="Description"></textarea>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>Ingredients</mat-label>
-                <textarea matInput formControlName="ingredients" title="Ingredients"></textarea>
-            </mat-form-field>
-        </form>
-    </mat-dialog-content>
-
-    <mat-dialog-actions align="end">
-        <button class="button cancel" mat-stroked-button color="warn" mat-dialog-close>
-            Cancel
-        </button>
-        <button
-            class="button"
-            mat-stroked-button
-            color="primary"
-            type="submit"
-            [disabled]="form.invalid || !formHasChanged()"
-            autofocus
-            (click)="submit()"
-        >
-            {{ action() }}
-        </button>
-    </mat-dialog-actions>
-</div>
+</ng-container>

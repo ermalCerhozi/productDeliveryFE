@@ -38,6 +38,7 @@ import { CreateUserResponse, UserEntity } from 'src/app/shared/models/user.model
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { ImageResponse } from '../../models/image.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 type UserFormValue = {
     first_name: string
@@ -73,6 +74,7 @@ type UserFormValue = {
         MatButton,
         MatDialogClose,
         MatProgressSpinner,
+        TranslocoDirective
     ]
 })
 

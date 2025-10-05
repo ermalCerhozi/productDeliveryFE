@@ -25,6 +25,7 @@ import { MatIcon } from '@angular/material/icon'
 import { MatInput } from '@angular/material/input'
 
 import { PasswordStrengthComponent } from '../../shared/components/password-strength/password-strength.component'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 interface Constants {
     readonly DIGIT_REGEX: RegExp
@@ -57,6 +58,7 @@ const CONSTANTS: Constants = {
         MatDialogActions,
         MatButton,
         MatDialogClose,
+        TranslocoDirective
     ]
 })
 export class ChangePasswordComponent implements OnInit {

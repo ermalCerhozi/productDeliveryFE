@@ -23,6 +23,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatTableDataSource, MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from '@angular/material/tabs'
+import { TranslocoService } from '@jsverse/transloco'
 
 import { PermissionsService } from 'src/app/services/permissions.service'
 import {
@@ -62,6 +63,7 @@ export class ManagePermissionsComponent
     private readonly permissionsService = inject(PermissionsService)
     private readonly snackBar = inject(MatSnackBar)
     private readonly cdr = inject(ChangeDetectorRef)
+    private readonly translocoService = inject(TranslocoService)
 
     readonly permissions$ = this.permissionsService.permissions$
     readonly rolePermissions$ = this.permissionsService.rolePermissions$
@@ -71,9 +73,9 @@ export class ManagePermissionsComponent
         label: string
         columnKey: RoleName
     }> = [
-        { label: 'Admin', columnKey: 'Admin' },
-        { label: 'Seller', columnKey: 'Seller' },
-        { label: 'Client', columnKey: 'Client' },
+        { label: this.translocoService.translate('managePermissions.roleAdmin') as string, columnKey: 'Admin' },
+        { label: this.translocoService.translate('managePermissions.roleSeller') as string, columnKey: 'Seller' },
+        { label: this.translocoService.translate('managePermissions.roleClient') as string, columnKey: 'Client' },
     ]
 
     isLoading = false
@@ -191,9 +193,13 @@ export class ManagePermissionsComponent
             .subscribe({
                 next: () => {
                     this.form.reset()
-                    this.snackBar.open('Permission created successfully', 'Dismiss', {
-                        duration: 2500,
-                    })
+                    this.snackBar.open(
+                        this.translocoService.translate('managePermissions.permissionCreatedSuccess') as string,
+                        this.translocoService.translate('managePermissions.dismiss') as string,
+                        {
+                            duration: 2500,
+                        }
+                    )
                 },
                 error: (error) => {
                     const message =
@@ -239,9 +245,13 @@ export class ManagePermissionsComponent
     ): void {
         const roleId = this.roleIdByName.get(roleName)
         if (roleId === undefined) {
-            this.snackBar.open('Selected role is not available', 'Dismiss', {
-                duration: 3000,
-            })
+            this.snackBar.open(
+                this.translocoService.translate('managePermissions.roleNotAvailable') as string,
+                this.translocoService.translate('managePermissions.dismiss') as string,
+                {
+                    duration: 3000,
+                }
+            )
             return
         }
 
@@ -268,9 +278,13 @@ export class ManagePermissionsComponent
             )
             .subscribe({
                 next: () => {
-                    this.snackBar.open('Permissions updated', 'Dismiss', {
-                        duration: 2000,
-                    })
+                    this.snackBar.open(
+                        this.translocoService.translate('managePermissions.permissionsUpdated') as string,
+                        this.translocoService.translate('managePermissions.dismiss') as string,
+                        {
+                            duration: 2000,
+                        }
+                    )
                 },
                 error: (error: unknown) => {
                     this.roleSelectionByRoleId.set(roleId, previousSelection)

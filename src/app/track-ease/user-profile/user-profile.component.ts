@@ -22,6 +22,7 @@ import { BakeryManagementService } from 'src/app/services/bakery-management.serv
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { ChangePasswordComponent } from 'src/app/track-ease/change-password/change-password.component'
 import { ImageResponse } from 'src/app/shared/models/image.model'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-user-profile',
@@ -40,6 +41,7 @@ import { ImageResponse } from 'src/app/shared/models/image.model'
         MatSuffix,
         MatToolbar,
         DatePipe,
+        TranslocoDirective
     ]
 })
 export class UserProfileComponent implements OnInit, OnDestroy {

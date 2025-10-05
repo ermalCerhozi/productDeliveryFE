@@ -1,10 +1,11 @@
-import { Component, ChangeDetectionStrategy, input, OnInit, OnDestroy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, input, OnInit, OnDestroy, inject } from '@angular/core'
 import { AbstractControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { Subscription } from 'rxjs'
 import { NgStyle } from '@angular/common'
 import { MatCheckbox } from '@angular/material/checkbox'
 import { MatSlider, MatSliderThumb } from '@angular/material/slider'
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco'
 
 interface Hint {
     message: string
@@ -26,10 +27,11 @@ const CONSTANTS: Constants = {
     templateUrl: './password-strength.component.html',
     styleUrls: ['./password-strength.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgStyle, FormsModule, ReactiveFormsModule, MatCheckbox, MatSlider, MatSliderThumb]
+    imports: [NgStyle, FormsModule, ReactiveFormsModule, MatCheckbox, MatSlider, MatSliderThumb, TranslocoDirective]
 })
 export class PasswordStrengthComponent implements OnInit, OnDestroy {
     public form = input.required<FormGroup>()
+    private translocoService = inject(TranslocoService)
 
     private subscriptions: Subscription[] = []
     public strengthHint: Hint = {
@@ -78,19 +80,19 @@ export class PasswordStrengthComponent implements OnInit, OnDestroy {
         console.log(this.passwordSlider)
         switch (this.passwordSlider) {
             case 0:
-                this.strengthHint.message = 'Weak'
+                this.strengthHint.message = this.translocoService.translate('passwordStrength.weak') as string
                 this.strengthHint.color = 'red'
                 break
             case 1:
-                this.strengthHint.message = 'Okay'
+                this.strengthHint.message = this.translocoService.translate('passwordStrength.okay') as string
                 this.strengthHint.color = 'orange'
                 break
             case 2:
-                this.strengthHint.message = 'Good'
+                this.strengthHint.message = this.translocoService.translate('passwordStrength.good') as string
                 this.strengthHint.color = 'yellow'
                 break
             case 3:
-                this.strengthHint.message = 'Strong'
+                this.strengthHint.message = this.translocoService.translate('passwordStrength.strong') as string
                 this.strengthHint.color = 'green'
                 break
         }
