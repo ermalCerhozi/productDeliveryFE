@@ -2,10 +2,8 @@ import {
     Component,
     ElementRef,
     inject,
-    input,
-    OnChanges,
+    Inject,
     OnInit,
-    SimpleChanges,
     ViewChild,
 } from '@angular/core'
 import {
@@ -22,6 +20,7 @@ import { MatIconButton, MatButton } from '@angular/material/button'
 import { MatOption } from '@angular/material/core'
 import {
     MatDialog,
+    MAT_DIALOG_DATA,
     MatDialogTitle,
     MatDialogContent,
     MatDialogActions,
@@ -75,13 +74,12 @@ type UserFormValue = {
         TranslocoDirective,
     ],
 })
-export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
+export class CreateUpdateUserDialogComponent implements OnInit {
     @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>
-    user = input<UserEntity | null>()
 
     action: 'create' | 'update' = 'create'
     readonly defaultAvatar = '/assets/images/avatar.png'
-    form: FormGroup = new FormGroup({})
+    form!: FormGroup
     previewImageUrl: string | null = null
     isSubmitting = false
     isLoadingUserDetails = false
@@ -100,17 +98,15 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     private bakeryManagementService = inject(BakeryManagementService)
     private dialog = inject(MatDialog)
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes['user']) {
-            this.currentUser = this.user() || null
-            this.loadedUserId = undefined
-            this.rebuildFormStateFromCurrentContext()
-        }
+    constructor(@Inject(MAT_DIALOG_DATA) public data: { user?: UserEntity }) {
+        // Initialize form in constructor to ensure it's ready before template renders
+        this.currentUser = this.data?.user || null
+        this.syncActionState()
+        this.initializeForm()
     }
 
     ngOnInit(): void {
-        this.currentUser = this.user() || null
-        this.rebuildFormStateFromCurrentContext()
+        this.rebuildFormStateFromCurrentContext({ skipFetch: false })
     }
 
     private rebuildFormStateFromCurrentContext(options?: { skipFetch?: boolean }): void {
@@ -121,7 +117,6 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
             return
         }
 
-        this.initializeForm()
         this.captureInitialFormValues()
         this.updatePreviewImage()
     }
@@ -157,7 +152,12 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
                     this.currentUser = user
                     this.loadedUserId = user.id
                     this.clearSelectedImage()
-                    this.rebuildFormStateFromCurrentContext({ skipFetch: true })
+                    
+                    // Update form values instead of reinitializing
+                    const formData = this.createFormValueFromContext(user)
+                    this.form.patchValue(formData)
+                    this.captureInitialFormValues()
+                    this.updatePreviewImage()
                 },
                 error: (error) => {
                     this.loadedUserId = userId

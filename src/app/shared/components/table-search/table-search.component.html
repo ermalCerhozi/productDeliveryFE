@@ -1,0 +1,8 @@
+<ng-container *transloco="let t">
+  <mat-form-field class="mat-form-field-no-wrapper">
+    <input #searchInput type="text" matInput placeholder="{{ t('search') }}" (keyup)="onSearch(searchInput.value)" />
+    <mat-icon matSuffix (click)="onSearch(searchInput.value='')">
+      {{ searchInput.value ? 'clear' : 'search' }}
+    </mat-icon>
+  </mat-form-field>
+</ng-container>

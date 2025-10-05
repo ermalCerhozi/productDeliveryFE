@@ -101,7 +101,8 @@
 		"searchBy": "Search By:",
 		"title": "Title",
 		"all": "All",
-		"add": "Add"
+		"add": "Add",
+		"search": "Search"
 	},
 	"signIn": {
 		"title": "Sign In",
@@ -148,10 +149,13 @@
 	},
 	"manageUsers": {
 		"fullName": "Full Name",
+		"first_name": "First Name",
 		"role": "Role",
+		"phone_number": "Phone Number",
 		"phoneNumber": "Phone Number",
 		"actions": "Actions",
-		"noDataFound": "No Data Found!"
+		"noDataFound": "No Data Found!",
+		"itemsPerPageLabel": "Items per page"
 	},
 	"manageProducts": {
 		"id": "ID",

@@ -1,0 +1,31 @@
+.action-col {
+  display: flex;
+  align-items: center;
+}
+
+.actions-menu-button {
+  color: #424242;
+}
+
+.mat-mdc-table .mat-mdc-header-cell {
+  background-color: #424242;
+  color: white;
+}
+::ng-deep .mat-mdc-table .mat-mdc-header-cell .header-checkbox {
+  --mdc-checkbox-unselected-icon-color: white!important;
+  border-color: white!important;
+  opacity: 0.8;
+}
+::ng-deep .mat-mdc-table .mat-mdc-header-cell .header-checkbox:hover .mdc-checkbox__background,
+::ng-deep .mat-mdc-table .mat-mdc-header-cell .header-checkbox:active .mdc-checkbox__background,
+::ng-deep .mat-mdc-table .mat-mdc-header-cell .header-checkbox:focus-within .mdc-checkbox__background {
+  border-color: white!important;
+  opacity: 0.8;
+}
+.mat-mdc-row:hover {
+  background-color: #e0e0e129;
+}
+
+::ng-deep .mat-mdc-header-cell .mat-sort-header-arrow {
+  color: var(--mat-sys-surface);
+}

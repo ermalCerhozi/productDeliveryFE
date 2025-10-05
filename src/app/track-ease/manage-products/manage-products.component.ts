@@ -115,7 +115,7 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
-        this.bakeryManagementService.activeTab = 'products'
+            this.bakeryManagementService.activeTab = 'products'
 
         this.bakeryManagementService.productsList$
             .pipe(takeUntil(this.destroy$))

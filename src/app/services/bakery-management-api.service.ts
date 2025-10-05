@@ -22,6 +22,7 @@ import {
     AssignPermissionsRequest,
     RolePermissionsSummary,
 } from '../shared/models/permission.model'
+import { SearchOptions } from '../shared/models/context-navigation.model'
 
 @Injectable({
     providedIn: 'root',
@@ -55,12 +56,15 @@ export class BakeryManagementApiService {
         return this.httpClient.get<UserEntity>(`${this.basePath}/users/${id}`)
     }
 
-    searchUsers(requestPayload: {
-        navigation_context: NavigationContext
-    }): Observable<UserResponse> {
+    searchUsers(
+        query: string = '', 
+        page: number = 1, 
+        pageSize: number = 10,
+        searchOptions: SearchOptions = { title: false, all: true }
+    ): Observable<UserResponse> {
         return this.httpClient.post<UserResponse>(
             `${this.basePath}/users/search`,
-            requestPayload.navigation_context
+            { query, page, pageSize, searchOptions }
         )
     }
 

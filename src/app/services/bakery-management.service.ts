@@ -129,12 +129,11 @@ export class BakeryManagementService {
             this.usersListSubject.next([])
         }
 
-        const requestPayload: { navigation_context: NavigationContext } = {
-            // workspace_id: this.localStorageService.retrieve('workspaceId'),
-            navigation_context: this.navigationContext,
-        }
+        const query = this.navigationContext.filters.queryString || ''
+        const page = Math.floor(this.navigationContext.pagination.offset / this.navigationContext.pagination.limit) + 1
+        const pageSize = this.navigationContext.pagination.limit
 
-        return this.bakeryManagementApiService.searchUsers(requestPayload).pipe(
+        return this.bakeryManagementApiService.searchUsers(query, page, pageSize).pipe(
             tap((response: UserResponse) => {
                 console.log('Users fetched:', response.users.length)
                 let newUsersList

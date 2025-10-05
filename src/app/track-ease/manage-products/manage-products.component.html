@@ -91,7 +91,7 @@
             [title]="'Products'"
             [placeholder]="'Search for Products'"
             [searchOptions]="getSearchOptions()"
-            (searchQueryChange)="setSearchQuery($event)"
+            (search)="setSearchQuery($event)"
             (searchOptionsChange)="setSearchOptions($event)"
             (addItem)="addProduct()"
         ></app-top-bar>

@@ -43,7 +43,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
     disableAddItem = input<boolean>(false)
     displayAddButton = input<boolean>(true)
 
-    searchQueryChange = output<string>()
+    search = output<string>()
     searchOptionsChange = output<SearchOptions>()
     addItem = output<void>()
 
@@ -57,7 +57,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
                 if (!value) {
                     value = ''
                 }
-                this.searchQueryChange.emit(value)
+                this.search.emit(value)
             })
     }
 

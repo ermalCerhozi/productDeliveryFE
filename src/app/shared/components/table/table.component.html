@@ -1,0 +1,63 @@
+<ng-container *transloco="let t">
+  <table mat-table [dataSource]="dataSource()" class="mat-table" matSort>
+    <!-- Selection Column -->
+
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        @if (isSelectable()) {
+        <mat-checkbox (change)="onToggleSelectAll($event.checked)"
+          [checked]="selectedRowsState().length === dataSource().filteredData.length && selectedRowsState().length > 0"
+          class="header-checkbox"></mat-checkbox>
+        }
+      </th>
+
+      <td mat-cell *matCellDef="let row">
+        <div class="action-col">
+          @if (isSelectable()) {
+          <mat-checkbox (change)="onToggleSelection(row)" [checked]="selectedRowsState().includes(row)"></mat-checkbox>
+          }
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Dynamic Columns -->
+    @for (column of (columns() || []); track column.key) {
+    <ng-container [matColumnDef]="column.key">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ t(column.label) }}</th>
+      <td mat-cell *matCellDef="let element">{{ element[column.key] }}</td>
+    </ng-container>
+    }
+
+    <!-- Actions Menu Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>{{ t('actions') }}</th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="actions-menu-button">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          @if (isEditable()) {
+          <button mat-menu-item (click)="onAction('edit', row)">
+            <mat-icon>edit</mat-icon>
+            <span>{{ t('edit') }}</span>
+          </button>
+          }
+          @if (isDeletable()) {
+          <button mat-menu-item (click)="onAction('delete', row)">
+            <mat-icon>delete</mat-icon>
+            <span>{{ t('delete') }}</span>
+          </button>
+          }
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <!-- Header and Row Definitions -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <!-- Paginator -->
+  <mat-paginator [length]="dataSource().data.length" [pageSize]="5"
+    [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPageChange($event)"></mat-paginator>
+</ng-container>

@@ -1,234 +1,106 @@
 import {
-    AfterViewInit,
     Component,
-    OnDestroy,
     OnInit,
-    TemplateRef,
-    ViewChild,
     inject,
+    signal,
+    DestroyRef,
 } from '@angular/core'
-import { NgTemplateOutlet } from '@angular/common'
+import { AsyncPipe } from '@angular/common'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
-import { Subject, map, take, takeUntil } from 'rxjs'
-import { MatButton } from '@angular/material/button'
 import { MatDialog } from '@angular/material/dialog'
-import { MatIcon } from '@angular/material/icon'
-import { MatMenuTrigger } from '@angular/material/menu'
-import { MatPaginator, PageEvent } from '@angular/material/paginator'
-import { MatProgressSpinner } from '@angular/material/progress-spinner'
-import {
-    MatTableDataSource,
-    MatTable,
-    MatColumnDef,
-    MatHeaderCellDef,
-    MatHeaderCell,
-    MatCellDef,
-    MatCell,
-    MatHeaderRowDef,
-    MatHeaderRow,
-    MatRowDef,
-    MatRow,
-    MatNoDataRow,
-} from '@angular/material/table'
 
-import { UserEntity } from 'src/app/shared/models/user.model'
-import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
-import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
-import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
-import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
-import { SearchService } from 'src/app/services/search.service'
-import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component'
-import { CreateUpdateUserDialogComponent } from '../../shared/components/create-update-user-dialog/create-update-user-dialog.component'
-import { ConfirmationDialogComponent } from '../../shared/components/confirmation-dialog/confirmation-dialog.component'
-import { DropdownMenuListComponent } from '../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
 import { TranslocoDirective } from '@jsverse/transloco'
+import { Router, ActivatedRoute } from '@angular/router'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { UserEntity } from 'src/app/shared/models/user.model'
+import { TableComponent } from 'src/app/shared/components/table/table.component'
+import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
+import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.component'
+import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
+import { CreateUpdateUserDialogComponent } from 'src/app/shared/components/create-update-user-dialog/create-update-user-dialog.component'
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
 
 @Component({
     selector: 'app-manage-users',
     templateUrl: './manage-users.component.html',
     styleUrls: ['./manage-users.component.scss'],
     imports: [
-        NgTemplateOutlet,
-        MatTable,
-        MatColumnDef,
-        MatHeaderCellDef,
-        MatHeaderCell,
-        MatCellDef,
-        MatCell,
-        MatButton,
-        MatMenuTrigger,
-        MatIcon,
-        MatHeaderRowDef,
-        MatHeaderRow,
-        MatRowDef,
-        MatRow,
-        MatNoDataRow,
-        MatProgressSpinner,
-        MatPaginator,
-        TopBarComponent,
-        CreateUpdateUserDialogComponent,
-        ConfirmationDialogComponent,
-        DropdownMenuListComponent,
-        TranslocoDirective,
+      AsyncPipe,
+      TableComponent,
+      TopBarComponent,
     ],
 })
-export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
-    public bakeryManagementService = inject(BakeryManagementService)
-    private bakeryManagementApiService = inject(BakeryManagementApiService)
-    private searchService = inject(SearchService)
-    public dialog = inject(MatDialog)
+export class ManageUsersComponent implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
+  private bakeryManagementApiService = inject(BakeryManagementApiService);
+  private dialog = inject(MatDialog);
 
-    @ViewChild(MatPaginator) paginator!: MatPaginator
-    @ViewChild('createUpdateContainer')
-    createUpdateContainer!: TemplateRef<CreateUpdateUserDialogComponent>
-    @ViewChild('confirmationDialogContainer')
-    confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
+  public tableColumns = signal([
+    { key: "first_name", label: "manageUsers.first_name" },
+    { key: "role", label: "manageUsers.role" },
+    { key: "phone_number", label: "manageUsers.phone_number" },
+  ]);
+  public searchQuery = signal('');
+  public searchOptions = signal<SearchOptions>({ title: true, all: false });
+  public tableData$!: Observable<UserEntity[]>;
+  public currentPage = signal(1);
+  public pageSize = signal(10);
 
-    private destroy$ = new Subject<void>()
+  ngOnInit(): void {
+    this.findAll();
+  }
 
-    displayedColumns: string[] = ['first_name', 'role', 'phone_number', 'actions']
-    activeUser: UserEntity | null = null
-    actionState: 'create' | 'update' = 'create'
+  public findAll(): void {
+    this.tableData$ = this.bakeryManagementApiService.searchUsers(
+      this.searchQuery(),
+      this.currentPage(),
+      this.pageSize(),
+      this.searchOptions()
+    ).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      map(response => response.users)
+    );
+  }
 
-    dataSource: MatTableDataSource<UserEntity> = new MatTableDataSource<UserEntity>([])
-    isLoading = false
+  public onSearch(query: string): void {
+    this.searchQuery.set(query.toLowerCase());
+    this.findAll();
+  }
 
-    actionDropdown: DropdownMenuListItem[] = [
-        {
-            label: DropdownActionOptions.EDIT,
-            icon: 'edit',
-        },
-        {
-            label: DropdownActionOptions.DELETE,
-            icon: 'delete',
-        },
-    ]
+  public onOptionsChanged(options: SearchOptions): void {
+    this.searchOptions.set(options);
+    this.findAll();
+  }
 
-    ngOnInit() {
-        this.bakeryManagementService.getBaseNavigationContext()
-        this.bakeryManagementService.activeTab = 'users'
-    }
+  public addUser(): void {
+    this.dialog.open(CreateUpdateUserDialogComponent, {
+        width: '100vh',
+        maxHeight: '80%',
+    })
+  }
 
-    ngOnDestroy() {
-        this.destroy$.next()
-        this.destroy$.complete()
-    }
+  public onEdit(user: UserEntity): void {
+    this.dialog.open(CreateUpdateUserDialogComponent, {
+        width: '100vh',
+        maxHeight: '80%',
+        data: { user }
+    })
+  }
 
-    ngAfterViewInit() {
-        this.paginator.page.pipe(takeUntil(this.destroy$)).subscribe((event: PageEvent) => {
-            const pageSizeChanged =
-                this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize
+  public onDelete(user: UserEntity): void {
+    this.dialog.open(ConfirmationDialogComponent, {
+      width: '80%',
+      maxHeight: '40%',
+    })
+  }
 
-            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize
-            this.bakeryManagementService.navigationContext.pagination.offset =
-                event.pageIndex * event.pageSize
-            if (event.pageIndex > event.previousPageIndex!) {
-                this.getUsersList(true)
-            }
-            if (pageSizeChanged) {
-                this.getUsersList(false)
-            }
-        })
-
-        this.getUsersList(false)
-    }
-
-    getUsersList(append: boolean) {
-        this.isLoading = true
-        this.bakeryManagementService.updateUsersList(append).subscribe({
-            next: () => {
-                this.isLoading = false
-                this.bakeryManagementService.usersList$.subscribe((users) => {
-                    this.dataSource.data = users
-                })
-            },
-            error: (error: any) => {
-                this.isLoading = false
-                console.log('Error: ', error)
-            },
-        })
-    }
-
-    onDropdownMenuClick(item: DropdownEvent): void {
-        const { option } = item
-        switch (option.label) {
-            case DropdownActionOptions.EDIT:
-                this.actionState = 'update'
-                this.openCreateUpdateUser()
-                break
-            case DropdownActionOptions.DELETE:
-                this.deleteUser()
-                break
-            default:
-                break
-        }
-    }
-
-    addUser(): void {
-        this.actionState = 'create'
-        this.activeUser = null
-        this.openCreateUpdateUser()
-    }
-
-    openCreateUpdateUser(): void {
-        this.dialog.open(this.createUpdateContainer, {
-            width: '100vh',
-            maxHeight: '80%',
-        })
-    }
-
-    deleteUser(): void {
-        if (!this.activeUser) {
-            return
-        }
-        this.dialog.open(this.confirmationDialogContainer, {
-            width: '80%',
-            maxHeight: '40%',
-        })
-    }
-
-    onDeleteUser(): void {
-        this.dialog.closeAll()
-        if (!this.activeUser) {
-            return
-        }
-
-        const userId = this.activeUser.id
-
-        this.bakeryManagementApiService.deleteUser(userId).subscribe({
-            next: () => {
-                this.bakeryManagementService.usersList$
-                    .pipe(
-                        take(1),
-                        map((user: UserEntity[]) => {
-                            return user.filter((user) => user.id !== userId)
-                        })
-                    )
-                    .subscribe((users) => {
-                        this.dataSource.data = users
-                        this.activeUser = null
-                    })
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
-    }
-
-    selectUser(user: UserEntity) {
-        this.activeUser = user
-    }
-
-    getSearchOptions(): SearchOptions {
-        return this.searchService.getSearchOptions()
-    }
-
-    setSearchQuery(data: string) {
-        this.bakeryManagementService.setSearchQuery(data)
-    }
-
-    setSearchOptions(searchOptions: SearchOptions) {
-        this.searchService.setSearchOptions(searchOptions)
-    }
+  public onPageInfoChange(pageInfo: { currentPage: number; pageSize: number }): void {
+    this.currentPage.set(pageInfo.currentPage);
+    this.pageSize.set(pageInfo.pageSize);
+    this.findAll();
+  }
 }
