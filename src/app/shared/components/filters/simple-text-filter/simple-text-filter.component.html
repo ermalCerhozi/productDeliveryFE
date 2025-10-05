@@ -1,5 +1,5 @@
 <ng-template>
-    <form [formGroup]="form" class="mef-simple-text-filter" [hidden]="disabled">
+    <form [formGroup]="form" class="mef-simple-text-filter" [hidden]="disabled()">
         <mat-form-field
             floatLabel="auto"
             class="form-field-without-hint"
@@ -8,12 +8,12 @@
                     form.get('fields')?.value?.length || form.get('fields')?.value?.value
                         ? '#dcdcdc'
                         : '#eeeeee',
-                width: customLabelWidth ? customLabelWidth : null,
+                width: customLabelWidth() ? customLabelWidth() : null,
             }"
         >
             <span class="mef-simple-text-label">
                 @if (showCheck !== undefined) {
-                    @if (showCheck) {
+                    @if (showCheck()) {
                         <mat-icon class="mef-simple-text-label-icon">check</mat-icon>
                     }
                 } @else {
@@ -31,11 +31,11 @@
                 (openedChange)="onOpenedChange($event)"
                 class="mef-simple-text-filter-select"
                 data-testid="filter-select"
-                [panelClass]="['mef-simple-text-filter-select-overlay', panelClass]"
+                [panelClass]="['mef-simple-text-filter-select-overlay', panelClass()]"
                 [compareWith]="compareValues"
                 [disableOptionCentering]="true"
             >
-                @if (loading) {
+                @if (loading()) {
                     <mat-option class="spinner-option">
                         <mat-spinner diameter="30"></mat-spinner>
                     </mat-option>

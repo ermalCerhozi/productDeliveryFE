@@ -19,7 +19,7 @@
                 multiple
                 #advancedTextFilterSelect
                 class="mef-advanced-text-filter-select"
-                [panelClass]="['mef-advanced-text-filter-select-overlay', panelClass]"
+                [panelClass]="['mef-advanced-text-filter-select-overlay', panelClass()]"
                 [compareWith]="compareObjects"
                 [disableOptionCentering]="true"
                 (openedChange)="onOpenedChange($event)"

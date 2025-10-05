@@ -1,5 +1,4 @@
 :host {
-    width: 100%;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -15,7 +14,6 @@
 .controls-row,
 .filters-row {
     display: flex;
-    width: 100%;
 }
 
 .controls-row {
@@ -41,53 +39,10 @@
     font-size: 14px;
 }
 
-.manage-orders-table-container {
-    width: 100%;
-
-    table {
-        width: 100%;
-    }
-}
-
-.product-row {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100px;
-}
-
-.spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60vh;
-}
-
 .seller-categories-filter-panel,
 .client-categories-filter-panel,
 .date-filter-panel {
     width: 318px !important;
-}
-
-.no-data-container {
-    padding: 16px 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 8px;
-    height: 100%;
-    width: 100%;
-
-    .small-image {
-        width: 150px;
-        height: auto;
-    }
-
-    p {
-        margin: 0;
-    }
 }
 
 @media (min-width: 601px) {

@@ -19,7 +19,7 @@
                 formControlName="fields"
                 (selectionChange)="onSelectionChange($event)"
                 class="mef-simple-radio-select-filter-select"
-                [panelClass]="['mef-simple-radio-select-filter-select-overlay', panelClass]"
+                [panelClass]="['mef-simple-radio-select-filter-select-overlay', panelClass()]"
                 [compareWith]="compareValues"
                 [disableOptionCentering]="true"
             >
