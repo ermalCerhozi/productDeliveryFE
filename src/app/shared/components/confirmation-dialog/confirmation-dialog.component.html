@@ -1,15 +1,20 @@
 <ng-container *transloco="let t">
-    <h2 mat-dialog-title>{{ t('confirmationDialog.title') }}</h2>
+    <h2 mat-dialog-title cdkFocusInitial>{{ title }}</h2>
     <mat-dialog-content>
-        <span>{{ t('confirmationDialog.message') }}</span>
-        <h4>{{ title() }}</h4>
+        @if (message) {
+            <p [innerHTML]="message"></p>
+        }
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-        <button class="button cancel" mat-button mat-dialog-close>
-            {{ t('confirmationDialog.cancel') }}
-        </button>
-        <button class="button" mat-button color="primary" (click)="onConfirm()" autofocus>
-            {{ t('confirmationDialog.confirm') }}
-        </button>
+        @if (displayOkButton) {
+            <button mat-button color="primary" (click)="onConfirm()">
+                {{ confirmButtonText }}
+            </button>
+        }
+        @if (displayCancelButton) {
+            <button mat-button (click)="onCancel()">
+                {{ cancelButtonText }}
+            </button>
+        }
     </mat-dialog-actions>
 </ng-container>
