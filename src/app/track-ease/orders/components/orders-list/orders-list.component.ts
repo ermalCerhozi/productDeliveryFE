@@ -1,44 +1,29 @@
 import {
-    AfterViewInit,
     Component,
     OnDestroy,
     OnInit,
     TemplateRef,
     ViewChild,
     inject,
+    signal,
+    DestroyRef,
 } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { AsyncPipe, DatePipe } from '@angular/common'
+import { AsyncPipe } from '@angular/common'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
-import { Observable, Subject, switchMap, takeUntil } from 'rxjs'
+import { Observable, Subject, takeUntil } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { MatButton, MatIconButton } from '@angular/material/button'
 import { MatDialog } from '@angular/material/dialog'
 import { MatDivider } from '@angular/material/divider'
 import { MatIcon } from '@angular/material/icon'
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu'
-import { MatPaginator, PageEvent } from '@angular/material/paginator'
-import { MatProgressSpinner } from '@angular/material/progress-spinner'
-import {
-    MatTableDataSource,
-    MatTable,
-    MatColumnDef,
-    MatHeaderCellDef,
-    MatHeaderCell,
-    MatCellDef,
-    MatCell,
-    MatHeaderRowDef,
-    MatHeaderRow,
-    MatRowDef,
-    MatRow,
-    MatNoDataRow,
-} from '@angular/material/table'
 
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { OrderEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
-import { DropdownEvent, DropdownMenuListItem } from 'src/app/shared/models/DropdownMenuListItem'
-import { DropdownActionOptions } from 'src/app/shared/models/actionOptions'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
 import { SearchService } from 'src/app/services/search.service'
@@ -47,7 +32,7 @@ import { FiltersComponent } from '../../../../shared/components/filters/filters.
 import { SimpleRadioSelectFilterComponent } from '../../../../shared/components/filters/simple-radio-select-filter/simple-radio-select-filter.component'
 import { AdvancedTextFilterComponent } from '../../../../shared/components/filters/advanced-text-filter/advanced-text-filter.component'
 import { FiltersResultComponent } from '../../../../shared/components/filters-panel/filters-result/filters-result.component'
-import { DropdownMenuListComponent } from '../../../../shared/components/dropdown-menu-list/dropdown-menu-list.component'
+import { TableComponent } from 'src/app/shared/components/table/table.component'
 import { TranslocoDirective } from '@jsverse/transloco'
 
 @Component({
@@ -55,6 +40,7 @@ import { TranslocoDirective } from '@jsverse/transloco'
     templateUrl: './orders-list.component.html',
     styleUrls: ['./orders-list.component.scss'],
     imports: [
+        AsyncPipe,
         MatButton,
         MatIcon,
         FiltersComponent,
@@ -62,35 +48,24 @@ import { TranslocoDirective } from '@jsverse/transloco'
         AdvancedTextFilterComponent,
         MatDivider,
         FiltersResultComponent,
-        MatTable,
-        MatColumnDef,
-        MatHeaderCellDef,
-        MatHeaderCell,
-        MatCellDef,
-        MatCell,
-        MatIconButton,
-        MatMenuTrigger,
-        MatHeaderRowDef,
-        MatHeaderRow,
-        MatRowDef,
-        MatRow,
-        MatNoDataRow,
-        MatProgressSpinner,
-        MatPaginator,
-        DropdownMenuListComponent,
-        AsyncPipe,
-        DatePipe,
+        TableComponent,
         ConfirmationDialogComponent,
         MatMenuModule,
         TranslocoDirective,
     ],
 })
-export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild(MatPaginator) paginator!: MatPaginator
+export class OrdersListComponent implements OnInit, OnDestroy {
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
 
     private destroy$ = new Subject<void>()
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
+    private destroyRef = inject(DestroyRef);
+    private bakeryManagementApiService = inject(BakeryManagementApiService);
+    private dialog = inject(MatDialog);
+    public bakeryManagementService = inject(BakeryManagementService);
+    public searchService = inject(SearchService);
 
     filterResults: Observable<FilterOption[]>
 
@@ -108,36 +83,20 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
     sellersLoading: Observable<boolean>
     hasMoreSellersToLoad: Observable<boolean>
 
-    // selectedTypes: Observable<FilterOption[]>
-    // mediaTypes: Observable<FilterOption[]>
-    // loadingTypeFilter = { value: true }
-
-    displayedColumns: string[] = ['client', 'order', 'date', 'actions']
+    public tableColumns = signal([
+        { key: "client", label: "ordersList.client" },
+        { key: "order", label: "ordersList.order" },
+        { key: "date", label: "ordersList.date" },
+    ]);
+    public tableData$!: Observable<any[]>;
+    public currentPage = signal(1);
+    public pageSize = signal(10);
+    private ordersMap: Map<number, OrderEntity> = new Map();
+    
     activeOrder: OrderEntity | undefined
-
-    dataSource: MatTableDataSource<OrderEntity> = new MatTableDataSource<OrderEntity>([])
-    isLoading = false
     loggedInUser!: UserEntity
 
-    actionDropdown: DropdownMenuListItem[] = [
-        {
-            label: DropdownActionOptions.EDIT,
-            icon: 'edit',
-        },
-        {
-            label: DropdownActionOptions.DELETE,
-            icon: 'delete',
-        },
-    ]
-
     action = 'create'
-
-    public bakeryManagementService = inject(BakeryManagementService)
-    public searchService = inject(SearchService)
-    private bakeryManagementApiService = inject(BakeryManagementApiService)
-    public dialog = inject(MatDialog)
-    private router = inject(Router)
-    private route = inject(ActivatedRoute)
 
     constructor() {
         this.filterResults = this.searchService.getFilterResults()
@@ -162,7 +121,8 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit() {
         this.bakeryManagementService.getBaseNavigationContext()
-        this.loggedInUser = this.bakeryManagementService.getLoggedInUser() //TODO: make a interceptor for this.
+        this.loggedInUser = this.bakeryManagementService.getLoggedInUser()
+        this.findAll();
     }
 
     ngOnDestroy() {
@@ -170,66 +130,61 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.destroy$.complete()
     }
 
-    ngAfterViewInit() {
-        this.paginator.page.pipe(takeUntil(this.destroy$)).subscribe((event: PageEvent) => {
-            const pageSizeChanged =
-                this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize
+    public findAll(): void {
+        const pageSize = this.pageSize();
+        const pageIndex = this.currentPage();
 
-            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize
-            this.bakeryManagementService.navigationContext.pagination.offset =
-                event.pageIndex * event.pageSize
-            if (event.pageIndex > event.previousPageIndex!) {
-                this.getOrdersList(true)
-            }
-            if (pageSizeChanged) {
-                this.getOrdersList(false)
-            }
-        })
-
-        this.getOrdersList(false)
+        this.tableData$ = this.bakeryManagementApiService.searchOrders(
+            pageIndex + 1, // API expects 1-based page numbers
+            pageSize,
+            this.bakeryManagementService.navigationContext.filters || {}
+        ).pipe(
+            takeUntilDestroyed(this.destroyRef),
+            map(response => {
+                this.bakeryManagementService.ordersCount = response.count;
+                this.ordersMap.clear();
+                return response.orders.map(order => {
+                    this.ordersMap.set(order.id, order);
+                    return {
+                        id: order.id,
+                        client: `${order.client.first_name} ${order.client.last_name}`,
+                        order: order.order_items.map(item => 
+                            `${item.quantity}${item.returned_quantity !== 0 ? ' - ' + item.returned_quantity : ''} ${item.product.product_name}`
+                        ).join(', '),
+                        date: new Date(order.created_at).toLocaleString('en-GB', { 
+                            day: 'numeric', 
+                            month: 'numeric', 
+                            year: '2-digit', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        }).replace(',', '')
+                    };
+                });
+            })
+        );
     }
 
-    getOrdersList(append: boolean) {
-        const pageSize = this.paginator.pageSize
-        const pageIndex = this.paginator.pageIndex
-
-        this.bakeryManagementService.navigationContext.pagination.limit = pageSize
-        this.bakeryManagementService.navigationContext.pagination.offset = pageIndex * pageSize
-
-        this.isLoading = true
-        this.bakeryManagementService
-            .updateOrdersList(append)
-            .pipe(
-                switchMap(() => this.bakeryManagementService.ordersList$),
-                takeUntil(this.destroy$)
-            )
-            .subscribe({
-                next: (orders) => {
-                    this.isLoading = false
-                    this.dataSource.data = orders
-                },
-                error: (error) => {
-                    this.isLoading = false
-                    console.log('Error: ', error)
-                },
-            })
+    public onPageInfoChange(pageInfo: { currentPage: number; pageSize: number }): void {
+        this.currentPage.set(pageInfo.currentPage);
+        this.pageSize.set(pageInfo.pageSize);
+        this.findAll();
     }
 
     selectOrder(order: OrderEntity): void {
         this.activeOrder = order
     }
 
-    onDropdownMenuClick(item: DropdownEvent): void {
-        const { option } = item
-        switch (option.label) {
-            case DropdownActionOptions.EDIT:
-                this.updateOrder()
-                break
-            case DropdownActionOptions.DELETE:
-                this.deleteOrder()
-                break
-            default:
-                break
+    public onEdit(order: any): void {
+        this.activeOrder = this.ordersMap.get(order.id);
+        if (this.activeOrder) {
+            this.updateOrder();
+        }
+    }
+
+    public onDelete(order: any): void {
+        this.activeOrder = this.ordersMap.get(order.id);
+        if (this.activeOrder) {
+            this.deleteOrder();
         }
     }
 
@@ -299,7 +254,7 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dialog.closeAll()
         this.bakeryManagementApiService.deleteOrder(this.activeOrder!.id).subscribe({
             next: () => {
-                this.getOrdersList(false)
+                this.findAll()
                 this.activeOrder = undefined
             },
             error: (error) => {

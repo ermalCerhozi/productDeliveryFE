@@ -167,6 +167,17 @@ export class BakeryManagementApiService {
         )
     }
 
+    searchOrders(
+        page: number = 1,
+        pageSize: number = 10,
+        filters: any = {}
+    ): Observable<OrderResponse> {
+        return this.httpClient.post<OrderResponse>(
+            `${this.basePath}/orders/search`,
+            { page, pageSize, filters }
+        )
+    }
+
     deleteOrderItem(id: number): Observable<any> {
         return this.httpClient.delete<any>(`${this.basePath}/order-items/${id}`)
     }
