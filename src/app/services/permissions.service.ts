@@ -13,12 +13,12 @@ import { BakeryManagementApiService } from './bakery-management-api.service'
     providedIn: 'root',
 })
 export class PermissionsService {
-    private readonly permissionsSubject = new BehaviorSubject<PermissionEntity[]>([])
-    readonly permissions$ = this.permissionsSubject.asObservable()
-    private readonly rolePermissionsSubject = new BehaviorSubject<RolePermissionsSummary[]>([])
-    readonly rolePermissions$ = this.rolePermissionsSubject.asObservable()
+    private permissionsSubject = new BehaviorSubject<PermissionEntity[]>([])
+    permissions$ = this.permissionsSubject.asObservable()
+    private rolePermissionsSubject = new BehaviorSubject<RolePermissionsSummary[]>([])
+    rolePermissions$ = this.rolePermissionsSubject.asObservable()
 
-    constructor(private readonly bakeryManagementApiService: BakeryManagementApiService) {}
+    constructor(private bakeryManagementApiService: BakeryManagementApiService) {}
 
     loadPermissions(): Observable<PermissionEntity[]> {
         return this.bakeryManagementApiService.getPermissions().pipe(

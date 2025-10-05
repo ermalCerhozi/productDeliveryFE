@@ -38,15 +38,15 @@ import {
     ],
 })
 export class AssignPermissionsComponent implements OnInit, OnDestroy {
-    private readonly permissionsService = inject(PermissionsService)
-    private readonly snackBar = inject(MatSnackBar)
-    private readonly cdr = inject(ChangeDetectorRef)
-    private readonly translocoService = inject(TranslocoService)
+    private permissionsService = inject(PermissionsService)
+    private snackBar = inject(MatSnackBar)
+    private cdr = inject(ChangeDetectorRef)
+    private translocoService = inject(TranslocoService)
 
-    readonly permissions$ = this.permissionsService.permissions$
-    readonly rolePermissions$ = this.permissionsService.rolePermissions$
-    readonly assignmentColumns = ['code', 'Admin', 'Seller', 'Client']
-    readonly roleColumns: ReadonlyArray<{
+    permissions$ = this.permissionsService.permissions$
+    rolePermissions$ = this.permissionsService.rolePermissions$
+    assignmentColumns = ['code', 'Admin', 'Seller', 'Client']
+    roleColumns:Array<{
         label: string
         columnKey: RoleName
     }> = [
@@ -66,7 +66,7 @@ export class AssignPermissionsComponent implements OnInit, OnDestroy {
 
     isRoleAssignmentsLoading = false
 
-    private readonly destroy$ = new Subject<void>()
+    private destroy$ = new Subject<void>()
     private roleIdByName = new Map<RoleName, number>()
     private roleSelectionByRoleId = new Map<number, Set<string>>()
     private assigningRoleIds = new Set<number>()

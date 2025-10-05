@@ -27,8 +27,8 @@ import { PasswordStrengthComponent } from '../../shared/components/password-stre
 import { TranslocoDirective } from '@jsverse/transloco'
 
 interface Constants {
-    readonly DIGIT_REGEX: RegExp
-    readonly SYMBOL_REGEX: RegExp
+    DIGIT_REGEX: RegExp
+    SYMBOL_REGEX: RegExp
 }
 const CONSTANTS: Constants = {
     DIGIT_REGEX: /[0-9]/,

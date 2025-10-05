@@ -1,16 +1,16 @@
 import {
     Component,
-    OnDestroy,
-    OnInit,
     inject,
     signal,
+    computed,
+    effect,
     DestroyRef,
 } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { AsyncPipe, DatePipe } from '@angular/common'
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop'
 
-import { Observable, Subject } from 'rxjs'
+import { Observable, Subject, debounceTime } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { MatButton } from '@angular/material/button'
 import { MatDialog } from '@angular/material/dialog'
@@ -26,13 +26,13 @@ import { OrderEntity } from 'src/app/shared/models/order.model'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { UserEntity } from 'src/app/shared/models/user.model'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
-import { SearchService } from 'src/app/services/search.service'
 import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.model'
 import { FiltersComponent } from '../../../../shared/components/filters/filters.component'
 import { SimpleRadioSelectFilterComponent } from '../../../../shared/components/filters/simple-radio-select-filter/simple-radio-select-filter.component'
 import { AdvancedTextFilterComponent } from '../../../../shared/components/filters/advanced-text-filter/advanced-text-filter.component'
 import { FiltersResultComponent } from '../../../../shared/components/filters-panel/filters-result/filters-result.component'
 import { TableComponent } from 'src/app/shared/components/table/table.component'
+import { UserFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
 
 @Component({
     selector: 'app-orders-list',
@@ -53,8 +53,7 @@ import { TableComponent } from 'src/app/shared/components/table/table.component'
     ],
     providers: [DatePipe],
 })
-export class OrdersListComponent implements OnInit, OnDestroy {
-    private destroy$ = new Subject<void>()
+export class OrdersListComponent {
     private router = inject(Router);
     private route = inject(ActivatedRoute);
     private destroyRef = inject(DestroyRef);
@@ -64,83 +63,106 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     private translocoService = inject(TranslocoService);
     private datePipe = inject(DatePipe);
     public bakeryManagementService = inject(BakeryManagementService);
-    public searchService = inject(SearchService);
 
-    filterResults: Observable<FilterOption[]>
+    // Filter state management with signals
+    private clientSelectSubject = new Subject<AdvancedSelection>();
+    private sellerSelectSubject = new Subject<AdvancedSelection>();
 
-    mediaDates: Observable<FilterOption[]>
-    defaultDate: FilterOption
-    selectedDate: Observable<FilterOption>
+    // Date filters - converted to signals
+    public defaultDateFilter: FilterOption = {
+        value: 'any-time',
+        label: 'TE_ORDER_DATE_ANY_TIME',
+        isTranslated: true,
+    };
+    
+    public orderDates = signal<FilterOption[]>([
+        { value: 'any-time', label: 'Any time', isTranslated: true },
+        { value: 'today', label: 'Today', isTranslated: true },
+        { value: 'last-24h', label: 'Last 24h', isTranslated: true },
+        { value: 'last-48h', label: 'Last 48h', isTranslated: true },
+        { value: 'this-week', label: 'This week', isTranslated: true },
+        { value: 'this-month', label: 'This month', isTranslated: true },
+        { value: 'last-month', label: 'Last month', isTranslated: true },
+        { value: 'last-6months', label: 'Last 6 months', isTranslated: true },
+        { value: 'last-12months', label: 'Last 12 months', isTranslated: true },
+    ]);
+    
+    public selectedDate = signal<FilterOption>(this.defaultDateFilter);
 
-    clients: Observable<FilterOption[]>
-    selectedClients: Observable<FilterOption[]>
-    clientsLoading: Observable<boolean>
-    hasMoreClientsToLoad: Observable<boolean>
+    // Client filters - converted to signals
+    public clients = signal<FilterOption[]>([]);
+    public selectedClients = signal<FilterOption[]>([]);
+    public clientsLoading = signal<boolean>(false);
+    public hasMoreClientsToLoad = signal<boolean>(true);
+    public clientSearchQuery = '';
 
-    sellers: Observable<FilterOption[]>
-    selectedSellers: Observable<FilterOption[]>
-    sellersLoading: Observable<boolean>
-    hasMoreSellersToLoad: Observable<boolean>
+    // Seller filters - converted to signals
+    public sellers = signal<FilterOption[]>([]);
+    public selectedSellers = signal<FilterOption[]>([]);
+    public sellersLoading = signal<boolean>(false);
+    public hasMoreSellersToLoad = signal<boolean>(true);
+    public sellerSearchQuery = '';
 
+    // Computed filter results
+    public filterResults = computed<FilterOption[]>(() => {
+        const results: FilterOption[] = [];
+        
+        // Add date filter if not default
+        if (this.selectedDate().value !== 'any-time') {
+            results.push(this.selectedDate());
+        }
+        
+        // Add selected clients
+        results.push(...this.selectedClients());
+        
+        // Add selected sellers
+        results.push(...this.selectedSellers());
+        
+        return results;
+    });
+
+    // Table state
     public tableColumns = signal([
         { key: "client", label: "ordersList.client" },
         { key: "order", label: "ordersList.order" },
         { key: "date", label: "ordersList.date" },
     ]);
     public tableData$!: Observable<any[]>;
+    public totalCount = signal(0);
     public currentPage = signal(1);
     public pageSize = signal(10);
-    private ordersMap: Map<number, OrderEntity> = new Map();
+    private ordersMap = new Map<number, OrderEntity>();
     
-    activeOrder: OrderEntity | undefined
-    loggedInUser!: UserEntity
-
-    action = 'create'
+    public activeOrder: OrderEntity | undefined;
+    public loggedInUser!: UserEntity;
+    public action = 'create';
 
     constructor() {
-        this.filterResults = this.searchService.getFilterResults()
-
-        this.mediaDates = this.searchService.getMediaDates()
-        this.defaultDate = this.searchService.defaultDateFilter
-        this.selectedDate = this.searchService.getSelectedDate()
-
-        this.clients = this.searchService.getClients()
-        this.selectedClients = this.searchService.getSelectedClients()
-        this.clientsLoading = this.searchService.getClientsLoading()
-        this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
-
-        this.sellers = this.searchService.getSellers()
-        this.selectedSellers = this.searchService.getSelectedSellers()
-        this.sellersLoading = this.searchService.getSellersLoading()
-        this.hasMoreSellersToLoad = this.searchService.getHasMoreSellersToLoad()
-
-        // this.mediaTypes = this.searchService.getMediaTypes()
-        // this.selectedTypes = this.searchService.getSelectedTypes()
-    }
-
-    ngOnInit() {
-        this.bakeryManagementService.getBaseNavigationContext()
-        this.loggedInUser = this.bakeryManagementService.getLoggedInUser()
+        // Initialize logged in user
+        this.loggedInUser = JSON.parse(localStorage.getItem('currentUser') || '')
+        
+        // Load initial data
         this.findAll();
-    }
-
-    ngOnDestroy() {
-        this.destroy$.next()
-        this.destroy$.complete()
+        
+        // Subscribe to filter changes using effects
+        this.setupFilterSubscriptions();
     }
 
     public findAll(): void {
         const pageSize = this.pageSize();
         const pageIndex = this.currentPage();
 
+        // Build filters object using the helper method
+        const filters = this.buildFiltersPayload();
+
         this.tableData$ = this.bakeryManagementApiService.searchOrders(
-            pageIndex + 1, // API expects 1-based page numbers
+            pageIndex,
             pageSize,
-            this.bakeryManagementService.navigationContext.filters || {}
+            filters
         ).pipe(
             takeUntilDestroyed(this.destroyRef),
             map(response => {
-                this.bakeryManagementService.ordersCount = response.count;
+                this.totalCount.set(response.count);
                 this.ordersMap.clear();
                 return response.orders.map(order => {
                     this.ordersMap.set(order.id, order);
@@ -150,13 +172,7 @@ export class OrdersListComponent implements OnInit, OnDestroy {
                         order: order.order_items.map(item => 
                             `${item.quantity}${item.returned_quantity !== 0 ? ' - ' + item.returned_quantity : ''} ${item.product.product_name}`
                         ).join(', '),
-                        date: new Date(order.created_at).toLocaleString('en-GB', { 
-                            day: 'numeric', 
-                            month: 'numeric', 
-                            year: '2-digit', 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                        }).replace(',', '')
+                        date: this.datePipe.transform(order.created_at, 'dd/MM/yy HH:mm', undefined, 'en-GB') || ''
                     };
                 });
             })
@@ -200,46 +216,62 @@ export class OrdersListComponent implements OnInit, OnDestroy {
         this.router.navigate(['create'], { relativeTo: this.route })
     }
 
-    clientSearchChange(data: string) {
-        this.searchService.clientSearchChange(data)
-    }
-    loadMoreClients() {
-        this.searchService.loadMoreClients()
-    }
-
-    sellerSearchChange(data: string) {
-        this.searchService.sellerSearchChange(data)
-    }
-    loadMoreSellers() {
-        this.searchService.loadMoreSellers()
+    // Filter methods
+    clientSearchChange(data: string): void {
+        this.clientSearchQuery = data;
+        this.clients.set([]);
+        this.hasMoreClientsToLoad.set(true);
+        this.getPaginatedClients();
     }
 
-    applyFilters(data: FilterOption | FilterOption[] | AdvancedSelection, filterType: string) {
+    loadMoreClients(): void {
+        this.getPaginatedClients();
+    }
+
+    sellerSearchChange(data: string): void {
+        this.sellerSearchQuery = data;
+        this.sellers.set([]);
+        this.hasMoreSellersToLoad.set(true);
+        this.getPaginatedSellers();
+    }
+
+    loadMoreSellers(): void {
+        this.getPaginatedSellers();
+    }
+
+    applyFilters(data: FilterOption | FilterOption[] | AdvancedSelection, filterType: string): void {
         switch (filterType) {
-            // case 'type':
-            //     this.searchService.applyTypeFilters(data as FilterOption[])
-            //     break
-            // case 'missingData':
-            //     this.searchService.applyMissingDataFilters(data as FilterOption[])
-            //     break
             case 'date':
-                this.searchService.applyDateFilter(data as FilterOption)
-                break
+                this.applyDateFilter(data as FilterOption);
+                break;
             case 'client':
-                this.searchService.applyClientFilters(data as AdvancedSelection)
-                break
+                this.applyClientFilters(data as AdvancedSelection);
+                break;
             case 'seller':
-                this.searchService.applySellerFilters(data as AdvancedSelection)
-                break
+                this.applySellerFilters(data as AdvancedSelection);
+                break;
         }
     }
 
-    removeFilter(data: FilterOption) {
-        this.searchService.removeFilter(data)
+    removeFilter(data: FilterOption): void {
+        if (data.value === this.selectedDate().value) {
+            this.selectedDate.set(this.defaultDateFilter);
+        } else {
+            this.selectedClients.update(current =>
+                current.filter(f => f.value !== data.value)
+            );
+            this.selectedSellers.update(current =>
+                current.filter(f => f.value !== data.value)
+            );
+        }
+        this.onApplyFilters();
     }
 
-    clearFilters() {
-        this.searchService.clearFilters()
+    clearFilters(): void {
+        this.selectedClients.set([]);
+        this.selectedSellers.set([]);
+        this.selectedDate.set(this.defaultDateFilter);
+        this.onApplyFilters();
     }
 
     deleteOrder(): void {
@@ -293,10 +325,191 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     downloadOrdersPdf() {
-        this.bakeryManagementService.downloadOrdersPdf()
+        const filters = this.buildFiltersPayload();
+        this.bakeryManagementService.downloadOrdersPdf(filters)
     }
 
     downloadOrdersCsv() {
-        this.bakeryManagementService.downloadOrdersCsv()
+        const filters = this.buildFiltersPayload();
+        this.bakeryManagementService.downloadOrdersCsv(filters)
+    }
+
+    private buildFiltersPayload(): any {
+        const filters: any = {};
+        
+        if (this.selectedDate().value !== 'any-time') {
+            filters.date = this.selectedDate().value;
+        }
+        
+        if (this.selectedClients().length > 0) {
+            filters.clientIds = this.selectedClients().map((c: FilterOption) => c.value);
+        }
+        
+        if (this.selectedSellers().length > 0) {
+            filters.sellerIds = this.selectedSellers().map((s: FilterOption) => s.value);
+        }
+
+        return filters;
+    }
+
+    // Private filter helper methods
+    private applyDateFilter(data: FilterOption): void {
+        this.selectedDate.set(data);
+        this.onApplyFilters();
+    }
+
+    private applyClientFilters(data: AdvancedSelection): void {
+        this.clientSelectSubject.next(data);
+    }
+
+    private applySellerFilters(data: AdvancedSelection): void {
+        this.sellerSelectSubject.next(data);
+    }
+
+    private onApplyFilters(): void {
+        this.currentPage.set(1);
+        this.findAll();
+    }
+
+    private setupFilterSubscriptions(): void {
+        // Client filter subscription with debounce
+        this.clientSelectSubject.pipe(
+            debounceTime(800),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe((data: AdvancedSelection) => {
+            this.applyClientsFiltersImmediately([data]);
+        });
+
+        // Seller filter subscription with debounce
+        this.sellerSelectSubject.pipe(
+            debounceTime(800),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe((data: AdvancedSelection) => {
+            this.applySellersFiltersImmediately([data]);
+        });
+    }
+
+    private applyClientsFiltersImmediately(data: AdvancedSelection[]): void {
+        this.applyAdvancedFilters(data, this.selectedClients);
+    }
+
+    private applySellersFiltersImmediately(data: AdvancedSelection[]): void {
+        this.applyAdvancedFilters(data, this.selectedSellers);
+    }
+
+    private applyAdvancedFilters(
+        selectedFilters: AdvancedSelection[],
+        currentlySelectedFilters: ReturnType<typeof signal<FilterOption[]>>
+    ): void {
+        const temporarySelectedFilters = [...currentlySelectedFilters()];
+        
+        selectedFilters.forEach((selectedFilter: AdvancedSelection) => {
+            const existingIndex = temporarySelectedFilters.findIndex(
+                f => f.value === selectedFilter.value.value
+            );
+            
+            if (selectedFilter.selected && existingIndex === -1) {
+                temporarySelectedFilters.push(selectedFilter.value);
+            } else if (!selectedFilter.selected && existingIndex !== -1) {
+                temporarySelectedFilters.splice(existingIndex, 1);
+            }
+        });
+        
+        const isChanged = this.haveFiltersChanged(
+            temporarySelectedFilters,
+            currentlySelectedFilters()
+        );
+        
+        if (isChanged) {
+            currentlySelectedFilters.set(temporarySelectedFilters);
+            this.onApplyFilters();
+        }
+    }
+
+    private haveFiltersChanged(
+        temporaryFilterArray: FilterOption[],
+        selectedFilterArray: FilterOption[]
+    ): boolean {
+        if (!temporaryFilterArray.length && !selectedFilterArray.length) {
+            return false;
+        }
+        if (temporaryFilterArray.length !== selectedFilterArray.length) {
+            return true;
+        }
+        return temporaryFilterArray.some(
+            (tempFilter, index) => tempFilter.value !== selectedFilterArray[index].value
+        );
+    }
+
+    private getPaginatedClients(): void {
+        this.clientsLoading.set(true);
+        const payload: any = {
+            pagination: {
+                offset: this.clients().length,
+                limit: 20,
+            },
+        };
+        if (this.clientSearchQuery) {
+            payload.clientName = this.clientSearchQuery;
+        }
+
+        this.bakeryManagementApiService.getClientFiltersForOrder(payload)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                map((clientList: UserFiltersResponse[]) => {
+                    this.hasMoreClientsToLoad.set(clientList.length !== 0);
+                    this.addClientsToSelectionList(clientList);
+                    this.clientsLoading.set(false);
+                })
+            )
+            .subscribe();
+    }
+
+    private getPaginatedSellers(): void {
+        this.sellersLoading.set(true);
+        const payload: any = {
+            pagination: {
+                offset: this.sellers().length,
+                limit: 20,
+            },
+        };
+        if (this.sellerSearchQuery) {
+            payload.sellerName = this.sellerSearchQuery;
+        }
+
+        this.bakeryManagementApiService.getSellerFiltersForOrder(payload)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                map((sellerList: UserFiltersResponse[]) => {
+                    this.hasMoreSellersToLoad.set(sellerList.length !== 0);
+                    this.addSellersToSelectionList(sellerList);
+                    this.sellersLoading.set(false);
+                })
+            )
+            .subscribe();
+    }
+
+    private addClientsToSelectionList(clientList: UserFiltersResponse[]): void {
+        const newClients: FilterOption[] = [];
+        clientList.forEach((client) =>
+            newClients.push({
+                value: client.id,
+                label: client.first_name + ' ' + client.last_name,
+                count: client.mediaCount,
+            })
+        );
+        this.clients.update(current => [...current, ...newClients]);
+    }
+
+    private addSellersToSelectionList(sellerList: UserFiltersResponse[]): void {
+        const newSellers: FilterOption[] = [];
+        sellerList.forEach((seller) =>
+            newSellers.push({
+                value: seller.id,
+                label: seller.first_name + ' ' + seller.last_name,
+                count: seller.mediaCount,
+            })
+        );
+        this.sellers.update(current => [...current, ...newSellers]);
     }
 }

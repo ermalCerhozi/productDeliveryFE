@@ -7,7 +7,7 @@ import { Observable } from 'rxjs'
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
     //TODO: implement workspaceId
-    // private static readonly workspaceIdKey = 'workspaceId'
+    // private static workspaceIdKey = 'workspaceId'
 
     public intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         // const workspaceId = this.localStorage.retrieve(AuthInterceptor.workspaceIdKey)

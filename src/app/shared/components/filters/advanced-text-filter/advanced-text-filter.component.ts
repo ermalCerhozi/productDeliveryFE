@@ -84,7 +84,7 @@ export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy
     @ViewChild('advancedTextFilterSelect') advancedTextFilterSelect!: MatSelect
 
     // how many pixels from the bottom of the scrollable panel to trigger the loadMore event
-    private readonly THRESHOLD = 3.0
+    private THRESHOLD = 3.0
     form!: FormGroup
     private selectionSubject = new Subject<AdvancedSelection>()
     private searchSubject = new Subject<string>()

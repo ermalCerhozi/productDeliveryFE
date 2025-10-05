@@ -73,7 +73,7 @@ export class ManagePermissionsComponent {
   ]);
   public searchQuery = signal('');
 
-  readonly form = this.fb.group({
+  form = this.fb.group({
     code: ['', [Validators.required, Validators.maxLength(50)]],
     description: ['', [Validators.maxLength(255)]],
   })

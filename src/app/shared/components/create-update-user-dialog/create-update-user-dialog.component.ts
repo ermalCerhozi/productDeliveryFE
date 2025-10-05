@@ -78,7 +78,7 @@ export class CreateUpdateUserDialogComponent implements OnInit {
     @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>
 
     action: 'create' | 'update' = 'create'
-    readonly defaultAvatar = '/assets/images/avatar.png'
+    defaultAvatar = '/assets/images/avatar.png'
     form!: FormGroup
     previewImageUrl: string | null = null
     isSubmitting = false

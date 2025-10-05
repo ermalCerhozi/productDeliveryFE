@@ -13,8 +13,8 @@ interface Hint {
 }
 
 interface Constants {
-    readonly DIGIT_REGEX: RegExp
-    readonly SYMBOL_REGEX: RegExp
+    DIGIT_REGEX: RegExp
+    SYMBOL_REGEX: RegExp
 }
 
 const CONSTANTS: Constants = {

@@ -17,7 +17,7 @@
                         (opened)="onOpened(autoCompleteClients)"
                         (closed)="onClosed()"
                     >
-                        @for (client of clients | async; track client) {
+                        @for (client of clients(); track client.value) {
                             <mat-option [value]="client">
                                 {{ client.label }}
                             </mat-option>
@@ -40,8 +40,8 @@
                     "
                 >
                     <mat-icon>settings_backup_restore</mat-icon>
-                    @if (previousOrders > 0) {
-                        <span class="badge">{{ previousOrders }}</span>
+                    @if (previousOrders() > 0) {
+                        <span class="badge">{{ previousOrders() }}</span>
                     }
                 </button>
                 <button
@@ -50,7 +50,7 @@
                     type="button"
                     (click)="getNextClientOrders()"
                     class="button-with-badge"
-                    [disabled]="previousOrders === 0"
+                    [disabled]="previousOrders() === 0"
                 >
                     <mat-icon style="transform: scaleX(-1)">settings_backup_restore</mat-icon>
                 </button>
@@ -78,7 +78,7 @@
                                 (opened)="onOpened(autoCompleteProducts)"
                                 (closed)="onClosed()"
                             >
-                                @for (product of filteredProducts; track product) {
+                                @for (product of filteredProducts(); track product.value) {
                                     <mat-option [value]="product">
                                         {{ product.label }}
                                     </mat-option>
@@ -132,7 +132,7 @@
     </div>
 
     <mat-dialog-actions [align]="'end'" class="insert-panel">
-        <h2 class="price">{{ totalOrderPrice.toLocaleString() }} {{ t('createOrder.price') }}</h2>
+        <h2 class="price">{{ totalOrderPrice().toLocaleString() }} {{ t('createOrder.price') }}</h2>
         <button class="action-button" mat-stroked-button color="warn" (click)="goBack()">
             {{ t('cancel') }}
         </button>

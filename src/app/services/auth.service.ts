@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment'
     providedIn: 'root',
 })
 export class AuthService {
-    private readonly baseUrl = environment.baseUrl + '/users'
+    private baseUrl = environment.baseUrl + '/users'
     private currentLoggedUser: BehaviorSubject<UserEntity | null>
     private http = inject(HttpClient)
     constructor() {

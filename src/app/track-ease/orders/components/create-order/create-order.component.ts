@@ -1,4 +1,12 @@
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import {
+    Component,
+    inject,
+    signal,
+    computed,
+    effect,
+    DestroyRef,
+    ViewChild,
+} from '@angular/core'
 import {
     FormArray,
     FormBuilder,
@@ -9,8 +17,9 @@ import {
 } from '@angular/forms'
 import { Router } from '@angular/router'
 import { AsyncPipe } from '@angular/common'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
-import { Observable, Subject, Subscription, debounceTime, fromEvent, map, takeUntil } from 'rxjs'
+import { Subscription, debounceTime, fromEvent, map } from 'rxjs'
 import { cloneDeep, isEqual } from 'lodash-es'
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete'
 import { MatMiniFabButton, MatFabButton, MatButton } from '@angular/material/button'
@@ -21,14 +30,13 @@ import { MatIcon } from '@angular/material/icon'
 import { MatInput } from '@angular/material/input'
 
 import { OrderItemEntity } from 'src/app/shared/models/order.model'
-import { BakeryManagementService } from 'src/app/services/bakery-management.service'
 import { FilterOption } from 'src/app/shared/models/filter-option.model'
-import { SearchService } from 'src/app/services/search.service'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { SnackBarService } from 'src/app/services/snackbar.service'
 import { NotificationService } from 'src/app/services/notification.service'
 import { WhatsAppInvoiceService } from 'src/app/whats-app-invoice.service'
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco'
+import { UserFiltersResponse, ProductsFiltersResponse } from 'src/app/shared/models/mediaLibraryResponse.model'
 
 @Component({
     selector: 'app-create-order',
@@ -53,126 +61,94 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco'
         TranslocoDirective,
     ],
 })
-export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
+export class CreateUpdateOrdersComponent {
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete
     @ViewChild('autoCompleteClients') autoCompleteClients!: MatAutocomplete
     private scrollSubscription!: Subscription
 
-    private destroy$ = new Subject<boolean>()
+    private destroyRef = inject(DestroyRef);
+    private formBuilder = inject(FormBuilder);
+    private bakeryManagementApiService = inject(BakeryManagementApiService);
+    private snackBarService = inject(SnackBarService);
+    private router = inject(Router);
+    private notificationService = inject(NotificationService);
+    private whatsAppInvoiceService = inject(WhatsAppInvoiceService);
+    private translocoService = inject(TranslocoService);
 
-    clients: Observable<FilterOption[]>
-    hasMoreClientsToLoad: Observable<boolean>
+    // Client state - using signals
+    public clients = signal<FilterOption[]>([]);
+    public clientsLoading = signal<boolean>(false);
+    public hasMoreClientsToLoad = signal<boolean>(true);
+    public clientSearchQuery = '';
 
-    products: Observable<FilterOption[]>
-    hasMoreProductsToLoad: Observable<boolean>
+    // Product state - using signals
+    public products = signal<FilterOption[]>([]);
+    public productsLoading = signal<boolean>(false);
+    public hasMoreProductsToLoad = signal<boolean>(true);
+    public productSearchQuery = '';
 
-    filteredProducts: FilterOption[] = []
-    orderForm: FormGroup = new FormGroup({})
-    orderItemsFormArray!: FormArray
-    totalOrderPrice = 0
-    previousOrders: number = 0
-    private currentOrder!: any
+    // Form state
+    public orderForm: FormGroup = new FormGroup({});
+    public orderItemsFormArray!: FormArray;
+    public previousOrders = signal<number>(0);
+    private currentOrder!: any;
 
-    private formBuilder = inject(FormBuilder)
-    private bakeryManagementService = inject(BakeryManagementService)
-    private searchService = inject(SearchService)
-    private bakeryManagementApiService = inject(BakeryManagementApiService)
-    private snackBarService = inject(SnackBarService)
-    private router = inject(Router)
-    private notificationService = inject(NotificationService)
-    private whatsAppInvoiceService = inject(WhatsAppInvoiceService)
-    private translocoService = inject(TranslocoService)
+    // Computed filtered products based on selected items
+    public filteredProducts = computed<FilterOption[]>(() => {
+        const orderItems = this.orderItemsFormArray?.value || [];
+        const selectedProductsMap = new Map<any, FilterOption>();
+        
+        orderItems.forEach((item: any) => {
+            if (item.product?.value) {
+                selectedProductsMap.set(item.product.value, item.product);
+            }
+        });
+
+        return this.products().filter(
+            product => !selectedProductsMap.has(product.value)
+        );
+    });
+
+    // Computed total order price
+    public totalOrderPrice = computed<number>(() => {
+        const orderItems = this.orderItemsFormArray?.value || [];
+        const validOrderItems = orderItems.filter(
+            (item: any) => item.product && (item.quantity || item.returned_quantity)
+        );
+        
+        return validOrderItems.reduce((total: number, item: any) => {
+            const quantity = item.quantity ?? 0;
+            const returnedQuantity = item.returned_quantity ?? 0;
+            return total + item.product.price * (quantity - returnedQuantity);
+        }, 0);
+    });
 
     constructor() {
-        this.clients = this.searchService.getClients()
-        this.hasMoreClientsToLoad = this.searchService.getHasMoreClientsToLoad()
+        // Initialize form
+        this.patchForm();
+        
+        // Load initial data
+        this.loadMoreClients();
+        this.loadMoreProducts();
+        
+        // Store initial form state for change detection
+        setTimeout(() => {
+            this.currentOrder = cloneDeep(this.orderForm.value);
+        });
 
-        this.products = this.searchService.getProducts()
-        this.hasMoreProductsToLoad = this.searchService.getHasMoreProductsToLoad()
-    }
-
-    ngOnInit(): void {
-        // load the 20 first clients and products
-        this.loadMoreClients()
-        this.loadMoreProducts()
-        this.setInitialFilteredProducts()
-        // patch the form with the initial values
-        this.patchForm()
-        this.currentOrder = cloneDeep(this.orderForm.value)
-
-        this.subscribeToFormChanges()
-    }
-
-    ngOnDestroy(): void {
-        this.destroy$.next(true)
-        this.destroy$.complete()
-    }
-
-    /**
-     * This method subscribes to changes in the orderItemsFormArray.
-     * Whenever a change occurs, it performs the following actions:
-     * 1. Recalculates the total order price.
-     * 2. Updates the list of selected products.
-     * 3. Filters the products list to exclude the selected products.
-     */
-    private subscribeToFormChanges(): void {
-        this.orderItemsFormArray.valueChanges
-            .pipe(debounceTime(60), takeUntil(this.destroy$))
-            .subscribe((orderItems: any[]) => {
-                // Check if all order items have a valid product field
-                if (this.orderItemsFormArray.valid) {
-                    // Recalculate the total order price
-                    this.calculateTotalOrderPrice(orderItems)
-                    // Process selected products
-                    this.processSelectedProducts(orderItems)
-                }
-            })
-    }
-
-    calculateTotalOrderPrice(orderItems: any[]) {
-        const validOrderItems = orderItems.filter(
-            (item) => item.product && (item.quantity || item.returned_quantity)
-        )
-        this.totalOrderPrice = validOrderItems.reduce((total, item) => {
-            const quantity = item.quantity ?? 0
-            const returnedQuantity = item.returned_quantity ?? 0
-            return total + item.product.price * (quantity - returnedQuantity)
-        }, 0)
-    }
-
-    processSelectedProducts(orderItems: any[]): void {
-        const selectedProductsMap = new Map()
-        orderItems.forEach((item) => {
-            if (item.product && item.product.label) {
-                selectedProductsMap.set(item.product.value, {
-                    label: item.product.label,
-                    value: item.product.value,
-                })
+        // Subscribe to form changes with effect
+        effect(() => {
+            // Trigger recomputation when form array changes
+            if (this.orderItemsFormArray) {
+                this.orderItemsFormArray.valueChanges.pipe(
+                    debounceTime(60),
+                    takeUntilDestroyed(this.destroyRef)
+                ).subscribe(() => {
+                    // Force signal updates by updating the form array reference
+                    this.orderItemsFormArray.updateValueAndValidity({ emitEvent: false });
+                });
             }
-        })
-        const selectedProducts = Array.from(selectedProductsMap.values())
-        if (selectedProducts.length === 0) {
-            return
-        }
-
-        this.products
-            .pipe(
-                map((products) =>
-                    products.filter(
-                        (product) =>
-                            !selectedProducts.some((selected) => selected.value === product.value)
-                    )
-                )
-            )
-            .subscribe((filteredProducts) => {
-                this.filteredProducts = filteredProducts
-            })
-    }
-
-    setInitialFilteredProducts() {
-        this.products.subscribe((products) => {
-            this.filteredProducts = products
-        })
+        });
     }
 
     patchForm() {
@@ -191,7 +167,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     getCreateOrderFormData(): any {
         return {
             client: '',
-            seller: this.bakeryManagementService.getLoggedInUser().id,
+            seller: JSON.parse(localStorage.getItem('currentUser') || ''),
             order_items: [{ quantity: '', returned_quantity: '', product: '' }],
         }
     }
@@ -224,37 +200,43 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     getPreviousClientOrders() {
-        this.previousOrders = this.previousOrders + 1
+        this.previousOrders.update(prev => prev + 1);
 
-        const clientId = this.orderForm.get('client')!.value.value
-        this.bakeryManagementService.getPreviousOrder(clientId, this.previousOrders).subscribe({
-            next: (res) => {
-                const transformedOrderItems = this.transformedOrderItems(res.order_items)
-                this.orderItemsFormArray.clear()
-                this.populateOrderItems(transformedOrderItems)
-            },
-            error: (error: Error) => {
-                this.previousOrders = this.previousOrders - 1
-                console.log('There was an error getting the last order:', error)
-            },
-        })
+        const clientId = this.orderForm.get('client')!.value.value;
+        this.bakeryManagementApiService
+            .getPreviousOrderByClient(clientId, this.previousOrders())
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (res) => {
+                    const transformedOrderItems = this.transformedOrderItems(res.order_items);
+                    this.orderItemsFormArray.clear();
+                    this.populateOrderItems(transformedOrderItems);
+                },
+                error: (error: Error) => {
+                    this.previousOrders.update(prev => prev - 1);
+                    console.log('There was an error getting the last order:', error);
+                },
+            });
     }
 
     getNextClientOrders() {
-        if (this.previousOrders > 0) {
-            this.previousOrders = this.previousOrders - 1
-            const clientId = this.orderForm.get('client')!.value.value
-            this.bakeryManagementService.getPreviousOrder(clientId, this.previousOrders).subscribe({
-                next: (res) => {
-                    const transformedOrderItems = this.transformedOrderItems(res.order_items)
-                    this.orderItemsFormArray.clear()
-                    this.populateOrderItems(transformedOrderItems)
-                },
-                error: (error: Error) => {
-                    this.previousOrders = this.previousOrders + 1
-                    console.error('There was an error getting the next order:', error)
-                },
-            })
+        if (this.previousOrders() > 0) {
+            this.previousOrders.update(prev => prev - 1);
+            const clientId = this.orderForm.get('client')!.value.value;
+            this.bakeryManagementApiService
+                .getPreviousOrderByClient(clientId, this.previousOrders())
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
+                    next: (res) => {
+                        const transformedOrderItems = this.transformedOrderItems(res.order_items);
+                        this.orderItemsFormArray.clear();
+                        this.populateOrderItems(transformedOrderItems);
+                    },
+                    error: (error: Error) => {
+                        this.previousOrders.update(prev => prev + 1);
+                        console.error('There was an error getting the next order:', error);
+                    },
+                });
         }
     }
 
@@ -271,7 +253,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     removeOrderItem(index: number): void {
         const orderItemId = this.orderItemsFormArray.at(index).value.id
         if (orderItemId) {
-            this.bakeryManagementService.deleteOrderItem(orderItemId).subscribe({
+            this.bakeryManagementApiService.deleteOrderItem(orderItemId).subscribe({
                 next: () => {
                     this.orderItemsFormArray.removeAt(index)
                 },
@@ -287,27 +269,35 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     }
 
     displayFn(option: any): string {
-        return option.label
+        return option.label;
     }
 
-    clientSearchChange(event: any) {
-        const inputValue = (event.target as HTMLInputElement).value
-        this.searchService.clientSearchChange(inputValue)
-    }
-    loadMoreClients() {
-        this.searchService.loadMoreClients()
+    clientSearchChange(event: any): void {
+        const inputValue = (event.target as HTMLInputElement).value;
+        this.clientSearchQuery = inputValue;
+        this.clients.set([]);
+        this.hasMoreClientsToLoad.set(true);
+        this.getPaginatedClients();
     }
 
-    productSearchChange(event: any) {
-        const inputValue = (event.target as HTMLInputElement).value
-        this.searchService.productSearchChange(inputValue)
+    loadMoreClients(): void {
+        this.getPaginatedClients();
     }
-    loadMoreProducts() {
-        this.searchService.loadMoreProducts()
+
+    productSearchChange(event: any): void {
+        const inputValue = (event.target as HTMLInputElement).value;
+        this.productSearchQuery = inputValue;
+        this.products.set([]);
+        this.hasMoreProductsToLoad.set(true);
+        this.getPaginatedProducts();
+    }
+
+    loadMoreProducts(): void {
+        this.getPaginatedProducts();
     }
 
     formHasChanged(): boolean {
-        return !isEqual(this.currentOrder, this.orderForm.value)
+        return !isEqual(this.currentOrder, this.orderForm.value);
     }
 
     // This function is triggered when the autocomplete panel is opened.
@@ -320,12 +310,12 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                     this.scrollSubscription = fromEvent(
                         autoComplete.panel.nativeElement,
                         'scroll'
-                    ).subscribe((e) => this.onScroll(e, autoComplete))
+                    ).subscribe((e) => this.onScroll(e, autoComplete));
                 } else {
-                    console.error('autoComplete.panel is still undefined')
+                    console.error('autoComplete.panel is still undefined');
                 }
             }
-        }, 10)
+        }, 10);
     }
 
     // This function is triggered when the autocomplete panel is closed.
@@ -333,7 +323,7 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     // This is done to prevent memory leaks.
     onClosed() {
         if (this.scrollSubscription) {
-            this.scrollSubscription.unsubscribe()
+            this.scrollSubscription.unsubscribe();
         }
     }
 
@@ -343,17 +333,17 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
     // it calls the loadMoreClients() function to load more clients.
     onScroll(event: any, autoComplete: MatAutocomplete) {
         if (event.target.offsetHeight + event.target.scrollTop >= event.target.scrollHeight) {
-            if (autoComplete === this.autoCompleteProducts && this.hasMoreProductsToLoad) {
-                this.loadMoreProducts()
-            } else if (autoComplete === this.autoCompleteClients && this.hasMoreClientsToLoad) {
-                this.loadMoreClients()
+            if (autoComplete === this.autoCompleteProducts && this.hasMoreProductsToLoad()) {
+                this.loadMoreProducts();
+            } else if (autoComplete === this.autoCompleteClients && this.hasMoreClientsToLoad()) {
+                this.loadMoreClients();
             }
         }
     }
 
     save(): void {
         if (this.orderForm.valid) {
-            const formValue = this.orderForm.value
+            const formValue = this.orderForm.value;
             // Convert the client and product values to their respective IDs before saving the order.
             const newValue = {
                 ...formValue,
@@ -364,29 +354,107 @@ export class CreateUpdateOrdersComponent implements OnInit, OnDestroy {
                     quantity: item.quantity === '' ? 0 : item.quantity,
                     returned_quantity: item.returned_quantity === '' ? 0 : item.returned_quantity,
                 })),
-            }
+            };
             const params = {
                 newValue,
                 sendCreatedNotification: this.notificationService.sendCreatedNotification,
-            }
+            };
 
-            this.bakeryManagementApiService.createOrder(params).subscribe({
-                next: (createdOrder) => {
-                    this.snackBarService.showSuccess(
-                        this.translocoService.translate('createOrder.createdSuccessfully') as string
-                    )
-                    this.whatsAppInvoiceService.sendInvoiceOnWhatsApp(createdOrder)
-                    this.goBack()
-                },
-                error: (error) => {
-                    console.log('Error: ', error)
-                    this.goBack()
-                },
-            })
+            this.bakeryManagementApiService
+                .createOrder(params)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
+                    next: (createdOrder) => {
+                        this.snackBarService.showSuccess(
+                            this.translocoService.translate('createOrder.createdSuccessfully') as string
+                        );
+                        this.whatsAppInvoiceService.sendInvoiceOnWhatsApp(createdOrder);
+                        this.goBack();
+                    },
+                    error: (error) => {
+                        console.log('Error: ', error);
+                        this.goBack();
+                    },
+                });
         }
     }
 
     goBack(): void {
-        this.router.navigate(['/orders'])
+        this.router.navigate(['/orders']);
+    }
+
+    // Private methods for pagination
+    private getPaginatedClients(): void {
+        this.clientsLoading.set(true);
+        const payload: any = {
+            pagination: {
+                offset: this.clients().length,
+                limit: 20,
+            },
+        };
+        if (this.clientSearchQuery) {
+            payload.clientName = this.clientSearchQuery;
+        }
+
+        this.bakeryManagementApiService
+            .getClientFiltersForOrder(payload)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                map((clientList: UserFiltersResponse[]) => {
+                    this.hasMoreClientsToLoad.set(clientList.length !== 0);
+                    this.addClientsToSelectionList(clientList);
+                    this.clientsLoading.set(false);
+                })
+            )
+            .subscribe();
+    }
+
+    private getPaginatedProducts(): void {
+        this.productsLoading.set(true);
+        const payload: any = {
+            pagination: {
+                offset: this.products().length,
+                limit: 20,
+            },
+        };
+        if (this.productSearchQuery) {
+            payload.productName = this.productSearchQuery;
+        }
+
+        this.bakeryManagementApiService
+            .getProductFiltersForOrder(payload)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                map((productList: ProductsFiltersResponse[]) => {
+                    this.hasMoreProductsToLoad.set(productList.length !== 0);
+                    this.addProductsToSelectionList(productList);
+                    this.productsLoading.set(false);
+                })
+            )
+            .subscribe();
+    }
+
+    private addClientsToSelectionList(clientList: UserFiltersResponse[]): void {
+        const newClients: FilterOption[] = [];
+        clientList.forEach((client) =>
+            newClients.push({
+                value: client.id,
+                label: client.first_name + ' ' + client.last_name,
+                count: client.mediaCount,
+            })
+        );
+        this.clients.update(current => [...current, ...newClients]);
+    }
+
+    private addProductsToSelectionList(productList: ProductsFiltersResponse[]): void {
+        const newProducts: FilterOption[] = [];
+        productList.forEach((product) =>
+            newProducts.push({
+                value: product.id,
+                label: product.product_name,
+                price: product.price,
+            })
+        );
+        this.products.update(current => [...current, ...newProducts]);
     }
 }

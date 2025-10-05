@@ -9,7 +9,7 @@
                 mat-stroked-button
                 [matMenuTriggerFor]="downloadMenu"
                 class="download-pdf"
-                [disabled]="(filterResults | async)!.length === 0"
+                [disabled]="filterResults().length === 0"
             >
                 <mat-icon fontSet="material-icons-outlined">download</mat-icon>
                 <span>{{ t('ordersList.download') }}</span>
@@ -49,9 +49,9 @@
 
                 <app-simple-radio-select-filter
                     [labelTK]="t('ordersList.date')"
-                    [fields]="(mediaDates | async)!"
-                    [defaultEmptyValue]="defaultDate"
-                    [selection]="(selectedDate | async)!"
+                    [fields]="orderDates()"
+                    [defaultEmptyValue]="defaultDateFilter"
+                    [selection]="selectedDate()"
                     [customLabelWidth]="'105px'"
                     [panelClass]="'date-filter-panel'"
                     (selectionChange)="applyFilters($event, 'date')"
@@ -59,10 +59,10 @@
 
                 <app-advanced-text-filter
                     [labelTK]="t('ordersList.client')"
-                    [loadingPage]="(clientsLoading | async)!"
-                    [hasMoreItems]="(hasMoreClientsToLoad | async)!"
-                    [selection]="(selectedClients | async)!"
-                    [fields]="(clients | async)!"
+                    [loadingPage]="clientsLoading()"
+                    [hasMoreItems]="hasMoreClientsToLoad()"
+                    [selection]="selectedClients()"
+                    [fields]="clients()"
                     [searchForTK]="'TE_ORDER_CLIENT_SEARCH'"
                     [noResultsTK]="'TE_ORDER_CLIENT_NO_RESULTS'"
                     [panelClass]="'client-categories-filter-panel'"
@@ -75,10 +75,10 @@
 
                 <app-advanced-text-filter
                     [labelTK]="t('ordersList.seller')"
-                    [loadingPage]="(sellersLoading | async)!"
-                    [hasMoreItems]="(hasMoreSellersToLoad | async)!"
-                    [selection]="(selectedSellers | async)!"
-                    [fields]="(sellers | async)!"
+                    [loadingPage]="sellersLoading()"
+                    [hasMoreItems]="hasMoreSellersToLoad()"
+                    [selection]="selectedSellers()"
+                    [fields]="sellers()"
                     [searchForTK]="'TE_ORDER_SELLER_SEARCH'"
                     [noResultsTK]="'TE_ORDER_SELLER_NO_RESULTS'"
                     [panelClass]="'seller-categories-filter-panel'"
@@ -94,18 +94,18 @@
 
     <mat-divider></mat-divider>
 
-    @if ((filterResults | async)!.length > 0) {
+    @if (filterResults().length > 0) {
         <app-filters-result
             class="filter-results"
             [labelTK]="t('ordersList.clearFilters')"
-            [results]="filterResults | async"
+            [results]="filterResults()"
             (clearResults)="clearFilters()"
             (removeFilter)="removeFilter($event)"
         >
         </app-filters-result>
     }
 
-    <div class="results-summary">{{ bakeryManagementService.ordersCount }} Results</div>
+    <div class="results-summary">{{ totalCount() }} Results</div>
 
     <app-table
         [data]="(tableData$ | async) || []"
