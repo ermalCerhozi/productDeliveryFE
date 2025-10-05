@@ -326,6 +326,20 @@ export class BakeryManagementService {
         })
     }
 
+    downloadOrdersCsv(): void {
+        const requestPayload: { navigation_context: NavigationContext } = {
+            navigation_context: this.navigationContext,
+        }
+        this.bakeryManagementApiService.downloadOrdersCsv(requestPayload).subscribe((data: any) => {
+            const blob = new Blob([data], { type: 'text/csv' })
+            const url = window.URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.download = 'orders.csv'
+            link.click()
+        })
+    }
+
     uploadImage(payload: ImageUploadRequest): Observable<ImageResponse> {
         return this.bakeryManagementApiService.uploadImage(payload).pipe(
             tap((image) => {

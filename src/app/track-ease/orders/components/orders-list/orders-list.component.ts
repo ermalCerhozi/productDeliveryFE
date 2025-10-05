@@ -311,4 +311,8 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
     downloadOrdersPdf() {
         this.bakeryManagementService.downloadOrdersPdf()
     }
+
+    downloadOrdersCsv() {
+        this.bakeryManagementService.downloadOrdersCsv()
+    }
 }

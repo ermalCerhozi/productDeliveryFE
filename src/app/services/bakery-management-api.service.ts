@@ -185,6 +185,14 @@ export class BakeryManagementApiService {
         )
     }
 
+    downloadOrdersCsv(requestPayload: { navigation_context: NavigationContext }): Observable<Blob> {
+        return this.httpClient.post(
+            `${this.basePath}/orders/export-csv`,
+            requestPayload.navigation_context,
+            { responseType: 'blob' }
+        )
+    }
+
     uploadImage(payload: ImageUploadRequest): Observable<ImageResponse> {
         return this.httpClient.post<ImageResponse>(`${this.basePath}/images`, payload)
     }

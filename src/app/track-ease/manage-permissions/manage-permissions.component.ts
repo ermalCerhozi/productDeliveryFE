@@ -21,7 +21,10 @@ import { MatInputModule } from '@angular/material/input'
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
-import { MatTableDataSource, MatTableModule } from '@angular/material/table'
+import {
+    MatTableDataSource,
+    MatTableModule,
+} from '@angular/material/table'
 import { MatTabsModule } from '@angular/material/tabs'
 import { TranslocoService } from '@jsverse/transloco'
 
