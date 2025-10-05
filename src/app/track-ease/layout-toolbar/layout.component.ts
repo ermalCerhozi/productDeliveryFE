@@ -12,7 +12,7 @@ import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav'
 import { MatToolbar } from '@angular/material/toolbar'
 
 import { AuthService } from 'src/app/services/auth.service'
-import { TranslocoService, TranslocoDirective } from '@jsverse/transloco'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 interface NavRouteConfig {
     path: string
@@ -47,25 +47,24 @@ export class LayoutComponent {
     private authService = inject(AuthService)
     private breakpointObserver = inject(BreakpointObserver)
     private router = inject(Router)
-    private translocoService = inject(TranslocoService)
 
     @ViewChild('drawer') drawer!: MatDrawer
 
     private readonly routes: NavRouteConfig[] = [
-        // { path: '/homePage', name: 'Home Page', icon: 'home', roles: ['Admin', 'Client'] },
-        { path: '/users', name: 'layout.users', icon: 'people', roles: ['Admin'] },
-        { path: '/orders', name: 'layout.orders', icon: 'assignment', roles: ['Admin'] },
-        { path: '/products', name: 'layout.products', icon: 'store', roles: ['Admin'] },
-        { path: '/permissions', name: 'layout.permissions', icon: 'lock', roles: ['Admin'] },
+        // { path: 'homePage', name: 'Home Page', icon: 'home', roles: ['Admin', 'Client'] },
+        { path: 'users', name: 'layout.users', icon: 'people', roles: ['Admin'] },
+        { path: 'orders', name: 'layout.orders', icon: 'assignment', roles: ['Admin'] },
+        { path: 'products', name: 'layout.products', icon: 'store', roles: ['Admin'] },
+        { path: 'permissions', name: 'layout.permissions', icon: 'lock', roles: ['Admin'] },
         {
-            path: '/profile',
+            path: 'profile',
             name: 'layout.profile',
             icon: 'account_circle',
             roles: ['Admin', 'Client'],
         },
-        // { path: '/earnings', name: 'Earnings', icon: 'show_chart' },
-        // { path: '/trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
-        { path: '/settings', name: 'layout.settings', icon: 'settings', roles: ['Admin'] },
+        // { path: 'earnings', name: 'Earnings', icon: 'show_chart' },
+        // { path: 'trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
+        { path: 'settings', name: 'layout.settings', icon: 'settings', roles: ['Admin'] },
     ]
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(

@@ -13,7 +13,8 @@
                     <mat-list-item
                         class="layout-sidenav-options"
                         [routerLink]="route.path"
-                        [routerLinkActive]="['is-active']"
+                        routerLinkActive="is-active"
+                        [routerLinkActiveOptions]="{ exact: false }"
                         (click)="toggleDrawerOnHandset()"
                     >
                         <div class="icon-text-wrapper">
