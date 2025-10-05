@@ -120,7 +120,7 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     }
 
     getOrderById(orderId: number) {
-        this.bakeryManagementService.getOrderById(orderId).subscribe({
+        this.bakeryManagementApiService.getOrderById(orderId).subscribe({
             next: (order: OrderEntity) => {
                 this.currentOrder = order
 

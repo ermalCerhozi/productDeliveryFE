@@ -72,7 +72,6 @@ export class CreateUpdateProductDialogComponent implements OnInit {
 
     private fb = inject(FormBuilder)
     private bakeryManagementApiService = inject(BakeryManagementApiService)
-    private bakeryManagementService = inject(BakeryManagementService)
     private dialog = inject(MatDialog)
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: { product?: ProductEntity }) {
@@ -204,19 +203,6 @@ export class CreateUpdateProductDialogComponent implements OnInit {
             })
     }
 
-    private refreshProductsListAndCloseDialog(): void {
-        this.bakeryManagementService
-            .updateProductList(false)
-            .pipe(take(1))
-            .subscribe({
-                next: () => this.dialog.closeAll(),
-                error: (error) => {
-                    console.error('Failed to refresh products list', error)
-                    this.dialog.closeAll()
-                },
-            })
-    }
-
     private captureInitialFormValues(): void {
         this.initialFormValues = cloneDeep(this.form.getRawValue()) as ProductFormValue
     }
@@ -279,8 +265,6 @@ export class CreateUpdateProductDialogComponent implements OnInit {
             this.currentProduct = product
             this.loadedProductId = product.id
         }
-
-        this.captureInitialFormValues()
-        this.refreshProductsListAndCloseDialog()
+        this.dialog.closeAll()
     }
 }

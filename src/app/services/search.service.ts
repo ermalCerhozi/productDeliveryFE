@@ -580,7 +580,6 @@ export class SearchService implements OnDestroy {
         this.bakeryManagementService.resetPagination()
         this.bakeryManagementService.navigationContext.getCount = false
         // this.bakeryManagementService.updateMediaList(false)
-        this.bakeryManagementService.updateOrdersList(false).subscribe() //TODO: to be be implemented alogside updateUserList using the active tab
         this.bakeryManagementService.clearActiveMedia() //TODO: Same as above
     }
 

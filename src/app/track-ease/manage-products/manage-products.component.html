@@ -1,7 +1,7 @@
 <div class="container">
   <div class="search-action-wrapper">
     <app-top-bar
-      [mediaCount]="(tableData$ | async)?.length || 0"
+      [mediaCount]="totalCount()"
       [title]="'Product'"
       [placeholder]="'Search for Product'"
       (searchOptionsChange)="onOptionsChanged($event)"
@@ -13,8 +13,10 @@
     [data]="(tableData$ | async) || []"
     [columns]="tableColumns()"
     [searchQuery]="searchQuery()"
+    [totalCount]="totalCount()"
     [isSelectable]="false"
     (onEdit)="onEdit($event)"
-    (onDelete)="onDelete($event)">
+    (onDelete)="onDelete($event)"
+    (currentPageInfo)="onPageInfoChange($event)">
   </app-table>
 </div>

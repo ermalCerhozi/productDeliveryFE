@@ -1,7 +1,7 @@
 import { Component, input, OnDestroy, OnInit, output } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
 
-import { Subject, debounceTime, takeUntil } from 'rxjs'
+import { Subject, debounceTime, takeUntil, distinctUntilChanged } from 'rxjs'
 import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete'
 import { MatButton } from '@angular/material/button'
 import { MatCheckbox } from '@angular/material/checkbox'
@@ -52,12 +52,13 @@ export class TopBarComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.searchQuery.valueChanges
-            .pipe(debounceTime(800), takeUntil(this.onDestroy))
+            .pipe(
+                distinctUntilChanged(),
+                debounceTime(800),
+                takeUntil(this.onDestroy)
+            )
             .subscribe((value) => {
-                if (!value) {
-                    value = ''
-                }
-                this.search.emit(value)
+                this.search.emit(value || '')
             })
     }
 

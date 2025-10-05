@@ -20,6 +20,7 @@ export class TableComponent<T extends { id: number }> implements AfterViewInit {
   public data = input<T[] | null>([]);
   public columns = input<{ key: string; label: string }[]>();
   public searchQuery = input<string>('');
+  public totalCount = input<number>(0);
   public isSelectable = input<boolean>(true);
   public isEditable = input<boolean>(true);
   public isDeletable = input<boolean>(true);
@@ -39,7 +40,11 @@ export class TableComponent<T extends { id: number }> implements AfterViewInit {
   constructor() {
     effect(() => {
       this.dataSource().data = this.data() || [];
-      this.dataSource().paginator = this.paginator() || null;
+      if (this.totalCount() === 0) {
+        this.dataSource().paginator = this.paginator() || null;
+      } else {
+        this.dataSource().paginator = null;
+      }
       this.dataSource().sort = this.sort() || null;
       this.applyFilter();
     });

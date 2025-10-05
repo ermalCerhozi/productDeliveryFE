@@ -352,19 +352,6 @@ export class CreateUpdateUserDialogComponent implements OnInit {
         return `data:${image.contentType};base64,${image.data}`
     }
 
-    private refreshUsersListAndCloseDialog(): void {
-        this.bakeryManagementService
-            .updateUsersList(false)
-            .pipe(take(1))
-            .subscribe({
-                next: () => this.dialog.closeAll(),
-                error: (error) => {
-                    console.error('Failed to refresh users list', error)
-                    this.dialog.closeAll()
-                },
-            })
-    }
-
     private captureInitialFormValues(): void {
         this.initialFormValues = cloneDeep(this.form.getRawValue()) as UserFormValue
     }
@@ -476,7 +463,7 @@ export class CreateUpdateUserDialogComponent implements OnInit {
         this.clearSelectedImage()
         this.updatePreviewImage()
         this.captureInitialFormValues()
-        this.refreshUsersListAndCloseDialog()
+        this.dialog.closeAll()
     }
 
     private derivePreviewImage(): string | null {

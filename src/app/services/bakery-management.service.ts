@@ -70,102 +70,11 @@ export class BakeryManagementService {
         }
     }
 
-    updateProductList(append?: boolean): Observable<ProductResponse> {
-        if (!append) {
-            this.productsListSubject.next([])
-        }
-
-        const requestPayload: { navigation_context: NavigationContext } = {
-            // workspace_id: this.localStorageService.retrieve('workspaceId'),
-            navigation_context: this.navigationContext,
-        }
-
-        return this.bakeryManagementApiService.searchProduct(requestPayload).pipe(
-            tap((response: ProductResponse) => {
-                console.log('Products fetched:', response.products.length)
-                let newProductsList
-                if (append) {
-                    newProductsList = [...this.productsListSubject.getValue(), ...response.products]
-                } else {
-                    newProductsList = response.products
-                }
-                this.productsListSubject.next(newProductsList)
-
-                if (this.navigationContext.getCount) {
-                    this.productsCount = response.count
-                }
-            })
-        )
-    }
-
-    updateOrdersList(append: boolean): Observable<OrderResponse> {
-        if (!append) {
-            this.ordersListSubject.next([])
-        }
-
-        const requestPayload: { navigation_context: NavigationContext } = {
-            // workspace_id: this.localStorageService.retrieve('workspaceId'),
-            navigation_context: this.navigationContext,
-        }
-
-        return this.bakeryManagementApiService.getFilteredOrders(requestPayload).pipe(
-            tap((response: OrderResponse) => {
-                console.log('Orders fetched:', response.orders.length)
-                let newOrdersList
-                if (append) {
-                    newOrdersList = [...this.ordersListSubject.getValue(), ...response.orders]
-                } else {
-                    newOrdersList = response.orders
-                }
-                this.ordersListSubject.next(newOrdersList)
-
-                this.ordersCount = response.count
-            })
-        )
-    }
-
-    updateUsersList(append: boolean): Observable<UserResponse> {
-        if (!append) {
-            this.usersListSubject.next([])
-        }
-
-        const query = this.navigationContext.filters.queryString || ''
-        const page = Math.floor(this.navigationContext.pagination.offset / this.navigationContext.pagination.limit) + 1
-        const pageSize = this.navigationContext.pagination.limit
-
-        return this.bakeryManagementApiService.searchUsers(query, page, pageSize).pipe(
-            tap((response: UserResponse) => {
-                console.log('Users fetched:', response.users.length)
-                let newUsersList
-                if (append) {
-                    newUsersList = [...this.usersListSubject.getValue(), ...response.users]
-                } else {
-                    newUsersList = response.users
-                }
-                this.usersListSubject.next(newUsersList)
-                this.usersListSubject.next(newUsersList)
-
-                if (this.navigationContext.getCount) {
-                    this.usersCount = response.count
-                }
-            })
-        )
-    }
-
     setSearchQuery(data: string) {
         if (data !== this.navigationContext.filters.queryString) {
             this.navigationContext.filters.queryString = data
             this.navigationContext.getCount = true
-            if (this.activeTab === 'users') {
-                this.updateUsersList(false).subscribe()
-            } else if (this.activeTab === 'products') {
-                this.updateProductList(false).subscribe()
-            }
         }
-    }
-
-    getOrderById(id: number): Observable<OrderEntity> {
-        return this.bakeryManagementApiService.getOrderById(id)
     }
 
     getPreviousOrder(clientId: number, previousOrderNumber: number): Observable<OrderEntity> {

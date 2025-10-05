@@ -91,7 +91,7 @@
         @if (isFormChanged() && profileForm.valid) {
             <mat-toolbar class="insert-panel" color="primary">
                 <button class="insert-panel-actions" mat-flat-button (click)="cancelEdition()">
-                    {{ t('userProfile.cancel') }}
+                    {{ t('cancel') }}
                 </button>
                 <button
                     class="insert-panel-actions"
@@ -99,7 +99,7 @@
                     color="primary"
                     (click)="profileFormRef.ngSubmit.emit()"
                 >
-                    {{ t('userProfile.save') }}
+                    {{ t('save') }}
                 </button>
             </mat-toolbar>
         }
