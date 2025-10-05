@@ -116,11 +116,4 @@
         (onDelete)="onDelete($event)"
         (currentPageInfo)="onPageInfoChange($event)">
     </app-table>
-
-    <ng-template #confirmationDialogContainer>
-        <app-confirmation-dialog
-            [title]="'Order'"
-            (confirm)="onDeleteOrder()"
-        ></app-confirmation-dialog>
-    </ng-template>
 </ng-container>

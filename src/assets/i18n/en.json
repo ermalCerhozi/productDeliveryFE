@@ -206,7 +206,12 @@
 		"date": "Date",
 		"client": "Client",
 		"seller": "Seller",
-		"clearFilters": "Clear Filters"
+		"clearFilters": "Clear Filters",
+		"deleteTitle": "Delete Order",
+		"deleteMessage": "Are you sure you want to delete the <strong>{{date}}</strong> order for <strong>{{client}}</strong>?",
+		"deleteSuccess": "Order deleted successfully",
+		"deleteError": "Failed to delete order",
+		"order": "Order"
 	},
 	"settings": {
 		"notificationsTitle": "Notifications",

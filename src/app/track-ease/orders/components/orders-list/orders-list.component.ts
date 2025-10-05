@@ -2,23 +2,23 @@ import {
     Component,
     OnDestroy,
     OnInit,
-    TemplateRef,
-    ViewChild,
     inject,
     signal,
     DestroyRef,
 } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { AsyncPipe } from '@angular/common'
+import { AsyncPipe, DatePipe } from '@angular/common'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
-import { Observable, Subject, takeUntil } from 'rxjs'
+import { Observable, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { MatButton, MatIconButton } from '@angular/material/button'
+import { MatButton } from '@angular/material/button'
 import { MatDialog } from '@angular/material/dialog'
 import { MatDivider } from '@angular/material/divider'
 import { MatIcon } from '@angular/material/icon'
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu'
+import { MatMenuModule } from '@angular/material/menu'
+import { MatSnackBar } from '@angular/material/snack-bar'
+import { TranslocoService, TranslocoDirective } from '@jsverse/transloco'
 
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
@@ -33,7 +33,6 @@ import { SimpleRadioSelectFilterComponent } from '../../../../shared/components/
 import { AdvancedTextFilterComponent } from '../../../../shared/components/filters/advanced-text-filter/advanced-text-filter.component'
 import { FiltersResultComponent } from '../../../../shared/components/filters-panel/filters-result/filters-result.component'
 import { TableComponent } from 'src/app/shared/components/table/table.component'
-import { TranslocoDirective } from '@jsverse/transloco'
 
 @Component({
     selector: 'app-orders-list',
@@ -49,21 +48,21 @@ import { TranslocoDirective } from '@jsverse/transloco'
         MatDivider,
         FiltersResultComponent,
         TableComponent,
-        ConfirmationDialogComponent,
         MatMenuModule,
         TranslocoDirective,
     ],
+    providers: [DatePipe],
 })
 export class OrdersListComponent implements OnInit, OnDestroy {
-    @ViewChild('confirmationDialogContainer')
-    confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
-
     private destroy$ = new Subject<void>()
     private router = inject(Router);
     private route = inject(ActivatedRoute);
     private destroyRef = inject(DestroyRef);
     private bakeryManagementApiService = inject(BakeryManagementApiService);
     private dialog = inject(MatDialog);
+    private snackBar = inject(MatSnackBar);
+    private translocoService = inject(TranslocoService);
+    private datePipe = inject(DatePipe);
     public bakeryManagementService = inject(BakeryManagementService);
     public searchService = inject(SearchService);
 
@@ -244,23 +243,53 @@ export class OrdersListComponent implements OnInit, OnDestroy {
     }
 
     deleteOrder(): void {
-        this.dialog.open(this.confirmationDialogContainer, {
-            width: '70%',
-            maxHeight: '40%',
-        })
-    }
+        if (!this.activeOrder) return;
 
-    onDeleteOrder(): void {
-        this.dialog.closeAll()
-        this.bakeryManagementApiService.deleteOrder(this.activeOrder!.id).subscribe({
-            next: () => {
-                this.findAll()
-                this.activeOrder = undefined
-            },
-            error: (error) => {
-                console.log('Error: ', error)
-            },
-        })
+        const formattedDate = this.datePipe.transform(this.activeOrder.created_at, 'dd/MM/yy HH:mm', undefined, 'en-GB') || '';
+
+        this.dialog.open(ConfirmationDialogComponent, {
+            width: '80%',
+            maxHeight: '40%',
+            data: {
+                title: this.translocoService.translate('ordersList.deleteTitle'),
+                message: this.translocoService.translate('ordersList.deleteMessage', { 
+                    client: `${this.activeOrder.client.first_name}`,
+                    date: formattedDate
+                }),
+                displayOkButton: true,
+                displayCancelButton: true
+            }
+        }).afterClosed().subscribe((confirmed: boolean) => {
+            if (confirmed) {
+                this.bakeryManagementApiService.deleteOrder(this.activeOrder!.id)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe({
+                        next: () => {
+                            this.snackBar.open(
+                                this.translocoService.translate('ordersList.deleteSuccess'),
+                                this.translocoService.translate('ordersList.deleteSuccess'),
+                                {
+                                    duration: 3000,
+                                    horizontalPosition: 'end',
+                                    verticalPosition: 'top',
+                                    panelClass: ['snack-bar-success'],
+                                }
+                            )
+                            this.findAll();
+                            this.activeOrder = undefined;
+                        },
+                        error: (error) => {
+                            const errorMessage = error?.error?.message || this.translocoService.translate('ordersList.deleteError')
+                            this.snackBar.open(errorMessage, this.translocoService.translate('ordersList.deleteError'), {
+                                duration: 5000,
+                                horizontalPosition: 'end',
+                                verticalPosition: 'top',
+                                panelClass: ['snack-bar-error'],
+                            })
+                        }
+                    });
+            }
+        });
     }
 
     downloadOrdersPdf() {

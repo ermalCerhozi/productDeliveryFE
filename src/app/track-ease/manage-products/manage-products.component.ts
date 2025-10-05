@@ -95,11 +95,11 @@ export class ManageProductsComponent implements OnInit {
         width: '100vh',
         maxHeight: '80%',
         data: { product }
-    }).afterClosed().subscribe(result => {
-      if (result) {
+    }).afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
         this.findAll();
-      }
-    });
+      });
   }
 
   public onDelete(product: ProductEntity): void {
