@@ -2,7 +2,7 @@
     <div class="dialog-container">
         <div mat-dialog-title>
             {{
-                action() === 'create'
+                action === 'create'
                     ? t('createUpdateProductDialog.create')
                     : t('createUpdateProductDialog.update')
             }}
@@ -10,6 +10,13 @@
         </div>
 
         <mat-dialog-content class="dialog-content">
+            @if (isLoadingProductDetails) {
+                <mat-progress-spinner
+                    mode="indeterminate"
+                    diameter="32"
+                    strokeWidth="4"
+                ></mat-progress-spinner>
+            }
             <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-content-form">
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateProductDialog.productName') }}</mat-label>
@@ -81,11 +88,11 @@
                 mat-stroked-button
                 color="primary"
                 type="submit"
-                [disabled]="form.invalid || !formHasChanged()"
+                [disabled]="form.invalid || isSubmitting || !formHasChanged()"
                 autofocus
                 (click)="submit()"
             >
-                {{ action() }}
+                {{ action }}
             </button>
         </mat-dialog-actions>
     </div>

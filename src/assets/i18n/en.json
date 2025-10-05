@@ -229,6 +229,23 @@
 		"roleNotAvailable": "Selected role is not available",
 		"permissionsUpdated": "Permissions updated",
 		"permissionsUpdateError": "Failed to update permissions. Please try again.",
-		"dismiss": "Dismiss"
+		"dismiss": "Dismiss",
+		"managePermissionsTab": "Manage permissions",
+		"assignPermissionsTab": "Assign permissions",
+		"code": "Code",
+		"codePlaceholder": "e.g. orders.create",
+		"codeRequired": "Code is required",
+		"codeMaxLength": "Code must be at most 50 characters",
+		"description": "Description",
+		"descriptionPlaceholder": "Optional description",
+		"descriptionMaxLength": "Description must be at most 255 characters",
+		"addPermission": "Add permission",
+		"permissions": "Permissions",
+		"searchPermissions": "Search for Permissions",
+		"editNotImplemented": "Edit functionality is not yet implemented",
+		"deleteNotImplemented": "Delete functionality is not yet implemented in the backend",
+		"deletePermissionTitle": "Delete Permission",
+		"deletePermissionMessage": "Are you sure you want to delete the permission \"{code}\"?",
+		"failedToLoadPermissions": "Failed to load permissions"
 	}
 }

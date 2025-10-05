@@ -1,389 +1,234 @@
 import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    OnDestroy,
-    OnInit,
-    ViewChild,
-    inject,
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
 
-import { Subject } from 'rxjs'
-import { finalize, takeUntil } from 'rxjs/operators'
+import { Observable } from 'rxjs'
 import { MatButtonModule } from '@angular/material/button'
 import { MatCardModule } from '@angular/material/card'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator'
+import { MatPaginatorModule } from '@angular/material/paginator'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
-import {
-    MatTableDataSource,
-    MatTableModule,
-} from '@angular/material/table'
+import { MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from '@angular/material/tabs'
-import { TranslocoService } from '@jsverse/transloco'
+import { MatDialog } from '@angular/material/dialog'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco'
 
 import { PermissionsService } from 'src/app/services/permissions.service'
 import {
-    CreatePermissionRequest,
-    PermissionEntity,
-    RoleName,
-    RolePermissionsSummary,
+  CreatePermissionRequest,
+  PermissionEntity,
 } from 'src/app/shared/models/permission.model'
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 import { TopBarComponent } from '../../shared/components/top-bar/top-bar.component'
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
+import { AssignPermissionsComponent } from '../assign-permissions/assign-permissions.component'
+import { TableComponent } from "src/app/shared/components/table/table.component";
 
 @Component({
-    selector: 'app-manage-permissions',
-    templateUrl: './manage-permissions.component.html',
-    styleUrls: ['./manage-permissions.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatSnackBarModule,
-        MatTableModule,
-        MatProgressSpinnerModule,
-        MatTabsModule,
-        MatCheckboxModule,
-        MatPaginatorModule,
-        TopBarComponent,
-    ],
+  selector: 'app-manage-permissions',
+  templateUrl: './manage-permissions.component.html',
+  styleUrls: ['./manage-permissions.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatTabsModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
+    TopBarComponent,
+    AssignPermissionsComponent,
+    TableComponent,
+    MatCardModule,
+    TranslocoDirective,
+  ],
 })
-export class ManagePermissionsComponent implements OnInit, AfterViewInit, OnDestroy {
-    private readonly fb = inject(FormBuilder)
-    private readonly permissionsService = inject(PermissionsService)
-    private readonly snackBar = inject(MatSnackBar)
-    private readonly cdr = inject(ChangeDetectorRef)
-    private readonly translocoService = inject(TranslocoService)
+export class ManagePermissionsComponent {
+  private destroyRef = inject(DestroyRef);
+  private permissionsService = inject(PermissionsService);
+  private dialog = inject(MatDialog);
+  private fb = inject(FormBuilder);
+  private snackBar = inject(MatSnackBar);
+  private translocoService = inject(TranslocoService);
 
-    readonly permissions$ = this.permissionsService.permissions$
-    readonly rolePermissions$ = this.permissionsService.rolePermissions$
-    readonly displayedColumns = ['code', 'description', 'updated_at']
-    readonly assignmentColumns = ['code', 'Admin', 'Seller', 'Client']
-    readonly roleColumns: ReadonlyArray<{
-        label: string
-        columnKey: RoleName
-    }> = [
-        {
-            label: this.translocoService.translate('managePermissions.roleAdmin') as string,
-            columnKey: 'Admin',
+  public tableColumns = signal([
+    { key: "code", label: "managePermissions.code" },
+    { key: "description", label: "managePermissions.description" },
+  ]);
+  public searchQuery = signal('');
+
+  readonly form = this.fb.group({
+    code: ['', [Validators.required, Validators.maxLength(50)]],
+    description: ['', [Validators.maxLength(255)]],
+  })
+
+  public searchOptions = signal<SearchOptions>({ title: true, all: false });
+  public tableData$!: Observable<PermissionEntity[]>;
+  public currentPage = signal(1);
+  public pageSize = signal(10);
+
+  ngOnInit(): void {
+    this.findAll();
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched()
+      return
+    }
+
+    const formValue = this.form.value
+    const payload: CreatePermissionRequest = {
+      code: formValue.code?.trim() ?? '',
+      description: formValue.description?.trim() || null,
+    }
+
+    if (!payload.code) {
+      this.form.get('code')?.setErrors({ required: true })
+      return
+    }
+
+    this.permissionsService
+      .createPermission(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.snackBar.open(
+            this.translocoService.translate('managePermissions.permissionCreatedSuccess'), 
+            this.translocoService.translate('managePermissions.dismiss'), 
+            {
+              duration: 3000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+            }
+          )
+          this.form.reset()
+          this.findAll()
         },
-        {
-            label: this.translocoService.translate('managePermissions.roleSeller') as string,
-            columnKey: 'Seller',
+        error: (error) => {
+          const errorMessage = error?.error?.message || this.translocoService.translate('managePermissions.permissionCreatedError')
+          this.snackBar.open(errorMessage, this.translocoService.translate('managePermissions.dismiss'), {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar'],
+          })
         },
-        {
-            label: this.translocoService.translate('managePermissions.roleClient') as string,
-            columnKey: 'Client',
-        },
-    ]
+      })
+  }
 
-    isLoading = false
-    isSubmitting = false
-    errorMessage: string | null = null
-    isRoleAssignmentsLoading = false
+  public findAll(): void {
+    this.permissionsService.loadPermissions().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: () => {
+        // Permissions are now loaded and available in permissions$
+      },
+      error: (error) => {
+        this.snackBar.open(
+          this.translocoService.translate('managePermissions.failedToLoadPermissions'), 
+          this.translocoService.translate('managePermissions.dismiss'), 
+          {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar'],
+          }
+        )
+      },
+    });
 
-    readonly dataSource = new MatTableDataSource<PermissionEntity>([])
-    totalPermissions = 0
-    searchQuery = ''
-    searchOptions: SearchOptions = { title: true, all: false }
+    this.tableData$ = this.permissionsService.permissions$;
+  }
 
-    @ViewChild(MatPaginator) paginator?: MatPaginator
+  public onSearch(query: string): void {
+    this.searchQuery.set(query.toLowerCase());
+    // Filter permissions locally based on search query
+    if (query.trim()) {
+      this.tableData$ = new Observable<PermissionEntity[]>((observer) => {
+        this.permissionsService.permissions$.pipe(
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe((permissions) => {
+          const filtered = permissions.filter(p => 
+            p.code.toLowerCase().includes(query.toLowerCase()) ||
+            (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
+          );
+          observer.next(filtered);
+        });
+      });
+    } else {
+      this.tableData$ = this.permissionsService.permissions$;
+    }
+  }
 
-    private readonly destroy$ = new Subject<void>()
-    private roleIdByName = new Map<RoleName, number>()
-    private roleSelectionByRoleId = new Map<number, Set<string>>()
-    private assigningRoleIds = new Set<number>()
+  public onOptionsChanged(options: SearchOptions): void {
+    this.searchOptions.set(options);
+    this.findAll();
+  }
 
-    readonly form = this.fb.group({
-        code: ['', [Validators.required, Validators.maxLength(50)]],
-        description: ['', [Validators.maxLength(255)]],
+  public addPermission(): void {
+    // TODO: Implement add permission dialog
+    console.log('Add permission');
+  }
+
+  public onEdit(permission: PermissionEntity): void {
+    // TODO: Implement edit permission dialog and API endpoint in backend
+    this.snackBar.open(
+      this.translocoService.translate('managePermissions.editNotImplemented'), 
+      this.translocoService.translate('managePermissions.dismiss'), 
+      {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+      }
+    )
+    console.log('Edit permission', permission);
+  }
+
+  public onDelete(permission: PermissionEntity): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: {
+        title: this.translocoService.translate('managePermissions.deletePermissionTitle'),
+        message: this.translocoService.translate('managePermissions.deletePermissionMessage', { code: permission.code }),
+      },
     })
 
-    ngOnInit(): void {
-        this.loadPermissions()
-        this.loadRoleAssignments()
+    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((confirmed) => {
+      if (confirmed) {
+        // TODO: Implement delete permission API endpoint in backend
+        this.snackBar.open(
+          this.translocoService.translate('managePermissions.deleteNotImplemented'), 
+          this.translocoService.translate('managePermissions.dismiss'), 
+          {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+          }
+        )
+      }
+    })
+  }
 
-        this.dataSource.filterPredicate = (permission: PermissionEntity, filterValue: string) => {
-            if (!filterValue) {
-                return true
-            }
-
-            let criteria: { query: string; mode: 'title' | 'all' }
-            try {
-                criteria = JSON.parse(filterValue)
-            } catch {
-                criteria = { query: filterValue, mode: 'all' }
-            }
-
-            const normalizedFilter = (criteria.query ?? '').trim().toLowerCase()
-            if (!normalizedFilter) {
-                return true
-            }
-
-            if (criteria.mode === 'title') {
-                return permission.code.toLowerCase().includes(normalizedFilter)
-            }
-
-            const target = `${permission.code} ${permission.description ?? ''}`.toLowerCase().trim()
-
-            return target.includes(normalizedFilter)
-        }
-
-        this.permissions$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((permissions: PermissionEntity[]) => {
-                this.totalPermissions = permissions.length
-                this.dataSource.data = permissions
-                this.applyFilter()
-                this.cdr.markForCheck()
-            })
-
-        this.rolePermissions$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((roles: RolePermissionsSummary[]) => {
-                this.syncRoleAssignments(roles)
-            })
-    }
-
-    ngAfterViewInit(): void {
-        if (this.paginator) {
-            this.dataSource.paginator = this.paginator
-            this.cdr.markForCheck()
-        }
-    }
-
-    ngOnDestroy(): void {
-        this.destroy$.next()
-        this.destroy$.complete()
-    }
-
-    onSubmit(): void {
-        if (this.form.invalid || this.isSubmitting) {
-            this.form.markAllAsTouched()
-            return
-        }
-
-        const formValue = this.form.value
-        const payload: CreatePermissionRequest = {
-            code: formValue.code?.trim() ?? '',
-            description: formValue.description?.trim() || null,
-        }
-
-        if (!payload.code) {
-            this.form.get('code')?.setErrors({ required: true })
-            return
-        }
-
-        this.isSubmitting = true
-        this.errorMessage = null
-        this.permissionsService
-            .createPermission(payload)
-            .pipe(
-                finalize(() => {
-                    this.isSubmitting = false
-                    this.cdr.markForCheck()
-                })
-            )
-            .subscribe({
-                next: () => {
-                    this.form.reset()
-                    this.snackBar.open(
-                        this.translocoService.translate(
-                            'managePermissions.permissionCreatedSuccess'
-                        ) as string,
-                        this.translocoService.translate('managePermissions.dismiss') as string,
-                        {
-                            duration: 2500,
-                        }
-                    )
-                },
-                error: (error) => {
-                    const message =
-                        error?.error?.message ?? 'Failed to create permission. Please try again.'
-                    this.errorMessage = message
-                    this.snackBar.open(message, 'Dismiss', {
-                        duration: 4000,
-                    })
-                },
-            })
-    }
-
-    trackByPermissionId(_: number, permission: PermissionEntity): number {
-        return permission.id
-    }
-
-    isPermissionAssigned(roleName: RoleName, permissionCode: string): boolean {
-        const roleId = this.roleIdByName.get(roleName)
-        if (roleId === undefined) {
-            return false
-        }
-
-        return this.roleSelectionByRoleId.get(roleId)?.has(permissionCode) ?? false
-    }
-
-    hasRole(roleName: RoleName): boolean {
-        return this.roleIdByName.has(roleName)
-    }
-
-    isRoleAssigning(roleName: RoleName): boolean {
-        const roleId = this.roleIdByName.get(roleName)
-        if (roleId === undefined) {
-            return false
-        }
-
-        return this.assigningRoleIds.has(roleId)
-    }
-
-    onPermissionToggle(roleName: RoleName, permissionCode: string, checked: boolean): void {
-        const roleId = this.roleIdByName.get(roleName)
-        if (roleId === undefined) {
-            this.snackBar.open(
-                this.translocoService.translate('managePermissions.roleNotAvailable') as string,
-                this.translocoService.translate('managePermissions.dismiss') as string,
-                {
-                    duration: 3000,
-                }
-            )
-            return
-        }
-
-        const previousSelection = new Set(this.roleSelectionByRoleId.get(roleId) ?? [])
-        const nextSelection = new Set(previousSelection)
-
-        if (checked) {
-            nextSelection.add(permissionCode)
-        } else {
-            nextSelection.delete(permissionCode)
-        }
-
-        this.roleSelectionByRoleId.set(roleId, nextSelection)
-        this.assigningRoleIds.add(roleId)
-        this.cdr.markForCheck()
-
-        this.permissionsService
-            .assignPermissionsToRole(roleId, Array.from(nextSelection))
-            .pipe(
-                finalize(() => {
-                    this.assigningRoleIds.delete(roleId)
-                    this.cdr.markForCheck()
-                })
-            )
-            .subscribe({
-                next: () => {
-                    this.snackBar.open(
-                        this.translocoService.translate(
-                            'managePermissions.permissionsUpdated'
-                        ) as string,
-                        this.translocoService.translate('managePermissions.dismiss') as string,
-                        {
-                            duration: 2000,
-                        }
-                    )
-                },
-                error: (error: unknown) => {
-                    this.roleSelectionByRoleId.set(roleId, previousSelection)
-                    this.cdr.markForCheck()
-
-                    const apiError = error as { error?: { message?: string } }
-                    const message =
-                        apiError?.error?.message ??
-                        'Failed to update permissions. Please try again.'
-                    this.snackBar.open(message, 'Dismiss', {
-                        duration: 4000,
-                    })
-                },
-            })
-    }
-
-    private loadPermissions(): void {
-        this.isLoading = true
-        this.permissionsService
-            .loadPermissions()
-            .pipe(
-                finalize(() => {
-                    this.isLoading = false
-                    this.cdr.markForCheck()
-                })
-            )
-            .subscribe({
-                error: (error) => {
-                    const message =
-                        error?.error?.message ?? 'Failed to load permissions. Please refresh.'
-                    this.errorMessage = message
-                    this.snackBar.open(message, 'Dismiss', {
-                        duration: 4000,
-                    })
-                },
-            })
-    }
-
-    setSearchQuery(query: string): void {
-        this.searchQuery = query ?? ''
-        this.applyFilter()
-    }
-
-    setSearchOptions(options: SearchOptions): void {
-        this.searchOptions = { ...options }
-        this.applyFilter()
-    }
-
-    getSearchOptions(): SearchOptions {
-        return this.searchOptions
-    }
-
-    private applyFilter(): void {
-        const normalizedValue = this.searchQuery.trim().toLowerCase()
-        const mode = this.searchOptions.title ? 'title' : 'all'
-        this.dataSource.filter = JSON.stringify({ query: normalizedValue, mode })
-        if (this.dataSource.paginator) {
-            this.dataSource.paginator.firstPage()
-        }
-        this.cdr.markForCheck()
-    }
-
-    private loadRoleAssignments(): void {
-        this.isRoleAssignmentsLoading = true
-        this.permissionsService
-            .loadRolePermissions()
-            .pipe(
-                finalize(() => {
-                    this.isRoleAssignmentsLoading = false
-                    this.cdr.markForCheck()
-                })
-            )
-            .subscribe({
-                error: (error: unknown) => {
-                    const apiError = error as { error?: { message?: string } }
-                    const message =
-                        apiError?.error?.message ??
-                        'Failed to load role permissions. Please refresh.'
-                    this.snackBar.open(message, 'Dismiss', {
-                        duration: 4000,
-                    })
-                },
-            })
-    }
-
-    private syncRoleAssignments(roles: RolePermissionsSummary[]): void {
-        this.roleIdByName = new Map<RoleName, number>()
-        this.roleSelectionByRoleId = new Map<number, Set<string>>()
-
-        roles.forEach((role) => {
-            this.roleIdByName.set(role.name, role.id)
-            this.roleSelectionByRoleId.set(role.id, new Set(role.permissionCodes ?? []))
-        })
-
-        this.cdr.markForCheck()
-    }
+  public onPageInfoChange(pageInfo: { currentPage: number; pageSize: number }): void {
+    this.currentPage.set(pageInfo.currentPage);
+    this.pageSize.set(pageInfo.pageSize);
+    this.findAll();
+  }
 }

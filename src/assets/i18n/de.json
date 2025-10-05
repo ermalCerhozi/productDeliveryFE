@@ -39,5 +39,33 @@
 		"description": "Beschreibung",
 		"ingredients": "Zutaten",
 		"cancel": "Abbrechen"
+	},
+	"managePermissions": {
+		"roleAdmin": "Administrator",
+		"roleSeller": "Verkäufer",
+		"roleClient": "Kunde",
+		"permissionCreatedSuccess": "Berechtigung erfolgreich erstellt",
+		"permissionCreatedError": "Fehler beim Erstellen der Berechtigung. Bitte versuchen Sie es erneut.",
+		"roleNotAvailable": "Ausgewählte Rolle ist nicht verfügbar",
+		"permissionsUpdated": "Berechtigungen aktualisiert",
+		"permissionsUpdateError": "Fehler beim Aktualisieren der Berechtigungen. Bitte versuchen Sie es erneut.",
+		"dismiss": "Schließen",
+		"managePermissionsTab": "Berechtigungen verwalten",
+		"assignPermissionsTab": "Berechtigungen zuweisen",
+		"code": "Code",
+		"codePlaceholder": "z.B. orders.create",
+		"codeRequired": "Code ist erforderlich",
+		"codeMaxLength": "Code darf maximal 50 Zeichen lang sein",
+		"description": "Beschreibung",
+		"descriptionPlaceholder": "Optionale Beschreibung",
+		"descriptionMaxLength": "Beschreibung darf maximal 255 Zeichen lang sein",
+		"addPermission": "Berechtigung hinzufügen",
+		"permissions": "Berechtigungen",
+		"searchPermissions": "Berechtigungen suchen",
+		"editNotImplemented": "Bearbeitungsfunktion ist noch nicht implementiert",
+		"deleteNotImplemented": "Löschfunktion ist im Backend noch nicht implementiert",
+		"deletePermissionTitle": "Berechtigung löschen",
+		"deletePermissionMessage": "Sind Sie sicher, dass Sie die Berechtigung \"{code}\" löschen möchten?",
+		"failedToLoadPermissions": "Fehler beim Laden der Berechtigungen"
 	}
 }

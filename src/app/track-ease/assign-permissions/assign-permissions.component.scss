@@ -1,0 +1,48 @@
+:host {
+    display: block;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.permissions-assign-card {
+    margin-bottom: 24px;
+}
+
+.list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.permissions-matrix-table {
+    width: 100%;
+    min-width: 640px;
+}
+
+.permission-code {
+    font-weight: 600;
+}
+
+.permission-description {
+    margin-top: 4px;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.875rem;
+}
+
+.empty-state {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.6);
+    font-style: italic;
+}
+
+.loading-state {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.6);
+    padding: 24px 0;
+}

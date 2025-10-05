@@ -220,9 +220,11 @@ export class BakeryManagementApiService {
     createPermission(
         payload: CreatePermissionRequest | CreatePermissionRequest[]
     ): Observable<PermissionEntity | PermissionEntity[]> {
+        // Backend expects an array, so wrap single items
+        const payloadArray = Array.isArray(payload) ? payload : [payload]
         return this.httpClient.post<PermissionEntity | PermissionEntity[]>(
             `${this.basePath}/permissions`,
-            payload
+            payloadArray
         )
     }
 

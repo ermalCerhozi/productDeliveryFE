@@ -23,6 +23,7 @@ export class TableComponent<T extends { id: number }> implements AfterViewInit {
   public isSelectable = input<boolean>(true);
   public isEditable = input<boolean>(true);
   public isDeletable = input<boolean>(true);
+  public showActions = input<boolean>(true);
 
   public selectedRows = output<T[]>();
   public currentPageInfo = output<{ currentPage: number; pageSize: number }>();
@@ -66,7 +67,11 @@ export class TableComponent<T extends { id: number }> implements AfterViewInit {
       columnsToAdd.push('select');
     }
     
-    return [...columnsToAdd, ...baseColumns, 'actions'];
+    if (this.showActions()) {
+      return [...columnsToAdd, ...baseColumns, 'actions'];
+    }
+    
+    return [...columnsToAdd, ...baseColumns];
   }
 
   private applyFilter(): void {
