@@ -1,0 +1,11 @@
+{
+    "navigation": {
+        "home": "Home",
+        "products": "Products",
+        "orders": "Orders",
+        "users": "Users",
+        "permissions": "Permissions",
+        "settings": "Settings",
+        "profile": "Profile"
+    }
+}

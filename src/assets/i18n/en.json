@@ -1,0 +1,14 @@
+{
+    "layout": {
+		"menu": "Menu",
+		"appName": "TrackEase",
+		"logOut": "Log out",
+		"home": "Home",
+		"products": "Products",
+		"orders": "Orders",
+		"users": "Users",
+		"permissions": "Permissions",
+		"settings": "Settings",
+		"profile": "Profile"
+	}
+}

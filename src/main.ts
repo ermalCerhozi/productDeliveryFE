@@ -1,4 +1,4 @@
-import { enableProdMode, importProvidersFrom } from '@angular/core'
+import { enableProdMode, importProvidersFrom, isDevMode } from '@angular/core'
 
 import { environment } from 'src/environments/environment'
 import { LocalStorageService } from 'ngx-webstorage'
@@ -10,7 +10,9 @@ import { BrowserModule, bootstrapApplication } from '@angular/platform-browser'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { AppRoutingModule } from 'src/app/app-routing.module'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { AppComponent } from './app/app.component'
+import { AppComponent } from './app/app.component';
+import { TranslocoHttpLoader } from './transloco-loader';
+import { provideTransloco } from '@jsverse/transloco'
 
 if (environment.production) {
     enableProdMode()
@@ -36,6 +38,15 @@ bootstrapApplication(AppComponent, {
             multi: true,
         },
         provideAnimations(),
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withInterceptorsFromDi()), provideHttpClient(), provideTransloco({
+        config: { 
+          availableLangs: ['en', 'de', 'all'],
+          defaultLang: 'en',
+          // Remove this option if your application doesn't support changing language in runtime.
+          reRenderOnLangChange: true,
+          prodMode: !isDevMode(),
+        },
+        loader: TranslocoHttpLoader
+      }),
     ],
 }).catch((err) => console.error(err))

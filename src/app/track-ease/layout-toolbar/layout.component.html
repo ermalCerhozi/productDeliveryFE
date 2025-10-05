@@ -1,52 +1,55 @@
-<mat-drawer-container class="layout-container">
-    <mat-drawer
-        #drawer
-        class="layout-sidenav"
-        fixedInViewport
-        [mode]="(isHandset$ | async) ? 'over' : 'side'"
-        [opened]="(isHandset$ | async) === false"
-    >
-        <mat-toolbar>Menu</mat-toolbar>
-        <mat-nav-list>
-            <ng-container *ngFor="let route of visibleRoutes">
-                <mat-list-item
-                    class="layout-sidenav-options"
-                    [routerLink]="route.path"
-                    [routerLinkActive]="['is-active']"
-                    (click)="toggleDrawerOnHandset()"
-                >
-                    <div class="icon-text-wrapper">
-                        <mat-icon fontSet="material-icons-outlined">{{ route.icon }}</mat-icon>
-                        <span>{{ route.name }}</span>
-                    </div>
-                </mat-list-item>
-            </ng-container>
-        </mat-nav-list>
-    </mat-drawer>
+<ng-container *transloco="let t">
 
-    <div>
-        <mat-toolbar color="primary">
-            <button
-                type="button"
-                aria-label="Toggle sidenav"
-                mat-icon-button
-                (click)="drawer.toggle()"
-                *ngIf="isHandset$ | async"
-            >
-                <mat-icon aria-label="toggle icon">menu</mat-icon>
-            </button>
-            <span>TrackEase</span>
-            <span class="spacer"></span>
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="logOut()">
-                    <mat-icon color="warn">logout</mat-icon>
-                    <span>Log out</span>
+    <mat-drawer-container class="layout-container">
+        <mat-drawer
+            #drawer
+            class="layout-sidenav"
+            fixedInViewport
+            [mode]="(isHandset$ | async) ? 'over' : 'side'"
+            [opened]="(isHandset$ | async) === false"
+        >
+            <mat-toolbar>{{ t('layout.menu') }}</mat-toolbar>
+            <mat-nav-list>
+                <ng-container *ngFor="let route of visibleRoutes">
+                    <mat-list-item
+                        class="layout-sidenav-options"
+                        [routerLink]="route.path"
+                        [routerLinkActive]="['is-active']"
+                        (click)="toggleDrawerOnHandset()"
+                    >
+                        <div class="icon-text-wrapper">
+                            <mat-icon fontSet="material-icons-outlined">{{ route.icon }}</mat-icon>
+                            <span>{{ t(route.name) }}</span>
+                        </div>
+                    </mat-list-item>
+                </ng-container>
+            </mat-nav-list>
+        </mat-drawer>
+
+        <div>
+            <mat-toolbar color="primary">
+                <button
+                    type="button"
+                    aria-label="Toggle sidenav"
+                    mat-icon-button
+                    (click)="drawer.toggle()"
+                    *ngIf="isHandset$ | async"
+                >
+                    <mat-icon aria-label="toggle icon">menu</mat-icon>
                 </button>
-            </mat-menu>
-        </mat-toolbar>
-        <router-outlet></router-outlet>
-    </div>
-</mat-drawer-container>
+                <span>{{ t('layout.appName') }}</span>
+                <span class="spacer"></span>
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="logOut()">
+                        <mat-icon color="warn">logout</mat-icon>
+                        <span>{{ t('layout.logOut') }}</span>
+                    </button>
+                </mat-menu>
+            </mat-toolbar>
+            <router-outlet></router-outlet>
+        </div>
+    </mat-drawer-container>
+</ng-container>
