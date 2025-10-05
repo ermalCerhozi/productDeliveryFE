@@ -10,7 +10,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
 import { MatDialog } from '@angular/material/dialog'
 
-import { TranslocoDirective } from '@jsverse/transloco'
 import { Router, ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'

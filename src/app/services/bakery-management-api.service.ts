@@ -85,6 +85,18 @@ export class BakeryManagementApiService {
         return this.httpClient.post<ProductEntity>(`${this.basePath}/products`, product)
     }
 
+    searchProducts(
+        query: string = '', 
+        page: number = 1, 
+        pageSize: number = 10,
+        searchOptions: SearchOptions = { title: false, all: true }
+    ): Observable<ProductResponse> {
+        return this.httpClient.post<ProductResponse>(
+            `${this.basePath}/products/search`,
+            { query, page, pageSize, searchOptions }
+        )
+    }
+
     searchProduct(requestPayload: {
         navigation_context: NavigationContext
     }): Observable<ProductResponse> {

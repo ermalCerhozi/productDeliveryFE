@@ -1,4 +1,10 @@
 {
+	"table": {
+		"actions": "Actions",
+		"itemsPerPageLabel": "Items per page",
+		"edit": "Edit",
+		"delete": "Delete"
+	},
 	"layout": {
 		"menu": "Menu",
 		"appName": "TrackEase",
@@ -160,6 +166,8 @@
 	"manageProducts": {
 		"id": "ID",
 		"product": "Product",
+		"product_name": "Product Name",
+		"category": "Category",
 		"price": "Price",
 		"actions": "Actions",
 		"noDataFound": "No Data Found!"

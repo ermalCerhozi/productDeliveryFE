@@ -50,7 +50,7 @@ export class TableComponent<T extends { id: number }> implements AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.paginator()) {
-      this.translocoService.selectTranslate('itemsPerPageLabel').subscribe(value => {
+      this.translocoService.selectTranslate('table.itemsPerPageLabel').subscribe(value => {
         this.paginator()!._intl.itemsPerPageLabel = value;
         this.paginator()!._intl.changes.next();
       });
