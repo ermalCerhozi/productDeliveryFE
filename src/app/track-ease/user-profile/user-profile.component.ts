@@ -6,7 +6,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import { NgIf, DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common'
 
 import { Subscription } from 'rxjs'
 import { finalize } from 'rxjs/operators'
@@ -36,13 +36,12 @@ import { TranslocoDirective } from '@jsverse/transloco'
         MatFormField,
         MatLabel,
         MatInput,
-        NgIf,
         MatIconButton,
         MatSuffix,
         MatToolbar,
         DatePipe,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
     private bakeryManagementService = inject(BakeryManagementService)
@@ -57,7 +56,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     private profileRefreshSub?: Subscription
 
     ngOnInit(): void {
-    const cachedUser = this.bakeryManagementService.getLoggedInUser() as UserEntity | null
+        const cachedUser = this.bakeryManagementService.getLoggedInUser() as UserEntity | null
 
         if (!cachedUser?.id) {
             console.error('Unable to load user profile: missing cached user data.')
@@ -158,7 +157,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
                     .subscribe({
                         next: (image: ImageResponse | null) => {
                             if (!image) {
-                                console.warn('Image upload succeeded but no image payload was returned.')
+                                console.warn(
+                                    'Image upload succeeded but no image payload was returned.'
+                                )
                                 return
                             }
 

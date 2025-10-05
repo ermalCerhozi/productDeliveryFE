@@ -14,12 +14,10 @@ import { SnackBarService } from 'src/app/services/snackbar.service'
 
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
-    private snackBarService= inject(SnackBarService)
+    private snackBarService = inject(SnackBarService)
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const request = req.withCredentials
-            ? req
-            : req.clone({ withCredentials: true })
+        const request = req.withCredentials ? req : req.clone({ withCredentials: true })
 
         return next.handle(request).pipe(
             catchError((err: HttpErrorResponse) => {

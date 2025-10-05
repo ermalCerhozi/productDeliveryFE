@@ -8,7 +8,7 @@ import { FontService } from './services/font.service'
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
-    imports: [RouterOutlet]
+    imports: [RouterOutlet],
 })
 export class AppComponent {
     themeService = inject(ThemeService)

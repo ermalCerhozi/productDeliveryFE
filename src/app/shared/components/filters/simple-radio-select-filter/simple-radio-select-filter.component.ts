@@ -17,7 +17,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import { NgStyle, NgIf, NgFor } from '@angular/common'
+import { NgStyle } from '@angular/common'
 
 import { MatOption } from '@angular/material/core'
 import { MatFormField } from '@angular/material/form-field'
@@ -47,12 +47,10 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
         ReactiveFormsModule,
         MatFormField,
         NgStyle,
-        NgIf,
         MatIcon,
         MatSelect,
-        NgFor,
         MatOption,
-    ]
+    ],
 })
 export class SimpleRadioSelectFilterComponent implements OnInit, OnChanges {
     private fb = inject(FormBuilder)

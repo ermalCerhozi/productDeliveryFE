@@ -33,27 +33,37 @@
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="selectUser(row)"></tr>
+            <tr
+                mat-row
+                *matRowDef="let row; columns: displayedColumns"
+                (click)="selectUser(row)"
+            ></tr>
 
             <!-- Row shown when there is no matching data. -->
             <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell" *ngIf="!isLoading" colspan="4">
-                    <div class="no-data-container">
-                        <img src="assets/images/no-data.svg" alt="No data found" class="small-image" />
-                        <p>{{ t('manageUsers.noDataFound') }}</p>
-                    </div>
-                </td>
+                @if (!isLoading) {
+                    <td class="mat-cell" colspan="4">
+                        <div class="no-data-container">
+                            <img
+                                src="assets/images/no-data.svg"
+                                alt="No data found"
+                                class="small-image"
+                            />
+                            <p>{{ t('manageUsers.noDataFound') }}</p>
+                        </div>
+                    </td>
+                }
             </tr>
         </table>
     </div>
 
-    <div *ngIf="isLoading" class="spinner-container">
-        <mat-progress-spinner
-            *ngIf="isLoading"
-            mode="indeterminate"
-            diameter="50"
-        ></mat-progress-spinner>
-    </div>
+    @if (isLoading) {
+        <div class="spinner-container">
+            @if (isLoading) {
+                <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+            }
+        </div>
+    }
 
     <mat-paginator
         [length]="bakeryManagementService.usersCount"
@@ -76,9 +86,7 @@
     </ng-template>
 
     <ng-template #createUpdateContainer>
-        <app-create-update-user-dialog
-            [user]="activeUser"
-        ></app-create-update-user-dialog>
+        <app-create-update-user-dialog [user]="activeUser"></app-create-update-user-dialog>
     </ng-template>
 
     <ng-template #confirmationDialogContainer>

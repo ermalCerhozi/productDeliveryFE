@@ -13,8 +13,8 @@ export class SnackBarService {
     private verticalPosition: MatSnackBarVerticalPosition = 'top'
     private duration = 3000
 
-    private _snackBar=  inject(MatSnackBar)
-    
+    private _snackBar = inject(MatSnackBar)
+
     constructor() {}
 
     public showSuccess(message: string) {

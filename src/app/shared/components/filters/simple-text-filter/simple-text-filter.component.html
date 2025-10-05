@@ -12,16 +12,15 @@
             }"
         >
             <span class="mef-simple-text-label">
-                <ng-container *ngIf="showCheck !== undefined; else formCheck">
-                    <mat-icon class="mef-simple-text-label-icon" *ngIf="showCheck">check</mat-icon>
-                </ng-container>
-                <ng-template #formCheck>
-                    <mat-icon
-                        class="mef-simple-text-label-icon"
-                        *ngIf="form && form.value.fields.length > 0"
-                        >check</mat-icon
-                    >
-                </ng-template>
+                @if (showCheck !== undefined) {
+                    @if (showCheck) {
+                        <mat-icon class="mef-simple-text-label-icon">check</mat-icon>
+                    }
+                } @else {
+                    @if (form && form.value.fields.length > 0) {
+                        <mat-icon class="mef-simple-text-label-icon">check</mat-icon>
+                    }
+                }
                 <span>{{ labelTK }}</span>
             </span>
             <!-- [mefTrackBy]="field.charAt(0).toUpperCase() + field.slice(1) + 'FilterClicked'" //TODO: detemine if needed -->
@@ -36,55 +35,61 @@
                 [compareWith]="compareValues"
                 [disableOptionCentering]="true"
             >
-                <mat-option *ngIf="loading" class="spinner-option">
-                    <mat-spinner diameter="30"></mat-spinner>
-                </mat-option>
-                <mat-option
-                    data-testid="all-option"
-                    *ngIf="hasAllOption && allOption && !loading"
-                    [disabled]="isAllSelected"
-                    [value]="allOption"
-                >
-                    <div class="mef-simple-text-filter-content">
-                        <div class="label">
-                            <ng-container *ngIf="allOption.isTranslated">
-                                {{ allOption.label }}
-                            </ng-container>
-                            <ng-container *ngIf="!allOption.isTranslated">
-                                {{ allOption.label }}
-                            </ng-container>
+                @if (loading) {
+                    <mat-option class="spinner-option">
+                        <mat-spinner diameter="30"></mat-spinner>
+                    </mat-option>
+                }
+                @if (hasAllOption && allOption && !loading) {
+                    <mat-option
+                        data-testid="all-option"
+                        [disabled]="isAllSelected"
+                        [value]="allOption"
+                    >
+                        <div class="mef-simple-text-filter-content">
+                            <div class="label">
+                                @if (allOption.isTranslated) {
+                                    {{ allOption.label }}
+                                }
+                                @if (!allOption.isTranslated) {
+                                    {{ allOption.label }}
+                                }
+                            </div>
+                            @if (allOption.count || allOption.count === 0) {
+                                <div class="count">({{ allOption.count }})</div>
+                            }
                         </div>
-                        <div class="count" *ngIf="allOption.count || allOption.count === 0">
-                            ({{ allOption.count }})
-                        </div>
-                    </div>
-                </mat-option>
+                    </mat-option>
+                }
                 <!-- All other options -->
-                <mat-option *ngFor="let field of optionsWithoutAll" [value]="field">
-                    <div class="mef-simple-text-filter-content">
-                        <div class="label">
-                            <ng-container *ngIf="field.isTranslated">
-                                {{ field.label }}
-                            </ng-container>
-                            <ng-container *ngIf="!field.isTranslated">
-                                {{ field.label }}
-                            </ng-container>
+                @for (field of optionsWithoutAll; track field) {
+                    <mat-option [value]="field">
+                        <div class="mef-simple-text-filter-content">
+                            <div class="label">
+                                @if (field.isTranslated) {
+                                    {{ field.label }}
+                                }
+                                @if (!field.isTranslated) {
+                                    {{ field.label }}
+                                }
+                            </div>
+                            @if (hasOnlyButton) {
+                                <button
+                                    class="only-button"
+                                    color="primary"
+                                    data-testid="only-button"
+                                    mat-icon-button
+                                    (click)="selectOnlyOne($event, field)"
+                                >
+                                    {{ 'GT_ONLY' }}
+                                </button>
+                            }
+                            @if (field.count || field.count === 0) {
+                                <div class="count">({{ field.count }})</div>
+                            }
                         </div>
-                        <button
-                            *ngIf="hasOnlyButton"
-                            class="only-button"
-                            color="primary"
-                            data-testid="only-button"
-                            mat-icon-button
-                            (click)="selectOnlyOne($event, field)"
-                        >
-                            {{ 'GT_ONLY' }}
-                        </button>
-                        <div class="count" *ngIf="field.count || field.count === 0">
-                            ({{ field.count }})
-                        </div>
-                    </div>
-                </mat-option>
+                    </mat-option>
+                }
             </mat-select>
         </mat-form-field>
     </form>

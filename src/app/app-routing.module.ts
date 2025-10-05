@@ -46,9 +46,9 @@ const routes: Routes = [
             {
                 path: 'permissions',
                 loadComponent: () =>
-                    import('src/app/track-ease/manage-permissions/manage-permissions.component').then(
-                        (c) => c.ManagePermissionsComponent
-                    ),
+                    import(
+                        'src/app/track-ease/manage-permissions/manage-permissions.component'
+                    ).then((c) => c.ManagePermissionsComponent),
                 canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin'] },
             },

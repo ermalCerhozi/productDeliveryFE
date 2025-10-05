@@ -1,5 +1,5 @@
 import { Component, input, output, ViewChild, ViewEncapsulation } from '@angular/core'
-import { NgFor, NgStyle } from '@angular/common'
+import { NgStyle } from '@angular/common'
 
 import { MatIcon } from '@angular/material/icon'
 import { MatMenu, MatMenuItem } from '@angular/material/menu'
@@ -11,7 +11,7 @@ import { DropdownMenuListItem, DropdownEvent } from 'src/app/shared/models/Dropd
     templateUrl: './dropdown-menu-list.component.html',
     styleUrls: ['./dropdown-menu-list.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    imports: [MatMenu, NgFor, MatMenuItem, NgStyle, MatIcon]
+    imports: [MatMenu, MatMenuItem, NgStyle, MatIcon],
 })
 export class DropdownMenuListComponent {
     width = input('230px')

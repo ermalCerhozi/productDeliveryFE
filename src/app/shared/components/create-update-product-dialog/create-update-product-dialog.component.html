@@ -1,40 +1,73 @@
 <ng-container *transloco="let t">
     <div class="dialog-container">
         <div mat-dialog-title>
-            {{ action() === 'create' ? t('createUpdateProductDialog.create') : t('createUpdateProductDialog.update') }} {{ t('createUpdateProductDialog.product') }}
+            {{
+                action() === 'create'
+                    ? t('createUpdateProductDialog.create')
+                    : t('createUpdateProductDialog.update')
+            }}
+            {{ t('createUpdateProductDialog.product') }}
         </div>
 
         <mat-dialog-content class="dialog-content">
             <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-content-form">
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateProductDialog.productName') }}</mat-label>
-                    <input matInput formControlName="product_name" required [title]="t('createUpdateProductDialog.productName')" />
-                    <mat-error *ngIf="form.get('product_name')?.invalid && form.get('product_name')?.touched">
-                        {{ t('createUpdateProductDialog.productNameRequired') }}
-                    </mat-error>
+                    <input
+                        matInput
+                        formControlName="product_name"
+                        required
+                        [title]="t('createUpdateProductDialog.productName')"
+                    />
+                    @if (form.get('product_name')?.invalid && form.get('product_name')?.touched) {
+                        <mat-error>
+                            {{ t('createUpdateProductDialog.productNameRequired') }}
+                        </mat-error>
+                    }
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateProductDialog.price') }}</mat-label>
-                    <input matInput type="number" min="0" formControlName="price" required [title]="t('createUpdateProductDialog.price')" />
-                    <mat-error *ngIf="form.get('price')?.invalid && form.get('price')?.touched">
-                        {{ t('createUpdateProductDialog.priceRequired') }}
-                    </mat-error>
+                    <input
+                        matInput
+                        type="number"
+                        min="0"
+                        formControlName="price"
+                        required
+                        [title]="t('createUpdateProductDialog.price')"
+                    />
+                    @if (form.get('price')?.invalid && form.get('price')?.touched) {
+                        <mat-error>
+                            {{ t('createUpdateProductDialog.priceRequired') }}
+                        </mat-error>
+                    }
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateProductDialog.imageUrl') }}</mat-label>
-                    <input matInput formControlName="image" [title]="t('createUpdateProductDialog.imageUrl')" />
+                    <input
+                        matInput
+                        formControlName="image"
+                        [title]="t('createUpdateProductDialog.imageUrl')"
+                    />
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateProductDialog.description') }}</mat-label>
-                    <textarea matInput formControlName="description" [title]="t('createUpdateProductDialog.description')"></textarea>
+                    <textarea
+                        matInput
+                        formControlName="description"
+                        [title]="t('createUpdateProductDialog.description')"
+                    ></textarea>
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateProductDialog.ingredients') }}</mat-label>
-                    <textarea matInput formControlName="ingredients" [title]="t('createUpdateProductDialog.ingredients')"></textarea>
+                    <textarea
+                        matInput
+                        formControlName="ingredients"
+                        [title]="t('createUpdateProductDialog.ingredients')"
+                    ></textarea>
                 </mat-form-field>
             </form>
         </mat-dialog-content>

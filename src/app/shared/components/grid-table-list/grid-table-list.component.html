@@ -1,75 +1,77 @@
 <!-- If there is no items, display the empty state -->
-<ng-container *ngIf="!items.length" [ngTemplateOutlet]="emptyStateTemplate"></ng-container>
+@if (!items.length) {
+    <ng-container [ngTemplateOutlet]="emptyStateTemplate"></ng-container>
+}
 
 <!-- If there are items -->
-<ng-container *ngIf="items.length" [ngSwitch]="scrollType">
-    <!-- Default scroll -->
-    <div
-        #gridViewport
-        *ngSwitchCase="'default'"
-        class="grid-viewport"
-        (window:resize)="onResizeViewport()"
-    >
-        <mat-grid-list
-            [cols]="gridColumns"
-            [gutterSize]="gutterSize + 'px'"
-            [rowHeight]="minItemHeight + 'px'"
-        >
-            <mat-grid-tile *ngFor="let item of items">
-                <ng-container
-                    [ngTemplateOutlet]="itemTemplate"
-                    [ngTemplateOutletContext]="{ item: item }"
-                ></ng-container>
-            </mat-grid-tile>
-        </mat-grid-list>
-    </div>
-
-    <!-- Infinite scroll -->
-    <div
-        #gridViewport
-        *ngSwitchCase="'infinite'"
-        class="grid-viewport"
-        infiniteScroll
-        [infiniteScrollDistance]="2"
-        [infiniteScrollThrottle]="50"
-        (scrolled)="onInfiniteScrollDown()"
-        (scrolledUp)="onInfiniteScrollUp()"
-        [scrollWindow]="false"
-        (window:resize)="onResizeViewport()"
-    >
-        <mat-grid-list
-            [cols]="gridColumns"
-            [gutterSize]="gutterSize + 'px'"
-            [rowHeight]="minItemHeight + 'px'"
-        >
-            <mat-grid-tile *ngFor="let item of items">
-                <ng-container
-                    [ngTemplateOutlet]="itemTemplate"
-                    [ngTemplateOutletContext]="{ item: item }"
-                ></ng-container>
-            </mat-grid-tile>
-        </mat-grid-list>
-    </div>
-
-    <!-- Virtual scroll -->
-    <cdk-virtual-scroll-viewport
-        *ngSwitchCase="'virtual'"
-        [itemSize]="baseItemHeight"
-        class="virtual-viewport"
-    >
-        <div #gridViewport class="grid-viewport" (window:resize)="onResizeViewport()">
-            <mat-grid-list
-                [cols]="gridColumns"
-                [gutterSize]="gutterSize + 'px'"
-                [rowHeight]="minItemHeight + 'px'"
+@if (items.length) {
+    @switch (scrollType) {
+        <!-- Default scroll -->
+        @case ('default') {
+            <div #gridViewport class="grid-viewport" (window:resize)="onResizeViewport()">
+                <mat-grid-list
+                    [cols]="gridColumns"
+                    [gutterSize]="gutterSize + 'px'"
+                    [rowHeight]="minItemHeight + 'px'"
+                >
+                    @for (item of items; track item) {
+                        <mat-grid-tile>
+                            <ng-container
+                                [ngTemplateOutlet]="itemTemplate"
+                                [ngTemplateOutletContext]="{ item: item }"
+                            ></ng-container>
+                        </mat-grid-tile>
+                    }
+                </mat-grid-list>
+            </div>
+        }
+        <!-- Infinite scroll -->
+        @case ('infinite') {
+            <div
+                #gridViewport
+                class="grid-viewport"
+                infiniteScroll
+                [infiniteScrollDistance]="2"
+                [infiniteScrollThrottle]="50"
+                (scrolled)="onInfiniteScrollDown()"
+                (scrolledUp)="onInfiniteScrollUp()"
+                [scrollWindow]="false"
+                (window:resize)="onResizeViewport()"
             >
-                <mat-grid-tile *cdkVirtualFor="let item of items">
-                    <ng-container
-                        [ngTemplateOutlet]="itemTemplate"
-                        [ngTemplateOutletContext]="{ item: item }"
-                    ></ng-container>
-                </mat-grid-tile>
-            </mat-grid-list>
-        </div>
-    </cdk-virtual-scroll-viewport>
-</ng-container>
+                <mat-grid-list
+                    [cols]="gridColumns"
+                    [gutterSize]="gutterSize + 'px'"
+                    [rowHeight]="minItemHeight + 'px'"
+                >
+                    @for (item of items; track item) {
+                        <mat-grid-tile>
+                            <ng-container
+                                [ngTemplateOutlet]="itemTemplate"
+                                [ngTemplateOutletContext]="{ item: item }"
+                            ></ng-container>
+                        </mat-grid-tile>
+                    }
+                </mat-grid-list>
+            </div>
+        }
+        <!-- Virtual scroll -->
+        @case ('virtual') {
+            <cdk-virtual-scroll-viewport [itemSize]="baseItemHeight" class="virtual-viewport">
+                <div #gridViewport class="grid-viewport" (window:resize)="onResizeViewport()">
+                    <mat-grid-list
+                        [cols]="gridColumns"
+                        [gutterSize]="gutterSize + 'px'"
+                        [rowHeight]="minItemHeight + 'px'"
+                    >
+                        <mat-grid-tile *cdkVirtualFor="let item of items">
+                            <ng-container
+                                [ngTemplateOutlet]="itemTemplate"
+                                [ngTemplateOutletContext]="{ item: item }"
+                            ></ng-container>
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </div>
+            </cdk-virtual-scroll-viewport>
+        }
+    }
+}

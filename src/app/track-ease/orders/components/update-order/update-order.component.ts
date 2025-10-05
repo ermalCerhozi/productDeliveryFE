@@ -8,7 +8,7 @@ import {
     ReactiveFormsModule,
 } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { NgFor, NgIf, AsyncPipe } from '@angular/common'
+import { AsyncPipe } from '@angular/common'
 
 import { Observable, Subject, Subscription, debounceTime, fromEvent, map, takeUntil } from 'rxjs'
 import { cloneDeep, isEqual } from 'lodash-es'
@@ -41,9 +41,7 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco'
         MatInput,
         MatAutocompleteTrigger,
         MatAutocomplete,
-        NgFor,
         MatOption,
-        NgIf,
         MatError,
         MatMiniFabButton,
         MatIcon,
@@ -51,15 +49,15 @@ import { TranslocoDirective, TranslocoService } from '@jsverse/transloco'
         MatDialogActions,
         MatButton,
         AsyncPipe,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class UpdateOrderComponent implements OnInit, OnDestroy {
     @ViewChild('autoCompleteProducts') autoCompleteProducts!: MatAutocomplete
     @ViewChild('autoCompleteClients') autoCompleteClients!: MatAutocomplete
     private scrollSubscription!: Subscription
 
-    private destroy$ = new Subject<boolean>();
+    private destroy$ = new Subject<boolean>()
 
     clients: Observable<FilterOption[]>
     hasMoreClientsToLoad: Observable<boolean>
@@ -109,7 +107,7 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.destroy$.next(true);
+        this.destroy$.next(true)
         this.destroy$.complete()
     }
 
@@ -157,41 +155,42 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
 
     calculateTotalOrderPrice(orderItems: any[]) {
         const validOrderItems = orderItems.filter(
-            item => item.product && (item.quantity || item.returned_quantity)
-        );
+            (item) => item.product && (item.quantity || item.returned_quantity)
+        )
         this.totalOrderPrice = validOrderItems.reduce((total, item) => {
-            const quantity = item.quantity ?? 0;
-            const returnedQuantity = item.returned_quantity ?? 0;
-            return total + item.product.price * (quantity - returnedQuantity);
-        }, 0);
+            const quantity = item.quantity ?? 0
+            const returnedQuantity = item.returned_quantity ?? 0
+            return total + item.product.price * (quantity - returnedQuantity)
+        }, 0)
     }
 
     processSelectedProducts(orderItems: any[]): void {
-        const selectedProductsMap = new Map();
-        orderItems.forEach(item => {
+        const selectedProductsMap = new Map()
+        orderItems.forEach((item) => {
             if (item.product && item.product.label) {
                 selectedProductsMap.set(item.product.value, {
                     label: item.product.label,
                     value: item.product.value,
-                });
+                })
             }
-        });
-        const selectedProducts = Array.from(selectedProductsMap.values());
+        })
+        const selectedProducts = Array.from(selectedProductsMap.values())
         if (selectedProducts.length === 0) {
-            return;
+            return
         }
 
         this.products
             .pipe(
-                map(products =>
+                map((products) =>
                     products.filter(
-                        product => !selectedProducts.some(selected => selected.value === product.value)
+                        (product) =>
+                            !selectedProducts.some((selected) => selected.value === product.value)
                     )
                 )
             )
-            .subscribe(filteredProducts => {
-                this.filteredProducts = filteredProducts;
-            });
+            .subscribe((filteredProducts) => {
+                this.filteredProducts = filteredProducts
+            })
     }
 
     setInitialFilteredProducts() {
@@ -277,7 +276,7 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
     }
 
     getNextClientOrders() {
-        if(this.previousOrders > 0) {
+        if (this.previousOrders > 0) {
             this.previousOrders = this.previousOrders - 1
             const clientId = this.orderForm.get('client')!.value.value
             this.bakeryManagementService.getPreviousOrder(clientId, this.previousOrders).subscribe({
@@ -353,8 +352,10 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
         setTimeout(() => {
             if (autoComplete && autoComplete.panel) {
                 if (autoComplete.panel) {
-                    this.scrollSubscription = fromEvent(autoComplete.panel.nativeElement, 'scroll')
-                        .subscribe((e) => this.onScroll(e, autoComplete))
+                    this.scrollSubscription = fromEvent(
+                        autoComplete.panel.nativeElement,
+                        'scroll'
+                    ).subscribe((e) => this.onScroll(e, autoComplete))
                 } else {
                     console.error('autoComplete.panel is still undefined')
                 }
@@ -396,25 +397,32 @@ export class UpdateOrderComponent implements OnInit, OnDestroy {
                     ...item,
                     product: item.product.value,
                     quantity: item.quantity === '' ? 0 : item.quantity,
-                    returned_quantity: item.returned_quantity === null || undefined || '' ? 0 : item.returned_quantity,
+                    returned_quantity:
+                        item.returned_quantity === null || undefined || ''
+                            ? 0
+                            : item.returned_quantity,
                 })),
             }
             const params = {
                 sendUpdatedNotification: this.notificationService.sendUpdatedNotification,
             }
 
-            this.bakeryManagementApiService.updateOrder(this.currentOrder.id, newValue, params).subscribe({
-                next: () => {
-                    this.snackBarService.showSuccess(
-                        this.translocoService.translate('updateOrder.updatedSuccessfully') as string
-                    )
-                    this.goBack()
-                },
-                error: (error) => {
-                    console.log('Error: ', error)
-                    this.goBack()
-                },
-            })
+            this.bakeryManagementApiService
+                .updateOrder(this.currentOrder.id, newValue, params)
+                .subscribe({
+                    next: () => {
+                        this.snackBarService.showSuccess(
+                            this.translocoService.translate(
+                                'updateOrder.updatedSuccessfully'
+                            ) as string
+                        )
+                        this.goBack()
+                    },
+                    error: (error) => {
+                        console.log('Error: ', error)
+                        this.goBack()
+                    },
+                })
         }
     }
 

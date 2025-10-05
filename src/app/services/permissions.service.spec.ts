@@ -3,10 +3,7 @@ import { of } from 'rxjs'
 import { skip, take } from 'rxjs/operators'
 import { PermissionsService } from './permissions.service'
 import { BakeryManagementApiService } from './bakery-management-api.service'
-import {
-    PermissionEntity,
-    RolePermissionsSummary,
-} from '../shared/models/permission.model'
+import { PermissionEntity, RolePermissionsSummary } from '../shared/models/permission.model'
 
 describe('PermissionsService', () => {
     let service: PermissionsService
@@ -15,7 +12,7 @@ describe('PermissionsService', () => {
     beforeEach(() => {
         apiService = jasmine.createSpyObj<BakeryManagementApiService>(
             'BakeryManagementApiService',
-            ['getPermissions', 'createPermission', 'assignPermissionsToRole', 'getRolePermissions'],
+            ['getPermissions', 'createPermission', 'assignPermissionsToRole', 'getRolePermissions']
         )
 
         TestBed.configureTestingModule({

@@ -6,7 +6,6 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms'
-import { NgIf } from '@angular/common'
 
 import { cloneDeep, isEqual } from 'lodash-es'
 import { MatButton } from '@angular/material/button'
@@ -38,9 +37,8 @@ import { TranslocoDirective } from '@jsverse/transloco'
         MatError,
         MatButton,
         MatDialogClose,
-        NgIf,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class CreateUpdateProductDialogComponent implements OnInit {
     action = input.required<'create' | 'update'>()

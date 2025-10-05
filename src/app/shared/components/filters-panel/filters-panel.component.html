@@ -1,4 +1,6 @@
 <!-- display each filter in order -->
-<div class="filters-panel" *ngFor="let filter of filterChildren">
-    <ng-container *ngTemplateOutlet="filter.templateRef"></ng-container>
-</div>
+@for (filter of filterChildren; track filter) {
+    <div class="filters-panel">
+        <ng-container *ngTemplateOutlet="filter.templateRef"></ng-container>
+    </div>
+}

@@ -1,21 +1,23 @@
 <mat-menu #menu="matMenu" class="mef-dropdown">
-    <div *ngFor="let option of options()">
-        <button
-            mat-menu-item
-            (click)="onDropdownMenuClick(option, $event)"
-            [disabled]="option.disabled"
-            class="mef-dropdown-item"
-            [ngStyle]="{ width: width }"
-        >
-            <span class="mef-dropdown-item-label">
-                {{ option.label }}
-            </span>
-            <mat-icon
-                class="mef-dropdown-item-icon"
-                fontSet="material-icons-outlined"
-                class="material-icons-outlined"
-                >{{ option.icon }}</mat-icon
+    @for (option of options(); track option) {
+        <div>
+            <button
+                mat-menu-item
+                (click)="onDropdownMenuClick(option, $event)"
+                [disabled]="option.disabled"
+                class="mef-dropdown-item"
+                [ngStyle]="{ width: width }"
             >
-        </button>
-    </div>
+                <span class="mef-dropdown-item-label">
+                    {{ option.label }}
+                </span>
+                <mat-icon
+                    class="mef-dropdown-item-icon"
+                    fontSet="material-icons-outlined"
+                    class="material-icons-outlined"
+                    >{{ option.icon }}</mat-icon
+                >
+            </button>
+        </div>
+    }
 </mat-menu>

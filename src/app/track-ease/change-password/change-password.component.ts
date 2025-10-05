@@ -9,7 +9,6 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import { NgIf } from '@angular/common'
 
 import { CdkScrollable } from '@angular/cdk/scrolling'
 import { MatIconButton, MatButton } from '@angular/material/button'
@@ -52,14 +51,13 @@ const CONSTANTS: Constants = {
         MatIconButton,
         MatSuffix,
         MatIcon,
-        NgIf,
         MatError,
         PasswordStrengthComponent,
         MatDialogActions,
         MatButton,
         MatDialogClose,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class ChangePasswordComponent implements OnInit {
     private fb = inject(FormBuilder)

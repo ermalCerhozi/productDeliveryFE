@@ -21,8 +21,8 @@ import { TranslocoDirective } from '@jsverse/transloco'
         MatDialogActions,
         MatButton,
         MatDialogClose,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class ConfirmationDialogComponent {
     title = input.required<string | number>()

@@ -54,11 +54,9 @@ import { TopBarComponent } from '../../shared/components/top-bar/top-bar.compone
         MatCheckboxModule,
         MatPaginatorModule,
         TopBarComponent,
-    ]
+    ],
 })
-export class ManagePermissionsComponent
-    implements OnInit, AfterViewInit, OnDestroy
-{
+export class ManagePermissionsComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly fb = inject(FormBuilder)
     private readonly permissionsService = inject(PermissionsService)
     private readonly snackBar = inject(MatSnackBar)
@@ -73,9 +71,18 @@ export class ManagePermissionsComponent
         label: string
         columnKey: RoleName
     }> = [
-        { label: this.translocoService.translate('managePermissions.roleAdmin') as string, columnKey: 'Admin' },
-        { label: this.translocoService.translate('managePermissions.roleSeller') as string, columnKey: 'Seller' },
-        { label: this.translocoService.translate('managePermissions.roleClient') as string, columnKey: 'Client' },
+        {
+            label: this.translocoService.translate('managePermissions.roleAdmin') as string,
+            columnKey: 'Admin',
+        },
+        {
+            label: this.translocoService.translate('managePermissions.roleSeller') as string,
+            columnKey: 'Seller',
+        },
+        {
+            label: this.translocoService.translate('managePermissions.roleClient') as string,
+            columnKey: 'Client',
+        },
     ]
 
     isLoading = false
@@ -104,10 +111,7 @@ export class ManagePermissionsComponent
         this.loadPermissions()
         this.loadRoleAssignments()
 
-        this.dataSource.filterPredicate = (
-            permission: PermissionEntity,
-            filterValue: string,
-        ) => {
+        this.dataSource.filterPredicate = (permission: PermissionEntity, filterValue: string) => {
             if (!filterValue) {
                 return true
             }
@@ -128,9 +132,7 @@ export class ManagePermissionsComponent
                 return permission.code.toLowerCase().includes(normalizedFilter)
             }
 
-            const target = `${permission.code} ${permission.description ?? ''}`
-                .toLowerCase()
-                .trim()
+            const target = `${permission.code} ${permission.description ?? ''}`.toLowerCase().trim()
 
             return target.includes(normalizedFilter)
         }
@@ -188,13 +190,15 @@ export class ManagePermissionsComponent
                 finalize(() => {
                     this.isSubmitting = false
                     this.cdr.markForCheck()
-                }),
+                })
             )
             .subscribe({
                 next: () => {
                     this.form.reset()
                     this.snackBar.open(
-                        this.translocoService.translate('managePermissions.permissionCreatedSuccess') as string,
+                        this.translocoService.translate(
+                            'managePermissions.permissionCreatedSuccess'
+                        ) as string,
                         this.translocoService.translate('managePermissions.dismiss') as string,
                         {
                             duration: 2500,
@@ -238,11 +242,7 @@ export class ManagePermissionsComponent
         return this.assigningRoleIds.has(roleId)
     }
 
-    onPermissionToggle(
-        roleName: RoleName,
-        permissionCode: string,
-        checked: boolean,
-    ): void {
+    onPermissionToggle(roleName: RoleName, permissionCode: string, checked: boolean): void {
         const roleId = this.roleIdByName.get(roleName)
         if (roleId === undefined) {
             this.snackBar.open(
@@ -274,12 +274,14 @@ export class ManagePermissionsComponent
                 finalize(() => {
                     this.assigningRoleIds.delete(roleId)
                     this.cdr.markForCheck()
-                }),
+                })
             )
             .subscribe({
                 next: () => {
                     this.snackBar.open(
-                        this.translocoService.translate('managePermissions.permissionsUpdated') as string,
+                        this.translocoService.translate(
+                            'managePermissions.permissionsUpdated'
+                        ) as string,
                         this.translocoService.translate('managePermissions.dismiss') as string,
                         {
                             duration: 2000,
@@ -309,7 +311,7 @@ export class ManagePermissionsComponent
                 finalize(() => {
                     this.isLoading = false
                     this.cdr.markForCheck()
-                }),
+                })
             )
             .subscribe({
                 error: (error) => {
@@ -355,7 +357,7 @@ export class ManagePermissionsComponent
                 finalize(() => {
                     this.isRoleAssignmentsLoading = false
                     this.cdr.markForCheck()
-                }),
+                })
             )
             .subscribe({
                 error: (error: unknown) => {
@@ -376,10 +378,7 @@ export class ManagePermissionsComponent
 
         roles.forEach((role) => {
             this.roleIdByName.set(role.name, role.id)
-            this.roleSelectionByRoleId.set(
-                role.id,
-                new Set(role.permissionCodes ?? []),
-            )
+            this.roleSelectionByRoleId.set(role.id, new Set(role.permissionCodes ?? []))
         })
 
         this.cdr.markForCheck()

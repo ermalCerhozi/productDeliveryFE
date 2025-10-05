@@ -9,7 +9,6 @@ import {
     SimpleChanges,
 } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
-import { NgFor, NgIf } from '@angular/common'
 
 import { MatChipListbox, MatChipOption, MatChipRemove } from '@angular/material/chips'
 import { MatIcon } from '@angular/material/icon'
@@ -21,7 +20,7 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
     templateUrl: './filters-result.component.html',
     styleUrls: ['./filters-result.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatChipListbox, NgFor, MatChipOption, NgIf, MatChipRemove, MatIcon]
+    imports: [MatChipListbox, MatChipOption, MatChipRemove, MatIcon],
 })
 export class FiltersResultComponent implements OnInit, OnChanges {
     labelTK = input<string>()

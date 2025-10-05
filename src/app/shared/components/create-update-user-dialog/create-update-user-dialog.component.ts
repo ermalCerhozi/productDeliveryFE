@@ -15,7 +15,6 @@ import {
     ReactiveFormsModule,
     Validators,
 } from '@angular/forms'
-import { NgIf } from '@angular/common'
 
 import { finalize, map, of, switchMap, take, throwError } from 'rxjs'
 import { cloneDeep, isEqual } from 'lodash-es'
@@ -64,7 +63,6 @@ type UserFormValue = {
         MatFormField,
         MatLabel,
         MatInput,
-        NgIf,
         MatError,
         MatSelect,
         MatOption,
@@ -74,10 +72,9 @@ type UserFormValue = {
         MatButton,
         MatDialogClose,
         MatProgressSpinner,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
-
 export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>
     user = input<UserEntity | null>()
@@ -124,9 +121,9 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
             return
         }
 
-    this.initializeForm()
-    this.captureInitialFormValues()
-    this.updatePreviewImage()
+        this.initializeForm()
+        this.captureInitialFormValues()
+        this.updatePreviewImage()
     }
 
     private syncActionState(): void {
@@ -134,7 +131,11 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
     }
 
     private shouldFetchUserDetails(): boolean {
-        return !!this.currentUser?.id && !this.isCreateMode && this.currentUser.id !== this.loadedUserId
+        return (
+            !!this.currentUser?.id &&
+            !this.isCreateMode &&
+            this.currentUser.id !== this.loadedUserId
+        )
     }
 
     private fetchUserDetails(userId: number): void {
@@ -149,7 +150,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
             .pipe(
                 finalize(() => {
                     this.isLoadingUserDetails = false
-                }),
+                })
             )
             .subscribe({
                 next: (user) => {
@@ -233,7 +234,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
                 first_name: formattedFormValue.first_name,
                 last_name: formattedFormValue.last_name,
             },
-            { emitEvent: false },
+            { emitEvent: false }
         )
 
         const userValue = this.buildUserPayload(formattedFormValue)
@@ -244,14 +245,14 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
             .pipe(
                 finalize(() => {
                     this.isSubmitting = false
-                }),
+                })
             )
             .subscribe({
                 next: (user) => this.onSuccessfulSubmission(user),
                 error: (error) => {
                     console.error(
                         this.isCreateMode ? 'Failed to create user' : 'Failed to update user',
-                        error,
+                        error
                     )
                 },
             })
@@ -423,21 +424,25 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
                     }
 
                     if (!response?.user) {
-                        throw new Error('The create user response did not include the new user entity.')
+                        throw new Error(
+                            'The create user response did not include the new user entity.'
+                        )
                     }
 
                     return this.attachImageIfNeeded(response.id, response.user)
-                }),
+                })
             )
         }
 
         if (!this.currentUser) {
-            return throwError(() => new Error('Cannot update user because no user context is available.'))
+            return throwError(
+                () => new Error('Cannot update user because no user context is available.')
+            )
         }
 
-        return this.bakeryManagementApiService.updateUser(this.currentUser, userValue).pipe(
-            switchMap((updatedUser) => this.attachImageIfNeeded(updatedUser.id, updatedUser)),
-        )
+        return this.bakeryManagementApiService
+            .updateUser(this.currentUser, userValue)
+            .pipe(switchMap((updatedUser) => this.attachImageIfNeeded(updatedUser.id, updatedUser)))
     }
 
     private attachImageIfNeeded(userId: number, baseUser: UserEntity) {
@@ -458,7 +463,7 @@ export class CreateUpdateUserDialogComponent implements OnInit, OnChanges {
                     }
 
                     return baseUser
-                }),
+                })
             )
     }
 

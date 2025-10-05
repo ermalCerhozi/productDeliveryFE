@@ -4,6 +4,6 @@ import { Component, OnInit } from '@angular/core'
     selector: 'app-home-page',
     templateUrl: './home-page.component.html',
     styleUrls: ['./home-page.component.css'],
-    imports: []
+    imports: [],
 })
 export class HomePageComponent {}

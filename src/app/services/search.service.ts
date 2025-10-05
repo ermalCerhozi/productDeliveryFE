@@ -105,8 +105,8 @@ export class SearchService implements OnDestroy {
     private productsLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false)
     private hasMoreProductsToLoad: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true)
     public productSearchQuery = ''
-    
-    private bakeryManagementService=  inject(BakeryManagementService)
+
+    private bakeryManagementService = inject(BakeryManagementService)
 
     constructor() {
         this.subscribeToClientSelectSubject()

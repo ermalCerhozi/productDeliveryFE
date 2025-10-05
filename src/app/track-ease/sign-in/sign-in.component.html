@@ -7,15 +7,16 @@
                     <!-- Sign in -->
                     <form [formGroup]="loginForm" (ngSubmit)="login()" class="sign-in-form">
                         <h2 class="title">{{ t('signIn.title') }}</h2>
-                        <div *ngIf="loginForm.get('phoneNumber')?.hasError('required')">
-                            {{ t('signIn.phoneNumberRequired') }}
-                        </div>
-                        <div
-                            *ngIf="loginForm.get('phoneNumber')?.hasError('pattern')"
-                            class="error-text"
-                        >
-                            {{ t('signIn.phoneNumberPattern') }}
-                        </div>
+                        @if (loginForm.get('phoneNumber')?.hasError('required')) {
+                            <div>
+                                {{ t('signIn.phoneNumberRequired') }}
+                            </div>
+                        }
+                        @if (loginForm.get('phoneNumber')?.hasError('pattern')) {
+                            <div class="error-text">
+                                {{ t('signIn.phoneNumberPattern') }}
+                            </div>
+                        }
                         <div
                             class="input-field"
                             [ngClass]="{
@@ -29,26 +30,37 @@
                                 [placeholder]="t('signIn.phoneNumberPlaceholder')"
                             />
                         </div>
-                        <div *ngIf="loginForm.get('password')?.hasError('required')">
-                            {{ t('signIn.passwordRequired') }}
-                        </div>
-                        <div
-                            *ngIf="loginForm.get('password')?.hasError('minlength')"
-                            class="error-text"
-                        >
-                            {{ t('signIn.passwordMinLength') }}
-                        </div>
+                        @if (loginForm.get('password')?.hasError('required')) {
+                            <div>
+                                {{ t('signIn.passwordRequired') }}
+                            </div>
+                        }
+                        @if (loginForm.get('password')?.hasError('minlength')) {
+                            <div class="error-text">
+                                {{ t('signIn.passwordMinLength') }}
+                            </div>
+                        }
                         <div class="input-field">
                             <i class="fas fa-lock"></i>
-                            <input type="password" formControlName="password" [placeholder]="t('signIn.passwordPlaceholder')" />
+                            <input
+                                type="password"
+                                formControlName="password"
+                                [placeholder]="t('signIn.passwordPlaceholder')"
+                            />
                         </div>
-                        <button type="submit" [disabled]="!loginForm.valid" class="btn">{{ t('signIn.signInButton') }}</button>
-                        <div *ngIf="errorMessage" class="error-text">
-                            {{ t('signIn.loginError') }}
-                        </div>
-                        <div *ngIf="errorMessage" class="error-text">
-                            {{ t('signIn.credentialsError') }}
-                        </div>
+                        <button type="submit" [disabled]="!loginForm.valid" class="btn">
+                            {{ t('signIn.signInButton') }}
+                        </button>
+                        @if (errorMessage) {
+                            <div class="error-text">
+                                {{ t('signIn.loginError') }}
+                            </div>
+                        }
+                        @if (errorMessage) {
+                            <div class="error-text">
+                                {{ t('signIn.credentialsError') }}
+                            </div>
+                        }
 
                         <p class="social-text">{{ t('signIn.socialText') }}</p>
                         <div class="social-media">
@@ -76,7 +88,11 @@
                         <h2 class="title">{{ t('signIn.forgotPasswordTitle') }}</h2>
                         <div class="input-field">
                             <i class="fas fa-envelope"></i>
-                            <input type="email" formControlName="email" [placeholder]="t('signIn.emailPlaceholder')" />
+                            <input
+                                type="email"
+                                formControlName="email"
+                                [placeholder]="t('signIn.emailPlaceholder')"
+                            />
                         </div>
                         <button type="submit" [disabled]="!forgotPasswordForm.valid" class="btn">
                             {{ t('signIn.sendLinkButton') }}

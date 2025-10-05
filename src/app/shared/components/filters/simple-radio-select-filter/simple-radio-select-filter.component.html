@@ -10,11 +10,9 @@
             }"
         >
             <span class="mef-simple-radio-select-label">
-                <mat-icon
-                    *ngIf="defaultEmptyValue()?.value !== selection().value"
-                    class="mef-simple-radio-select-label-icon"
-                    >check</mat-icon
-                >
+                @if (defaultEmptyValue()?.value !== selection().value) {
+                    <mat-icon class="mef-simple-radio-select-label-icon">check</mat-icon>
+                }
                 <span>{{ labelTK() }}</span></span
             >
             <mat-select
@@ -25,43 +23,43 @@
                 [compareWith]="compareValues"
                 [disableOptionCentering]="true"
             >
-                <mat-option *ngFor="let field of fields()" [value]="field">
-                    <div class="mef-simple-radio-select-filter-content">
-                        <div
-                            class="mef-simple-radio-select-filter-option-label"
-                            *ngIf="field.isTranslated"
-                        >
-                            {{ field.label }}
-                        </div>
-                        <div
-                            class="mef-simple-radio-select-filter-option-label"
-                            *ngIf="!field.isTranslated"
-                        >
-                            {{ field.label }}
-                        </div>
-                        <div class="mef-simple-radio-select-filter-count-and-suffix">
-                            <div
-                                class="mef-simple-radio-select-filter-option-count"
-                                *ngIf="field.count || field.count === 0"
-                            >
-                                ({{ field.count }})
+                @for (field of fields(); track field) {
+                    <mat-option [value]="field">
+                        <div class="mef-simple-radio-select-filter-content">
+                            @if (field.isTranslated) {
+                                <div class="mef-simple-radio-select-filter-option-label">
+                                    {{ field.label }}
+                                </div>
+                            }
+                            @if (!field.isTranslated) {
+                                <div class="mef-simple-radio-select-filter-option-label">
+                                    {{ field.label }}
+                                </div>
+                            }
+                            <div class="mef-simple-radio-select-filter-count-and-suffix">
+                                @if (field.count || field.count === 0) {
+                                    <div class="mef-simple-radio-select-filter-option-count">
+                                        ({{ field.count }})
+                                    </div>
+                                }
+                                <div>
+                                    @if (field.value === selection().value) {
+                                        <mat-icon
+                                            class="mef-simple-radio-select-filter-suffix"
+                                            color="primary"
+                                            >radio_button_checked</mat-icon
+                                        >
+                                    }
+                                    @if (field.value !== selection().value) {
+                                        <mat-icon class="mef-simple-radio-select-filter-suffix"
+                                            >radio_button_unchecked</mat-icon
+                                        >
+                                    }
+                                </div>
                             </div>
-                            <div>
-                                <mat-icon
-                                    class="mef-simple-radio-select-filter-suffix"
-                                    color="primary"
-                                    *ngIf="field.value === selection().value"
-                                    >radio_button_checked</mat-icon
-                                >
-                                <mat-icon
-                                    class="mef-simple-radio-select-filter-suffix"
-                                    *ngIf="field.value !== selection().value"
-                                    >radio_button_unchecked</mat-icon
-                                >
-                            </div>
                         </div>
-                    </div>
-                </mat-option>
+                    </mat-option>
+                }
             </mat-select>
         </mat-form-field>
     </form>

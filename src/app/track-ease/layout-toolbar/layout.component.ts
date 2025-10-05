@@ -1,6 +1,6 @@
 import { Component, ViewChild, inject } from '@angular/core'
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router'
-import { NgFor, NgIf, AsyncPipe } from '@angular/common'
+import { AsyncPipe } from '@angular/common'
 
 import { Observable, map, shareReplay, take } from 'rxjs'
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
@@ -30,26 +30,24 @@ interface NavRouteConfig {
         MatDrawer,
         MatToolbar,
         MatNavList,
-        NgFor,
         MatListItem,
         RouterLink,
         RouterLinkActive,
         MatIcon,
-        NgIf,
         MatIconButton,
         MatMenuTrigger,
         MatMenu,
         MatMenuItem,
         RouterOutlet,
         AsyncPipe,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class LayoutComponent {
     private authService = inject(AuthService)
     private breakpointObserver = inject(BreakpointObserver)
     private router = inject(Router)
-    private translocoService = inject(TranslocoService);
+    private translocoService = inject(TranslocoService)
 
     @ViewChild('drawer') drawer!: MatDrawer
 
@@ -59,7 +57,12 @@ export class LayoutComponent {
         { path: '/orders', name: 'layout.orders', icon: 'assignment', roles: ['Admin'] },
         { path: '/products', name: 'layout.products', icon: 'store', roles: ['Admin'] },
         { path: '/permissions', name: 'layout.permissions', icon: 'lock', roles: ['Admin'] },
-        { path: '/profile', name: 'layout.profile', icon: 'account_circle', roles: ['Admin', 'Client'] },
+        {
+            path: '/profile',
+            name: 'layout.profile',
+            icon: 'account_circle',
+            roles: ['Admin', 'Client'],
+        },
         // { path: '/earnings', name: 'Earnings', icon: 'show_chart' },
         // { path: '/trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
         { path: '/settings', name: 'layout.settings', icon: 'settings', roles: ['Admin'] },

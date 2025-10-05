@@ -1,5 +1,4 @@
 <ng-container *transloco="let t">
-
     <mat-drawer-container class="layout-container">
         <mat-drawer
             #drawer
@@ -10,7 +9,7 @@
         >
             <mat-toolbar>{{ t('layout.menu') }}</mat-toolbar>
             <mat-nav-list>
-                <ng-container *ngFor="let route of visibleRoutes">
+                @for (route of visibleRoutes; track route) {
                     <mat-list-item
                         class="layout-sidenav-options"
                         [routerLink]="route.path"
@@ -22,21 +21,22 @@
                             <span>{{ t(route.name) }}</span>
                         </div>
                     </mat-list-item>
-                </ng-container>
+                }
             </mat-nav-list>
         </mat-drawer>
 
         <div>
             <mat-toolbar color="primary">
-                <button
-                    type="button"
-                    aria-label="Toggle sidenav"
-                    mat-icon-button
-                    (click)="drawer.toggle()"
-                    *ngIf="isHandset$ | async"
-                >
-                    <mat-icon aria-label="toggle icon">menu</mat-icon>
-                </button>
+                @if (isHandset$ | async) {
+                    <button
+                        type="button"
+                        aria-label="Toggle sidenav"
+                        mat-icon-button
+                        (click)="drawer.toggle()"
+                    >
+                        <mat-icon aria-label="toggle icon">menu</mat-icon>
+                    </button>
+                }
                 <span>{{ t('layout.appName') }}</span>
                 <span class="spacer"></span>
                 <button mat-icon-button [matMenuTriggerFor]="menu">

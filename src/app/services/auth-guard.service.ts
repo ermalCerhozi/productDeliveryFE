@@ -7,8 +7,8 @@ import { AuthService } from 'src/app/services/auth.service'
     providedIn: 'root',
 })
 export class AuthGuard {
-    private authService=  inject(AuthService)
-    private router=  inject(Router)
+    private authService = inject(AuthService)
+    private router = inject(Router)
 
     canActivate(): Observable<boolean | UrlTree> {
         return this.checkLogin()

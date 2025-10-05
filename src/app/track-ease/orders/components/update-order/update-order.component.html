@@ -17,15 +17,17 @@
                         (opened)="onOpened(autoCompleteClients)"
                         (closed)="onClosed()"
                     >
-                        <mat-option *ngFor="let client of clients | async" [value]="client">
-                            {{ client.label }}
-                        </mat-option>
+                        @for (client of clients | async; track client) {
+                            <mat-option [value]="client">
+                                {{ client.label }}
+                            </mat-option>
+                        }
                     </mat-autocomplete>
-                    <mat-error
-                        *ngIf="orderForm.get('client')?.invalid && orderForm.get('client')?.touched"
-                    >
-                        {{ t('updateOrder.clientRequired') }}
-                    </mat-error>
+                    @if (orderForm.get('client')?.invalid && orderForm.get('client')?.touched) {
+                        <mat-error>
+                            {{ t('updateOrder.clientRequired') }}
+                        </mat-error>
+                    }
                 </mat-form-field>
                 <button
                     mat-mini-fab
@@ -33,11 +35,13 @@
                     type="button"
                     (click)="getPreviousClientOrders()"
                     class="button-with-badge"
-                    [disabled]="orderForm.get('client')?.invalid || !orderForm.get('client')?.touched"
+                    [disabled]="
+                        orderForm.get('client')?.invalid || !orderForm.get('client')?.touched
+                    "
                 >
                     <mat-icon>settings_backup_restore</mat-icon>
-                    @if(previousOrders > 0) {
-                        <span class="badge">{{previousOrders}}</span>
+                    @if (previousOrders > 0) {
+                        <span class="badge">{{ previousOrders }}</span>
                     }
                 </button>
                 <button
@@ -48,58 +52,75 @@
                     class="button-with-badge"
                     [disabled]="previousOrders === 0"
                 >
-                    <mat-icon style="transform: scaleX(-1);">settings_backup_restore</mat-icon>
+                    <mat-icon style="transform: scaleX(-1)">settings_backup_restore</mat-icon>
                 </button>
             </div>
 
             <div formArrayName="order_items">
-                <div
-                    *ngFor="let item of orderItemsFormArray?.controls; let i = index"
-                    [formGroupName]="i"
-                    class="order-items-fields"
-                >
-                    <mat-form-field class="product-field" appearance="outline" hideRequiredMarker>
-                        <mat-label>{{ t('updateOrder.product') }}</mat-label>
-                        <input
-                            matInput
-                            formControlName="product"
-                            [matAutocomplete]="autoCompleteProducts"
-                            (input)="productSearchChange($event)"
-                            required
-                        />
-                        <mat-autocomplete
-                            #autoCompleteProducts="matAutocomplete"
-                            [displayWith]="displayFn"
-                            (opened)="onOpened(autoCompleteProducts)"
-                            (closed)="onClosed()"
+                @for (item of orderItemsFormArray.controls; track item; let i = $index) {
+                    <div [formGroupName]="i" class="order-items-fields">
+                        <mat-form-field
+                            class="product-field"
+                            appearance="outline"
+                            hideRequiredMarker
                         >
-                            <mat-option *ngFor="let product of filteredProducts" [value]="product">
-                                {{ product.label }}
-                            </mat-option>
-                        </mat-autocomplete>
-                        <mat-error
-                            *ngIf="item.get('product')?.invalid && item.get('product')?.touched"
-                        >
-                            {{ t('updateOrder.productRequired') }}
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" hideRequiredMarker>
-                        <mat-label>{{ t('updateOrder.quantity') }}</mat-label>
-                        <input matInput formControlName="quantity" type="number" min="1" required />
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline">
-                        <mat-label>{{ t('updateOrder.returns') }}</mat-label>
-                        <input matInput formControlName="returned_quantity" type="number" min="0" />
-                    </mat-form-field>
-
-                    <div>
-                        <button mat-mini-fab color="warn" (click)="removeOrderItem(i)" type="button">
-                            <mat-icon class="material-icons-outlined">delete</mat-icon>
-                        </button>
+                            <mat-label>{{ t('updateOrder.product') }}</mat-label>
+                            <input
+                                matInput
+                                formControlName="product"
+                                [matAutocomplete]="autoCompleteProducts"
+                                (input)="productSearchChange($event)"
+                                required
+                            />
+                            <mat-autocomplete
+                                #autoCompleteProducts="matAutocomplete"
+                                [displayWith]="displayFn"
+                                (opened)="onOpened(autoCompleteProducts)"
+                                (closed)="onClosed()"
+                            >
+                                @for (product of filteredProducts; track product) {
+                                    <mat-option [value]="product">
+                                        {{ product.label }}
+                                    </mat-option>
+                                }
+                            </mat-autocomplete>
+                            @if (item.get('product')?.invalid && item.get('product')?.touched) {
+                                <mat-error>
+                                    {{ t('updateOrder.productRequired') }}
+                                </mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field appearance="outline" hideRequiredMarker>
+                            <mat-label>{{ t('updateOrder.quantity') }}</mat-label>
+                            <input
+                                matInput
+                                formControlName="quantity"
+                                type="number"
+                                min="1"
+                                required
+                            />
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>{{ t('updateOrder.returns') }}</mat-label>
+                            <input
+                                matInput
+                                formControlName="returned_quantity"
+                                type="number"
+                                min="0"
+                            />
+                        </mat-form-field>
+                        <div>
+                            <button
+                                mat-mini-fab
+                                color="warn"
+                                (click)="removeOrderItem(i)"
+                                type="button"
+                            >
+                                <mat-icon class="material-icons-outlined">delete</mat-icon>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
 
             <div class="add-button">
@@ -112,7 +133,9 @@
 
     <mat-dialog-actions [align]="'end'" class="insert-panel">
         <h2 class="price">{{ totalOrderPrice.toLocaleString() }} {{ t('updateOrder.price') }}</h2>
-        <button class="action-button" mat-stroked-button color="warn" (click)="goBack()">{{ t('updateOrder.cancel') }}</button>
+        <button class="action-button" mat-stroked-button color="warn" (click)="goBack()">
+            {{ t('updateOrder.cancel') }}
+        </button>
         <button
             class="action-button"
             mat-stroked-button

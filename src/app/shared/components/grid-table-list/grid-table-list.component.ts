@@ -9,7 +9,7 @@ import {
     TemplateRef,
     ViewChild,
 } from '@angular/core'
-import { NgIf, NgTemplateOutlet, NgSwitch, NgSwitchCase, NgFor } from '@angular/common'
+import { NgTemplateOutlet } from '@angular/common'
 
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll'
 import { MatGridList, MatGridTile } from '@angular/material/grid-list'
@@ -27,12 +27,8 @@ export type GridListScrollType = 'default' | 'infinite' | 'virtual'
     styleUrls: ['./grid-table-list.component.css'],
     standalone: true,
     imports: [
-        NgIf,
         NgTemplateOutlet,
-        NgSwitch,
-        NgSwitchCase,
         MatGridList,
-        NgFor,
         MatGridTile,
         InfiniteScrollDirective,
         CdkVirtualScrollViewport,

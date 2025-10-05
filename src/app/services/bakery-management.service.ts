@@ -45,8 +45,8 @@ export class BakeryManagementService {
     public ordersCount!: number
     public usersCount!: number
     public navigationContext!: NavigationContext
-    
-    private bakeryManagementApiService=  inject(BakeryManagementApiService)
+
+    private bakeryManagementApiService = inject(BakeryManagementApiService)
 
     constructor() {
         this.getBaseNavigationContext()
@@ -170,7 +170,10 @@ export class BakeryManagementService {
     }
 
     getPreviousOrder(clientId: number, previousOrderNumber: number): Observable<OrderEntity> {
-        return this.bakeryManagementApiService.getPreviousOrderByClient(clientId, previousOrderNumber)
+        return this.bakeryManagementApiService.getPreviousOrderByClient(
+            clientId,
+            previousOrderNumber
+        )
     }
 
     // TODO: remove this when the interceptor is implemneted to send the logged in user

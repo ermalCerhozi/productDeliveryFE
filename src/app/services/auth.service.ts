@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment'
 export class AuthService {
     private readonly baseUrl = environment.baseUrl + '/users'
     private currentLoggedUser: BehaviorSubject<UserEntity | null>
-    private http=  inject(HttpClient)
+    private http = inject(HttpClient)
     constructor() {
         const storedUser = localStorage.getItem('currentUser')
         const initialUser = storedUser ? JSON.parse(storedUser) : null

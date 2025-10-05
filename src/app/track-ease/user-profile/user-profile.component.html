@@ -26,10 +26,15 @@
             <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
             <span>{{ t('userProfile.changeImage') }}</span>
         </button>
-        <div class="profile-username">{{ loggedInUser.first_name }} {{ loggedInUser.last_name }}</div>
+        <div class="profile-username">
+            {{ loggedInUser.first_name }} {{ loggedInUser.last_name }}
+        </div>
 
         <div class="profile-registered-since">
-            <span>{{ t('userProfile.registeredSince') }} {{ loggedInUser.created_at | date: 'd/M/yy' }}</span>
+            <span
+                >{{ t('userProfile.registeredSince') }}
+                {{ loggedInUser.created_at | date: 'd/M/yy' }}</span
+            >
         </div>
 
         <form
@@ -40,12 +45,22 @@
         >
             <mat-form-field appearance="fill">
                 <mat-label>{{ t('userProfile.email') }}</mat-label>
-                <input matInput type="email" formControlName="email" [placeholder]="t('userProfile.email')" />
+                <input
+                    matInput
+                    type="email"
+                    formControlName="email"
+                    [placeholder]="t('userProfile.email')"
+                />
             </mat-form-field>
 
             <mat-form-field appearance="fill">
                 <mat-label>{{ t('userProfile.phoneNumber') }}</mat-label>
-                <input matInput type="tel" formControlName="phone_number" [placeholder]="t('userProfile.phoneNumber')" />
+                <input
+                    matInput
+                    type="tel"
+                    formControlName="phone_number"
+                    [placeholder]="t('userProfile.phoneNumber')"
+                />
             </mat-form-field>
 
             <mat-form-field appearance="fill">
@@ -57,31 +72,36 @@
                     [placeholder]="t('userProfile.location')"
                     #locationInput
                 />
-                <button
-                    mat-icon-button
-                    matSuffix
-                    *ngIf="locationInput.value"
-                    (click)="openInNewWindow(locationInput.value)"
-                    type="button"
-                >
-                    <mat-icon>open_in_new</mat-icon>
-                </button>
+                @if (locationInput.value) {
+                    <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="openInNewWindow(locationInput.value)"
+                        type="button"
+                    >
+                        <mat-icon>open_in_new</mat-icon>
+                    </button>
+                }
             </mat-form-field>
         </form>
-        <span class="change-password-link" (click)="openChangePasswordDialog()">{{ t('userProfile.changePassword') }}</span>
+        <span class="change-password-link" (click)="openChangePasswordDialog()">{{
+            t('userProfile.changePassword')
+        }}</span>
 
-        <mat-toolbar class="insert-panel" *ngIf="isFormChanged() && profileForm.valid" color="primary">
-            <button class="insert-panel-actions" mat-flat-button (click)="cancelEdition()">
-                {{ t('userProfile.cancel') }}
-            </button>
-            <button
-                class="insert-panel-actions"
-                mat-raised-button
-                color="primary"
-                (click)="profileFormRef.ngSubmit.emit()"
-            >
-                {{ t('userProfile.save') }}
-            </button>
-        </mat-toolbar>
+        @if (isFormChanged() && profileForm.valid) {
+            <mat-toolbar class="insert-panel" color="primary">
+                <button class="insert-panel-actions" mat-flat-button (click)="cancelEdition()">
+                    {{ t('userProfile.cancel') }}
+                </button>
+                <button
+                    class="insert-panel-actions"
+                    mat-raised-button
+                    color="primary"
+                    (click)="profileFormRef.ngSubmit.emit()"
+                >
+                    {{ t('userProfile.save') }}
+                </button>
+            </mat-toolbar>
+        }
     </div>
 </ng-container>

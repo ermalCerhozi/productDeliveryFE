@@ -1,6 +1,5 @@
 import { Component, input, OnDestroy, OnInit, output } from '@angular/core'
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { NgIf } from '@angular/common'
 
 import { Subject, debounceTime, takeUntil } from 'rxjs'
 import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete'
@@ -32,10 +31,9 @@ import { TranslocoDirective } from '@jsverse/transloco'
         MatCheckbox,
         MatOption,
         MatSuffix,
-        NgIf,
         MatButton,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class TopBarComponent implements OnInit, OnDestroy {
     title = input<string>('')
@@ -44,7 +42,7 @@ export class TopBarComponent implements OnInit, OnDestroy {
     searchOptions = input<SearchOptions>({ title: true, all: true })
     disableAddItem = input<boolean>(false)
     displayAddButton = input<boolean>(true)
-    
+
     searchQueryChange = output<string>()
     searchOptionsChange = output<SearchOptions>()
     addItem = output<void>()

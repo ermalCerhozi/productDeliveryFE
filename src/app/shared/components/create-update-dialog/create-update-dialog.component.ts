@@ -6,7 +6,6 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import { NgSwitch, NgSwitchCase, NgIf } from '@angular/common'
 
 import { Subject } from 'rxjs'
 import { cloneDeep, isEqual } from 'lodash-es'
@@ -23,6 +22,7 @@ import { MatFormField, MatLabel, MatError, MatSuffix } from '@angular/material/f
 import { MatIcon } from '@angular/material/icon'
 import { MatInput } from '@angular/material/input'
 import { MatSelect } from '@angular/material/select'
+import { TranslocoDirective } from '@jsverse/transloco'
 
 import { ProductEntity } from 'src/app/shared/models/product.model'
 import { UserEntity } from 'src/app/shared/models/user.model'
@@ -35,8 +35,6 @@ import { BakeryManagementService } from 'src/app/services/bakery-management.serv
     standalone: true,
     imports: [
         MatDialogTitle,
-        NgSwitch,
-        NgSwitchCase,
         CdkScrollable,
         MatDialogContent,
         FormsModule,
@@ -44,7 +42,6 @@ import { BakeryManagementService } from 'src/app/services/bakery-management.serv
         MatFormField,
         MatLabel,
         MatInput,
-        NgIf,
         MatError,
         MatSelect,
         MatOption,
@@ -54,6 +51,7 @@ import { BakeryManagementService } from 'src/app/services/bakery-management.serv
         MatDialogActions,
         MatButton,
         MatDialogClose,
+        TranslocoDirective,
     ],
 })
 export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
@@ -161,7 +159,7 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
                 this.form.patchValue({ first_name: firstName, last_name: lastName })
 
                 // Combine prefix and number for output, but do not send phone_prefix
-                const { phone_prefix, ...rest } = this.form.value;
+                const { phone_prefix, ...rest } = this.form.value
                 const userValue = {
                     ...rest,
                     phone_number: `${this.form.value.phone_prefix}${this.form.value.phone_number}`,
@@ -193,17 +191,17 @@ export class CreateUpdateDialogComponent implements OnInit, OnDestroy {
     }
 
     private extractPhonePrefix(fullNumber?: string): string {
-        if (!fullNumber) return '+355';
-        if (fullNumber.startsWith('+39')) return '+39';
-        if (fullNumber.startsWith('+49')) return '+49';
-        if (fullNumber.startsWith('+33')) return '+33';
-        if (fullNumber.startsWith('+34')) return '+34';
-        if (fullNumber.startsWith('+44')) return '+44';
-        return '+355';
+        if (!fullNumber) return '+355'
+        if (fullNumber.startsWith('+39')) return '+39'
+        if (fullNumber.startsWith('+49')) return '+49'
+        if (fullNumber.startsWith('+33')) return '+33'
+        if (fullNumber.startsWith('+34')) return '+34'
+        if (fullNumber.startsWith('+44')) return '+44'
+        return '+355'
     }
 
     private extractPhoneNumber(fullNumber?: string): string {
-        if (!fullNumber) return '';
-        return fullNumber.replace(/^\+(355|39|49|33|34|44)/, '');
+        if (!fullNumber) return ''
+        return fullNumber.replace(/^\+(355|39|49|33|34|44)/, '')
     }
 }

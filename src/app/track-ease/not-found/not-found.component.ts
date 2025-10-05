@@ -7,7 +7,7 @@ import { TranslocoDirective } from '@jsverse/transloco'
     selector: 'app-not-found',
     templateUrl: './not-found.component.html',
     styleUrls: ['./not-found.component.scss'],
-    imports: [MatButton, TranslocoDirective]
+    imports: [MatButton, TranslocoDirective],
 })
 export class NotFoundComponent {
     goBack() {

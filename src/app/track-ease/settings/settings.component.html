@@ -1,96 +1,96 @@
 <ng-container *transloco="let t">
-<div class="settings-container">
-    <mat-card>
-        <mat-card-content class="toggle-card">
-            <h2>{{ t('settings.notificationsTitle') }}</h2>
-            <span>{{ t('settings.notificationsDescription') }}</span>
-            <div class="settings-container">
-                <div class="notifications-settings">
-                    <mat-slide-toggle
-                        [(ngModel)]="sendCreatedNotification"
-                        (change)="toggleNotifications($event, 'created')"
-                    >
-                    </mat-slide-toggle>
-                    <span>{{ t('settings.orderCreated') }}</span>
+    <div class="settings-container">
+        <mat-card>
+            <mat-card-content class="toggle-card">
+                <h2>{{ t('settings.notificationsTitle') }}</h2>
+                <span>{{ t('settings.notificationsDescription') }}</span>
+                <div class="settings-container">
+                    <div class="notifications-settings">
+                        <mat-slide-toggle
+                            [(ngModel)]="sendCreatedNotification"
+                            (change)="toggleNotifications($event, 'created')"
+                        >
+                        </mat-slide-toggle>
+                        <span>{{ t('settings.orderCreated') }}</span>
+                    </div>
+                    <div class="settings">
+                        <mat-slide-toggle
+                            [(ngModel)]="sendUpdatedNotification"
+                            (change)="toggleNotifications($event, 'updated')"
+                        >
+                        </mat-slide-toggle>
+                        <span>{{ t('settings.orderUpdated') }}</span>
+                    </div>
+                    <div class="settings">
+                        <mat-slide-toggle
+                            [(ngModel)]="sendDeletedNotification"
+                            (change)="toggleNotifications($event, 'deleted')"
+                        >
+                        </mat-slide-toggle>
+                        <span>{{ t('settings.orderDeleted') }}</span>
+                    </div>
                 </div>
-                <div class="settings">
-                    <mat-slide-toggle
-                        [(ngModel)]="sendUpdatedNotification"
-                        (change)="toggleNotifications($event, 'updated')"
-                    >
-                    </mat-slide-toggle>
-                    <span>{{ t('settings.orderUpdated') }}</span>
-                </div>
-                <div class="settings">
-                    <mat-slide-toggle
-                        [(ngModel)]="sendDeletedNotification"
-                        (change)="toggleNotifications($event, 'deleted')"
-                    >
-                    </mat-slide-toggle>
-                    <span>{{ t('settings.orderDeleted') }}</span>
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
+            </mat-card-content>
+        </mat-card>
 
-    <mat-card>
-        <mat-card-content class="theme-toggle-card">
-            <h2>{{ t('settings.darkModeTitle') }}</h2>
-            <div class="theme-toggle">
-                <mat-icon class="mr-8" fontSet="material-icons-outlined">brightness_5</mat-icon>
-                <mat-slide-toggle [checked]="isDarkModeEnabled" (change)="toggleTheme()">
-                </mat-slide-toggle>
-                <mat-icon fontSet="material-icons-outlined">bedtime</mat-icon>
-            </div>
-        </mat-card-content>
-    </mat-card>
+        <mat-card>
+            <mat-card-content class="theme-toggle-card">
+                <h2>{{ t('settings.darkModeTitle') }}</h2>
+                <div class="theme-toggle">
+                    <mat-icon class="mr-8" fontSet="material-icons-outlined">brightness_5</mat-icon>
+                    <mat-slide-toggle [checked]="isDarkModeEnabled" (change)="toggleTheme()">
+                    </mat-slide-toggle>
+                    <mat-icon fontSet="material-icons-outlined">bedtime</mat-icon>
+                </div>
+            </mat-card-content>
+        </mat-card>
 
-    <mat-card>
-        <mat-card-content class="toggle-card">
-            <h2>{{ t('settings.customFontSizeTitle') }}</h2>
-            <div>
-                <p>Dropdown Options Font Size:</p>
-                <mat-chip-listbox
-                    [(ngModel)]="optionFontSize"
-                    [multiple]="false"
-                    (ngModelChange)="changeFontSize('option', $event)"
-                >
-                    @for (size of optionFontSizes; track $index) {
-                        <mat-chip-option [value]="size" [selected]="size === optionFontSize">
-                            {{ size }}px
-                        </mat-chip-option>
-                    }
-                </mat-chip-listbox>
-            </div>
-            <div>
-                <p>Table rows Font Size:</p>
-                <mat-chip-listbox
-                    [(ngModel)]="tableFontSize"
-                    [multiple]="false"
-                    (ngModelChange)="changeFontSize('table', $event)"
-                >
-                    @for (size of tableFontSizes; track $index) {
-                        <mat-chip-option [value]="size" [selected]="size === tableFontSize">
-                            {{ size }}px
-                        </mat-chip-option>
-                    }
-                </mat-chip-listbox>
-            </div>
-            <div>
-                <p>Input Fields Font Size:</p>
-                <mat-chip-listbox
-                    [(ngModel)]="inputFontSize"
-                    [multiple]="false"
-                    (ngModelChange)="changeFontSize('input', $event)"
-                >
-                    @for (size of inputFontSizes; track $index) {
-                        <mat-chip-option [value]="size" [selected]="size === inputFontSize">
-                            {{ size }}px
-                        </mat-chip-option>
-                    }
-                </mat-chip-listbox>
-            </div>
-        </mat-card-content>
-    </mat-card>
-</div>
+        <mat-card>
+            <mat-card-content class="toggle-card">
+                <h2>{{ t('settings.customFontSizeTitle') }}</h2>
+                <div>
+                    <p>Dropdown Options Font Size:</p>
+                    <mat-chip-listbox
+                        [(ngModel)]="optionFontSize"
+                        [multiple]="false"
+                        (ngModelChange)="changeFontSize('option', $event)"
+                    >
+                        @for (size of optionFontSizes; track $index) {
+                            <mat-chip-option [value]="size" [selected]="size === optionFontSize">
+                                {{ size }}px
+                            </mat-chip-option>
+                        }
+                    </mat-chip-listbox>
+                </div>
+                <div>
+                    <p>Table rows Font Size:</p>
+                    <mat-chip-listbox
+                        [(ngModel)]="tableFontSize"
+                        [multiple]="false"
+                        (ngModelChange)="changeFontSize('table', $event)"
+                    >
+                        @for (size of tableFontSizes; track $index) {
+                            <mat-chip-option [value]="size" [selected]="size === tableFontSize">
+                                {{ size }}px
+                            </mat-chip-option>
+                        }
+                    </mat-chip-listbox>
+                </div>
+                <div>
+                    <p>Input Fields Font Size:</p>
+                    <mat-chip-listbox
+                        [(ngModel)]="inputFontSize"
+                        [multiple]="false"
+                        (ngModelChange)="changeFontSize('input', $event)"
+                    >
+                        @for (size of inputFontSizes; track $index) {
+                            <mat-chip-option [value]="size" [selected]="size === inputFontSize">
+                                {{ size }}px
+                            </mat-chip-option>
+                        }
+                    </mat-chip-listbox>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
 </ng-container>

@@ -2,7 +2,12 @@ import { inject, Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { ProductResponse, ProductEntity } from 'src/app/shared/models/product.model'
-import { CreateUserResponse, UserEntity, UserResponse, changeUserPassword } from 'src/app/shared/models/user.model'
+import {
+    CreateUserResponse,
+    UserEntity,
+    UserResponse,
+    changeUserPassword,
+} from 'src/app/shared/models/user.model'
 import { environment } from 'src/environments/environment'
 import { OrderEntity, OrderResponse } from 'src/app/shared/models/order.model'
 import { NavigationContext } from 'src/app/shared/models/navigation-context.model'
@@ -24,7 +29,7 @@ import {
 export class BakeryManagementApiService {
     private basePath = environment.baseUrl
 
-    private httpClient=  inject(HttpClient)
+    private httpClient = inject(HttpClient)
 
     //CRUD for users
     createUser(user: Partial<UserEntity>): Observable<CreateUserResponse> {
@@ -102,20 +107,29 @@ export class BakeryManagementApiService {
 
     //CRUD for orders
     createOrder(params: any): Observable<any> {
-        return this.httpClient.post<any>(`${this.basePath}/orders`, { order: params.newValue, notifications: params.sendCreatedNotification });
+        return this.httpClient.post<any>(`${this.basePath}/orders`, {
+            order: params.newValue,
+            notifications: params.sendCreatedNotification,
+        })
     }
 
     getOrderById(id: number): Observable<OrderEntity> {
         return this.httpClient.get<OrderEntity>(`${this.basePath}/orders/${id}`)
     }
 
-    getPreviousOrderByClient(clientId: number, previousOrderNumber: number): Observable<OrderEntity> {
-        const body = { clientId, previousOrderNumber } 
+    getPreviousOrderByClient(
+        clientId: number,
+        previousOrderNumber: number
+    ): Observable<OrderEntity> {
+        const body = { clientId, previousOrderNumber }
         return this.httpClient.post<OrderEntity>(`${this.basePath}/orders/last-order`, body)
     }
 
     updateOrder(orderId: number, order: any, notifications: any): Observable<any> {
-        return this.httpClient.put<any>(`${this.basePath}/orders/${orderId}`, {order, notifications})
+        return this.httpClient.put<any>(`${this.basePath}/orders/${orderId}`, {
+            order,
+            notifications,
+        })
     }
 
     deleteOrder(id: number): Observable<any> {
@@ -180,27 +194,25 @@ export class BakeryManagementApiService {
     }
 
     createPermission(
-        payload: CreatePermissionRequest | CreatePermissionRequest[],
+        payload: CreatePermissionRequest | CreatePermissionRequest[]
     ): Observable<PermissionEntity | PermissionEntity[]> {
         return this.httpClient.post<PermissionEntity | PermissionEntity[]>(
             `${this.basePath}/permissions`,
-            payload,
+            payload
         )
     }
 
     assignPermissionsToRole(
         roleId: number,
-        payload: AssignPermissionsRequest,
+        payload: AssignPermissionsRequest
     ): Observable<PermissionEntity[]> {
         return this.httpClient.put<PermissionEntity[]>(
             `${this.basePath}/permissions/roles/${roleId}`,
-            payload,
+            payload
         )
     }
 
     getRolePermissions(): Observable<RolePermissionsSummary[]> {
-        return this.httpClient.get<RolePermissionsSummary[]>(
-            `${this.basePath}/permissions/roles`,
-        )
+        return this.httpClient.get<RolePermissionsSummary[]>(`${this.basePath}/permissions/roles`)
     }
 }

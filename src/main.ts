@@ -10,8 +10,8 @@ import { BrowserModule, bootstrapApplication } from '@angular/platform-browser'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { AppRoutingModule } from 'src/app/app-routing.module'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { AppComponent } from './app/app.component';
-import { TranslocoHttpLoader } from './transloco-loader';
+import { AppComponent } from './app/app.component'
+import { TranslocoHttpLoader } from './transloco-loader'
 import { provideTransloco } from '@jsverse/transloco'
 
 if (environment.production) {
@@ -38,15 +38,17 @@ bootstrapApplication(AppComponent, {
             multi: true,
         },
         provideAnimations(),
-        provideHttpClient(withInterceptorsFromDi()), provideHttpClient(), provideTransloco({
-        config: { 
-          availableLangs: ['en', 'de', 'all'],
-          defaultLang: 'en',
-          // Remove this option if your application doesn't support changing language in runtime.
-          reRenderOnLangChange: true,
-          prodMode: !isDevMode(),
-        },
-        loader: TranslocoHttpLoader
-      }),
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(),
+        provideTransloco({
+            config: {
+                availableLangs: ['en', 'de', 'all'],
+                defaultLang: 'en',
+                // Remove this option if your application doesn't support changing language in runtime.
+                reRenderOnLangChange: true,
+                prodMode: !isDevMode(),
+            },
+            loader: TranslocoHttpLoader,
+        }),
     ],
 }).catch((err) => console.error(err))

@@ -9,7 +9,7 @@ import {
     ChangeDetectorRef,
     inject,
 } from '@angular/core'
-import { NgTemplateOutlet, NgIf, DecimalPipe } from '@angular/common'
+import { NgTemplateOutlet, DecimalPipe } from '@angular/common'
 
 import { Subject } from 'rxjs'
 import { take, map, takeUntil, finalize } from 'rxjs/operators'
@@ -71,15 +71,14 @@ import { TranslocoDirective } from '@jsverse/transloco'
         MatRowDef,
         MatRow,
         MatNoDataRow,
-        NgIf,
         MatProgressSpinner,
         MatPaginator,
         TopBarComponent,
         CreateUpdateProductDialogComponent_1,
         ConfirmationDialogComponent_1,
         DecimalPipe,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy {
     public bakeryManagementService = inject(BakeryManagementService)
@@ -93,7 +92,7 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
     createUpdateContainer!: TemplateRef<CreateUpdateProductDialogComponent>
     @ViewChild('confirmationDialogContainer')
     confirmationDialogContainer!: TemplateRef<ConfirmationDialogComponent>
-    
+
     private destroy$ = new Subject<void>()
 
     displayedColumns: string[] = ['id', 'product_name', 'price', 'actions']
@@ -133,17 +132,19 @@ export class ManageProductsComponent implements OnInit, AfterViewInit, OnDestroy
 
     ngAfterViewInit() {
         this.paginator.page.pipe(takeUntil(this.destroy$)).subscribe((event: PageEvent) => {
-            const pageSizeChanged = this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize;
+            const pageSizeChanged =
+                this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize
 
-            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize;
-            this.bakeryManagementService.navigationContext.pagination.offset = event.pageIndex * event.pageSize;
+            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize
+            this.bakeryManagementService.navigationContext.pagination.offset =
+                event.pageIndex * event.pageSize
             if (event.pageIndex > event.previousPageIndex!) {
-                this.getProductsList(true);
+                this.getProductsList(true)
             }
             if (pageSizeChanged) {
-                this.getProductsList(false);
+                this.getProductsList(false)
             }
-        });
+        })
 
         this.getProductsList(false)
     }

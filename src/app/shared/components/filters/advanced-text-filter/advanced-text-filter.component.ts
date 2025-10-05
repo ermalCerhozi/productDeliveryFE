@@ -19,7 +19,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import { NgStyle, NgIf, NgFor } from '@angular/common'
+import { NgStyle } from '@angular/common'
 
 import { Subject, debounceTime, takeUntil } from 'rxjs'
 import { MatOption } from '@angular/material/core'
@@ -53,7 +53,6 @@ import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.mode
         ReactiveFormsModule,
         MatFormField,
         NgStyle,
-        NgIf,
         MatIcon,
         MatSelect,
         MatOption,
@@ -62,8 +61,7 @@ import { AdvancedSelection } from 'src/app/shared/models/advanced-selection.mode
         MatLabel,
         MatInput,
         MatSuffix,
-        NgFor,
-    ]
+    ],
 })
 export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     private fb = inject(FormBuilder)

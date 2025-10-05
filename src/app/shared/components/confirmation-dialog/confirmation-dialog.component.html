@@ -5,7 +5,9 @@
         <h4>{{ title() }}</h4>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-        <button class="button cancel" mat-button mat-dialog-close>{{ t('confirmationDialog.cancel') }}</button>
+        <button class="button cancel" mat-button mat-dialog-close>
+            {{ t('confirmationDialog.cancel') }}
+        </button>
         <button class="button" mat-button color="primary" (click)="onConfirm()" autofocus>
             {{ t('confirmationDialog.confirm') }}
         </button>

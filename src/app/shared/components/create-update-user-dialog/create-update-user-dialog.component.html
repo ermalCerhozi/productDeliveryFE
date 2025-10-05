@@ -1,7 +1,12 @@
 <ng-container *transloco="let t">
     <div class="dialog-container">
         <div mat-dialog-title>
-            {{ action === 'create' ? t('createUpdateUserDialog.create') : t('createUpdateUserDialog.update') }} {{ t('createUpdateUserDialog.user') }}
+            {{
+                action === 'create'
+                    ? t('createUpdateUserDialog.create')
+                    : t('createUpdateUserDialog.update')
+            }}
+            {{ t('createUpdateUserDialog.user') }}
         </div>
 
         <mat-dialog-content class="dialog-content">
@@ -14,17 +19,15 @@
                     (change)="onFileSelected($event)"
                 />
                 <div class="image-container">
-                    <img
-                        [src]="previewImageUrl || defaultAvatar"
-                        alt="Profile image"
-                    />
+                    <img [src]="previewImageUrl || defaultAvatar" alt="Profile image" />
                 </div>
-                <mat-progress-spinner
-                    *ngIf="isLoadingUserDetails"
-                    mode="indeterminate"
-                    diameter="32"
-                    strokeWidth="4"
-                ></mat-progress-spinner>
+                @if (isLoadingUserDetails) {
+                    <mat-progress-spinner
+                        mode="indeterminate"
+                        diameter="32"
+                        strokeWidth="4"
+                    ></mat-progress-spinner>
+                }
                 <button
                     class="profile-picture-upload-button"
                     mat-flat-button
@@ -39,34 +42,63 @@
             <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-content-form">
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateUserDialog.firstName') }}</mat-label>
-                    <input matInput formControlName="first_name" required [title]="t('createUpdateUserDialog.firstName')" />
-                    <mat-error *ngIf="form.get('first_name')?.invalid && form.get('first_name')?.touched">
-                        {{ t('createUpdateUserDialog.firstNameRequired') }}
-                    </mat-error>
+                    <input
+                        matInput
+                        formControlName="first_name"
+                        required
+                        [title]="t('createUpdateUserDialog.firstName')"
+                    />
+                    @if (form.get('first_name')?.invalid && form.get('first_name')?.touched) {
+                        <mat-error>
+                            {{ t('createUpdateUserDialog.firstNameRequired') }}
+                        </mat-error>
+                    }
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateUserDialog.lastName') }}</mat-label>
-                    <input matInput type="text" formControlName="last_name" required [title]="t('createUpdateUserDialog.lastName')" />
-                    <mat-error *ngIf="form.get('last_name')?.invalid && form.get('last_name')?.touched">
-                        {{ t('createUpdateUserDialog.lastNameRequired') }}
-                    </mat-error>
+                    <input
+                        matInput
+                        type="text"
+                        formControlName="last_name"
+                        required
+                        [title]="t('createUpdateUserDialog.lastName')"
+                    />
+                    @if (form.get('last_name')?.invalid && form.get('last_name')?.touched) {
+                        <mat-error>
+                            {{ t('createUpdateUserDialog.lastNameRequired') }}
+                        </mat-error>
+                    }
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateUserDialog.nickname') }}</mat-label>
-                    <input matInput type="text" formControlName="nickname" [title]="t('createUpdateUserDialog.nickname')" />
+                    <input
+                        matInput
+                        type="text"
+                        formControlName="nickname"
+                        [title]="t('createUpdateUserDialog.nickname')"
+                    />
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateUserDialog.email') }}</mat-label>
-                    <input matInput type="email" formControlName="email" [title]="t('createUpdateUserDialog.email')" />
+                    <input
+                        matInput
+                        type="email"
+                        formControlName="email"
+                        [title]="t('createUpdateUserDialog.email')"
+                    />
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateUserDialog.phoneNumber') }}</mat-label>
-                    <div style="display: flex; align-items: center;">
-                        <mat-select formControlName="phone_prefix" style="width: 110px; margin-right: 8px;" required>
+                    <div style="display: flex; align-items: center">
+                        <mat-select
+                            formControlName="phone_prefix"
+                            style="width: 110px; margin-right: 8px"
+                            required
+                        >
                             <mat-option value="+355">🇦🇱 +355 (AL)</mat-option>
                             <mat-option value="+39">🇮🇹 +39 (IT)</mat-option>
                             <mat-option value="+49">🇩🇪 +49 (DE)</mat-option>
@@ -86,32 +118,52 @@
                             (click)="$event.stopPropagation()"
                         />
                     </div>
-                    <mat-error *ngIf="form.get('phone_number')?.invalid && form.get('phone_number')?.touched">
-                        <ng-container *ngIf="form.get('phone_number')?.errors?.['required']">
-                            {{ t('createUpdateUserDialog.phoneNumberRequired') }}
-                        </ng-container>
-                        <ng-container *ngIf="form.get('phone_number')?.errors?.['pattern']">
-                            {{ t('createUpdateUserDialog.phoneNumberPattern') }}
-                        </ng-container>
-                    </mat-error>
+                    @if (form.get('phone_number')?.invalid && form.get('phone_number')?.touched) {
+                        <mat-error>
+                            @if (form.get('phone_number')?.errors?.['required']) {
+                                {{ t('createUpdateUserDialog.phoneNumberRequired') }}
+                            }
+                            @if (form.get('phone_number')?.errors?.['pattern']) {
+                                {{ t('createUpdateUserDialog.phoneNumberPattern') }}
+                            }
+                        </mat-error>
+                    }
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateUserDialog.role') }}</mat-label>
                     <mat-select formControlName="role" required>
-                        <mat-option value="client">{{ t('createUpdateUserDialog.roleClient') }}</mat-option>
-                        <mat-option value="admin">{{ t('createUpdateUserDialog.roleAdmin') }}</mat-option>
-                        <mat-option value="seller">{{ t('createUpdateUserDialog.roleSeller') }}</mat-option>
+                        <mat-option value="client">{{
+                            t('createUpdateUserDialog.roleClient')
+                        }}</mat-option>
+                        <mat-option value="admin">{{
+                            t('createUpdateUserDialog.roleAdmin')
+                        }}</mat-option>
+                        <mat-option value="seller">{{
+                            t('createUpdateUserDialog.roleSeller')
+                        }}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="form.get('role')?.invalid && form.get('role')?.touched">
-                        {{ t('createUpdateUserDialog.roleRequired') }}
-                    </mat-error>
+                    @if (form.get('role')?.invalid && form.get('role')?.touched) {
+                        <mat-error>
+                            {{ t('createUpdateUserDialog.roleRequired') }}
+                        </mat-error>
+                    }
                 </mat-form-field>
 
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateUserDialog.location') }}</mat-label>
-                    <input matInput type="text" formControlName="location" [title]="t('createUpdateUserDialog.location')" />
-                    <button mat-icon-button matSuffix (click)="openInNewWindow(form.get('location')?.value)" type="button">
+                    <input
+                        matInput
+                        type="text"
+                        formControlName="location"
+                        [title]="t('createUpdateUserDialog.location')"
+                    />
+                    <button
+                        mat-icon-button
+                        matSuffix
+                        (click)="openInNewWindow(form.get('location')?.value)"
+                        type="button"
+                    >
                         <mat-icon>open_in_new</mat-icon>
                     </button>
                 </mat-form-field>

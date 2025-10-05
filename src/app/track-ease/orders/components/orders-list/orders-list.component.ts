@@ -1,6 +1,14 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, inject } from '@angular/core'
+import {
+    AfterViewInit,
+    Component,
+    OnDestroy,
+    OnInit,
+    TemplateRef,
+    ViewChild,
+    inject,
+} from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { NgIf, NgFor, AsyncPipe, DatePipe } from '@angular/common'
+import { AsyncPipe, DatePipe } from '@angular/common'
 
 import { Observable, Subject, switchMap, takeUntil } from 'rxjs'
 import { MatButton, MatIconButton } from '@angular/material/button'
@@ -53,7 +61,6 @@ import { TranslocoDirective } from '@jsverse/transloco'
         SimpleRadioSelectFilterComponent,
         AdvancedTextFilterComponent,
         MatDivider,
-        NgIf,
         FiltersResultComponent,
         MatTable,
         MatColumnDef,
@@ -61,7 +68,6 @@ import { TranslocoDirective } from '@jsverse/transloco'
         MatHeaderCell,
         MatCellDef,
         MatCell,
-        NgFor,
         MatIconButton,
         MatMenuTrigger,
         MatHeaderRowDef,
@@ -76,8 +82,8 @@ import { TranslocoDirective } from '@jsverse/transloco'
         DatePipe,
         ConfirmationDialogComponent,
         MatMenuModule,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator
@@ -166,29 +172,31 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngAfterViewInit() {
         this.paginator.page.pipe(takeUntil(this.destroy$)).subscribe((event: PageEvent) => {
-            const pageSizeChanged = this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize;
+            const pageSizeChanged =
+                this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize
 
-            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize;
-            this.bakeryManagementService.navigationContext.pagination.offset = event.pageIndex * event.pageSize;
+            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize
+            this.bakeryManagementService.navigationContext.pagination.offset =
+                event.pageIndex * event.pageSize
             if (event.pageIndex > event.previousPageIndex!) {
-                this.getOrdersList(true);
+                this.getOrdersList(true)
             }
             if (pageSizeChanged) {
-                this.getOrdersList(false);
+                this.getOrdersList(false)
             }
-        });
+        })
 
-        this.getOrdersList(false);
+        this.getOrdersList(false)
     }
 
     getOrdersList(append: boolean) {
-        const pageSize = this.paginator.pageSize;
-        const pageIndex = this.paginator.pageIndex;
+        const pageSize = this.paginator.pageSize
+        const pageIndex = this.paginator.pageIndex
 
-        this.bakeryManagementService.navigationContext.pagination.limit = pageSize;
-        this.bakeryManagementService.navigationContext.pagination.offset = pageIndex * pageSize;
+        this.bakeryManagementService.navigationContext.pagination.limit = pageSize
+        this.bakeryManagementService.navigationContext.pagination.offset = pageIndex * pageSize
 
-        this.isLoading = true;
+        this.isLoading = true
         this.bakeryManagementService
             .updateOrdersList(append)
             .pipe(
@@ -197,14 +205,14 @@ export class OrdersListComponent implements OnInit, AfterViewInit, OnDestroy {
             )
             .subscribe({
                 next: (orders) => {
-                    this.isLoading = false;
-                    this.dataSource.data = orders;
+                    this.isLoading = false
+                    this.dataSource.data = orders
                 },
                 error: (error) => {
-                    this.isLoading = false;
-                    console.log('Error: ', error);
+                    this.isLoading = false
+                    console.log('Error: ', error)
                 },
-            });
+            })
     }
 
     selectOrder(order: OrderEntity): void {

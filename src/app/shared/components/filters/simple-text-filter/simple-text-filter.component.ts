@@ -17,7 +17,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import { NgStyle, NgIf, NgFor } from '@angular/common'
+import { NgStyle } from '@angular/common'
 
 import { MatIconButton } from '@angular/material/button'
 import { MatOption } from '@angular/material/core'
@@ -46,12 +46,10 @@ import { FilterOption } from 'src/app/shared/models/filter-option.model'
         ReactiveFormsModule,
         MatFormField,
         NgStyle,
-        NgIf,
         MatIcon,
         MatSelect,
         MatOption,
         MatProgressSpinner,
-        NgFor,
         MatIconButton,
     ],
 })

@@ -1,5 +1,13 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild, inject } from '@angular/core'
-import { NgTemplateOutlet, NgIf } from '@angular/common'
+import {
+    AfterViewInit,
+    Component,
+    OnDestroy,
+    OnInit,
+    TemplateRef,
+    ViewChild,
+    inject,
+} from '@angular/core'
+import { NgTemplateOutlet } from '@angular/common'
 
 import { Subject, map, take, takeUntil } from 'rxjs'
 import { MatButton } from '@angular/material/button'
@@ -56,15 +64,14 @@ import { TranslocoDirective } from '@jsverse/transloco'
         MatRowDef,
         MatRow,
         MatNoDataRow,
-        NgIf,
         MatProgressSpinner,
         MatPaginator,
         TopBarComponent,
         CreateUpdateUserDialogComponent,
         ConfirmationDialogComponent,
         DropdownMenuListComponent,
-        TranslocoDirective
-    ]
+        TranslocoDirective,
+    ],
 })
 export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
     public bakeryManagementService = inject(BakeryManagementService)
@@ -110,21 +117,23 @@ export class ManageUsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngAfterViewInit() {
         this.paginator.page.pipe(takeUntil(this.destroy$)).subscribe((event: PageEvent) => {
-            const pageSizeChanged = this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize;
+            const pageSizeChanged =
+                this.bakeryManagementService.navigationContext.pagination.limit !== event.pageSize
 
-            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize;
-            this.bakeryManagementService.navigationContext.pagination.offset = event.pageIndex * event.pageSize;
+            this.bakeryManagementService.navigationContext.pagination.limit = event.pageSize
+            this.bakeryManagementService.navigationContext.pagination.offset =
+                event.pageIndex * event.pageSize
             if (event.pageIndex > event.previousPageIndex!) {
-                this.getUsersList(true);
+                this.getUsersList(true)
             }
             if (pageSizeChanged) {
-                this.getUsersList(false);
+                this.getUsersList(false)
             }
-        });
+        })
 
         this.getUsersList(false)
     }
-    
+
     getUsersList(append: boolean) {
         this.isLoading = true
         this.bakeryManagementService.updateUsersList(append).subscribe({

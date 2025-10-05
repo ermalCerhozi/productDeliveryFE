@@ -14,7 +14,7 @@ import { AuthService } from 'src/app/services/auth.service'
     providedIn: 'root',
 })
 export class ErrorInterceptor implements HttpInterceptor {
-    private authService= inject(AuthService)
+    private authService = inject(AuthService)
 
     intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         return next.handle(req).pipe(
