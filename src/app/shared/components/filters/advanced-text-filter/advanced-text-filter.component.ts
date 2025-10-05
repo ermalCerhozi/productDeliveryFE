@@ -84,12 +84,15 @@ export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy
     @ViewChild('advancedTextFilterSelect') advancedTextFilterSelect!: MatSelect
 
     // how many pixels from the bottom of the scrollable panel to trigger the loadMore event
-    private THRESHOLD = 3.0
+    // Setting to 1 to trigger only when truly at the bottom
+    private THRESHOLD = 1.0
     form!: FormGroup
     private selectionSubject = new Subject<AdvancedSelection>()
     private searchSubject = new Subject<string>()
     onDestroy = new Subject<void>()
     searchQuery = ''
+    private scrollListenerAttached = false
+    private isLoadingMore = false
 
     ngOnInit() {
         this.form = this.fb.group({
@@ -112,9 +115,11 @@ export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy
         this.advancedTextFilterSelect?.openedChange.subscribe((isOpen) => {
             if (isOpen) {
                 this.subscribeScrollEvent()
-                if (!this.fields().length && this.hasMoreItems()) {
-                    this.loadMore.emit()
-                }
+                // Note: Initial load is now handled by parent component via openedChange event
+                // This prevents double loading
+            } else {
+                // Reset scroll listener flag when closed
+                this.scrollListenerAttached = false
             }
         })
 
@@ -143,24 +148,59 @@ export class AdvancedTextFilterComponent implements OnInit, OnChanges, OnDestroy
 
     /* istanbul ignore next: not possible to test due to <ng-template> not rendering on testing */
     subscribeScrollEvent() {
-        const panel = <HTMLElement>this.advancedTextFilterSelect.panel.nativeElement
-        panel.addEventListener('scroll', (event: Event) => {
-            if (
-                event.target &&
-                this.hasScrolledToBottom(event.target as Element) &&
-                this.hasMoreItems() &&
-                !this.loadingPage()
-            ) {
-                this.loadMore.emit()
+        // Prevent multiple listeners from being attached
+        if (this.scrollListenerAttached) {
+            return
+        }
+
+        // Use setTimeout to ensure panel is fully rendered
+        setTimeout(() => {
+            try {
+                const panel = this.advancedTextFilterSelect?.panel?.nativeElement
+                if (!panel) {
+                    console.warn('Panel not found')
+                    return
+                }
+                
+                const scrollHandler = (event: Event) => {
+                    const target = event.target as Element
+                    
+                    if (
+                        this.hasScrolledToBottom(target) &&
+                        this.hasMoreItems() &&
+                        !this.loadingPage() &&
+                        !this.isLoadingMore
+                    ) {
+                        console.log('Scroll reached bottom, loading more items...')
+                        this.isLoadingMore = true
+                        this.loadMore.emit()
+                        
+                        // Reset flag after a short delay to prevent rapid firing
+                        setTimeout(() => {
+                            this.isLoadingMore = false
+                        }, 500)
+                    }
+                }
+
+                panel.addEventListener('scroll', scrollHandler, { passive: true })
+                this.scrollListenerAttached = true
+                
+                console.log('Scroll listener attached to panel', {
+                    scrollHeight: panel.scrollHeight,
+                    clientHeight: panel.clientHeight,
+                    hasScroll: panel.scrollHeight > panel.clientHeight
+                })
+            } catch (error) {
+                console.error('Error attaching scroll listener:', error)
             }
-        })
+        }, 0)
     }
 
     /* istanbul ignore next: not possible to test due to <ng-template> not rendering on testing */
     private hasScrolledToBottom(target: Element): boolean {
-        return (
-            Math.abs(target.scrollHeight - target.scrollTop - target.clientHeight) < this.THRESHOLD
-        )
+        const scrollBottom = target.scrollHeight - target.scrollTop - target.clientHeight
+        const isAtBottom = scrollBottom <= this.THRESHOLD
+        return isAtBottom
     }
 
     ngOnDestroy() {

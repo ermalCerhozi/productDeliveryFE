@@ -57,7 +57,6 @@ import { UserFiltersResponse, ProductsFiltersResponse } from 'src/app/shared/mod
         MatFabButton,
         MatDialogActions,
         MatButton,
-        AsyncPipe,
         TranslocoDirective,
     ],
 })

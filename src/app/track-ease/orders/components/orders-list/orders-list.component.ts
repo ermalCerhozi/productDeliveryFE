@@ -3,14 +3,13 @@ import {
     inject,
     signal,
     computed,
-    effect,
     DestroyRef,
 } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { AsyncPipe, DatePipe } from '@angular/common'
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
-import { Observable, Subject, debounceTime } from 'rxjs'
+import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { MatButton } from '@angular/material/button'
 import { MatDialog } from '@angular/material/dialog'
@@ -63,10 +62,6 @@ export class OrdersListComponent {
     private translocoService = inject(TranslocoService);
     private datePipe = inject(DatePipe);
     public bakeryManagementService = inject(BakeryManagementService);
-
-    // Filter state management with signals
-    private clientSelectSubject = new Subject<AdvancedSelection>();
-    private sellerSelectSubject = new Subject<AdvancedSelection>();
 
     // Date filters - converted to signals
     public defaultDateFilter: FilterOption = {
@@ -143,9 +138,6 @@ export class OrdersListComponent {
         
         // Load initial data
         this.findAll();
-        
-        // Subscribe to filter changes using effects
-        this.setupFilterSubscriptions();
     }
 
     public findAll(): void {
@@ -217,6 +209,18 @@ export class OrdersListComponent {
     }
 
     // Filter methods
+    onClientDropdownOpened(isOpen: boolean): void {
+        if (isOpen && this.clients().length === 0) {
+            this.getPaginatedClients();
+        }
+    }
+
+    onSellerDropdownOpened(isOpen: boolean): void {
+        if (isOpen && this.sellers().length === 0) {
+            this.getPaginatedSellers();
+        }
+    }
+
     clientSearchChange(data: string): void {
         this.clientSearchQuery = data;
         this.clients.set([]);
@@ -359,11 +363,11 @@ export class OrdersListComponent {
     }
 
     private applyClientFilters(data: AdvancedSelection): void {
-        this.clientSelectSubject.next(data);
+        this.applyAdvancedFilters([data], this.selectedClients);
     }
 
     private applySellerFilters(data: AdvancedSelection): void {
-        this.sellerSelectSubject.next(data);
+        this.applyAdvancedFilters([data], this.selectedSellers);
     }
 
     private onApplyFilters(): void {
@@ -371,74 +375,28 @@ export class OrdersListComponent {
         this.findAll();
     }
 
-    private setupFilterSubscriptions(): void {
-        // Client filter subscription with debounce
-        this.clientSelectSubject.pipe(
-            debounceTime(800),
-            takeUntilDestroyed(this.destroyRef)
-        ).subscribe((data: AdvancedSelection) => {
-            this.applyClientsFiltersImmediately([data]);
-        });
-
-        // Seller filter subscription with debounce
-        this.sellerSelectSubject.pipe(
-            debounceTime(800),
-            takeUntilDestroyed(this.destroyRef)
-        ).subscribe((data: AdvancedSelection) => {
-            this.applySellersFiltersImmediately([data]);
-        });
-    }
-
-    private applyClientsFiltersImmediately(data: AdvancedSelection[]): void {
-        this.applyAdvancedFilters(data, this.selectedClients);
-    }
-
-    private applySellersFiltersImmediately(data: AdvancedSelection[]): void {
-        this.applyAdvancedFilters(data, this.selectedSellers);
-    }
-
     private applyAdvancedFilters(
         selectedFilters: AdvancedSelection[],
         currentlySelectedFilters: ReturnType<typeof signal<FilterOption[]>>
     ): void {
-        const temporarySelectedFilters = [...currentlySelectedFilters()];
-        
         selectedFilters.forEach((selectedFilter: AdvancedSelection) => {
-            const existingIndex = temporarySelectedFilters.findIndex(
-                f => f.value === selectedFilter.value.value
-            );
-            
-            if (selectedFilter.selected && existingIndex === -1) {
-                temporarySelectedFilters.push(selectedFilter.value);
-            } else if (!selectedFilter.selected && existingIndex !== -1) {
-                temporarySelectedFilters.splice(existingIndex, 1);
+            if (selectedFilter.selected) {
+                // Add filter if not already present
+                const exists = currentlySelectedFilters().some(
+                    f => f.value === selectedFilter.value.value
+                );
+                if (!exists) {
+                    currentlySelectedFilters.update(current => [...current, selectedFilter.value]);
+                }
+            } else {
+                // Remove filter
+                currentlySelectedFilters.update(current =>
+                    current.filter(f => f.value !== selectedFilter.value.value)
+                );
             }
         });
         
-        const isChanged = this.haveFiltersChanged(
-            temporarySelectedFilters,
-            currentlySelectedFilters()
-        );
-        
-        if (isChanged) {
-            currentlySelectedFilters.set(temporarySelectedFilters);
-            this.onApplyFilters();
-        }
-    }
-
-    private haveFiltersChanged(
-        temporaryFilterArray: FilterOption[],
-        selectedFilterArray: FilterOption[]
-    ): boolean {
-        if (!temporaryFilterArray.length && !selectedFilterArray.length) {
-            return false;
-        }
-        if (temporaryFilterArray.length !== selectedFilterArray.length) {
-            return true;
-        }
-        return temporaryFilterArray.some(
-            (tempFilter, index) => tempFilter.value !== selectedFilterArray[index].value
-        );
+        this.onApplyFilters();
     }
 
     private getPaginatedClients(): void {
@@ -446,7 +404,7 @@ export class OrdersListComponent {
         const payload: any = {
             pagination: {
                 offset: this.clients().length,
-                limit: 20,
+                limit: 5,
             },
         };
         if (this.clientSearchQuery) {
@@ -454,15 +412,12 @@ export class OrdersListComponent {
         }
 
         this.bakeryManagementApiService.getClientFiltersForOrder(payload)
-            .pipe(
-                takeUntilDestroyed(this.destroyRef),
-                map((clientList: UserFiltersResponse[]) => {
-                    this.hasMoreClientsToLoad.set(clientList.length !== 0);
-                    this.addClientsToSelectionList(clientList);
-                    this.clientsLoading.set(false);
-                })
-            )
-            .subscribe();
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((clientList: UserFiltersResponse[]) => {
+                this.hasMoreClientsToLoad.set(clientList.length !== 0);
+                this.addClientsToSelectionList(clientList);
+                this.clientsLoading.set(false);
+            });
     }
 
     private getPaginatedSellers(): void {
@@ -470,7 +425,7 @@ export class OrdersListComponent {
         const payload: any = {
             pagination: {
                 offset: this.sellers().length,
-                limit: 20,
+                limit: 5,
             },
         };
         if (this.sellerSearchQuery) {
@@ -478,38 +433,29 @@ export class OrdersListComponent {
         }
 
         this.bakeryManagementApiService.getSellerFiltersForOrder(payload)
-            .pipe(
-                takeUntilDestroyed(this.destroyRef),
-                map((sellerList: UserFiltersResponse[]) => {
-                    this.hasMoreSellersToLoad.set(sellerList.length !== 0);
-                    this.addSellersToSelectionList(sellerList);
-                    this.sellersLoading.set(false);
-                })
-            )
-            .subscribe();
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((sellerList: UserFiltersResponse[]) => {
+                this.hasMoreSellersToLoad.set(sellerList.length !== 0);
+                this.addSellersToSelectionList(sellerList);
+                this.sellersLoading.set(false);
+            });
     }
 
     private addClientsToSelectionList(clientList: UserFiltersResponse[]): void {
-        const newClients: FilterOption[] = [];
-        clientList.forEach((client) =>
-            newClients.push({
-                value: client.id,
-                label: client.first_name + ' ' + client.last_name,
-                count: client.mediaCount,
-            })
-        );
+        const newClients: FilterOption[] = clientList.map(client => ({
+            value: client.id,
+            label: `${client.first_name} ${client.last_name}`,
+            count: client.mediaCount,
+        }));
         this.clients.update(current => [...current, ...newClients]);
     }
 
     private addSellersToSelectionList(sellerList: UserFiltersResponse[]): void {
-        const newSellers: FilterOption[] = [];
-        sellerList.forEach((seller) =>
-            newSellers.push({
-                value: seller.id,
-                label: seller.first_name + ' ' + seller.last_name,
-                count: seller.mediaCount,
-            })
-        );
+        const newSellers: FilterOption[] = sellerList.map(seller => ({
+            value: seller.id,
+            label: `${seller.first_name} ${seller.last_name}`,
+            count: seller.mediaCount,
+        }));
         this.sellers.update(current => [...current, ...newSellers]);
     }
 }

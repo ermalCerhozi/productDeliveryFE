@@ -70,6 +70,7 @@
                     (searchChange)="clientSearchChange($event)"
                     (loadMore)="loadMoreClients()"
                     (selectionChange)="applyFilters($event, 'client')"
+                    (openedChange)="onClientDropdownOpened($event)"
                 >
                 </app-advanced-text-filter>
 
@@ -86,6 +87,7 @@
                     (searchChange)="sellerSearchChange($event)"
                     (loadMore)="loadMoreSellers()"
                     (selectionChange)="applyFilters($event, 'seller')"
+                    (openedChange)="onSellerDropdownOpened($event)"
                 >
                 </app-advanced-text-filter>
             </app-filters>
