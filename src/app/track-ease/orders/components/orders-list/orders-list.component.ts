@@ -66,20 +66,20 @@ export class OrdersListComponent {
     // Date filters - converted to signals
     public defaultDateFilter: FilterOption = {
         value: 'any-time',
-        label: 'TE_ORDER_DATE_ANY_TIME',
+        label: this.translocoService.translate('ordersList.orderDateAnyTime'),
         isTranslated: true,
     };
     
     public orderDates = signal<FilterOption[]>([
-        { value: 'any-time', label: 'Any time', isTranslated: true },
-        { value: 'today', label: 'Today', isTranslated: true },
-        { value: 'last-24h', label: 'Last 24h', isTranslated: true },
-        { value: 'last-48h', label: 'Last 48h', isTranslated: true },
-        { value: 'this-week', label: 'This week', isTranslated: true },
-        { value: 'this-month', label: 'This month', isTranslated: true },
-        { value: 'last-month', label: 'Last month', isTranslated: true },
-        { value: 'last-6months', label: 'Last 6 months', isTranslated: true },
-        { value: 'last-12months', label: 'Last 12 months', isTranslated: true },
+        { value: 'any-time', label: this.translocoService.translate('ordersList.orderDateAnyTime'), isTranslated: true },
+        { value: 'today', label: this.translocoService.translate('ordersList.orderDateToday'), isTranslated: true },
+        { value: 'last-24h', label: this.translocoService.translate('ordersList.orderDateLast24h'), isTranslated: true },
+        { value: 'last-48h', label: this.translocoService.translate('ordersList.orderDateLast48h'), isTranslated: true },
+        { value: 'this-week', label: this.translocoService.translate('ordersList.orderDateThisWeek'), isTranslated: true },
+        { value: 'this-month', label: this.translocoService.translate('ordersList.orderDateThisMonth'), isTranslated: true },
+        { value: 'last-month', label: this.translocoService.translate('ordersList.orderDateLastMonth'), isTranslated: true },
+        { value: 'last-6months', label: this.translocoService.translate('ordersList.orderDateLast6Months'), isTranslated: true },
+        { value: 'last-12months', label: this.translocoService.translate('ordersList.orderDateLast12Months'), isTranslated: true },
     ]);
     
     public selectedDate = signal<FilterOption>(this.defaultDateFilter);
@@ -90,6 +90,7 @@ export class OrdersListComponent {
     public clientsLoading = signal<boolean>(false);
     public hasMoreClientsToLoad = signal<boolean>(true);
     public clientSearchQuery = '';
+    private pendingClientSelections: FilterOption[] = [];
 
     // Seller filters - converted to signals
     public sellers = signal<FilterOption[]>([]);
@@ -97,6 +98,7 @@ export class OrdersListComponent {
     public sellersLoading = signal<boolean>(false);
     public hasMoreSellersToLoad = signal<boolean>(true);
     public sellerSearchQuery = '';
+    private pendingSellerSelections: FilterOption[] = [];
 
     // Computed filter results
     public filterResults = computed<FilterOption[]>(() => {
@@ -210,14 +212,28 @@ export class OrdersListComponent {
 
     // Filter methods
     onClientDropdownOpened(isOpen: boolean): void {
-        if (isOpen && this.clients().length === 0) {
-            this.getPaginatedClients();
+        if (isOpen) {
+            if (this.clients().length === 0) {
+                this.getPaginatedClients();
+            }
+            // Initialize pending selections with current selections when opening
+            this.pendingClientSelections = [...this.selectedClients()];
+        } else {
+            // Apply filters only when dropdown is closed
+            this.applyPendingClientFilters();
         }
     }
 
     onSellerDropdownOpened(isOpen: boolean): void {
-        if (isOpen && this.sellers().length === 0) {
-            this.getPaginatedSellers();
+        if (isOpen) {
+            if (this.sellers().length === 0) {
+                this.getPaginatedSellers();
+            }
+            // Initialize pending selections with current selections when opening
+            this.pendingSellerSelections = [...this.selectedSellers()];
+        } else {
+            // Apply filters only when dropdown is closed
+            this.applyPendingSellerFilters();
         }
     }
 
@@ -249,10 +265,10 @@ export class OrdersListComponent {
                 this.applyDateFilter(data as FilterOption);
                 break;
             case 'client':
-                this.applyClientFilters(data as AdvancedSelection);
+                this.updatePendingClientFilters(data as AdvancedSelection);
                 break;
             case 'seller':
-                this.applySellerFilters(data as AdvancedSelection);
+                this.updatePendingSellerFilters(data as AdvancedSelection);
                 break;
         }
     }
@@ -329,8 +345,11 @@ export class OrdersListComponent {
     }
 
     downloadOrdersPdf() {
+        const pageSize = this.pageSize();
+        const pageIndex = this.currentPage();
         const filters = this.buildFiltersPayload();
-        this.bakeryManagementService.downloadOrdersPdf(filters)
+
+        this.bakeryManagementService.downloadOrdersPdf(pageIndex, pageSize, filters);
     }
 
     downloadOrdersCsv() {
@@ -362,41 +381,86 @@ export class OrdersListComponent {
         this.onApplyFilters();
     }
 
-    private applyClientFilters(data: AdvancedSelection): void {
-        this.applyAdvancedFilters([data], this.selectedClients);
+    private updatePendingClientFilters(data: AdvancedSelection): void {
+        if (data.selected) {
+            // Add to pending if not already present
+            const exists = this.pendingClientSelections.some(
+                f => f.value === data.value.value
+            );
+            if (!exists) {
+                this.pendingClientSelections.push(data.value);
+            }
+        } else {
+            // Remove from pending
+            this.pendingClientSelections = this.pendingClientSelections.filter(
+                f => f.value !== data.value.value
+            );
+        }
     }
 
-    private applySellerFilters(data: AdvancedSelection): void {
-        this.applyAdvancedFilters([data], this.selectedSellers);
+    private updatePendingSellerFilters(data: AdvancedSelection): void {
+        if (data.selected) {
+            // Add to pending if not already present
+            const exists = this.pendingSellerSelections.some(
+                f => f.value === data.value.value
+            );
+            if (!exists) {
+                this.pendingSellerSelections.push(data.value);
+            }
+        } else {
+            // Remove from pending
+            this.pendingSellerSelections = this.pendingSellerSelections.filter(
+                f => f.value !== data.value.value
+            );
+        }
+    }
+
+    private applyPendingClientFilters(): void {
+        // Check if pending selections differ from current selections
+        const hasChanges = this.hasSelectionChanges(
+            this.pendingClientSelections,
+            this.selectedClients()
+        );
+        
+        if (hasChanges) {
+            this.selectedClients.set([...this.pendingClientSelections]);
+            this.onApplyFilters();
+        }
+    }
+
+    private applyPendingSellerFilters(): void {
+        // Check if pending selections differ from current selections
+        const hasChanges = this.hasSelectionChanges(
+            this.pendingSellerSelections,
+            this.selectedSellers()
+        );
+        
+        if (hasChanges) {
+            this.selectedSellers.set([...this.pendingSellerSelections]);
+            this.onApplyFilters();
+        }
+    }
+
+    private hasSelectionChanges(pending: FilterOption[], current: FilterOption[]): boolean {
+        if (pending.length !== current.length) {
+            return true;
+        }
+        
+        const pendingValues = new Set(pending.map(p => p.value));
+        const currentValues = new Set(current.map(c => c.value));
+        
+        for (const value of pendingValues) {
+            if (!currentValues.has(value)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     private onApplyFilters(): void {
         this.currentPage.set(1);
         this.findAll();
-    }
-
-    private applyAdvancedFilters(
-        selectedFilters: AdvancedSelection[],
-        currentlySelectedFilters: ReturnType<typeof signal<FilterOption[]>>
-    ): void {
-        selectedFilters.forEach((selectedFilter: AdvancedSelection) => {
-            if (selectedFilter.selected) {
-                // Add filter if not already present
-                const exists = currentlySelectedFilters().some(
-                    f => f.value === selectedFilter.value.value
-                );
-                if (!exists) {
-                    currentlySelectedFilters.update(current => [...current, selectedFilter.value]);
-                }
-            } else {
-                // Remove filter
-                currentlySelectedFilters.update(current =>
-                    current.filter(f => f.value !== selectedFilter.value.value)
-                );
-            }
-        });
-        
-        this.onApplyFilters();
     }
 
     private getPaginatedClients(): void {

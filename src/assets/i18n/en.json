@@ -211,7 +211,20 @@
 		"deleteMessage": "Are you sure you want to delete the <strong>{{date}}</strong> order for <strong>{{client}}</strong>?",
 		"deleteSuccess": "Order deleted successfully",
 		"deleteError": "Failed to delete order",
-		"order": "Order"
+		"order": "Order",
+		"orderClientSearch": "Search for clients",
+		"orderClientsNoResults": "No clients found",
+		"orderSellerSearch": "Search for sellers",
+		"orderSellerNoResults": "No sellers found",
+		"orderDateAnyTime": "Any time",
+		"orderDateToday": "Today",
+		"orderDateLast24h": "Last 24h",
+		"orderDateLast48h": "Last 48h",
+		"orderDateThisWeek": "This week",
+		"orderDateThisMonth": "This month",
+		"orderDateLastMonth": "Last month",
+		"orderDateLast6Months": "Last 6 months",
+		"orderDateLast12Months": "Last 12 months"
 	},
 	"settings": {
 		"notificationsTitle": "Notifications",

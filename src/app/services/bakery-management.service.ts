@@ -12,8 +12,8 @@ import { BakeryManagementApiService } from "./bakery-management-api.service"
 export class BakeryManagementService {
     private bakeryManagementApiService = inject(BakeryManagementApiService)
 
-    downloadOrdersPdf(requestPayload: any): void {
-        this.bakeryManagementApiService.downloadOrdersPdf(requestPayload).subscribe((data: any) => {
+    downloadOrdersPdf(pageIndex: any, pageSize: any, filters: any): void {
+        this.bakeryManagementApiService.downloadOrdersPdf(pageIndex, pageSize, filters).subscribe((data: any) => {
             const blob = new Blob([data], { type: 'application/pdf' })
             const url = window.URL.createObjectURL(blob)
             const link = document.createElement('a')

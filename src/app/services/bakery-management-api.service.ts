@@ -204,11 +204,15 @@ export class BakeryManagementApiService {
     }
 
     //Download orders
-    downloadOrdersPdf(requestPayload: { navigation_context: NavigationContext }): Observable<Blob> {
-        return this.httpClient.post(
+    downloadOrdersPdf(
+        page: number = 1,
+        pageSize: number = 10,
+        filters: any = {}
+    ): Observable<Blob> {
+        return this.httpClient.post<Blob>(
             `${this.basePath}/orders/download`,
-            requestPayload.navigation_context,
-            { responseType: 'blob' }
+            { page, pageSize, filters },
+            { responseType: 'blob' as 'json' }
         )
     }
 
