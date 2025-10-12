@@ -51,7 +51,7 @@ export class LayoutComponent {
     @ViewChild('drawer') drawer!: MatDrawer
 
     private routes: NavRouteConfig[] = [
-        // { path: 'homePage', name: 'Home Page', icon: 'home', roles: ['Admin', 'Client'] },
+        { path: 'homePage', name: 'Home Page', icon: 'home', roles: ['Admin', 'Client'] },
         { path: 'users', name: 'layout.users', icon: 'people', roles: ['Admin'] },
         { path: 'orders', name: 'layout.orders', icon: 'assignment', roles: ['Admin'] },
         { path: 'products', name: 'layout.products', icon: 'store', roles: ['Admin'] },

@@ -305,7 +305,7 @@
     yargs "18.0.0"
     zod "3.25.76"
 
-"@angular/common@^20.0.0", "@angular/common@^20.0.0 || ^21.0.0", "@angular/common@^20.3.3", "@angular/common@>=20.0.0 <21.0.0", "@angular/common@20.3.3":
+"@angular/common@^20.0.0", "@angular/common@^20.0.0 || ^21.0.0", "@angular/common@^20.3.3", "@angular/common@>=20.0.0", "@angular/common@>=20.0.0 <21.0.0", "@angular/common@20.3.3":
   version "20.3.3"
   resolved "https://registry.npmjs.org/@angular/common/-/common-20.3.3.tgz"
   integrity sha512-iArFCXvgYJCpxLZv8o6rV7Cxuqv1hbndoeUmQgL7ekXwVS6BA49VErXbTPM+pfhAJ+v1fc/DG3rzBwXk3eW2lw==
@@ -333,7 +333,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^20.0.0", "@angular/core@^20.0.0 || ^21.0.0", "@angular/core@^20.3.3", "@angular/core@>=16.0.0", "@angular/core@>=20.0.0 <21.0.0", "@angular/core@20.3.3":
+"@angular/core@^20.0.0", "@angular/core@^20.0.0 || ^21.0.0", "@angular/core@^20.3.3", "@angular/core@>=16.0.0", "@angular/core@>=20.0.0", "@angular/core@>=20.0.0 <21.0.0", "@angular/core@20.3.3":
   version "20.3.3"
   resolved "https://registry.npmjs.org/@angular/core/-/core-20.3.3.tgz"
   integrity sha512-AWBCixxw4N9VgKT1uwrRPr1dH3CpT/ffcCsXJQ8TjzsKYjVBkXVht5OjtxJOWOQ2KaHwsGFEmDMv9fc1BHDFhQ==
@@ -1597,6 +1597,18 @@
   dependencies:
     undici-types "~7.13.0"
 
+"@types/plotly.js-dist-min@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.npmjs.org/@types/plotly.js-dist-min/-/plotly.js-dist-min-2.3.4.tgz"
+  integrity sha512-ISwLFV6Zs/v3DkaRFLyk2rvYAfVdnYP2VVVy7h+fBDWw52sn7sMUzytkWiN4M75uxr1uz1uiBioePTDpAfoFIg==
+  dependencies:
+    "@types/plotly.js" "*"
+
+"@types/plotly.js@*", "@types/plotly.js@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.npmjs.org/@types/plotly.js/-/plotly.js-3.0.6.tgz"
+  integrity sha512-K+EhZsMUZ2Zjna5gaDOaEfdwKLtHUT7sSsBw2gbRT2mOLWVl9pI4FF8EDH2ytNAdgM/Gh6UhgfRiAtHfDAcY5g==
+
 "@types/stack-utils@^2.0.0":
   version "2.0.3"
   resolved "https://registry.npmjs.org/@types/stack-utils/-/stack-utils-2.0.3.tgz"
@@ -1814,6 +1826,13 @@ algoliasearch@5.35.0:
     "@algolia/requester-browser-xhr" "5.35.0"
     "@algolia/requester-fetch" "5.35.0"
     "@algolia/requester-node-http" "5.35.0"
+
+angular-plotly.js@^20.0.0:
+  version "20.0.0"
+  resolved "https://registry.npmjs.org/angular-plotly.js/-/angular-plotly.js-20.0.0.tgz"
+  integrity sha512-Tvz/OJCLED0lF3aviFXRnDodeKAZRHNNIyDOCyrNh42u80S/A7Ujc3TwbmdjQXI9WCjUv3ytHabFILHtNI7plA==
+  dependencies:
+    tslib "^2.3.1"
 
 ansi-escapes@^4.2.1:
   version "4.3.2"
@@ -5063,6 +5082,11 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
+plotly.js-dist-min@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npmjs.org/plotly.js-dist-min/-/plotly.js-dist-min-3.1.1.tgz"
+  integrity sha512-eyuiESylUXW4kaF+v9J2gy9eZ+YT2uSVLILM4w1Afxnuv9u4UX9OnZnHR1OdF9ybq4x7+9chAzWUUbQ6HvBb3g==
+
 postcss-media-query-parser@^0.2.3:
   version "0.2.3"
   resolved "https://registry.npmjs.org/postcss-media-query-parser/-/postcss-media-query-parser-0.2.3.tgz"
@@ -5884,7 +5908,7 @@ ts-api-utils@^2.1.0:
   resolved "https://registry.npmjs.org/ts-api-utils/-/ts-api-utils-2.1.0.tgz"
   integrity sha512-CUgTZL1irw8u29bzrOD/nH85jqyc74D6SshFgujOIA7osm2Rz7dYH77agkx7H4FBNxDq7Cjf+IjaX/8zwFW+ZQ==
 
-tslib@^2.0.0, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.8.1:
+tslib@^2.0.0, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.8.1:
   version "2.8.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==

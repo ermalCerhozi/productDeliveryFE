@@ -1,0 +1,11 @@
+<div class="chart-container">
+    <div *ngIf="isLoading" class="loading">
+        Loading sales data...
+    </div>
+
+    <div *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+    </div>
+
+    <div #chartDiv class="chart"></div>
+</div>

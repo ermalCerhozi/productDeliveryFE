@@ -256,4 +256,12 @@ export class BakeryManagementApiService {
     getRolePermissions(): Observable<RolePermissionsSummary[]> {
         return this.httpClient.get<RolePermissionsSummary[]>(`${this.basePath}/permissions/roles`)
     }
+
+    getUsersMonthlyData(userId: number): Observable<any> {
+        return this.httpClient.get<any>(`${this.basePath}/orders/monthly-spending/${userId}`)
+    }
+
+    getAdminMonthlySales(): Observable<any> {
+        return this.httpClient.get<any>(`${this.basePath}/orders/admin/monthly-sales`)
+    }
 }
