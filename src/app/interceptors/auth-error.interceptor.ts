@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core'
-
+import { Router } from '@angular/router'
 import {
     HttpErrorResponse,
     HttpEvent,
@@ -15,18 +15,17 @@ import { AuthService } from 'src/app/services/auth.service'
 })
 export class ErrorInterceptor implements HttpInterceptor {
     private authService = inject(AuthService)
+    private router = inject(Router)
 
     intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         return next.handle(req).pipe(
             catchError((error: HttpErrorResponse) => {
-                if (error.status === 400 && error.error?.message === 'Your token is invalid!') {
-                    this.authService.logOut()
-                } else if (
-                    error.status === 401 &&
-                    error.error?.message === 'Your token has expired'
-                ) {
-                    // TODO: refresh token
-                    // Currently the token refresh logic is not implemented in the back end
+                if (error.status === 401) {
+                    this.authService.clearAuthenticatedUser()
+                    this.router.navigate(['/login'])
+                } else if (error.status === 400 && error.error?.message === 'Your token is invalid!') {
+                    this.authService.clearAuthenticatedUser()
+                    this.router.navigate(['/login'])
                 }
                 return throwError(() => error)
             })

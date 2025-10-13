@@ -146,7 +146,6 @@ export class AssignPermissionsComponent implements OnInit, OnDestroy {
                 if (!originalPermissions) {
                     return false
                 }
-                // Check if this role has changes
                 return !isEqual(
                     Array.from(currentPermissions).sort(),
                     Array.from(originalPermissions).sort()
@@ -154,15 +153,14 @@ export class AssignPermissionsComponent implements OnInit, OnDestroy {
             })
             .map(([roleId, permissions]) =>
                 this.permissionsService.assignPermissionsToRole(roleId, Array.from(permissions)).pipe(
-                    take(1),  // Add this
+                    take(1),
                     map(() => ({ success: true, roleId })),
                     catchError((error: unknown) => {
                         console.error(`Failed to update role ${roleId}:`, error)
                         return of({ success: false, roleId, error })
                     })
                 )
-)
-
+            )
 
         if (saveRequests.length === 0) {
             this.isSaving = false
@@ -175,7 +173,6 @@ export class AssignPermissionsComponent implements OnInit, OnDestroy {
             .pipe(
                 finalize(() => {
                     this.isSaving = false
-                    this.cdr.markForCheck()
                 })
             )
             .subscribe({
@@ -183,7 +180,6 @@ export class AssignPermissionsComponent implements OnInit, OnDestroy {
                     const failures = results.filter((r: any) => r?.success === false)
 
                     if (failures.length === 0) {
-                        // All successful - update original state
                         this.originalRoleSelectionByRoleId = new Map(
                             Array.from(this.roleSelectionByRoleId.entries()).map(
                                 ([roleId, permissions]) => [roleId, new Set(permissions)]
@@ -191,16 +187,14 @@ export class AssignPermissionsComponent implements OnInit, OnDestroy {
                         )
                         this.hasPendingChanges = false
                         this.snackBar.open(
-                            this.translocoService.translate(
-                                'managePermissions.permissionsUpdated'
-                            ) as string,
+                            this.translocoService.translate('managePermissions.permissionsUpdated') as string,
                             this.translocoService.translate('managePermissions.dismiss') as string,
                             {
                                 duration: 2000,
+                                verticalPosition: 'top'
                             }
                         )
                     } else {
-                        // Some failed - revert failed ones and show error
                         failures.forEach((failure: any) => {
                             const originalPermissions = this.originalRoleSelectionByRoleId.get(failure.roleId)
                             if (originalPermissions) {
@@ -213,18 +207,19 @@ export class AssignPermissionsComponent implements OnInit, OnDestroy {
                             'Dismiss',
                             {
                                 duration: 4000,
+                                verticalPosition: 'top'
                             }
                         )
                     }
+                    // Move markForCheck here after all state changes
                     this.cdr.markForCheck()
                 },
                 error: (error: unknown) => {
                     const apiError = error as { error?: { message?: string } }
-                    const message =
-                        apiError?.error?.message ??
-                        'Failed to update permissions. Please try again.'
+                    const message = apiError?.error?.message ?? 'Failed to update permissions. Please try again.'
                     this.snackBar.open(message, 'Dismiss', {
                         duration: 4000,
+                        verticalPosition: 'top'
                     })
                     this.cdr.markForCheck()
                 },
@@ -277,15 +272,15 @@ export class AssignPermissionsComponent implements OnInit, OnDestroy {
             .subscribe({
                 error: (error: unknown) => {
                     const apiError = error as { error?: { message?: string } }
-                    const message =
-                        apiError?.error?.message ??
-                        'Failed to load role permissions. Please refresh.'
+                    const message = apiError?.error?.message ?? 'Failed to load role permissions. Please refresh.'
                     this.snackBar.open(message, 'Dismiss', {
                         duration: 4000,
+                        verticalPosition: 'top'
                     })
                 },
             })
     }
+ 
 
     private syncRoleAssignments(roles: RolePermissionsSummary[]): void {
         this.roleIdByName = new Map<RoleName, number>()

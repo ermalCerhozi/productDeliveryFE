@@ -6,7 +6,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
 } from '@angular/forms'
-import { Router } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 import { NgClass } from '@angular/common'
 
 import { AuthService } from 'src/app/services/auth.service'
@@ -22,6 +22,7 @@ export class SignInComponent implements OnInit {
     private formBuilder = inject(FormBuilder)
     private authService = inject(AuthService)
     private router = inject(Router)
+    private activatedRoute = inject(ActivatedRoute)
 
     @ViewChild('containerDiv') containerDiv!: ElementRef
     loginForm: FormGroup = new FormGroup({})

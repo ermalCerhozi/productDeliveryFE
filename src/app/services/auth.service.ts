@@ -26,7 +26,7 @@ export class AuthService {
     }
 
     logOut(): Observable<void> {
-        return this.http.post<void>(`${this.baseUrl}/logout`, { withCredentials: true })
+        return this.http.post<void>(`${this.baseUrl}/logout`, {}, { withCredentials: true })
     }
 
     resetPassword(forgotPasswordForm: { email: string }): Observable<void> {
