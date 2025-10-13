@@ -3,6 +3,7 @@ export interface ImageUploadRequest {
     contentType: string
     data: string
     userId?: number
+    productId?: number
 }
 
 export interface ImageResponse {
@@ -11,4 +12,5 @@ export interface ImageResponse {
     contentType: string
     data: string
     userId?: number
+    productId?: number
 }

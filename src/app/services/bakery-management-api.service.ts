@@ -234,6 +234,14 @@ export class BakeryManagementApiService {
         return this.httpClient.post<ImageResponse>(`${this.basePath}/images`, payload)
     }
 
+    uploadProductImage(productId: number, payload: Omit<ImageUploadRequest, 'productId'>): Observable<ImageResponse> {
+        return this.httpClient.post<ImageResponse>(`${this.basePath}/products/${productId}/image`, payload)
+    }
+
+    getProductImage(productId: number): Observable<ImageResponse> {
+        return this.httpClient.get<ImageResponse>(`${this.basePath}/products/${productId}/image`)
+    }
+
     getPermissions(): Observable<PermissionEntity[]> {
         return this.httpClient.get<PermissionEntity[]>(`${this.basePath}/permissions`)
     }

@@ -72,4 +72,16 @@ export class BakeryManagementService {
             })
         )
     }
+
+    uploadProductImage(payload: ImageUploadRequest): Observable<ImageResponse> {
+        if (!payload.productId) {
+            throw new Error('Product ID is required for product image upload')
+        }
+
+        return this.bakeryManagementApiService.uploadProductImage(payload.productId, {
+            fileName: payload.fileName,
+            contentType: payload.contentType,
+            data: payload.data,
+        })
+    }
 }

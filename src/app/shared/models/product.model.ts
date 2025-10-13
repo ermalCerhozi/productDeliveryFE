@@ -8,7 +8,8 @@ export interface ProductEntity {
     product_name: string
     price: string
     description: string
-    image: string
+    image?: string
+    product_image?: string
     created_at?: string
     ingredients?: string
 }

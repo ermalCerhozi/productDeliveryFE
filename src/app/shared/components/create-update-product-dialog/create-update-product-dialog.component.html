@@ -10,13 +10,35 @@
         </div>
 
         <mat-dialog-content class="dialog-content">
-            @if (isLoadingProductDetails) {
-                <mat-progress-spinner
-                    mode="indeterminate"
-                    diameter="32"
-                    strokeWidth="4"
-                ></mat-progress-spinner>
-            }
+            <div class="profile-container">
+                <input
+                    type="file"
+                    accept="image/*"
+                    #fileInput
+                    style="display: none"
+                    (change)="onFileSelected($event)"
+                />
+                <div class="image-container">
+                    <img [src]="previewImageUrl || defaultProductImage" alt="Product image" />
+                </div>
+                @if (isLoadingProductDetails) {
+                    <mat-progress-spinner
+                        mode="indeterminate"
+                        diameter="32"
+                        strokeWidth="4"
+                    ></mat-progress-spinner>
+                }
+                <button
+                    class="profile-picture-upload-button"
+                    mat-flat-button
+                    color="primary"
+                    (click)="openUploadPanel()"
+                    [disabled]="isLoadingProductDetails"
+                >
+                    <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
+                    <span>{{ imageButtonLabel }}</span>
+                </button>
+            </div>
             <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-content-form">
                 <mat-form-field>
                     <mat-label>{{ t('createUpdateProductDialog.productName') }}</mat-label>
@@ -48,15 +70,6 @@
                             {{ t('createUpdateProductDialog.priceRequired') }}
                         </mat-error>
                     }
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>{{ t('createUpdateProductDialog.imageUrl') }}</mat-label>
-                    <input
-                        matInput
-                        formControlName="image"
-                        [title]="t('createUpdateProductDialog.imageUrl')"
-                    />
                 </mat-form-field>
 
                 <mat-form-field>

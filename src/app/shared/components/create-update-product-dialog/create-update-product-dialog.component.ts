@@ -1,8 +1,10 @@
 import {
     Component,
+    ElementRef,
     inject,
     Inject,
     OnInit,
+    ViewChild,
 } from '@angular/core'
 import {
     FormBuilder,
@@ -12,7 +14,7 @@ import {
     Validators,
 } from '@angular/forms'
 
-import { finalize, take, throwError } from 'rxjs'
+import { catchError, finalize, forkJoin, map, of, switchMap, take, throwError } from 'rxjs'
 import { cloneDeep, isEqual } from 'lodash-es'
 import { MatButton } from '@angular/material/button'
 import {
@@ -26,17 +28,18 @@ import {
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field'
 import { MatInput } from '@angular/material/input'
 import { MatProgressSpinner } from '@angular/material/progress-spinner'
+import { MatIcon } from '@angular/material/icon'
 
 import { ProductEntity } from 'src/app/shared/models/product.model'
 import { BakeryManagementApiService } from 'src/app/services/bakery-management-api.service'
 import { BakeryManagementService } from 'src/app/services/bakery-management.service'
+import { ImageResponse } from '../../models/image.model'
 import { TranslocoDirective } from '@jsverse/transloco'
 
 type ProductFormValue = {
     product_name: string
     price: string
     description: string
-    image: string
     ingredients: string
 }
 
@@ -57,21 +60,32 @@ type ProductFormValue = {
         MatButton,
         MatDialogClose,
         MatProgressSpinner,
+        MatIcon,
         TranslocoDirective,
     ],
 })
 export class CreateUpdateProductDialogComponent implements OnInit {
+    @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>
+
     action: 'create' | 'update' = 'create'
+    defaultProductImage = '/assets/images/product-placeholder.png'
     form!: FormGroup
+    previewImageUrl: string | null = null
     isSubmitting = false
     isLoadingProductDetails = false
 
     private currentProduct: ProductEntity | null = null
     private initialFormValues: ProductFormValue | null = null
+    private selectedImagePayload?: {
+        fileName: string
+        contentType: string
+        data: string
+    }
     private loadedProductId?: number
 
     private fb = inject(FormBuilder)
     private bakeryManagementApiService = inject(BakeryManagementApiService)
+    private bakeryManagementService = inject(BakeryManagementService)
     private dialog = inject(MatDialog)
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: { product?: ProductEntity }) {
@@ -94,6 +108,7 @@ export class CreateUpdateProductDialogComponent implements OnInit {
         }
 
         this.captureInitialFormValues()
+        this.updatePreviewImage()
     }
 
     private syncActionState(): void {
@@ -115,22 +130,33 @@ export class CreateUpdateProductDialogComponent implements OnInit {
 
         this.isLoadingProductDetails = true
 
-        this.bakeryManagementApiService
-            .getProduct(productId)
+        forkJoin({
+            product: this.bakeryManagementApiService.getProduct(productId),
+            image: this.bakeryManagementApiService.getProductImage(productId).pipe(
+                catchError(() => of(null)) // If no image exists, return null
+            )
+        })
             .pipe(
                 finalize(() => {
                     this.isLoadingProductDetails = false
                 })
             )
             .subscribe({
-                next: (product) => {
+                next: ({ product, image }) => {
                     this.currentProduct = product
                     this.loadedProductId = product.id
+                    this.clearSelectedImage()
+                    
+                    // Set product_image if image exists
+                    if (image?.data && image?.contentType) {
+                        this.currentProduct.product_image = `data:${image.contentType};base64,${image.data}`
+                    }
                     
                     // Update form values instead of reinitializing
                     const formData = this.createFormValueFromContext(product)
                     this.form.patchValue(formData)
                     this.captureInitialFormValues()
+                    this.updatePreviewImage()
                 },
                 error: (error) => {
                     this.loadedProductId = productId
@@ -151,17 +177,20 @@ export class CreateUpdateProductDialogComponent implements OnInit {
             product_name: [formData.product_name, Validators.required],
             price: [formData.price, Validators.required],
             description: [formData.description],
-            image: [formData.image],
             ingredients: [formData.ingredients],
         })
     }
 
     formHasChanged(): boolean {
         if (!this.initialFormValues) {
-            return false
+            return !!this.selectedImagePayload
         }
 
-        return !isEqual(this.initialFormValues, this.form.value)
+        return !isEqual(this.initialFormValues, this.form.value) || !!this.selectedImagePayload
+    }
+
+    get imageButtonLabel(): string {
+        return this.previewImageUrl ? 'Change Image' : 'Add Image'
     }
 
     submit(): void {
@@ -213,7 +242,6 @@ export class CreateUpdateProductDialogComponent implements OnInit {
                 product_name: '',
                 price: '',
                 description: '',
-                image: '',
                 ingredients: '',
             }
         }
@@ -222,7 +250,6 @@ export class CreateUpdateProductDialogComponent implements OnInit {
             product_name: product.product_name ?? '',
             price: product.price ?? '',
             description: product.description ?? '',
-            image: product.image ?? '',
             ingredients: product.ingredients ?? '',
         }
     }
@@ -245,7 +272,9 @@ export class CreateUpdateProductDialogComponent implements OnInit {
 
     private performProductMutation(productValue: Partial<ProductEntity>) {
         if (this.isCreateMode) {
-            return this.bakeryManagementApiService.createProduct(productValue as ProductEntity)
+            return this.bakeryManagementApiService.createProduct(productValue as ProductEntity).pipe(
+                switchMap((product) => this.attachImageIfNeeded(product.id, product))
+            )
         }
 
         if (!this.currentProduct) {
@@ -254,10 +283,31 @@ export class CreateUpdateProductDialogComponent implements OnInit {
             )
         }
 
-        return this.bakeryManagementApiService.updateProduct(
-            this.currentProduct,
-            productValue
-        )
+        return this.bakeryManagementApiService
+            .updateProduct(this.currentProduct, productValue)
+            .pipe(switchMap((updatedProduct) => this.attachImageIfNeeded(updatedProduct.id, updatedProduct)))
+    }
+
+    private attachImageIfNeeded(productId: number, baseProduct: ProductEntity) {
+        if (!this.selectedImagePayload) {
+            return of(baseProduct)
+        }
+
+        return this.bakeryManagementService
+            .uploadProductImage({
+                ...this.selectedImagePayload,
+                productId,
+            })
+            .pipe(
+                map((image) => {
+                    const dataUri = this.buildDataUri(image)
+                    if (dataUri) {
+                        baseProduct.product_image = dataUri
+                    }
+
+                    return baseProduct
+                })
+            )
     }
 
     private onSuccessfulSubmission(product: ProductEntity): void {
@@ -265,6 +315,96 @@ export class CreateUpdateProductDialogComponent implements OnInit {
             this.currentProduct = product
             this.loadedProductId = product.id
         }
+
+        this.clearSelectedImage()
+        this.updatePreviewImage()
+        this.captureInitialFormValues()
         this.dialog.closeAll()
+    }
+
+    private clearSelectedImage(): void {
+        this.selectedImagePayload = undefined
+        this.resetFileInput()
+    }
+
+    private resetFileInput(): void {
+        if (this.fileInput?.nativeElement) {
+            this.fileInput.nativeElement.value = ''
+        }
+    }
+
+    openUploadPanel() {
+        if (this.isSubmitting || this.isLoadingProductDetails || !this.fileInput?.nativeElement) {
+            return
+        }
+
+        this.fileInput.nativeElement.click()
+    }
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement
+        if (!input.files || !input.files.length) {
+            return
+        }
+
+        const file = input.files[0]
+        const reader = new FileReader()
+        reader.onload = () => {
+            const result = reader.result as string
+            const base64 = result?.split(',')[1]
+
+            if (!base64) {
+                console.error('Invalid image payload: unable to extract base64 data')
+                return
+            }
+
+            this.selectedImagePayload = {
+                fileName: file.name,
+                contentType: file.type || 'application/octet-stream',
+                data: base64,
+            }
+
+            this.updatePreviewImage()
+        }
+
+        reader.readAsDataURL(file)
+    }
+
+    private updatePreviewImage(): void {
+        this.previewImageUrl = this.derivePreviewImage()
+    }
+
+    private buildSelectedImageDataUri(): string | null {
+        if (!this.selectedImagePayload) {
+            return null
+        }
+
+        return `data:${this.selectedImagePayload.contentType};base64,${this.selectedImagePayload.data}`
+    }
+
+    private buildDataUri(image: ImageResponse | null): string | null {
+        if (!image?.contentType || !image?.data) {
+            return null
+        }
+
+        return `data:${image.contentType};base64,${image.data}`
+    }
+
+    private derivePreviewImage(): string | null {
+        const selectedImageDataUri = this.buildSelectedImageDataUri()
+        if (selectedImageDataUri) {
+            return selectedImageDataUri
+        }
+
+        if (this.currentProduct?.product_image) {
+            return this.currentProduct.product_image
+        }
+
+        // Fallback to legacy image field if exists
+        if (this.currentProduct?.image) {
+            return this.currentProduct.image
+        }
+
+        return null
     }
 }
