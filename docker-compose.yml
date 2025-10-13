@@ -1,9 +1,10 @@
 services:
   frontend:
-    container_name: product-delivery-frontend
     build:
       context: .
       dockerfile: Dockerfile
+    image: demo
+    container_name: product-delivery-frontend
     ports:
-      - "4200:80"
+      - "8080:80"
     restart: unless-stopped

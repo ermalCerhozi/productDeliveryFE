@@ -1,24 +1,28 @@
-FROM node:18-alpine AS builder
-
+# Step 1: We build the angular app using the production config
+FROM node:latest as build
+# Set the working directory
 WORKDIR /app
-
-ENV CI=1
-
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
-
+# Copy the package.json and package-lock.json files
+COPY package*.json ./
+# Run a clean install of the dependencies
+RUN npm ci
+# Install Angular-CLI globally
+RUN npm install -g @angular/cli
+# Copy all files
 COPY . .
+# Build the application
+RUN npm run build --configuration=production
 
-ARG BUILD_CONFIGURATION=production
-RUN yarn build -- --configuration=$BUILD_CONFIGURATION
+# Step 2: We use the nginx image to serve the application
+FROM nginx:latest
 
-FROM nginx:1.27-alpine AS runtime
+# Copy the build output to replace the default nginx contents.
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+# Copy the build output to replace the default nginx contents.
+COPY --from=build /app/dist/myapp/browser /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/dist/myapp /usr/share/nginx/html
-
+# Expose port 80
 EXPOSE 80
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
-
-CMD ["nginx", "-g", "daemon off;"]
+# Build: docker build -t demo .
+# Run: docker run -d -p 8080:80 demo
