@@ -11,39 +11,24 @@
         <!-- Search bar -->
         <div class="top-bar-search-container">
             <mat-form-field appearance="outline" class="top-bar-search-container-form">
-                <mat-icon matPrefix class="top-bar-search-container-form-search-icon"
-                    >search</mat-icon
-                >
+                <mat-icon matPrefix class="top-bar-search-container-form-search-icon">search</mat-icon>
                 <mat-label>{{ placeholder() }}</mat-label>
-                <input
-                    [formControl]="searchQuery"
-                    matInput
-                    [matAutocomplete]="topBarSearchAutocomplete"
-                    #matAutocomplete
-                    placeholder="{{ placeholder() }}"
-                />
+                <input [formControl]="searchQuery" matInput [matAutocomplete]="topBarSearchAutocomplete"
+                    #matAutocomplete placeholder="{{ placeholder() }}" />
                 <mat-autocomplete #topBarSearchAutocomplete="matAutocomplete">
                     <div class="top-bar-search-container-form-options-menu">
                         <span>{{ t('searchBy') }} </span>
                         <div class="top-bar-search-container-form-options-menu-checkbox">
-                            <mat-checkbox
-                                color="primary"
-                                name="title"
-                                [(ngModel)]="searchOptions().title"
-                                [ngModelOptions]="{ standalone: true }"
-                                (ngModelChange)="changeSearchOptions('title')"
-                            >
-                                {{ t('topBar.title') }}</mat-checkbox
-                            >
-                            <mat-checkbox
-                                color="primary"
-                                name="meta"
-                                [(ngModel)]="searchOptions().all"
-                                [ngModelOptions]="{ standalone: true }"
-                                (ngModelChange)="changeSearchOptions('all')"
-                            >
-                                {{ t('topBar.all') }}</mat-checkbox
-                            >
+                            <mat-checkbox color="primary" name="title" [(ngModel)]="localSearchOptions.title"
+                                [ngModelOptions]="{ standalone: true }" (ngModelChange)="changeSearchOptions('title')">
+                                {{ t('topBar.title') }}
+                            </mat-checkbox>
+
+                            <mat-checkbox color="primary" name="meta" [(ngModel)]="localSearchOptions.all"
+                                [ngModelOptions]="{ standalone: true }" (ngModelChange)="changeSearchOptions('all')">
+                                {{ t('topBar.all') }}
+                            </mat-checkbox>
+
                         </div>
                     </div>
                     <!-- do no remove this element unless newer angular changes change element behavior, the element is hidden, but it allows for the mat-autocomplete dropdown to render in order to show the checkboxes above.
@@ -55,11 +40,8 @@
                 </mat-autocomplete>
                 <div class="top-bar-search-container-form-suffix" matSuffix>
                     @if (searchQuery.value?.length) {
-                        <mat-icon
-                            class="top-bar-search-container-form-suffix-cancel-icon"
-                            (click)="clearSearchQuery()"
-                            >cancel</mat-icon
-                        >
+                    <mat-icon class="top-bar-search-container-form-suffix-cancel-icon"
+                        (click)="clearSearchQuery()">cancel</mat-icon>
                     }
                 </div>
             </mat-form-field>
@@ -67,17 +49,12 @@
 
         <!-- Button for media upload -->
         @if (displayAddButton()) {
-            <div class="top-bar-upload-button">
-                <button
-                    mat-flat-button
-                    color="primary"
-                    [disabled]="disableAddItem()"
-                    (click)="openUploadPanel()"
-                >
-                    <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
-                    <span>{{ t('topBar.add') }} {{ title() }}</span>
-                </button>
-            </div>
+        <div class="top-bar-upload-button">
+            <button mat-flat-button color="primary" [disabled]="disableAddItem()" (click)="openUploadPanel()">
+                <mat-icon fontSet="material-icons-outlined">file_upload</mat-icon>
+                <span>{{ t('topBar.add') }} {{ title() }}</span>
+            </button>
+        </div>
         }
     </div>
 </ng-container>
