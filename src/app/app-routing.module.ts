@@ -11,6 +11,13 @@ const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: SignInComponent },
     {
+        path: 'set-password',
+        loadComponent: () =>
+            import('src/app/track-ease/set-password/set-password.component').then(
+                (c) => c.SetPasswordComponent
+            ),
+    },
+    {
         path: '',
         component: LayoutComponent,
         canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.

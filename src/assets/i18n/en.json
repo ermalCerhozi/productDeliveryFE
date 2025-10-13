@@ -241,7 +241,7 @@
 	"notFound": {
 		"title": "Oops! Something went wrong…",
 		"description": "The page you are trying to access does not exist. We apologize for any inconvenience caused.",
-		"goBack": "Go Back"
+		"goBack": "Back"
 	},
 	"managePermissions": {
 		"roleAdmin": "Admin",
@@ -271,5 +271,23 @@
 		"permissionDeletedSuccess": "Permission deleted successfully",
 		"permissionDeletedError": "Failed to delete permission. Please try again.",
 		"failedToLoadPermissions": "Failed to load permissions"
+	},
+	"setPassword": {
+		"title": "Set Your Password",
+		"subtitle": "Please create a secure password for your account",
+		"passwordPlaceholder": "Enter password",
+		"passwordRequired": "Password is required",
+		"passwordMinLength": "Password must be at least 8 characters",
+		"confirmPasswordPlaceholder": "Confirm password",
+		"confirmPasswordRequired": "Please confirm your password",
+		"passwordMismatch": "Passwords do not match",
+		"requirementsTitle": "Password Requirements:",
+		"requirement1": "At least 8 characters",
+		"requirement2": "Passwords match",
+		"submitButton": "Set Password",
+		"submitting": "Setting password...",
+		"backToLogin": "Back to Login",
+		"panelTitle": "Welcome to Product Delivery System",
+		"panelSubtitle": "Set your password to get started with your new account"
 	}
 }

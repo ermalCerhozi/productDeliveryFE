@@ -83,7 +83,8 @@ export class ManageUsersComponent implements OnInit {
   public addUser(): void {
     this.dialog.open(CreateUpdateUserDialogComponent, {
       width: '100vh',
-      maxHeight: '80%',
+      maxHeight: '90vh',
+      autoFocus: false
     }).afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
@@ -94,7 +95,8 @@ export class ManageUsersComponent implements OnInit {
   public onEdit(user: UserEntity): void {
     this.dialog.open(CreateUpdateUserDialogComponent, {
       width: '100vh',
-      maxHeight: '80%',
+      maxHeight: '90vh',
+      autoFocus: false,
       data: { user }
     }).afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -102,6 +104,7 @@ export class ManageUsersComponent implements OnInit {
         this.findAll();
       });
   }
+
 
   public onDelete(user: UserEntity): void {
     this.dialog.open(ConfirmationDialogComponent, {

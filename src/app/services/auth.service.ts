@@ -35,6 +35,14 @@ export class AuthService {
         })
     }
 
+    setPassword(token: string, newPassword: string, confirmPassword: string): Observable<void> {
+        return this.http.post<void>(`${this.baseUrl}/auth/set-password`, {
+            token,
+            newPassword,
+            confirmPassword,
+        })
+    }
+
     public setAuthenticatedUser(user: any): void {
         localStorage.setItem('currentUser', JSON.stringify(user))
         this.currentLoggedUser.next(user)

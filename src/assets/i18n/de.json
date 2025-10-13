@@ -68,5 +68,23 @@
 		"permissionDeletedSuccess": "Berechtigung erfolgreich gelöscht",
 		"permissionDeletedError": "Fehler beim Löschen der Berechtigung. Bitte versuchen Sie es erneut.",
 		"failedToLoadPermissions": "Fehler beim Laden der Berechtigungen"
+	},
+	"setPassword": {
+		"title": "Passwort festlegen",
+		"subtitle": "Bitte erstellen Sie ein sicheres Passwort für Ihr Konto",
+		"passwordPlaceholder": "Passwort eingeben",
+		"passwordRequired": "Passwort ist erforderlich",
+		"passwordMinLength": "Passwort muss mindestens 8 Zeichen lang sein",
+		"confirmPasswordPlaceholder": "Passwort bestätigen",
+		"confirmPasswordRequired": "Bitte bestätigen Sie Ihr Passwort",
+		"passwordMismatch": "Passwörter stimmen nicht überein",
+		"requirementsTitle": "Passwortanforderungen:",
+		"requirement1": "Mindestens 8 Zeichen lang",
+		"requirement2": "Passwörter stimmen überein",
+		"submitButton": "Passwort festlegen",
+		"submitting": "Passwort wird festgelegt...",
+		"backToLogin": "Zurück zur Anmeldung",
+		"panelTitle": "Willkommen beim Product Delivery System",
+		"panelSubtitle": "Legen Sie Ihr Passwort fest, um mit Ihrem neuen Konto zu beginnen"
 	}
 }
