@@ -174,7 +174,10 @@
 		"deleteTitle": "Delete Product",
 		"deleteMessage": "Are you sure you want to delete the product <strong>{{name}}</strong>?",
 		"deleteSuccess": "Product deleted successfully",
-		"deleteError": "Failed to delete product"
+		"deleteError": "Failed to delete product",
+		"invalidFileType": "Invalid file type. Please upload a CSV file.",
+		"csvUploadSuccess": "Successfully imported {{imported}} products. {{failed}} failed.",
+		"csvUploadError": "Failed to upload CSV file. Please try again."
 	},
 	"createOrder": {
 		"client": "Client",

@@ -8,6 +8,20 @@
       (search)="onSearch($event)"
       (addItem)="addProduct()"
     ></app-top-bar>
+    <div class="csv-upload-wrapper">
+      <input type="file" 
+              #csvFileInput
+              accept=".csv" 
+              style="display: none;"
+              (change)="onFileSelected($event)">
+      <button mat-flat-button 
+              color="primary" 
+              (click)="csvFileInput.click()" 
+              class="upload-csv-btn">
+        <mat-icon>cloud_upload</mat-icon>
+        Upload CSV
+      </button>
+    </div>
   </div>
   <app-table
     [data]="(tableData$ | async) || []"

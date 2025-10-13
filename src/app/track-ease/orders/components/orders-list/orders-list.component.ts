@@ -126,7 +126,7 @@ export class OrdersListComponent {
     ]);
     public tableData$!: Observable<any[]>;
     public totalCount = signal(0);
-    public currentPage = signal(1);
+    public currentPage = signal(0);
     public pageSize = signal(10);
     private ordersMap = new Map<number, OrderEntity>();
     
@@ -459,7 +459,7 @@ export class OrdersListComponent {
     }
 
     private onApplyFilters(): void {
-        this.currentPage.set(1);
+        this.currentPage.set(0);
         this.findAll();
     }
 

@@ -114,6 +114,7 @@
         [columns]="tableColumns()"
         [searchQuery]="''"
         [isSelectable]="false"
+        [totalCount]="totalCount()"
         (onEdit)="onEdit($event)"
         (onDelete)="onDelete($event)"
         (currentPageInfo)="onPageInfoChange($event)">

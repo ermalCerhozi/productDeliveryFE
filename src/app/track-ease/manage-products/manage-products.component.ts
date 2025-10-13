@@ -11,8 +11,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { MatDialog } from '@angular/material/dialog'
 import { TranslocoService } from '@jsverse/transloco'
 import { Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { map, finalize } from 'rxjs/operators'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { MatIconModule } from '@angular/material/icon'
+import { MatButtonModule } from '@angular/material/button'
 
 import { ProductEntity } from 'src/app/shared/models/product.model'
 import { TableComponent } from 'src/app/shared/components/table/table.component'
@@ -30,6 +32,8 @@ import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmat
       AsyncPipe,
       TableComponent,
       TopBarComponent,
+      MatIconModule,
+      MatButtonModule,
     ],
 })
 export class ManageProductsComponent implements OnInit {
@@ -150,5 +154,75 @@ export class ManageProductsComponent implements OnInit {
     this.currentPage.set(pageInfo.currentPage + 1);
     this.pageSize.set(pageInfo.pageSize);
     this.findAll();
+  }
+  
+  public onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) {
+      return;
+    }
+    const file = input.files[0];
+    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+      this.snackBar.open(
+        this.translocoService.translate('manageProducts.invalidFileType'),
+        this.translocoService.translate('general.ok'),
+        {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['snack-bar-error'],
+        }
+      );
+      return;
+    }
+    this.uploadCsv(file);
+    input.value = '';
+  }
+  
+  private uploadCsv(file: File): void {
+    this.bakeryManagementApiService.uploadProductsCsv(file)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          // Actions to perform when upload completes (success or error)
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          // Show success message with counts
+          const message = this.translocoService.translate(
+            'manageProducts.csvUploadSuccess',
+            { imported: response.imported, failed: response.failed }
+          );
+          
+          this.snackBar.open(
+            message,
+            this.translocoService.translate('general.ok'),
+            {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              panelClass: ['snack-bar-success'],
+            }
+          );
+          
+          this.findAll();
+        },
+        error: (error) => {
+          const errorMessage = error?.error?.message || 
+            this.translocoService.translate('manageProducts.csvUploadError');
+          
+          this.snackBar.open(
+            errorMessage,
+            this.translocoService.translate('general.ok'),
+            {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              panelClass: ['snack-bar-error'],
+            }
+          );
+        }
+      });
   }
 }

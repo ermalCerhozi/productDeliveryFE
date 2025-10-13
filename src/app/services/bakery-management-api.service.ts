@@ -120,6 +120,12 @@ export class BakeryManagementApiService {
     getProduct(id: number): Observable<ProductEntity> {
         return this.httpClient.get<ProductEntity>(`${this.basePath}/products/${id}`)
     }
+    
+    uploadProductsCsv(file: File): Observable<any> {
+        const formData = new FormData();
+        formData.append('file', file);
+        return this.httpClient.post<any>(`${this.basePath}/products/upload-csv`, formData);
+    }
 
     //CRUD for orders
     createOrder(params: any): Observable<any> {
