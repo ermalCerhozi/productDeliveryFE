@@ -15,11 +15,11 @@ export const ORDERS_ROUTES: Route[] = [
                 (c) => c.CreateUpdateOrdersComponent
             ),
     },
-    // {
-    //     path: 'update',
-    //     loadComponent: () =>
-    //         import('./components/update-order/update-order.component').then(
-    //             (c) => c.UpdateOrderComponent
-    //         ),
-    // },
+    {
+        path: 'update',
+        loadComponent: () =>
+            import('./components/update-order/update-order.component').then(
+                (c) => c.UpdateOrderComponent
+            ),
+    },
 ]

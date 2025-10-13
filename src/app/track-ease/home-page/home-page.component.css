@@ -1,0 +1,28 @@
+.chart-container {
+    margin: 20px 0;
+    width: 100%;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.chart {
+    min-height: 400px;
+    width: 100%;
+    margin-top: 16px;
+}
+
+.js-plotly-plot {
+    width: 100%;
+    min-height: 400px;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    width: 100%;
+}

@@ -257,11 +257,21 @@ export class BakeryManagementApiService {
         return this.httpClient.get<RolePermissionsSummary[]>(`${this.basePath}/permissions/roles`)
     }
 
-    getUsersMonthlyData(userId: number): Observable<any> {
-        return this.httpClient.get<any>(`${this.basePath}/orders/monthly-spending/${userId}`)
+    getMonthlySales(userId: number): Observable<any> {
+        return this.httpClient.get<any>(`${this.basePath}/orders/monthly-sales/${userId}`)
     }
 
-    getAdminMonthlySales(): Observable<any> {
-        return this.httpClient.get<any>(`${this.basePath}/orders/admin/monthly-sales`)
+    getMonthlyReturns(userId: number): Observable<any> {
+        return this.httpClient.get<any>(`${this.basePath}/orders/monthly-returns/${userId}`)
+    }
+
+    //This api gets the total sales and hte total returns of the current month
+    getTotalSales(): Observable<any> {
+        return this.httpClient.get<any>(`${this.basePath}/orders/total-sales`)
+    }
+
+    //This api gets the total number of sales for every product in numbers
+    getProductsSalesInNumbers(): Observable<any> {
+        return this.httpClient.get<any>(`${this.basePath}/orders/sales-numbers`)
     }
 }

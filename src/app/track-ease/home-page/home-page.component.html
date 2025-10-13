@@ -1,11 +1,21 @@
 <div class="chart-container">
-    <div *ngIf="isLoading" class="loading">
-        Loading sales data...
-    </div>
+    <mat-tab-group
+        [selectedIndex]="selectedFirstTab === FirstTab.Sales ? 0 : 1"
+        (selectedIndexChange)="onFirstTabChange($event === 0 ? FirstTab.Sales : FirstTab.Returns)">
+        <mat-tab label="Sales"></mat-tab>
+        <mat-tab label="Returns"></mat-tab>
+    </mat-tab-group>
 
-    <div *ngIf="errorMessage" class="error">
-        {{ errorMessage }}
-    </div>
-
-    <div #chartDiv class="chart"></div>
+    <div #graph class="chart"></div>
 </div>
+
+<!-- <div class="chart-container" style="margin-top: 2rem;">
+    <mat-tab-group
+        [selectedIndex]="selectedSecondTab === SecondTab.TotalSales ? 0 : 1"
+        (selectedIndexChange)="onSecondTabChange($event === 0 ? SecondTab.TotalSales : SecondTab.Products)">
+        <mat-tab label="Total Sales"></mat-tab>
+        <mat-tab label="Products"></mat-tab>
+    </mat-tab-group>
+
+    <div #pieChart class="chart"></div>
+</div> -->
