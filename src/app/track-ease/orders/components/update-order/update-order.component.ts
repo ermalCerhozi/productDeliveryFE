@@ -92,11 +92,14 @@ export class UpdateOrderComponent {
     private currentOrder!: OrderEntity;
     private currentOrderFormState!: any;
 
+    // Signal to track form array values for reactive computed signals
+    public orderItemsSignal = signal<any[]>([]);
+
     // Computed filtered products based on selected items
     public filteredProducts = computed<FilterOption[]>(() => {
-        const orderItems = this.orderItemsFormArray?.value || [];
+        const orderItems = this.orderItemsSignal();
         const selectedProductsMap = new Map<any, FilterOption>();
-        
+
         orderItems.forEach((item: any) => {
             if (item.product?.value) {
                 selectedProductsMap.set(item.product.value, item.product);
@@ -110,11 +113,11 @@ export class UpdateOrderComponent {
 
     // Computed total order price
     public totalOrderPrice = computed<number>(() => {
-        const orderItems = this.orderItemsFormArray?.value || [];
+        const orderItems = this.orderItemsSignal();
         const validOrderItems = orderItems.filter(
             (item: any) => item.product && (item.quantity || item.returned_quantity)
         );
-        
+
         return validOrderItems.reduce((total: number, item: any) => {
             const quantity = item.quantity ?? 0;
             const returnedQuantity = item.returned_quantity ?? 0;
@@ -125,7 +128,7 @@ export class UpdateOrderComponent {
     constructor() {
         // Initialize form
         this.initializeForm();
-        
+
         // Load initial data
         this.loadMoreClients();
         this.loadMoreProducts();
@@ -140,18 +143,12 @@ export class UpdateOrderComponent {
             }
         });
 
-        // Subscribe to form changes with effect
-        effect(() => {
-            // Trigger recomputation when form array changes
-            if (this.orderItemsFormArray) {
-                this.orderItemsFormArray.valueChanges.pipe(
-                    debounceTime(60),
-                    takeUntilDestroyed(this.destroyRef)
-                ).subscribe(() => {
-                    // Force signal updates by updating the form array reference
-                    this.orderItemsFormArray.updateValueAndValidity({ emitEvent: false });
-                });
-            }
+        // Subscribe to form array changes and update the signal
+        this.orderItemsFormArray.valueChanges.pipe(
+            debounceTime(60),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(() => {
+            this.orderItemsSignal.set(this.orderItemsFormArray.value);
         });
     }
 
@@ -189,6 +186,8 @@ export class UpdateOrderComponent {
 
         this.orderItemsFormArray = this.orderForm.get('order_items') as FormArray;
         this.populateOrderItems(formData.order_items);
+
+        this.orderItemsSignal.set(this.orderItemsFormArray.value);
 
         // Store initial form state for change detection
         setTimeout(() => {
@@ -249,6 +248,7 @@ export class UpdateOrderComponent {
                     const transformedOrderItems = this.transformedOrderItems(res.order_items);
                     this.orderItemsFormArray.clear();
                     this.populateOrderItems(transformedOrderItems);
+                    this.orderItemsSignal.set(this.orderItemsFormArray.value);
                 },
                 error: (error: Error) => {
                     this.previousOrders.update(prev => prev - 1);
@@ -269,6 +269,7 @@ export class UpdateOrderComponent {
                         const transformedOrderItems = this.transformedOrderItems(res.order_items);
                         this.orderItemsFormArray.clear();
                         this.populateOrderItems(transformedOrderItems);
+                        this.orderItemsSignal.set(this.orderItemsFormArray.value);
                     },
                     error: (error: Error) => {
                         this.previousOrders.update(prev => prev + 1);
@@ -286,6 +287,7 @@ export class UpdateOrderComponent {
         });
 
         this.orderItemsFormArray.push(newOrderItem);
+        this.orderItemsSignal.set(this.orderItemsFormArray.value);
     }
 
     removeOrderItem(index: number): void {
@@ -294,6 +296,7 @@ export class UpdateOrderComponent {
             this.bakeryManagementApiService.deleteOrderItem(orderItemId).subscribe({
                 next: () => {
                     this.orderItemsFormArray.removeAt(index);
+                    this.orderItemsSignal.set(this.orderItemsFormArray.value);
                 },
                 error: (error: Error) => {
                     console.log('There was an error deleting the order item:', error);
@@ -303,6 +306,7 @@ export class UpdateOrderComponent {
             // If the order item doesn't have an ID, it means it hasn't been saved to the server yet.
             // So we can just remove it from the form array.
             this.orderItemsFormArray.removeAt(index);
+            this.orderItemsSignal.set(this.orderItemsFormArray.value);
         }
     }
 

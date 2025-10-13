@@ -19,10 +19,34 @@
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: 10px;
+
+    button {
+        margin: 8px 24px 0px 0px;
+    }
 }
 
 .client-field {
     width: 75%;
+}
+
+.button-with-badge {
+    position: relative;
+}
+
+.button-with-badge .badge {
+    position: absolute;
+    top: -24px;
+    right: -10px;
+    background-color: red;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    padding: 0;
 }
 
 .order-items-fields {
@@ -33,7 +57,7 @@
     align-items: center;
     width: 100%;
 
-    .product-fileld {
+    .product-field {
         width: 100%
     }
 
@@ -54,8 +78,6 @@
     display: flex;
     width: 100% !important;
     width: inherit;
-    background-color: rgb(255,255,255);
-    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.05);
     z-index: 1;
 
     .price {

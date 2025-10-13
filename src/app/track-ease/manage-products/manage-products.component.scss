@@ -1,57 +1,10 @@
-.manage-products-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-
-    table {
-        width: 100%;
-    }
-}
-
 .search-action-wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 8px;
+    padding: 0px 4px;
 
     app-top-bar {
         flex: 1;
-    }
-}
-
-.spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60vh;
-}
-
-.no-data-container {
-    padding: 16px 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 8px;
-    height: 100%;
-    width: 100%;
-
-    .small-image {
-        width: 150px;
-        height: auto;
-    }
-
-    p {
-        margin: 0px;
-    }
-}
-
-.csv-upload-wrapper {
-    margin-left: 8px;
-    
-    .upload-csv-btn {
-        mat-icon {
-            margin-right: 4px;
-        }
     }
 }
