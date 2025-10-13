@@ -266,9 +266,10 @@
 		"permissions": "Permissions",
 		"searchPermissions": "Search for Permissions",
 		"editNotImplemented": "Edit functionality is not yet implemented",
-		"deleteNotImplemented": "Delete functionality is not yet implemented in the backend",
 		"deletePermissionTitle": "Delete Permission",
-		"deletePermissionMessage": "Are you sure you want to delete the permission \"{code}\"?",
+		"deletePermissionMessage": "Are you sure you want to delete the permission \"{{code}}\"?",
+		"permissionDeletedSuccess": "Permission deleted successfully",
+		"permissionDeletedError": "Failed to delete permission. Please try again.",
 		"failedToLoadPermissions": "Failed to load permissions"
 	}
 }

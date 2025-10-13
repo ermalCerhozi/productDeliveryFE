@@ -4,9 +4,10 @@ import {
   DestroyRef,
   inject,
   signal,
+  ViewChild,
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms'
+import { FormBuilder, FormGroupDirective, ReactiveFormsModule, Validators } from '@angular/forms'
 
 import { Observable } from 'rxjs'
 import { MatButtonModule } from '@angular/material/button'
@@ -60,6 +61,8 @@ import { TableComponent } from "src/app/shared/components/table/table.component"
   ],
 })
 export class ManagePermissionsComponent {
+  @ViewChild('formDirective') private formDirective!: FormGroupDirective;
+
   private destroyRef = inject(DestroyRef);
   private permissionsService = inject(PermissionsService);
   private dialog = inject(MatDialog);
@@ -110,14 +113,15 @@ export class ManagePermissionsComponent {
       .subscribe({
         next: () => {
           this.snackBar.open(
-            this.translocoService.translate('managePermissions.permissionCreatedSuccess'), 
-            this.translocoService.translate('managePermissions.dismiss'), 
+            this.translocoService.translate('managePermissions.permissionCreatedSuccess'),
+            this.translocoService.translate('managePermissions.dismiss'),
             {
               duration: 3000,
               horizontalPosition: 'end',
               verticalPosition: 'top',
             }
           )
+          this.formDirective.resetForm()
           this.form.reset()
           this.findAll()
         },
@@ -142,8 +146,8 @@ export class ManagePermissionsComponent {
       },
       error: (error) => {
         this.snackBar.open(
-          this.translocoService.translate('managePermissions.failedToLoadPermissions'), 
-          this.translocoService.translate('managePermissions.dismiss'), 
+          this.translocoService.translate('managePermissions.failedToLoadPermissions'),
+          this.translocoService.translate('managePermissions.dismiss'),
           {
             duration: 3000,
             horizontalPosition: 'end',
@@ -165,7 +169,7 @@ export class ManagePermissionsComponent {
         this.permissionsService.permissions$.pipe(
           takeUntilDestroyed(this.destroyRef)
         ).subscribe((permissions) => {
-          const filtered = permissions.filter(p => 
+          const filtered = permissions.filter(p =>
             p.code.toLowerCase().includes(query.toLowerCase()) ||
             (p.description && p.description.toLowerCase().includes(query.toLowerCase()))
           );
@@ -190,8 +194,8 @@ export class ManagePermissionsComponent {
   public onEdit(permission: PermissionEntity): void {
     // TODO: Implement edit permission dialog and API endpoint in backend
     this.snackBar.open(
-      this.translocoService.translate('managePermissions.editNotImplemented'), 
-      this.translocoService.translate('managePermissions.dismiss'), 
+      this.translocoService.translate('managePermissions.editNotImplemented'),
+      this.translocoService.translate('managePermissions.dismiss'),
       {
         duration: 3000,
         horizontalPosition: 'end',
@@ -212,16 +216,31 @@ export class ManagePermissionsComponent {
 
     dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((confirmed) => {
       if (confirmed) {
-        // TODO: Implement delete permission API endpoint in backend
-        this.snackBar.open(
-          this.translocoService.translate('managePermissions.deleteNotImplemented'), 
-          this.translocoService.translate('managePermissions.dismiss'), 
-          {
-            duration: 3000,
-            horizontalPosition: 'end',
-            verticalPosition: 'top',
-          }
-        )
+        this.permissionsService
+          .deletePermission(permission.id)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => {
+              this.snackBar.open(
+                this.translocoService.translate('managePermissions.permissionDeletedSuccess'),
+                this.translocoService.translate('managePermissions.dismiss'),
+                {
+                  duration: 3000,
+                  horizontalPosition: 'end',
+                  verticalPosition: 'top',
+                }
+              )
+            },
+            error: (error) => {
+              const errorMessage = error?.error?.message || this.translocoService.translate('managePermissions.permissionDeletedError')
+              this.snackBar.open(errorMessage, this.translocoService.translate('managePermissions.dismiss'), {
+                duration: 5000,
+                horizontalPosition: 'end',
+                verticalPosition: 'top',
+                panelClass: ['error-snackbar'],
+              })
+            },
+          })
       }
     })
   }

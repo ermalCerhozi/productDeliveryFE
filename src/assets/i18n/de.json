@@ -63,9 +63,10 @@
 		"permissions": "Berechtigungen",
 		"searchPermissions": "Berechtigungen suchen",
 		"editNotImplemented": "Bearbeitungsfunktion ist noch nicht implementiert",
-		"deleteNotImplemented": "Löschfunktion ist im Backend noch nicht implementiert",
 		"deletePermissionTitle": "Berechtigung löschen",
 		"deletePermissionMessage": "Sind Sie sicher, dass Sie die Berechtigung \"{code}\" löschen möchten?",
+		"permissionDeletedSuccess": "Berechtigung erfolgreich gelöscht",
+		"permissionDeletedError": "Fehler beim Löschen der Berechtigung. Bitte versuchen Sie es erneut.",
 		"failedToLoadPermissions": "Fehler beim Laden der Berechtigungen"
 	}
 }

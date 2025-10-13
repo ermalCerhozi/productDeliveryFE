@@ -2,11 +2,12 @@
     <mat-tab-group class="permissions-tab-group" animationDuration="0ms">
         <mat-tab [label]="t('managePermissions.managePermissionsTab')">
             <mat-card class="permission-form-card">
-                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="permission-form">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" #formDirective="ngForm" class="permission-form">
                     <div class="form-row">
                         <mat-form-field appearance="outline" class="form-field">
                             <mat-label>{{ t('managePermissions.code') }}</mat-label>
-                            <input matInput formControlName="code" [placeholder]="t('managePermissions.codePlaceholder')" autocomplete="off" />
+                            <input matInput formControlName="code"
+                                [placeholder]="t('managePermissions.codePlaceholder')" autocomplete="off" />
                             @if (form.get('code')?.hasError('required')) {
                             <mat-error> {{ t('managePermissions.codeRequired') }} </mat-error>
                             }
@@ -39,13 +40,15 @@
             </mat-card>
 
             <mat-card class="permissions-list-card">
-                <app-top-bar [mediaCount]="(tableData$ | async)?.length || 0" [title]="t('managePermissions.permissions')"
+                <app-top-bar [mediaCount]="(tableData$ | async)?.length || 0"
+                    [title]="t('managePermissions.permissions')"
                     [placeholder]="t('managePermissions.searchPermissions')" [displayAddButton]="false"
                     (searchOptionsChange)="onOptionsChanged($event)" (search)="onSearch($event)"
                     (addItem)="addPermission()"></app-top-bar>
 
                 <app-table [data]="(tableData$ | async) || []" [columns]="tableColumns()" [searchQuery]="searchQuery()"
-                    [isSelectable]="false" [showActions]="false" (onEdit)="onEdit($event)" (onDelete)="onDelete($event)" >
+                    [isSelectable]="false" [isEditable]="false" [isDeletable]="true" [showActions]="true" (onEdit)="onEdit($event)"
+                    (onDelete)="onDelete($event)">
                 </app-table>
             </mat-card>
         </mat-tab>

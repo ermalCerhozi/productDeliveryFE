@@ -271,6 +271,10 @@ export class BakeryManagementApiService {
         return this.httpClient.get<RolePermissionsSummary[]>(`${this.basePath}/permissions/roles`)
     }
 
+    deletePermission(id: number): Observable<void> {
+        return this.httpClient.delete<void>(`${this.basePath}/permissions/${id}`)
+    }
+
     getMonthlySales(userId: number): Observable<any> {
         return this.httpClient.get<any>(`${this.basePath}/orders/monthly-sales/${userId}`)
     }

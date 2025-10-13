@@ -87,4 +87,32 @@ export class PermissionsService {
                 })
             )
     }
+
+    deletePermission(id: number): Observable<void> {
+        return this.bakeryManagementApiService.deletePermission(id).pipe(
+            tap(() => {
+                const currentPermissions = this.permissionsSubject.getValue()
+                const deletedPermission = currentPermissions.find(p => p.id === id)
+                const updatedPermissions = currentPermissions.filter(
+                    (permission) => permission.id !== id
+                )
+                this.permissionsSubject.next(updatedPermissions)
+
+                // Update role permissions to remove the deleted permission code
+                if (deletedPermission) {
+                    const currentRoles = this.rolePermissionsSubject.getValue()
+                    const updatedRoles = currentRoles.map((role) => ({
+                        ...role,
+                        permissionCodes: role.permissionCodes.filter(
+                            (permCode) => permCode !== deletedPermission.code
+                        ),
+                    }))
+                    this.rolePermissionsSubject.next(updatedRoles)
+                }
+            }),
+            catchError((error) => {
+                return throwError(() => error)
+            })
+        )
+    }
 }
