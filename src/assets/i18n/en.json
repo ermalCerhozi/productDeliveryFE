@@ -289,5 +289,11 @@
 		"backToLogin": "Back to Login",
 		"panelTitle": "Welcome to Product Delivery System",
 		"panelSubtitle": "Set your password to get started with your new account"
+	},
+	"unauthorized": {
+		"title": "Access Denied",
+		"message": "You don't have permission to access this page.",
+		"hint": "If you believe this is an error, please contact your administrator.",
+		"goHome": "Go to Home Page"
 	}
 }

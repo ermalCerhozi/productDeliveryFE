@@ -289,5 +289,11 @@
 		"backToLogin": "Zurück zur Anmeldung",
 		"panelTitle": "Willkommen beim Produktliefersystem",
 		"panelSubtitle": "Legen Sie Ihr Passwort fest, um mit Ihrem neuen Konto zu beginnen"
+	},
+	"unauthorized": {
+		"title": "Zugriff verweigert",
+		"message": "Sie haben keine Berechtigung, auf diese Seite zuzugreifen.",
+		"hint": "Wenn Sie glauben, dass dies ein Fehler ist, wenden Sie sich bitte an Ihren Administrator.",
+		"goHome": "Zur Startseite"
 	}
 }

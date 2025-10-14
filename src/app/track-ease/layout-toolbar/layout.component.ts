@@ -53,8 +53,8 @@ export class LayoutComponent {
     private routes: NavRouteConfig[] = [
         { path: 'homePage', name: 'Home Page', icon: 'home', roles: ['Admin', 'Client'] },
         { path: 'users', name: 'layout.users', icon: 'people', roles: ['Admin'] },
-        { path: 'orders', name: 'layout.orders', icon: 'assignment', roles: ['Admin'] },
-        { path: 'products', name: 'layout.products', icon: 'store', roles: ['Admin'] },
+        { path: 'orders', name: 'layout.orders', icon: 'assignment', roles: ['Admin', 'Client'] },
+        { path: 'products', name: 'layout.products', icon: 'store', roles: ['Admin', 'Client'] },
         { path: 'permissions', name: 'layout.permissions', icon: 'lock', roles: ['Admin'] },
         {
             path: 'profile',
@@ -64,7 +64,7 @@ export class LayoutComponent {
         },
         // { path: 'earnings', name: 'Earnings', icon: 'show_chart' },
         // { path: 'trackDelivery', name: 'Track Delivery', icon: 'local_shipping' },
-        { path: 'settings', name: 'layout.settings', icon: 'settings', roles: ['Admin'] },
+        { path: 'settings', name: 'layout.settings', icon: 'settings', roles: ['Admin', 'Client'] },
     ]
 
     isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(

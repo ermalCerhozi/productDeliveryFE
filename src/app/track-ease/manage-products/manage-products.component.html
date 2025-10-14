@@ -4,22 +4,25 @@
       [mediaCount]="totalCount()"
       [title]="'Product'"
       [placeholder]="'Search for Product'"
+      [displayAddButton]="showActions()"
       (searchOptionsChange)="onOptionsChanged($event)"
       (search)="onSearch($event)"
       (addItem)="addProduct()"
     ></app-top-bar>
-    <div >
-      <input type="file" 
-              #csvFileInput
-              accept=".csv" 
-              style="display: none;"
-              (change)="onFileSelected($event)">
-      <button mat-flat-button 
-              color="primary" 
-              (click)="csvFileInput.click()" >
-        <mat-icon>cloud_upload</mat-icon>
-      </button>
-    </div>
+    @if (showActions()) {
+      <div >
+        <input type="file" 
+                #csvFileInput
+                accept=".csv" 
+                style="display: none;"
+                (change)="onFileSelected($event)">
+        <button mat-flat-button 
+                color="primary" 
+                (click)="csvFileInput.click()" >
+          <mat-icon>cloud_upload</mat-icon>
+        </button>
+      </div>
+    }
   </div>
 
   <app-table
@@ -28,6 +31,7 @@
     [searchQuery]="searchQuery()"
     [totalCount]="totalCount()"
     [isSelectable]="false"
+    [showActions]="showActions()"
     (onEdit)="onEdit($event)"
     (onDelete)="onDelete($event)"
     (currentPageInfo)="onPageInfoChange($event)">

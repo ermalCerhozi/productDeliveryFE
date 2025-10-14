@@ -23,6 +23,7 @@ import { TopBarComponent } from 'src/app/shared/components/top-bar/top-bar.compo
 import { SearchOptions } from 'src/app/shared/models/context-navigation.model'
 import { CreateUpdateProductDialogComponent } from 'src/app/shared/components/create-update-product-dialog/create-update-product-dialog.component'
 import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component'
+import { UserEntity } from 'src/app/shared/models/user.model'
 
 @Component({
     selector: 'app-manage-products',
@@ -53,8 +54,20 @@ export class ManageProductsComponent implements OnInit {
   public totalCount = signal(0);
   public currentPage = signal(1);
   public pageSize = signal(10);
+  
+  // Get logged in user and check if they're a client
+  public loggedInUser!: UserEntity;
+  public showActions = signal(true);
 
   ngOnInit(): void {
+    // Initialize logged in user
+    this.loggedInUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    
+    // Hide actions column if user is a Client
+    if (this.loggedInUser?.role === 'Client') {
+      this.showActions.set(false);
+    }
+    
     this.findAll();
   }
 

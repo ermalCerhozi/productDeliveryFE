@@ -18,6 +18,10 @@ const routes: Routes = [
             ),
     },
     {
+        path: 'not-authorized',
+        component: NotFoundComponent,
+    },
+    {
         path: '',
         component: LayoutComponent,
         canActivateChild: [AuthGuard], //AuthGuard will be applied to all child routes.
@@ -39,7 +43,7 @@ const routes: Routes = [
                     ),
                 children: ORDERS_ROUTES,
                 canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin'] },
+                data: { expectedRoles: ['Admin', 'Client'] },
             },
             {
                 path: 'products',
@@ -48,7 +52,7 @@ const routes: Routes = [
                         (c) => c.ManageProductsComponent
                     ),
                 canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin'] },
+                data: { expectedRoles: ['Admin', 'Client'] },
             },
             {
                 path: 'permissions',
@@ -65,7 +69,7 @@ const routes: Routes = [
                     import('src/app/track-ease/manage-users/manage-users.component').then(
                         (c) => c.ManageUsersComponent
                     ),
-                // canActivate: [PermissionsGuard],
+                canActivate: [PermissionsGuard],
                 data: { expectedRoles: ['Admin'] },
             },
             {
@@ -75,7 +79,7 @@ const routes: Routes = [
                         (c) => c.UserProfileComponent
                     ),
                 canActivate: [PermissionsGuard],
-                data: { expectedRoles: ['Admin'] },
+                data: { expectedRoles: ['Admin', 'Client'] },
             },
             {
                 path: 'settings',

@@ -134,6 +134,10 @@ export class OrdersListComponent {
     public loggedInUser!: UserEntity;
     public action = 'create';
 
+    // Computed signals to check user role
+    public isClient = computed(() => this.loggedInUser?.role === 'Client');
+    public isSeller = computed(() => this.loggedInUser?.role === 'Seller');
+
     constructor() {
         // Initialize logged in user
         this.loggedInUser = JSON.parse(localStorage.getItem('currentUser') || '')

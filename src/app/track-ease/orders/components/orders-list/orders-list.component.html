@@ -57,39 +57,43 @@
                     (selectionChange)="applyFilters($event, 'date')"
                 ></app-simple-radio-select-filter>
 
-                <app-advanced-text-filter
-                    [labelTK]="t('ordersList.client')"
-                    [loadingPage]="clientsLoading()"
-                    [hasMoreItems]="hasMoreClientsToLoad()"
-                    [selection]="selectedClients()"
-                    [fields]="clients()"
-                    [searchForTK]="'ordersList.orderClientSearch'"
-                    [noResultsTK]="'ordersList.orderClientsNoResults'"
-                    [panelClass]="'client-categories-filter-panel'"
-                    [customLabelWidth]="'110px'"
-                    (searchChange)="clientSearchChange($event)"
-                    (loadMore)="loadMoreClients()"
-                    (selectionChange)="applyFilters($event, 'client')"
-                    (openedChange)="onClientDropdownOpened($event)"
-                >
-                </app-advanced-text-filter>
+                @if (!isClient()) {
+                    <app-advanced-text-filter
+                        [labelTK]="t('ordersList.client')"
+                        [loadingPage]="clientsLoading()"
+                        [hasMoreItems]="hasMoreClientsToLoad()"
+                        [selection]="selectedClients()"
+                        [fields]="clients()"
+                        [searchForTK]="'ordersList.orderClientSearch'"
+                        [noResultsTK]="'ordersList.orderClientsNoResults'"
+                        [panelClass]="'client-categories-filter-panel'"
+                        [customLabelWidth]="'110px'"
+                        (searchChange)="clientSearchChange($event)"
+                        (loadMore)="loadMoreClients()"
+                        (selectionChange)="applyFilters($event, 'client')"
+                        (openedChange)="onClientDropdownOpened($event)"
+                    >
+                    </app-advanced-text-filter>
+                }
 
-                <app-advanced-text-filter
-                    [labelTK]="t('ordersList.seller')"
-                    [loadingPage]="sellersLoading()"
-                    [hasMoreItems]="hasMoreSellersToLoad()"
-                    [selection]="selectedSellers()"
-                    [fields]="sellers()"
-                    [searchForTK]="'ordersList.orderSellerSearch'"
-                    [noResultsTK]="'ordersList.orderSellerNoResults'"
-                    [panelClass]="'seller-categories-filter-panel'"
-                    [customLabelWidth]="'110px'"
-                    (searchChange)="sellerSearchChange($event)"
-                    (loadMore)="loadMoreSellers()"
-                    (selectionChange)="applyFilters($event, 'seller')"
-                    (openedChange)="onSellerDropdownOpened($event)"
-                >
-                </app-advanced-text-filter>
+                @if (!isSeller()) {
+                    <app-advanced-text-filter
+                        [labelTK]="t('ordersList.seller')"
+                        [loadingPage]="sellersLoading()"
+                        [hasMoreItems]="hasMoreSellersToLoad()"
+                        [selection]="selectedSellers()"
+                        [fields]="sellers()"
+                        [searchForTK]="'ordersList.orderSellerSearch'"
+                        [noResultsTK]="'ordersList.orderSellerNoResults'"
+                        [panelClass]="'seller-categories-filter-panel'"
+                        [customLabelWidth]="'110px'"
+                        (searchChange)="sellerSearchChange($event)"
+                        (loadMore)="loadMoreSellers()"
+                        (selectionChange)="applyFilters($event, 'seller')"
+                        (openedChange)="onSellerDropdownOpened($event)"
+                    >
+                    </app-advanced-text-filter>
+                }
             </app-filters>
         </div>
     </div>

@@ -44,9 +44,9 @@ bootstrapApplication(AppComponent, {
             config: {
                 availableLangs: ['en', 'de', 'all'],
                 defaultLang: 'en',
-                // Remove this option if your application doesn't support changing language in runtime.
                 reRenderOnLangChange: true,
                 prodMode: !isDevMode(),
+                fallbackLang: 'en',
             },
             loader: TranslocoHttpLoader,
         }),
